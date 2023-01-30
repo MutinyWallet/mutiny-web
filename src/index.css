@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply text-white;
+  @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b] bg-black;
+  overscroll-behavior-y: none;
+  min-height: 100.3%;
+}
+
+.react-modal-sheet-container {
+  @apply !bg-[#262626];
+}
