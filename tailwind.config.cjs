@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        "half-black": "rgba(0, 0, 0, 0.5)",
+      },
       backgroundImage: {
         'fade-to-blue': 'linear-gradient(1.63deg, #0B215B 32.05%, rgba(11, 33, 91, 0) 84.78%)'
       }
