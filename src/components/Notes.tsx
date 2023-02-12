@@ -17,9 +17,6 @@ function Note({ e }: { e: NostrEvent }) {
         noteId = nip19.noteEncode(e.id)
     }
 
-    // Use a regex to read through the content and turn the links into <a> tags
-    // const content = e.content.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1">$1</a>')
-
     return (
         <div className="flex gap-4 border-b border-faint-white py-6 items-start">
             <img className="bg-black rounded-xl" src="../180.png" width={45} height={45} />
@@ -34,7 +31,6 @@ function Note({ e }: { e: NostrEvent }) {
                     <small className="text-light-text">{date.toLocaleString()}</small>
                 </a>
             </div>
-            {/* <div className="text-m-red text-sm uppercase font-semibold">Note</div> */}
         </div>
     )
 }
@@ -55,11 +51,6 @@ export default function Notes() {
             {events.filter((event) => !event.tags.length).map((event) => (
                 <li className="w-full" key={event.id}><Note e={event as NostrEvent} /></li>
             ))}
-            {/* <li><Note /></li>
-            <li><Note /></li>
-            <li><Note /></li>
-            <li><Note /></li>
-            <li><Note /></li> */}
         </ul>
     )
 }
