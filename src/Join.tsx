@@ -13,7 +13,7 @@ export default function Join() {
     // Fetch the waitlist status from the backend
     useEffect(() => {
         if (waitlistId) {
-            fetch(`http://127.0.0.1:8787/waitlist/${waitlistId}`).then(res => {
+            fetch(`https://waitlist.mutiny-waitlist.workers.dev/waitlist/${waitlistId}`).then(res => {
                 if (res.status === 200) {
                     setWaitlisted(true);
                 }
