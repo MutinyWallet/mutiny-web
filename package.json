@@ -9,10 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "bech32": "^2.0.0",
     "class-variance-authority": "^0.4.0",
     "framer-motion": "^8.5.4",
-    "linky": "^1.7.0",
     "nostr-react": "^0.6.4",
     "nostr-tools": "^1.3.2",
     "react": "^18.2.0",
