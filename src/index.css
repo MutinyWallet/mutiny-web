@@ -12,3 +12,7 @@ body {
 .react-modal-sheet-container {
   @apply !bg-[#262626];
 }
+
+a {
+  @apply underline decoration-light-text hover:decoration-white;
+}
