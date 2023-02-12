@@ -8,6 +8,7 @@ const relayUrls = [
     "wss://brb.io",
     "wss://nostr.fmt.wiz.biz",
     "wss://relay.damus.io",
+    "wss://eden.nostr.land"
 ]
 
 export function WaitlistAlreadyIn() {

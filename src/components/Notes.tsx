@@ -39,7 +39,7 @@ export default function Notes() {
     const { events } = useNostrEvents({
         filter: {
             authors: [
-                "0d6c8388dcb049b8dd4fc8d3d8c3bb93de3da90ba828e4f09c8ad0f346488a33",
+                "df173277182f3155d37b330211ba1de4a81500c02d195e964f91be774ec96708"
             ],
             since: 0,
             kinds: [1],
