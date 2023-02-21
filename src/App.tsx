@@ -1,9 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 
-import Home from "./Home";
-import Receive from "./Receive";
 import Join from "./Join";
+import Layout from "./components/Layout";
+
 function App() {
   return (
     <div className="App">
@@ -12,7 +11,9 @@ function App() {
 
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/" element={<Join />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Join />} />
+        </Route>
       </Routes>
     </div>
   );
