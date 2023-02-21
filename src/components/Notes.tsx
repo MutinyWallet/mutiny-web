@@ -18,9 +18,9 @@ function Note({ e }: { e: NostrEvent }) {
     }
 
     return (
-        <div className="flex gap-4 border-b border-faint-white py-6 items-start">
-            <img className="bg-black rounded-xl" src="../180.png" width={45} height={45} />
-            <div className="flex flex-col gap-2 max-w-sm">
+        <div className="flex gap-4 border-b border-faint-white py-6 items-start w-full">
+            <img className="bg-black rounded-xl flex-0" src="../180.png" width={45} height={45} />
+            <div className="flex flex-col gap-2 flex-1">
                 {/* <p>{JSON.stringify(e, null, 2)}</p> */}
                 <p className="break-words">
                     <Linkify>

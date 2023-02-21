@@ -1,5 +1,5 @@
 import { useState } from "react";
-import button from "./button";
+import button from "@/styles/button";
 
 const INPUT = "w-full mb-4 p-2 rounded-lg text-black"
 
@@ -73,7 +73,7 @@ export default function WaitlistForm() {
     }
 
     return (
-        <main className='flex flex-col gap-4 py-8 max-w-xl mx-auto drop-shadow-blue-glow'>
+        <main className='flex flex-col gap-4 py-8 px-4 max-w-xl mx-auto drop-shadow-blue-glow'>
             <h1 className='text-4xl font-bold'>Join Waitlist</h1>
             {/* HTML form with three inputs: nostr pubkey (text), email (text), and a textarea for comments */}
             <h2 className="text-xl">
