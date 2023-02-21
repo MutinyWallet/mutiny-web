@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import WaitlistForm from "./components/WaitlistForm";
-import { WaitlistAlreadyIn } from "./components/WaitlistAlreadyIn";
+import WaitlistForm from "@/components/WaitlistForm";
+import { WaitlistAlreadyIn } from "@/components/WaitlistAlreadyIn";
 
 export default function Join() {
     // On load, check if the user is already on the waitlist
