@@ -5,6 +5,7 @@ import mutiny_m from '@/assets/m.svg';
 import scan from '@/assets/scan.svg';
 import settings from '@/assets/settings.svg';
 import send from '@/assets/send.svg';
+import { Link } from 'react-router-dom';
 
 function ActivityItem() {
     return (
@@ -89,17 +90,16 @@ function App() {
             <nav className='bg-black fixed bottom-0 shadow-lg z-40 w-full safe-bottom'>
                 <ul className='h-16 flex justify-between px-16 items-center'>
                     <li className='h-full border-t-2 border-b-2 border-b-black flex flex-col justify-center'>
-                        <img src={mutiny_m} className="App-logo" alt="logo" />
+                        <img src={mutiny_m} alt="home" />
                     </li>
                     <li>
-                        <img src={scan} className="App-logo" alt="logo" />
+                        <Link to="/scanner">
+                            <img src={scan} alt="scan" />
+                        </Link>
                     </li>
                     <li>
-                        <img src={settings} className="App-logo" alt="logo" />
+                        <img src={settings} alt="settings" />
                     </li>
-                    {/* <li>home</li> */}
-                    {/* <li>scan</li> */}
-                    {/* <li>settings</li> */}
                 </ul>
             </nav>
 
