@@ -3,10 +3,18 @@
 @tailwind utilities;
 
 body {
-  @apply text-white;
-  @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b] bg-black;
+  @apply text-white bg-black;
+  @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b];
   overscroll-behavior-y: none;
   min-height: 100.3%;
+}
+
+.bg-gradient {
+  @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b];
+}
+
+.bg-gray {
+  @apply bg-fixed bg-no-repeat bg-gradient-to-b from-[hsl(224,5%,5%)] to-[hsl(224,5%,20%)];
 }
 
 .react-modal-sheet-container {
@@ -15,4 +23,20 @@ body {
 
 a {
   @apply underline decoration-light-text hover:decoration-white;
+}
+
+#video-container {
+  position: relative;
+  width: max-content;
+  height: max-content;
+  overflow: hidden;
+}
+
+#video-container .scan-region-highlight {
+  border-radius: 30px;
+  outline: rgba(0, 0, 0, 0.25) solid 50vmax;
+}
+
+#video-container .scan-region-highlight-svg {
+  display: none;
 }
