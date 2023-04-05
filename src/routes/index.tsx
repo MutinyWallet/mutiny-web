@@ -4,6 +4,7 @@ import { Accessor, createEffect, createResource, Setter, createSignal, Switch, M
 import { WaitlistAlreadyIn } from "~/components/waitlist/WaitlistAlreadyIn";
 import WaitlistForm from "~/components/waitlist/WaitlistForm";
 import ReloadPrompt from "~/components/Reload";
+import { NodeManagerProvider } from "~/state/nodeManagerState";
 
 function createWaitListSignal(): [Accessor<string>, Setter<string>] {
   const [state, setState] = createSignal("");
@@ -34,7 +35,9 @@ export default function Home() {
       <ReloadPrompt />
       <Switch fallback={<>Loading...</>} >
         <Match when={waitlistData() && waitlistData().approval_date}>
-          <App />
+          <NodeManagerProvider>
+            <App />
+          </NodeManagerProvider>
         </Match>
         <Match when={waitlistData() && waitlistData().date}>
           <WaitlistAlreadyIn />

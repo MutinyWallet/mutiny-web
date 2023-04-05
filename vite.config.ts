@@ -1,10 +1,12 @@
 import solid from "solid-start/vite";
 import { defineConfig } from "vite";
-import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa'
+import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
+import wasm from "vite-plugin-wasm";
 
 import * as path from 'path'
 
 const pwaOptions: Partial<VitePWAOptions> = {
+  base: '/',
   registerType: "autoUpdate",
   devOptions: {
     enabled: true
@@ -40,8 +42,12 @@ export default defineConfig({
   server: {
     port: 3420,
   },
-  plugins: [solid({ ssr: false }), VitePWA(pwaOptions)],
+  plugins: [wasm(), solid({ ssr: false }), VitePWA(pwaOptions)],
   resolve: {
     alias: [{ find: '~', replacement: path.resolve(__dirname, './src') }]
-  }
+  },
+  optimizeDeps: {
+    // This is necessary because otherwise `vite dev` can't find the wasm
+    exclude: ["@mutinywallet/node-manager"],
+  },
 });
