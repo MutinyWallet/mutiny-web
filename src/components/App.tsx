@@ -1,13 +1,11 @@
 import { For } from "solid-js";
-import { A } from "solid-start";
 import { Motion, Presence } from "@motionone/solid";
 
 import logo from '~/assets/icons/mutiny-logo.svg';
-import mutiny_m from '~/assets/icons/m.svg';
-import scan from '~/assets/icons/scan.svg';
-import settings from '~/assets/icons/settings.svg';
 import send from '~/assets/icons/send.svg';
 import BalanceBox from "./BalanceBox";
+import SafeArea from "./SafeArea";
+import NavBar from "./NavBar";
 
 // TODO: use this reload prompt for real
 // import ReloadPrompt from "./Reload";
@@ -28,57 +26,41 @@ function ActivityItem() {
 
 export default function App() {
     return (
-        <div class="safe-top safe-left safe-right safe-bottom">
-            <div class="disable-scrollbars max-h-screen h-full overflow-y-scroll">
-                <main class='flex flex-col gap-4 py-8 px-4'>
-                    <header>
-                        <img src={logo} class="App-logo" alt="logo" />
+        <SafeArea>
+            <main class='flex flex-col gap-4 py-8 px-4'>
+                <header>
+                    <img src={logo} class="App-logo" alt="logo" />
+                </header>
+                {/* <ReloadPrompt /> */}
+                <BalanceBox />
+                <div class='rounded-xl p-4 flex flex-col gap-2 bg-[rgba(0,0,0,0.5)]'>
+                    <header class='text-sm font-semibold uppercase'>
+                        Activity
                     </header>
-                    {/* <ReloadPrompt /> */}
-                    <BalanceBox />
-                    <div class='rounded-xl p-4 flex flex-col gap-2 bg-[rgba(0,0,0,0.5)]'>
-                        <header class='text-sm font-semibold uppercase'>
-                            Activity
-                        </header>
-                        <For each={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}>
-                            {() =>
-                                <Presence>
-                                    <Motion
-                                        initial={{ opacity: 0, scaleY: 0 }}
-                                        animate={{ opacity: 1, scaleY: 1 }}
-                                        exit={{ opacity: 0, scaleY: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                    >
-                                        <ActivityItem />
-                                    </Motion>
-                                </Presence>
-                            }
-                        </For>
-                        <div class='flex justify-end py-4'>
-                            <a href="#" class='underline text-sm'>
-                                MORE
-                            </a>
-                        </div>
+                    <For each={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}>
+                        {() =>
+                            <Presence>
+                                <Motion
+                                    initial={{ opacity: 0, scaleY: 0 }}
+                                    animate={{ opacity: 1, scaleY: 1 }}
+                                    exit={{ opacity: 0, scaleY: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <ActivityItem />
+                                </Motion>
+                            </Presence>
+                        }
+                    </For>
+                    <div class='flex justify-end py-4'>
+                        <a href="#" class='underline text-sm'>
+                            MORE
+                        </a>
                     </div>
-                    {/* safety div */}
-                    <div class="h-32" />
-                </main>
-                <nav class='bg-black fixed bottom-0 shadow-lg z-40 w-full safe-bottom'>
-                    <ul class='h-16 flex justify-between px-16 items-center'>
-                        <li class='h-full border-t-2 border-b-2 border-b-black flex flex-col justify-center'>
-                            <img src={mutiny_m} alt="home" />
-                        </li>
-                        <li>
-                            <A href="/scanner">
-                                <img src={scan} alt="scan" />
-                            </A>
-                        </li>
-                        <li>
-                            <img src={settings} alt="settings" />
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div >
+                </div>
+                {/* safety div */}
+                <div class="h-32" />
+            </main>
+            <NavBar activeTab="home" />
+        </SafeArea>
     );
 }

@@ -9,7 +9,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
   base: '/',
   registerType: "autoUpdate",
   devOptions: {
-    enabled: true
+    enabled: false
   },
   includeAssets: ['favicon.ico', 'robots.txt'],
   manifest: {

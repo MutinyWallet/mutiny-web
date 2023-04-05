@@ -34,9 +34,19 @@ const Note: Component<{ e: NostrEvent }> = (props) => {
     )
 }
 
+function filterReplies(event: Event) {
+    // If there's a "p" tag or an "e" tag we want to return false, otherwise true
+    for (const tag of event.tags) {
+        if (tag[0] === "p" || tag[0] === "e") {
+            return false
+        }
+    }
+    return true
+}
+
 const Notes: Component<{ notes: Event[] }> = (props) => {
     return (<ul class="flex flex-col">
-        <For each={props.notes.filter((event) => !event.tags.length).sort((a, b) => b.created_at - a.created_at)}>
+        <For each={props.notes.filter(filterReplies).sort((a, b) => b.created_at - a.created_at)}>
             {(item) =>
                 <li class="w-full"><Note e={item as NostrEvent} /></li>
             }
