@@ -1,6 +1,6 @@
 import { Motion, Presence } from "@motionone/solid";
 import { MutinyBalance } from "@mutinywallet/node-manager";
-import { createResource, Show } from "solid-js";
+import { createResource, Show, Suspense } from "solid-js";
 
 import { useNodeManager } from "~/state/nodeManagerState";
 import { ButtonLink } from "./Button";
@@ -42,10 +42,12 @@ export default function BalanceBox() {
                     </header>
                     <div onClick={refetchBalance}>
                         <h1 class='text-4xl font-light'>
-                            <Show when={balance()}>
-                                {/* TODO: no-non-null-asssertion but type narrowing just isn't working */}
-                                {prettyPrintBalance(balance()!)} <span class='text-xl'>SAT</span>
-                            </Show>
+                            <Suspense fallback={"..."}>
+                                <Show when={balance()}>
+                                    {/* TODO: no-non-null-asssertion but type narrowing just isn't working */}
+                                    {prettyPrintBalance(balance()!)} <span class='text-xl'>SAT</span>
+                                </Show>
+                            </Suspense>
                         </h1>
                     </div>
                     <div class="flex gap-2 py-4">
