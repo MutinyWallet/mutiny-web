@@ -13,6 +13,7 @@ import {
   Title,
 } from "solid-start";
 import "./root.css";
+import { NodeManagerProvider } from "./state/nodeManagerState";
 
 export default function Root() {
   return (
@@ -34,9 +35,11 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <Routes>
-              <FileRoutes />
-            </Routes>
+            <NodeManagerProvider>
+              <Routes>
+                <FileRoutes />
+              </Routes>
+            </NodeManagerProvider>
           </ErrorBoundary>
         </Suspense>
         <Scripts />

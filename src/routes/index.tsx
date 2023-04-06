@@ -35,9 +35,7 @@ export default function Home() {
       <ReloadPrompt />
       <Switch fallback={<>Loading...</>} >
         <Match when={waitlistData() && waitlistData().approval_date}>
-          <NodeManagerProvider>
-            <App />
-          </NodeManagerProvider>
+          <App />
         </Match>
         <Match when={waitlistData() && waitlistData().date}>
           <WaitlistAlreadyIn />

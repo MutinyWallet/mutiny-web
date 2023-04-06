@@ -1,24 +1,14 @@
 import { NodeManager } from "@mutinywallet/node-manager";
-import { createContext, JSX, useContext, createResource } from "solid-js";
+import { createContext, JSX, useContext, createResource, Resource } from "solid-js";
 import { setupNodeManager } from "~/logic/nodeManagerSetup";
 
-const NodeManagerContext = createContext();
+const NodeManagerContext = createContext<{ nodeManager: Resource<NodeManager> }>();
 
 export function NodeManagerProvider(props: { children: JSX.Element }) {
-    const [nodeManager] = createResource({}, setupNodeManager);
-
-    const fetchBalance = async (nm: NodeManager) => {
-        console.log("refetching balance");
-        const balance = await nm.get_balance();
-        return balance
-    };
-
-    const [balance, { refetch }] = createResource(nodeManager, fetchBalance);
+    const [nodeManager] = createResource(setupNodeManager);
 
     const value = {
         nodeManager,
-        balance,
-        refetchBalance: refetch
     };
 
     return (
@@ -28,4 +18,11 @@ export function NodeManagerProvider(props: { children: JSX.Element }) {
     )
 }
 
-export function useNodeManager() { return useContext(NodeManagerContext); }
+export function useNodeManager() {
+    // This is a trick to narrow the typescript types: https://docs.solidjs.com/references/api-reference/component-apis/createContext
+    const context = useContext(NodeManagerContext);
+    if (!context) {
+        throw new Error("useNodeManager: cannot find a NodeManagerContext")
+    }
+    return context;
+}

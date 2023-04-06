@@ -4,14 +4,16 @@ import settings from '~/assets/icons/settings.svg';
 
 import { A } from "solid-start";
 
-type ActiveTab = 'home' | 'scan' | 'settings';
+type ActiveTab = 'home' | 'scan' | 'settings' | 'none';
 
 export default function NavBar(props: { activeTab: ActiveTab }) {
     const activeStyle = 'h-full border-t-2 border-b-2 border-b-black flex flex-col justify-center'
     return (<nav class='bg-black fixed bottom-0 shadow-lg z-40 w-full safe-bottom'>
         <ul class='h-16 flex justify-between px-16 items-center'>
             <li class={props.activeTab === "home" ? activeStyle : ""}>
-                <img src={mutiny_m} alt="home" />
+                <A href="/">
+                    <img src={mutiny_m} alt="home" />
+                </A>
             </li>
             <li class={props.activeTab === "scan" ? activeStyle : ""}>
                 <A href="/scanner">

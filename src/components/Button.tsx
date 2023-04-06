@@ -1,5 +1,6 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { children, JSX, ParentComponent, splitProps } from "solid-js";
+import { A } from "solid-start";
 
 const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
     variants: {
@@ -7,7 +8,8 @@ const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
             active: "bg-white text-black",
             inactive: "bg-black text-white border border-white",
             blue: "bg-[#3B6CCC] text-white",
-            red: "bg-[#F61D5B] text-white"
+            red: "bg-[#F61D5B] text-white",
+            green: "bg-[#1EA67F] text-white",
         },
         layout: {
             flex: "flex-1",
@@ -42,5 +44,28 @@ export const Button: ParentComponent<ButtonProps> = props => {
         >
             {slot()}
         </button>
+    )
+}
+
+interface ButtonLinkProps extends JSX.ButtonHTMLAttributes<HTMLAnchorElement>, StyleProps {
+    href: string
+}
+
+export const ButtonLink: ParentComponent<ButtonLinkProps> = props => {
+    const slot = children(() => props.children)
+    const [local, attrs] = splitProps(props, ['children', 'intent', 'layout', 'class', 'href'])
+
+    return (
+        <A
+            href={local.href}
+            {...attrs}
+            class={button({
+                class: local.class || "",
+                intent: local.intent,
+                layout: local.layout,
+            })}
+        >
+            {slot()}
+        </A>
     )
 }

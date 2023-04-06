@@ -1,7 +1,9 @@
 import { Motion, Presence } from "@motionone/solid";
 import { MutinyBalance } from "@mutinywallet/node-manager";
+import { createResource, Show } from "solid-js";
 
 import { useNodeManager } from "~/state/nodeManagerState";
+import { ButtonLink } from "./Button";
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
@@ -15,7 +17,15 @@ function prettyPrintBalance(b: MutinyBalance): string {
 }
 
 export default function BalanceBox() {
-    const { balance, refetchBalance } = useNodeManager();
+    const { nodeManager } = useNodeManager();
+
+    const fetchBalance = async () => {
+        console.log("Refetching balance");
+        const balance = await nodeManager()?.get_balance();
+        return balance
+    };
+
+    const [balance, { refetch: refetchBalance }] = createResource(nodeManager, fetchBalance);
 
     return (
         <Presence>
@@ -31,12 +41,15 @@ export default function BalanceBox() {
                     </header>
                     <div onClick={refetchBalance}>
                         <h1 class='text-4xl font-light'>
-                            {balance() && prettyPrintBalance(balance())} <span class='text-xl'>SAT</span>
+                            <Show when={balance()}>
+                                {/* TODO: no-non-null-asssertion but type narrowing just isn't working */}
+                                {prettyPrintBalance(balance()!)} <span class='text-xl'>SAT</span>
+                            </Show>
                         </h1>
                     </div>
                     <div class="flex gap-2 py-4">
-                        <button class='bg-[#1EA67F] p-4 flex-1 rounded-xl text-xl font-semibold '><span class="drop-shadow-sm shadow-black">Send</span></button>
-                        <button class='bg-[#3B6CCC] p-4 flex-1 rounded-xl text-xl font-semibold '><span class="drop-shadow-sm shadow-black">Receive</span></button>
+                        <ButtonLink href="/scanner" intent="green">Send</ButtonLink>
+                        <ButtonLink href="/receive" intent="blue">Receive</ButtonLink>
                     </div>
                 </div>
             </Motion>
