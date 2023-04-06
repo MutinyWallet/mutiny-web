@@ -60,7 +60,7 @@ export const ButtonLink: ParentComponent<ButtonLinkProps> = props => {
             href={local.href}
             {...attrs}
             class={button({
-                class: local.class || "",
+                class: `flex justify-center no-underline ${local.class || ""}`,
                 intent: local.intent,
                 layout: local.layout,
             })}

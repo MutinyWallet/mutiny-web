@@ -15,11 +15,24 @@ export default function Settings() {
         window.location.reload();
     }
 
+    function resetNode() {
+        Object.keys(localStorage).forEach(function (key) {
+            if (key.startsWith('waitlist_id')) {
+                // Don't do anything because it's annoying to set my waitlist_id every time
+            } else {
+                localStorage.removeItem(key);
+            }
+        });
+        // reload the window
+        window.location.reload();
+    }
+
     return (
         <SafeArea>
             <main class='flex flex-col gap-4 py-8 px-4'>
                 <Button onClick={clearWaitlistId}>Clear waitlist_id</Button>
                 <Button onClick={setTestWaitlistId}>Use test waitlist_id</Button>
+                <Button onClick={resetNode}>Reset node</Button>
             </main>
             <NavBar activeTab="settings" />
         </SafeArea>

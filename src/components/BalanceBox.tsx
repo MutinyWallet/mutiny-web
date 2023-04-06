@@ -9,7 +9,7 @@ function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
         return "0"
     }
-    return n.toLocaleString().replaceAll(",", "_")
+    return n.toLocaleString()
 }
 
 function prettyPrintBalance(b: MutinyBalance): string {
@@ -21,6 +21,7 @@ export default function BalanceBox() {
 
     const fetchBalance = async () => {
         console.log("Refetching balance");
+        await nodeManager()?.sync();
         const balance = await nodeManager()?.get_balance();
         return balance
     };
