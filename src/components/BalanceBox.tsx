@@ -2,8 +2,8 @@ import { Motion, Presence } from "@motionone/solid";
 import { MutinyBalance } from "@mutinywallet/node-manager";
 import { createResource, Show, Suspense } from "solid-js";
 
-import { useNodeManager } from "~/state/nodeManagerState";
 import { ButtonLink } from "./Button";
+import { useMegaStore } from "~/state/megaStore";
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
@@ -17,16 +17,20 @@ function prettyPrintBalance(b: MutinyBalance): string {
 }
 
 export default function BalanceBox() {
-    const { nodeManager } = useNodeManager();
+    const [state, _] = useMegaStore();
 
     const fetchBalance = async () => {
-        console.log("Refetching balance");
-        await nodeManager()?.sync();
-        const balance = await nodeManager()?.get_balance();
-        return balance
+        if (state.node_manager) {
+            console.log("Refetching balance");
+            await state.node_manager.sync();
+            const balance = await state.node_manager.get_balance();
+            return balance
+        } else {
+            return undefined
+        }
     };
 
-    const [balance, { refetch: refetchBalance }] = createResource(nodeManager, fetchBalance);
+    const [balance, { refetch: refetchBalance }] = createResource(fetchBalance);
 
     return (
         <Presence>

@@ -1,18 +1,22 @@
+import { useNavigate } from "solid-start";
 import { Button } from "~/components/Button";
 import NavBar from "~/components/NavBar";
 import SafeArea from "~/components/SafeArea";
+import { useMegaStore } from "~/state/megaStore";
 
 export default function Settings() {
+    const navigate = useNavigate();
+
+    const [_, actions] = useMegaStore();
 
     function clearWaitlistId() {
-        localStorage.removeItem('waitlist_id');
-        window.location.reload();
+        actions.setWaitlistId('');
+        navigate("/")
     }
 
     function setTestWaitlistId() {
-        localStorage.setItem('waitlist_id', 'npub17zcnktw7svnechf5g666t33d7slw36sz8el3ep4c7kmyfwjhxn9qjvavs6');
-        // reload the window
-        window.location.reload();
+        actions.setWaitlistId('npub17zcnktw7svnechf5g666t33d7slw36sz8el3ep4c7kmyfwjhxn9qjvavs6');
+        navigate("/")
     }
 
     function resetNode() {
@@ -23,8 +27,7 @@ export default function Settings() {
                 localStorage.removeItem(key);
             }
         });
-        // reload the window
-        window.location.reload();
+        navigate("/")
     }
 
     return (
