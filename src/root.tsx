@@ -13,6 +13,7 @@ import {
   Title,
 } from "solid-start";
 import "./root.css";
+import { Provider as MegaStoreProvider } from "./state/megaStore";
 
 export default function Root() {
   return (
@@ -34,9 +35,11 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <Routes>
-              <FileRoutes />
-            </Routes>
+            <MegaStoreProvider>
+              <Routes>
+                <FileRoutes />
+              </Routes>
+            </MegaStoreProvider>
           </ErrorBoundary>
         </Suspense>
         <Scripts />

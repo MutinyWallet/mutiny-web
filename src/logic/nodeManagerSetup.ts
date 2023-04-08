@@ -52,12 +52,12 @@ export async function checkForWasm() {
     }
 }
 
-export async function setupNodeManager(settings?: NodeManagerSettingStrings): Promise<NodeManager> {
+export async function setupNodeManager(): Promise<NodeManager> {
     const _ = await init();
 
     console.time("Setup");
     console.log("Starting setup...")
-    const { network, proxy, esplora } = await setAndGetMutinySettings(settings)
+    const { network, proxy, esplora } = await setAndGetMutinySettings()
     console.log("Initializing Node Manager")
     console.log("Using network", network);
     console.log("Using proxy", proxy);

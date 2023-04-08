@@ -1,48 +1,27 @@
 
 import App from "~/components/App";
-import { Accessor, createEffect, createResource, Setter, createSignal, Switch, Match } from "solid-js";
+import { Switch, Match } from "solid-js";
 import { WaitlistAlreadyIn } from "~/components/waitlist/WaitlistAlreadyIn";
 import WaitlistForm from "~/components/waitlist/WaitlistForm";
 import ReloadPrompt from "~/components/Reload";
-import { NodeManagerProvider } from "~/state/nodeManagerState";
-
-function createWaitListSignal(): [Accessor<string>, Setter<string>] {
-  const [state, setState] = createSignal("");
-  const originalState = localStorage.getItem("waitlist_id")
-  if (originalState) {
-    setState(localStorage.getItem("waitlist_id") || "");
-  }
-  createEffect(() => localStorage.setItem("waitlist_id", state()));
-  return [state, setState];
-}
-
-async function fetchData(source: string) {
-  if (source) {
-    const data = await fetch(`https://waitlist.mutiny-waitlist.workers.dev/waitlist/${source}`);
-    return data.json();
-  } else {
-    return null
-  }
-}
+import { useMegaStore } from "~/state/megaStore";
 
 export default function Home() {
-  // On load, check if the user is already on the waitlist
-  const [waitlistId] = createWaitListSignal();
-  const [waitlistData] = createResource(waitlistId, fetchData);
+  const [state, _] = useMegaStore();
 
   return (
     <>
       <ReloadPrompt />
+
       <Switch fallback={<>Loading...</>} >
-        <Match when={waitlistData() && waitlistData().approval_date}>
-          <NodeManagerProvider>
-            <App />
-          </NodeManagerProvider>
+        {/* TODO: might need this state.node_manager guard on all wallet routes */}
+        <Match when={state.user_status === "approved" && state.node_manager}>
+          <App />
         </Match>
-        <Match when={waitlistData() && waitlistData().date}>
+        <Match when={state.user_status === "waitlisted"}>
           <WaitlistAlreadyIn />
         </Match>
-        <Match when={!waitlistData.loading && !waitlistData()}>
+        <Match when={state.user_status === "new_here"}>
           <WaitlistForm />
         </Match>
       </Switch>
