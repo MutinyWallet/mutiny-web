@@ -13,7 +13,7 @@ import {
   Title,
 } from "solid-start";
 import "./root.css";
-import { Provider as MegaStoreProvider } from "./state/megaStore";
+import { Provider as MegaStoreProvider } from "~/state/megaStore";
 
 export default function Root() {
   return (

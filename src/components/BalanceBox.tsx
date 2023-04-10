@@ -2,7 +2,7 @@ import { Motion, Presence } from "@motionone/solid";
 import { MutinyBalance } from "@mutinywallet/node-manager";
 import { createResource, Show, Suspense } from "solid-js";
 
-import { ButtonLink } from "./Button";
+import { ButtonLink } from "~/components/Button";
 import { useMegaStore } from "~/state/megaStore";
 
 function prettyPrintAmount(n?: number | bigint): string {

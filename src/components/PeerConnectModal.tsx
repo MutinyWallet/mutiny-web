@@ -1,7 +1,7 @@
 import { QRCodeSVG } from "solid-qr-code";
-import Card from "./Card";
+import Card from "~/components/Card";
 import { As, Dialog } from "@kobalte/core";
-import { Button } from "./Button";
+import { Button } from "~/components/Button";
 import { useMegaStore } from "~/state/megaStore";
 import { Show, createResource } from "solid-js";
 import { getExistingSettings } from "~/logic/nodeManagerSetup";
