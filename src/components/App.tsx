@@ -2,12 +2,10 @@ import logo from '~/assets/icons/mutiny-logo.svg';
 import BalanceBox from "~/components/BalanceBox";
 import SafeArea from "~/components/SafeArea";
 import NavBar from "~/components/NavBar";
-import Card from "~/components/Card";
-import { ButtonLink } from "~/components/Button";
-import PeerConnectModal from "~/components/PeerConnectModal";
 
 // TODO: use this reload prompt for real
 import ReloadPrompt from "~/components/Reload";
+import KitchenSink from './KitchenSink';
 
 export default function App() {
     return (
@@ -18,10 +16,7 @@ export default function App() {
                 </header>
                 <BalanceBox />
                 <ReloadPrompt />
-                <Card title="Kitchen Sink">
-                    <PeerConnectModal />
-                    <ButtonLink target="_blank" rel="noopener noreferrer" href="https://faucet.mutinynet.com/?address=abc123">Tap the Faucet</ButtonLink>
-                </Card>
+                <KitchenSink />
                 {/* safety div */}
                 <div class="h-32" />
             </main>
