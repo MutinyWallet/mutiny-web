@@ -25,6 +25,9 @@ dependencies:
   qr-scanner:
     specifier: ^1.4.2
     version: 1.4.2
+  solid-dismiss:
+    specifier: ^1.7.11
+    version: 1.7.11(solid-js@1.7.2)
   solid-js:
     specifier: ^1.7.2
     version: 1.7.2
@@ -4386,6 +4389,14 @@ packages:
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
+
+  /solid-dismiss@1.7.11(solid-js@1.7.2):
+    resolution: {integrity: sha512-JO05u/6Y/s+Is33Hyw4pzTRaTiUG7z3UGqpLY36JaHu9CmUSr7+8IJj6Rp/n8YpIPhjvzmCnMa6HTAZYLbfowA==}
+    peerDependencies:
+      solid-js: '1'
+    dependencies:
+      solid-js: 1.7.2
+    dev: false
 
   /solid-js@1.7.2:
     resolution: {integrity: sha512-01f8GIc+HTTlfDXtK+TFku3AllHyJ3hNsIpxM2qpObRP4VbEGVIP6VbULnThPlpse+J1y/I/1N9QeQ9MNkE8Ow==}

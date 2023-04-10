@@ -13,7 +13,7 @@ function prettyPrintAmount(n?: number | bigint): string {
 }
 
 function prettyPrintBalance(b: MutinyBalance): string {
-    return prettyPrintAmount(b.confirmed.valueOf() + b.lightning.valueOf())
+    return prettyPrintAmount(b.confirmed.valueOf() + b.lightning.valueOf() + b.unconfirmed.valueOf())
 }
 
 export default function BalanceBox() {

@@ -3,9 +3,13 @@ import { Motion, Presence } from "@motionone/solid";
 
 import logo from '~/assets/icons/mutiny-logo.svg';
 import send from '~/assets/icons/send.svg';
-import BalanceBox from "./BalanceBox";
-import SafeArea from "./SafeArea";
-import NavBar from "./NavBar";
+import BalanceBox from "~/components/BalanceBox";
+import SafeArea from "~/components/SafeArea";
+import NavBar from "~/components/NavBar";
+import Card from "~/components/Card";
+import { Button, ButtonLink } from "~/components/Button";
+import Modal from "./Modal";
+import PeerConnectModal from "./PeerConnectModal";
 
 // TODO: use this reload prompt for real
 // import ReloadPrompt from "./Reload";
@@ -33,30 +37,11 @@ export default function App() {
                 </header>
                 {/* <ReloadPrompt /> */}
                 <BalanceBox />
-                <div class='rounded-xl p-4 flex flex-col gap-2 bg-[rgba(0,0,0,0.5)]'>
-                    <header class='text-sm font-semibold uppercase'>
-                        Activity
-                    </header>
-                    <For each={[1, 2, 3, 4]}>
-                        {() =>
-                            <Presence>
-                                <Motion
-                                    initial={{ opacity: 0, scaleY: 0 }}
-                                    animate={{ opacity: 1, scaleY: 1 }}
-                                    exit={{ opacity: 0, scaleY: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <ActivityItem />
-                                </Motion>
-                            </Presence>
-                        }
-                    </For>
-                    <div class='flex justify-end py-4'>
-                        <a href="#" class='underline text-sm'>
-                            MORE
-                        </a>
-                    </div>
-                </div>
+                <Card title="Kitchen Sink">
+                    <PeerConnectModal />
+                    <ButtonLink target="_blank" rel="noopener noreferrer" href="https://faucet.mutinynet.com/?address=abc123">Tap the Faucet</ButtonLink>
+                </Card>
+
                 {/* safety div */}
                 <div class="h-32" />
             </main>
