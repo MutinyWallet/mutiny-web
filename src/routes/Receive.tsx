@@ -1,8 +1,7 @@
 import { createResource, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { Button } from "~/components/Button";
+import { Button, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
-import SafeArea from "~/components/SafeArea";
 import { useMegaStore } from "~/state/megaStore";
 import { useCopy } from "~/utils/useCopy";
 

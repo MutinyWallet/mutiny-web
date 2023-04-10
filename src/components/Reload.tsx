@@ -1,8 +1,7 @@
 import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
 import { useRegisterSW } from 'virtual:pwa-register/solid'
-import Card from './Card'
-import { Button } from './Button'
+import { Button, Card } from '~/components/layout'
 
 const ReloadPrompt: Component = () => {
     const {

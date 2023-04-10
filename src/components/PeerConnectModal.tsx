@@ -1,7 +1,6 @@
 import { QRCodeSVG } from "solid-qr-code";
-import Card from "~/components/Card";
 import { As, Dialog } from "@kobalte/core";
-import { Button } from "~/components/Button";
+import { Button, Card } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Show, createResource } from "solid-js";
 import { getExistingSettings } from "~/logic/nodeManagerSetup";
@@ -12,7 +11,7 @@ const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
 const DIALOG_CONTENT = "w-[80vw] max-w-[400px] p-4 bg-gray/50 backdrop-blur-md shadow-xl rounded-xl border border-white/10"
 const SMALL_HEADER = "text-sm font-semibold uppercase"
 
-export default function PeerConnectModalKobalte() {
+export default function PeerConnectModal() {
     const [state, _] = useMegaStore()
 
     const getPeerConnectString = async () => {

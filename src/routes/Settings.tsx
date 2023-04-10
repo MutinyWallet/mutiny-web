@@ -1,7 +1,6 @@
 import { useNavigate } from "solid-start";
-import { Button } from "~/components/Button";
+import { Button, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
-import SafeArea from "~/components/SafeArea";
 import { useMegaStore } from "~/state/megaStore";
 
 export default function Settings() {

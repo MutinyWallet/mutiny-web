@@ -1,7 +1,6 @@
 import { useMegaStore } from "~/state/megaStore";
-import { ButtonLink } from "./Button";
-import Card from "./Card";
-import PeerConnectModal from "./PeerConnectModal";
+import { ButtonLink, Card, SmallHeader } from "~/components/layout";
+import PeerConnectModal from "~/components/PeerConnectModal";
 import { createResource } from "solid-js";
 
 export default function KitchenSink() {
@@ -24,6 +23,12 @@ export default function KitchenSink() {
         <Card title="Kitchen Sink">
             <PeerConnectModal />
             <ButtonLink target="_blank" rel="noopener noreferrer" href={`https://faucet.mutinynet.com/?address=${address()}`}>Tap the Faucet</ButtonLink>
+            <SmallHeader>
+                Peers
+            </SmallHeader>
+
+
+
         </Card>
     )
 }

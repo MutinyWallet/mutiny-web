@@ -1,7 +1,7 @@
 import Reader from "~/components/Reader";
 import { createSignal, Show } from "solid-js";
 import { useNavigate } from "solid-start";
-import { Button } from "~/components/Button";
+import { Button } from "~/components/layout";
 
 export default function Scanner() {
     const [scanResult, setScanResult] = createSignal<string | null>(null);

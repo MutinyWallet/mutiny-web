@@ -1,6 +1,5 @@
 import { createSignal } from "solid-js";
-import { Button } from "~/components/Button";
-import LoadingSpinner from "../LoadingSpinner";
+import { Button, LoadingSpinner } from "~/components/layout";
 
 const INPUT = "w-full mb-4 p-2 rounded-lg text-black"
 

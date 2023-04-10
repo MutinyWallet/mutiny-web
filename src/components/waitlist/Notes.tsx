@@ -1,7 +1,7 @@
 import { Component, For } from "solid-js";
 
 import { Event, nip19 } from "nostr-tools"
-import Linkify from "~/components/Linkify";
+import { Linkify } from "~/components/layout";
 
 type NostrEvent = {
     "content": string, "created_at": number, id?: string

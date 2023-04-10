@@ -10,7 +10,7 @@ const relayUrls = [
 ]
 
 import { SimplePool } from 'nostr-tools'
-import LoadingSpinner from "~/components/LoadingSpinner";
+import { LoadingSpinner } from "~/components/layout";
 import Notes from "~/components/waitlist/Notes";
 
 const pool = new SimplePool()
