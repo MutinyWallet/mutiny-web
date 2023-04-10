@@ -4,10 +4,10 @@ import SafeArea from "~/components/SafeArea";
 import NavBar from "~/components/NavBar";
 import Card from "~/components/Card";
 import { ButtonLink } from "~/components/Button";
-import PeerConnectModal from "./PeerConnectModal";
+import PeerConnectModal from "~/components/PeerConnectModal";
 
 // TODO: use this reload prompt for real
-// import ReloadPrompt from "./Reload";
+import ReloadPrompt from "~/components/Reload";
 
 export default function App() {
     return (
@@ -16,8 +16,8 @@ export default function App() {
                 <header>
                     <img src={logo} class="App-logo" alt="logo" />
                 </header>
-                {/* <ReloadPrompt /> */}
                 <BalanceBox />
+                <ReloadPrompt />
                 <Card title="Kitchen Sink">
                     <PeerConnectModal />
                     <ButtonLink target="_blank" rel="noopener noreferrer" href="https://faucet.mutinynet.com/?address=abc123">Tap the Faucet</ButtonLink>
