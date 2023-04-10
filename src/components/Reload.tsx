@@ -1,6 +1,10 @@
 import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
+// pwa-register doesn't have types apparently
+// @ts-ignore
 import { useRegisterSW } from 'virtual:pwa-register/solid'
+import Card from './Card'
+import { Button } from './Button'
 
 const ReloadPrompt: Component = () => {
     const {
@@ -21,29 +25,24 @@ const ReloadPrompt: Component = () => {
         setNeedRefresh(false)
     }
 
-    // TODO: for now we're just going to have it be invisible
-    return (<></>)
-
-    // return (
-    //     <div>
-    //         <Show when={offlineReady() || needRefresh()}>
-    //             <div>
-    //                 <div>
-    //                     <Show
-    //                         fallback={<span>New content available, click on reload button to update.</span>}
-    //                         when={offlineReady()}
-    //                     >
-    //                         <span>App ready to work offline</span>
-    //                     </Show>
-    //                 </div>
-    //                 <Show when={needRefresh()}>
-    //                     <button onClick={() => updateServiceWorker(true)}>Reload</button>
-    //                 </Show>
-    //                 <button onClick={() => close()}>Close</button>
-    //             </div>
-    //         </Show>
-    //     </div>
-    // )
+    return (
+        <Show when={offlineReady() || needRefresh()}>
+            <Card title="PWA settings">
+                <div>
+                    <Show
+                        fallback={<span>New content available, click on reload button to update.</span>}
+                        when={offlineReady()}
+                    >
+                        <span>App ready to work offline</span>
+                    </Show>
+                </div>
+                <Show when={needRefresh()}>
+                    <Button onClick={() => updateServiceWorker(true)}>Reload</Button>
+                </Show>
+                <Button onClick={() => close()}>Close</Button>
+            </Card>
+        </Show>
+    )
 }
 
 export default ReloadPrompt

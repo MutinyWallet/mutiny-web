@@ -13,7 +13,7 @@
     "@typescript-eslint/parser": "^5.57.1",
     "autoprefixer": "^10.4.14",
     "esbuild": "^0.14.54",
-    "eslint": "^8.37.0",
+    "eslint": "^8.38.0",
     "postcss": "^8.4.21",
     "solid-start-node": "^0.2.26",
     "tailwindcss": "^3.3.1",
@@ -24,18 +24,19 @@
     "workbox-window": "^6.5.4"
   },
   "dependencies": {
+    "@kobalte/core": "^0.8.2",
     "@motionone/solid": "^10.16.0",
-    "@mutinywallet/node-manager": "^0.2.2",
+    "@mutinywallet/node-manager": "^0.2.3",
     "@nostr-dev-kit/ndk": "^0.0.13",
     "@solidjs/meta": "^0.28.4",
     "@solidjs/router": "^0.8.2",
     "class-variance-authority": "^0.4.0",
-    "nostr-tools": "^1.8.2",
+    "nostr-tools": "^1.8.3",
     "qr-scanner": "^1.4.2",
-    "solid-js": "^1.7.2",
+    "solid-js": "^1.7.3",
     "solid-qr-code": "^0.0.8",
     "solid-start": "^0.2.26",
-    "undici": "^5.21.0"
+    "undici": "^5.21.2"
   },
   "engines": {
     "node": ">=16.8"

@@ -1,5 +1,6 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { children, JSX, ParentComponent, splitProps } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
 
 const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
@@ -22,7 +23,6 @@ const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
         layout: "flex"
     },
 });
-
 
 // Help from https://github.com/arpadgabor/credee/blob/main/packages/www/src/components/ui/button.tsx
 
@@ -49,15 +49,20 @@ export const Button: ParentComponent<ButtonProps> = props => {
 
 interface ButtonLinkProps extends JSX.ButtonHTMLAttributes<HTMLAnchorElement>, StyleProps {
     href: string
+    target?: string
+    rel?: string
 }
 
 export const ButtonLink: ParentComponent<ButtonLinkProps> = props => {
     const slot = children(() => props.children)
-    const [local, attrs] = splitProps(props, ['children', 'intent', 'layout', 'class', 'href'])
+    const [local, attrs] = splitProps(props, ['children', 'intent', 'layout', 'class', 'href', 'target', 'rel'])
 
     return (
-        <A
+        <Dynamic
+            component={local.href?.includes('://') ? 'a' : A}
             href={local.href}
+            target={local.target}
+            rel={local.rel}
             {...attrs}
             class={button({
                 class: `flex justify-center no-underline ${local.class || ""}`,
@@ -66,6 +71,6 @@ export const ButtonLink: ParentComponent<ButtonLinkProps> = props => {
             })}
         >
             {slot()}
-        </A>
+        </Dynamic>
     )
 }
