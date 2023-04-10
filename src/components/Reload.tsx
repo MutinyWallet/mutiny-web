@@ -1,7 +1,5 @@
 import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
-// pwa-register doesn't have types apparently
-// @ts-ignore
 import { useRegisterSW } from 'virtual:pwa-register/solid'
 import Card from './Card'
 import { Button } from './Button'

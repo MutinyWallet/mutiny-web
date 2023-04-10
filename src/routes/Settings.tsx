@@ -32,7 +32,7 @@ export default function Settings() {
 
     return (
         <SafeArea>
-            <main class='flex flex-col gap-4 py-8 px-4'>
+            <main class='flex flex-col gap-4 py-8 px-4 max-w-[800px] mx-auto'>
                 <Button onClick={clearWaitlistId}>Clear waitlist_id</Button>
                 <Button onClick={setTestWaitlistId}>Use test waitlist_id</Button>
                 <Button onClick={resetNode}>Reset node</Button>

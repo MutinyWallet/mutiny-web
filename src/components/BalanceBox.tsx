@@ -1,5 +1,4 @@
 import { Motion, Presence } from "@motionone/solid";
-import { MutinyBalance } from "@mutinywallet/node-manager";
 import { createResource, Show, Suspense } from "solid-js";
 
 import { ButtonLink } from "~/components/Button";
@@ -10,10 +9,6 @@ function prettyPrintAmount(n?: number | bigint): string {
         return "0"
     }
     return n.toLocaleString()
-}
-
-function prettyPrintBalance(b: MutinyBalance): string {
-    return prettyPrintAmount(b.confirmed.valueOf() + b.lightning.valueOf() + b.unconfirmed.valueOf())
 }
 
 export default function BalanceBox() {
@@ -48,8 +43,21 @@ export default function BalanceBox() {
                         <h1 class='text-4xl font-light'>
                             <Suspense fallback={"..."}>
                                 <Show when={balance()}>
-                                    {/* TODO: no-non-null-asssertion but type narrowing just isn't working */}
-                                    {prettyPrintBalance(balance()!)} <span class='text-xl'>SAT</span>
+                                    <div class="flex flex-col gap-4">
+                                        <div>
+                                            {prettyPrintAmount(balance()?.confirmed)} <span class='text-xl'>SAT</span>
+                                        </div>
+                                        <Show when={balance()?.unconfirmed}>
+                                            <div class="flex flex-col gap-2">
+                                                <header class='text-sm font-semibold uppercase text-white/50'>
+                                                    Unconfirmed Balance
+                                                </header>
+                                                <div class="text-white/50">
+                                                    {prettyPrintAmount(balance()?.unconfirmed)} <span class='text-xl'>SAT</span>
+                                                </div>
+                                            </div>
+                                        </Show>
+                                    </div>
                                 </Show>
                             </Suspense>
                         </h1>
