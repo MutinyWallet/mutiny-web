@@ -10,7 +10,7 @@ import KitchenSink from './KitchenSink';
 export default function App() {
     return (
         <SafeArea>
-            <main class='flex flex-col gap-4 py-8 px-4'>
+            <main class='flex flex-col gap-4 py-8 px-4 max-w-[800px] mx-auto'>
                 <header>
                     <img src={logo} class="App-logo" alt="logo" />
                 </header>

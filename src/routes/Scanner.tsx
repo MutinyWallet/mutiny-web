@@ -27,19 +27,17 @@ export default function Scanner() {
                     </div>
                 </div>
             </Show>
-            <div class="w-full flex flex-col fixed bottom-[2rem] gap-8 px-8">
+            <div class="w-full flex flex-col items-center fixed bottom-[2rem] gap-8 px-8 bg-pink-500">
                 <Show when={scanResult()}
                     fallback={
-                        <>
+                        <div class="w-full max-w-[800px] flex flex-col gap-2">
                             <Button intent="blue" onClick={exit}>Paste Something</Button>
                             <Button onClick={exit}>Cancel</Button>
-                        </>
+                        </div>
                     }>
                     <Button intent="red" onClick={() => setScanResult(null)}>Try Again</Button>
                     <Button onClick={exit}>Cancel</Button>
-
                 </Show>
-
             </div>
         </>
     );
