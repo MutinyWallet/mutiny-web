@@ -3,7 +3,6 @@ import App from "~/components/App";
 import { Switch, Match } from "solid-js";
 import { WaitlistAlreadyIn } from "~/components/waitlist/WaitlistAlreadyIn";
 import WaitlistForm from "~/components/waitlist/WaitlistForm";
-import ReloadPrompt from "~/components/Reload";
 import { useMegaStore } from "~/state/megaStore";
 import LoadingSpinner from "~/components/LoadingSpinner";
 
@@ -20,8 +19,6 @@ export default function Home() {
 
   return (
     <>
-      <ReloadPrompt />
-
       <Switch fallback={<FullscreenLoader />} >
         {/* TODO: might need this state.node_manager guard on all wallet routes */}
         <Match when={state.user_status === "approved" && state.node_manager}>
