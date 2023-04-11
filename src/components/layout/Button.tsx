@@ -14,7 +14,8 @@ const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
         },
         layout: {
             flex: "flex-1",
-            pad: "px-8"
+            pad: "px-8",
+            small: "p-1 w-auto",
         },
     },
 

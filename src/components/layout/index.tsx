@@ -1,4 +1,31 @@
-export default function LoadingSpinner() {
+import { ParentComponent } from "solid-js"
+import Linkify from "./Linkify"
+import { Button, ButtonLink } from "./Button"
+import { Separator } from "@kobalte/core"
+
+const SmallHeader: ParentComponent = (props) => <header class='text-sm font-semibold uppercase'>{props.children}</header>
+
+const Card: ParentComponent<{ title?: string }> = (props) => {
+    return (
+        <div class='rounded-xl p-4 flex flex-col gap-2 bg-[rgba(0,0,0,0.5)]'>
+            {props.title && <SmallHeader>{props.title}</SmallHeader>}
+            {props.children}
+        </div>
+
+    )
+}
+
+const SafeArea: ParentComponent = (props) => {
+    return (
+        <div class="safe-top safe-left safe-right safe-bottom">
+            <div class="disable-scrollbars max-h-screen h-full overflow-y-scroll md:pl-[8rem] md:pr-[6rem]">
+                {props.children}
+            </div>
+        </div >
+    )
+}
+
+const LoadingSpinner = () => {
     return (<div role="status" class="w-full h-full grid" >
         <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-m-red place-self-center" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
@@ -7,3 +34,7 @@ export default function LoadingSpinner() {
         <span class="sr-only">Loading...</span>
     </div>);
 }
+
+const Hr = () => <Separator.Root class="my-4 border-white/20" />
+
+export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr }

@@ -63,16 +63,17 @@ export const Provider: ParentComponent = (props) => {
     };
 
     // Fetch status from remote on load
-    createEffect(async () => {
-        const status = await actions.status()
-        setState({ user_status: status })
+    createEffect(() => {
+        actions.status().then(status => {
+            setState({ user_status: status })
+        })
     })
 
     // Only node manager when status is approved
-    createEffect(async () => {
+    createEffect(() => {
         if (state.user_status === "approved" && !state.node_manager) {
             console.log("running setup node manager...")
-            await actions.setupNodeManager()
+            actions.setupNodeManager().then(() => console.log("node manager setup done"))
         }
     })
 

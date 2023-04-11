@@ -1,7 +1,7 @@
 import { Motion, Presence } from "@motionone/solid";
 import { createResource, Show, Suspense } from "solid-js";
 
-import { ButtonLink } from "~/components/Button";
+import { ButtonLink } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 
 function prettyPrintAmount(n?: number | bigint): string {

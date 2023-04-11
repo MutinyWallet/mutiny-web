@@ -4,7 +4,7 @@ import { Switch, Match } from "solid-js";
 import { WaitlistAlreadyIn } from "~/components/waitlist/WaitlistAlreadyIn";
 import WaitlistForm from "~/components/waitlist/WaitlistForm";
 import { useMegaStore } from "~/state/megaStore";
-import LoadingSpinner from "~/components/LoadingSpinner";
+import { LoadingSpinner } from "~/components/layout";
 
 function FullscreenLoader() {
   return (
