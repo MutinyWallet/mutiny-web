@@ -1,6 +1,7 @@
 import { ParentComponent } from "solid-js"
 import Linkify from "./Linkify"
 import { Button, ButtonLink } from "./Button"
+import { Separator } from "@kobalte/core"
 
 const SmallHeader: ParentComponent = (props) => <header class='text-sm font-semibold uppercase'>{props.children}</header>
 
@@ -34,4 +35,6 @@ const LoadingSpinner = () => {
     </div>);
 }
 
-export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify }
+const Hr = () => <Separator.Root class="my-4 border-white/20" />
+
+export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr }
