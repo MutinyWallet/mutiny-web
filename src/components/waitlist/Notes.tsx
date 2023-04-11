@@ -1,4 +1,4 @@
-import { Component, For } from "solid-js";
+import { Component, For, createEffect, createSignal } from "solid-js";
 
 import { Event, nip19 } from "nostr-tools"
 import { Linkify } from "~/components/layout";
@@ -8,26 +8,27 @@ type NostrEvent = {
 }
 
 const Note: Component<{ e: NostrEvent }> = (props) => {
-    const e = props.e;
-    const date = new Date(e.created_at * 1000);
-
     const linkRoot = "https://snort.social/e/";
 
-    let noteId;
+    const [noteId, setNoteId] = createSignal("");
 
-    if (e.id) {
-        noteId = nip19.noteEncode(e.id)
-    }
+    createEffect(() => {
+        if (props.e.id) {
+            setNoteId(nip19.noteEncode(props.e.id))
+        }
+    })
+
 
     return (
         <div class="flex gap-4 border-b border-faint-white py-6 items-start w-full">
             <img class="bg-black rounded-xl flex-0" src="../180.png" width={45} height={45} />
             <div class="flex flex-col gap-2 flex-1">
                 <p class="break-words">
-                    <Linkify text={e.content} />
+                    {/* {props.e.content} */}
+                    <Linkify initialText={props.e.content} />
                 </p>
-                <a class="no-underline hover:underline hover:decoration-light-text" href={`${linkRoot}${noteId}`}>
-                    <small class="text-light-text">{date.toLocaleString()}</small>
+                <a class="no-underline hover:underline hover:decoration-light-text" href={`${linkRoot}${noteId()}`}>
+                    <small class="text-light-text">{(new Date(props.e.created_at * 1000)).toLocaleString()}</small>
                 </a>
             </div>
         </div>
