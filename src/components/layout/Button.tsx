@@ -7,7 +7,7 @@ const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
     variants: {
         intent: {
             active: "bg-white text-black",
-            inactive: "bg-black text-white border border-white",
+            inactive: "bg-black text-white border border-white disabled:opacity-50",
             blue: "bg-[#3B6CCC] text-white",
             red: "bg-[#F61D5B] text-white",
             green: "bg-[#1EA67F] text-white",
