@@ -1,7 +1,7 @@
 import QrScanner from 'qr-scanner';
 import { createSignal, onCleanup, onMount } from 'solid-js';
 
-export default function Scanner({ onResult }: { onResult: (result: string) => void }) {
+export default function Scanner(props: { onResult: (result: string) => void }) {
     let container: HTMLVideoElement | null;
 
     // TODO: not sure it's appropriate to use a signal for this but it works!
@@ -12,7 +12,7 @@ export default function Scanner({ onResult }: { onResult: (result: string) => vo
             const newScanner = new QrScanner(
                 container,
                 (result: { data: string }) => {
-                    onResult(result.data);
+                    props.onResult(result.data);
                 },
                 {
                     returnDetailedScanResult: true,
