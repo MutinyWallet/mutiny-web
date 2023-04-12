@@ -12,7 +12,15 @@ const Card: ParentComponent<{ title?: string }> = (props) => {
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.children}
         </div>
+    )
+}
 
+const InnerCard: ParentComponent<{ title?: string }> = (props) => {
+    return (
+        <div class='rounded-xl p-4 flex flex-col gap-2 border border-white/10 bg-[rgba(255,255,255,0.05)]'>
+            {props.title && <SmallHeader>{props.title}</SmallHeader>}
+            {props.children}
+        </div>
     )
 }
 
@@ -61,4 +69,4 @@ const LoadingSpinner = () => {
 
 const Hr = () => <Separator.Root class="my-4 border-white/20" />
 
-export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr, NodeManagerGuard, FullscreenLoader }
+export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr, NodeManagerGuard, FullscreenLoader, InnerCard }

@@ -1,8 +1,9 @@
 import { Motion, Presence } from "@motionone/solid";
 import { createResource, Show, Suspense } from "solid-js";
 
-import { ButtonLink } from "~/components/layout";
+import { ButtonLink, SmallHeader } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
+import { Amount } from "./Amount";
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
@@ -32,31 +33,31 @@ export default function BalanceBox() {
                 transition={{ duration: 0.5, easing: [0.87, 0, 0.13, 1] }}
             >
                 <div class='border border-white rounded-xl border-b-4 p-4 flex flex-col gap-2'>
-                    <header class='text-sm font-semibold uppercase'>
-                        Balance
-                    </header>
+                    <SmallHeader>
+                        Lightning Balance
+                    </SmallHeader>
                     <div onClick={refetchBalance}>
-                        <h1 class='text-4xl font-light'>
-                            <Suspense fallback={"..."}>
-                                <Show when={balance()}>
-                                    <div class="flex flex-col gap-4">
-                                        <div>
-                                            {prettyPrintAmount(balance()?.confirmed)} <span class='text-xl'>SAT</span>
-                                        </div>
-                                        <Show when={balance()?.unconfirmed}>
-                                            <div class="flex flex-col gap-2">
-                                                <header class='text-sm font-semibold uppercase text-white/50'>
-                                                    Unconfirmed Balance
-                                                </header>
-                                                <div class="text-white/50">
-                                                    {prettyPrintAmount(balance()?.unconfirmed)} <span class='text-xl'>SAT</span>
-                                                </div>
+                        <Suspense fallback={"..."}>
+                            <Show when={balance()}>
+                                <div class="flex flex-col gap-4">
+                                    <Amount amountSats={balance()?.lightning} showFiat />
+                                    <SmallHeader>
+                                        On-Chain Balance
+                                    </SmallHeader>
+                                    <Amount amountSats={balance()?.confirmed} showFiat />
+                                    <Show when={balance()?.unconfirmed}>
+                                        <div class="flex flex-col gap-2">
+                                            <header class='text-sm font-semibold uppercase text-white/50'>
+                                                Unconfirmed Balance
+                                            </header>
+                                            <div class="text-white/50">
+                                                {prettyPrintAmount(balance()?.unconfirmed)} <span class='text-xl'>SAT</span>
                                             </div>
-                                        </Show>
-                                    </div>
-                                </Show>
-                            </Suspense>
-                        </h1>
+                                        </div>
+                                    </Show>
+                                </div>
+                            </Show>
+                        </Suspense>
                     </div>
                     <div class="flex gap-2 py-4">
                         <ButtonLink href="/send" intent="green">Send</ButtonLink>

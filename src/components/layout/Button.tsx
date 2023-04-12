@@ -3,19 +3,20 @@ import { children, JSX, ParentComponent, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
 
-const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold", "disabled:opacity-50", "transition"], {
+const button = cva("p-4 rounded-xl text-xl font-semibold disabled:opacity-50 disabled:grayscale transition", {
     variants: {
         intent: {
-            active: "bg-white text-black",
-            inactive: "bg-black text-white border border-white hover:enabled:text-[#3B6CCC]",
-            blue: "bg-m-blue text-white shadow-inner-button hover:bg-m-blue-dark text-shadow-button",
-            red: "bg-m-red text-white shadow-inner-button hover:bg-m-red-dark text-shadow-button",
-            green: "bg-m-green text-white shadow-inner-button hover:bg-m-green-dark text-shadow-button",
+            active: "bg-white text-black border border-white enabled:hover:text-[#3B6CCC]",
+            inactive: "bg-black text-white border border-white enabled:hover:text-[#3B6CCC]",
+            // TODO: not sure what breaks these hover states, they work in tailwind playground
+            blue: "bg-m-blue text-white shadow-inner-button enabled:hover:bg-m-blue-dark text-shadow-button",
+            red: "bg-m-red text-white shadow-inner-button enabled:bg-m-red-dark text-shadow-button",
+            green: "bg-m-green text-white shadow-inner-button enabled:bg-m-green-dark text-shadow-button",
         },
         layout: {
             flex: "flex-1",
             pad: "px-8",
-            small: "p-1 w-auto",
+            small: "px-4 py-2 w-auto text-lg",
         },
     },
 

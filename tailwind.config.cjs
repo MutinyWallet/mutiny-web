@@ -28,7 +28,7 @@ module.exports = {
       backgroundImage: {
         'fade-to-blue': 'linear-gradient(1.63deg, #0B215B 32.05%, rgba(11, 33, 91, 0) 84.78%)',
         'subtle-fade': 'linear-gradient(180deg, #060A13 0%, #131E39 100%)',
-        'richer-fade': 'linear-gradient(180deg, #050914 0%, #0A1329 100%)'
+        'richer-fade': 'linear-gradient(180deg, hsla(224, 20%, 8%, 1) 0%, hsla(224, 20%, 15%, 1) 100%)'
       },
       dropShadow: {
         'blue-glow': '0px 0px 32px rgba(11, 33, 91, 0.5)',
@@ -80,7 +80,6 @@ module.exports = {
           }
         }
       }
-
       addUtilities(newUtilities);
     }),
     // Text shadow!

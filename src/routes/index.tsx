@@ -1,10 +1,10 @@
 
 import App from "~/components/App";
-import { Switch, Match, Suspense, Show } from "solid-js";
+import { Switch, Match } from "solid-js";
 import { WaitlistAlreadyIn } from "~/components/waitlist/WaitlistAlreadyIn";
 import WaitlistForm from "~/components/waitlist/WaitlistForm";
 import { useMegaStore } from "~/state/megaStore";
-import { FullscreenLoader, LoadingSpinner } from "~/components/layout";
+import { FullscreenLoader } from "~/components/layout";
 
 export default function Home() {
   const [state, _] = useMegaStore();
@@ -24,6 +24,5 @@ export default function Home() {
         </Match>
       </Switch>
     </>
-
   );
 }

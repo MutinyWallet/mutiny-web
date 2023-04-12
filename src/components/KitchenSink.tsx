@@ -1,5 +1,5 @@
 import { useMegaStore } from "~/state/megaStore";
-import { Card, Hr, SmallHeader, Button } from "~/components/layout";
+import { Card, Hr, SmallHeader, Button, InnerCard } from "~/components/layout";
 import PeerConnectModal from "~/components/PeerConnectModal";
 import { For, Show, Suspense, createResource, createSignal } from "solid-js";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/node-manager";
@@ -60,19 +60,21 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
     };
 
     return (
-        <form class="border border-white/20 rounded-xl p-4 flex flex-col gap-4" onSubmit={onSubmit} >
-            <TextField.Root
-                value={value()}
-                onValueChange={setValue}
-                validationState={(value() == "" || value().startsWith("mutiny:")) ? "valid" : "invalid"}
-                class="flex flex-col gap-4"
-            >
-                <TextField.Label class="text-sm font-semibold uppercase" >Connect Peer</TextField.Label>
-                <TextField.Input class="w-full p-2 rounded-lg text-black" placeholder="mutiny:028241..." />
-                <TextField.ErrorMessage class="text-red-500">Expecting something like mutiny:abc123...</TextField.ErrorMessage>
-            </TextField.Root>
-            <Button layout="small" type="submit">Connect</Button>
-        </form >
+        <InnerCard>
+            <form class="flex flex-col gap-4" onSubmit={onSubmit} >
+                <TextField.Root
+                    value={value()}
+                    onValueChange={setValue}
+                    validationState={(value() == "" || value().startsWith("mutiny:")) ? "valid" : "invalid"}
+                    class="flex flex-col gap-4"
+                >
+                    <TextField.Label class="text-sm font-semibold uppercase" >Connect Peer</TextField.Label>
+                    <TextField.Input class="w-full p-2 rounded-lg text-black" placeholder="mutiny:028241..." />
+                    <TextField.ErrorMessage class="text-red-500">Expecting something like mutiny:abc123...</TextField.ErrorMessage>
+                </TextField.Root>
+                <Button layout="small" type="submit">Connect</Button>
+            </form >
+        </InnerCard>
     )
 }
 
@@ -156,27 +158,29 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
 
     return (
         <>
-            <form class="border border-white/20 rounded-xl p-2 flex flex-col gap-4" onSubmit={onSubmit} >
-                <TextField.Root
-                    value={peerPubkey()}
-                    onValueChange={setPeerPubkey}
-                    class="flex flex-col gap-2"
-                >
-                    <TextField.Label class="text-sm font-semibold uppercase" >Pubkey</TextField.Label>
-                    <TextField.Input class="w-full p-2 rounded-lg text-black" />
-                </TextField.Root>
-                <TextField.Root
-                    value={amount()}
-                    onValueChange={setAmount}
-                    class="flex flex-col gap-2"
-                >
-                    <TextField.Label class="text-sm font-semibold uppercase" >Amount</TextField.Label>
-                    <TextField.Input
-                        type="number"
-                        class="w-full p-2 rounded-lg text-black" />
-                </TextField.Root>
-                <Button layout="small" type="submit">Open Channel</Button>
-            </form >
+            <InnerCard>
+                <form class="flex flex-col gap-4" onSubmit={onSubmit} >
+                    <TextField.Root
+                        value={peerPubkey()}
+                        onValueChange={setPeerPubkey}
+                        class="flex flex-col gap-2"
+                    >
+                        <TextField.Label class="text-sm font-semibold uppercase" >Pubkey</TextField.Label>
+                        <TextField.Input class="w-full p-2 rounded-lg text-black" />
+                    </TextField.Root>
+                    <TextField.Root
+                        value={amount()}
+                        onValueChange={setAmount}
+                        class="flex flex-col gap-2"
+                    >
+                        <TextField.Label class="text-sm font-semibold uppercase" >Amount</TextField.Label>
+                        <TextField.Input
+                            type="number"
+                            class="w-full p-2 rounded-lg text-black" />
+                    </TextField.Root>
+                    <Button layout="small" type="submit">Open Channel</Button>
+                </form >
+            </InnerCard>
             <Show when={newChannel()}>
                 <pre class="overflow-x-auto whitespace-pre-line break-all">
                     {JSON.stringify(newChannel()?.outpoint, null, 2)}
