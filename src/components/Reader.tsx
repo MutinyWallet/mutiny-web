@@ -32,7 +32,7 @@ export default function Scanner(props: { onResult: (result: string) => void }) {
     return (
         <>
             <div id="video-container">
-                <video ref={el => container = el} class="w-full h-full fixed object-cover bg-gray"></video>
+                <video ref={el => container = el} class="w-full h-full fixed object-cover bg-gray" />
             </div>
         </>
     );

@@ -8,8 +8,8 @@ dependencies:
     specifier: ^10.16.0
     version: 10.16.0(solid-js@1.7.3)
   '@mutinywallet/node-manager':
-    specifier: ^0.2.3
-    version: 0.2.3
+    specifier: ^0.2.4
+    version: 0.2.4
   '@nostr-dev-kit/ndk':
     specifier: ^0.0.13
     version: 0.0.13(eslint-import-resolver-typescript@2.7.1)(typescript@4.9.5)
@@ -23,8 +23,8 @@ dependencies:
     specifier: ^0.4.0
     version: 0.4.0(typescript@4.9.5)
   nostr-tools:
-    specifier: ^1.8.3
-    version: 1.8.3
+    specifier: ^1.8.4
+    version: 1.8.4
   qr-scanner:
     specifier: ^1.4.2
     version: 1.4.2
@@ -1610,8 +1610,8 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  /@mutinywallet/node-manager@0.2.3:
-    resolution: {integrity: sha512-xPtVGGbcXJpkbn0rShuLDd2iswdsZaicJac/Umti/VaLxLG19RKOKFvsLCkbUciWVl9kDzgyrFh2p6LLHW0Acg==}
+  /@mutinywallet/node-manager@0.2.4:
+    resolution: {integrity: sha512-Zl8Xw5WzlFiKr7mCNT/gqUp4GUPk3ZdS2l/3/zS8V9jwJAly9C0WjMoOmrg0ahO2vZ035DHzH4uQRbkWjUCFzQ==}
     dev: false
 
   /@noble/hashes@1.2.0:
@@ -1653,7 +1653,7 @@ packages:
       eventemitter3: 5.0.0
       light-bolt11-decoder: 3.0.0
       node-fetch: 3.3.1
-      nostr-tools: 1.8.3
+      nostr-tools: 1.8.4
       utf8-buffer: 1.0.0
       websocket-polyfill: 0.0.3
     transitivePeerDependencies:
@@ -1683,8 +1683,8 @@ packages:
       rollup: 2.79.1
     dev: true
 
-  /@rollup/plugin-commonjs@24.0.1(rollup@3.20.2):
-    resolution: {integrity: sha512-15LsiWRZk4eOGqvrJyu3z3DaBu5BhXIMeWnijSRvd8irrrg9SHpQ1pH+BUK4H6Z9wL9yOxZJMTLU+Au86XHxow==}
+  /@rollup/plugin-commonjs@24.1.0(rollup@3.20.2):
+    resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0
@@ -2428,7 +2428,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001477
-      electron-to-chromium: 1.4.357
+      electron-to-chromium: 1.4.359
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10(browserslist@4.21.5)
 
@@ -2735,8 +2735,8 @@ packages:
       jake: 10.8.5
     dev: true
 
-  /electron-to-chromium@1.4.357:
-    resolution: {integrity: sha512-UTkCbNTAcGXABmEnQrGcW4m3cG6fcyBfD4KDF0iyEAlbrGZiY9dmslyDAGOD1Kr5biN2F743Y30aRCOtau35Vw==}
+  /electron-to-chromium@1.4.359:
+    resolution: {integrity: sha512-OoVcngKCIuNXtZnsYoqlCvr0Cf3NIPzDIgwUfI9bdTFjXCrr79lI0kwQstLPZ7WhCezLlGksZk/BFAzoXC7GDw==}
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -4167,8 +4167,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /nostr-tools@1.8.3:
-    resolution: {integrity: sha512-0giVDk0ElhqlGY032ma/8Q8NsIyFL53fCCkndFCpuLabZ2E134Kth0sbnIIIFXLqm7VnYIlgLVtCna8+dUiZUg==}
+  /nostr-tools@1.8.4:
+    resolution: {integrity: sha512-oaRgZ8jpLmkMgtvhH9jbUI0k6XeXAUXSDv7qYBNwnIonfWYYZ0C19snJv1YRS+GWGf2gJ8ePJkXMJWlcsNR2yA==}
     dependencies:
       '@noble/hashes': 1.2.0
       '@noble/secp256k1': 1.7.0
@@ -4703,7 +4703,7 @@ packages:
       undici: ^5.8.0
       vite: '*'
     dependencies:
-      '@rollup/plugin-commonjs': 24.0.1(rollup@3.20.2)
+      '@rollup/plugin-commonjs': 24.1.0(rollup@3.20.2)
       '@rollup/plugin-json': 6.0.0(rollup@3.20.2)
       '@rollup/plugin-node-resolve': 15.0.2(rollup@3.20.2)
       compression: 1.7.4

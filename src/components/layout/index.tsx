@@ -1,4 +1,4 @@
-import { ParentComponent } from "solid-js"
+import { ParentComponent, Show } from "solid-js"
 import Linkify from "./Linkify"
 import { Button, ButtonLink } from "./Button"
 import { Separator } from "@kobalte/core"
@@ -15,11 +15,15 @@ const Card: ParentComponent<{ title?: string }> = (props) => {
     )
 }
 
-const SafeArea: ParentComponent = (props) => {
+const SafeArea: ParentComponent<{ main?: boolean }> = (props) => {
     return (
         <div class="safe-top safe-left safe-right safe-bottom">
             <div class="disable-scrollbars max-h-screen h-full overflow-y-scroll md:pl-[8rem] md:pr-[6rem]">
-                {props.children}
+                <Show when={props.main} fallback={props.children}>
+                    <main class='flex flex-col py-8 px-4 items-center'>
+                        {props.children}
+                    </main>
+                </Show>
             </div>
         </div >
     )

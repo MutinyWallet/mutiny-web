@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
+// eslint-disable-next-line import/no-unresolved
 import { useRegisterSW } from 'virtual:pwa-register/solid'
 import { Button, Card } from '~/components/layout'
 

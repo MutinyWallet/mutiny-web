@@ -1,11 +1,14 @@
 import { useMegaStore } from "~/state/megaStore";
-import { ButtonLink, Card, Hr, SmallHeader, Button } from "~/components/layout";
+import { Card, Hr, SmallHeader, Button } from "~/components/layout";
 import PeerConnectModal from "~/components/PeerConnectModal";
 import { For, Show, Suspense, createResource, createSignal } from "solid-js";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/node-manager";
 import { TextField } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import eify from "~/utils/eify";
+
+// TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
+type RefetchPeersType = (info?: unknown) => MutinyPeer[] | Promise<MutinyPeer[] | undefined> | null | undefined
 
 function PeersList() {
     const [state, _] = useMegaStore()
@@ -37,7 +40,7 @@ function PeersList() {
     )
 }
 
-function ConnectPeer(props: { refetchPeers: () => any }) {
+function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
     const [state, _] = useMegaStore()
 
     const [value, setValue] = createSignal("");
@@ -72,6 +75,9 @@ function ConnectPeer(props: { refetchPeers: () => any }) {
         </form >
     )
 }
+
+
+type RefetchChannelsListType = (info?: unknown) => MutinyChannel[] | Promise<MutinyChannel[] | undefined> | null | undefined
 
 function ChannelsList() {
     const [state, _] = useMegaStore()
@@ -111,7 +117,7 @@ function ChannelsList() {
     )
 }
 
-function OpenChannel(props: { refetchChannels: () => any }) {
+function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
     const [state, _] = useMegaStore()
 
     const [creationError, setCreationError] = createSignal<Error>();
@@ -188,19 +194,9 @@ function OpenChannel(props: { refetchChannels: () => any }) {
 }
 
 export default function KitchenSink() {
-    const [state, _] = useMegaStore()
-
-    // TODO: would be nice if this was just newest unused address
-    const getNewAddress = async () => {
-        return await state.node_manager?.get_new_address();
-    };
-
-    const [address] = createResource(getNewAddress);
-
     return (
         <Card title="Kitchen Sink">
             <PeerConnectModal />
-            <ButtonLink target="_blank" rel="noopener noreferrer" href={`https://faucet.mutinynet.com/?address=${address()}`}>Tap the Faucet</ButtonLink>
             <Hr />
             <PeersList />
             <Hr />
