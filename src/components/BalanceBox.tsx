@@ -15,14 +15,10 @@ export default function BalanceBox() {
     const [state, _] = useMegaStore();
 
     const fetchBalance = async () => {
-        if (state.node_manager) {
-            console.log("Refetching balance");
-            await state.node_manager.sync();
-            const balance = await state.node_manager.get_balance();
-            return balance
-        } else {
-            return undefined
-        }
+        console.log("Refetching balance");
+        await state.node_manager?.sync();
+        const balance = await state.node_manager?.get_balance();
+        return balance
     };
 
     const [balance, { refetch: refetchBalance }] = createResource(fetchBalance);
@@ -63,7 +59,7 @@ export default function BalanceBox() {
                         </h1>
                     </div>
                     <div class="flex gap-2 py-4">
-                        <ButtonLink href="/scanner" intent="green">Send</ButtonLink>
+                        <ButtonLink href="/send" intent="green">Send</ButtonLink>
                         <ButtonLink href="/receive" intent="blue">Receive</ButtonLink>
                     </div>
                 </div>

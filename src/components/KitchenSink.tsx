@@ -60,12 +60,12 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
     };
 
     return (
-        <form class="border border-white/20 rounded-xl p-2 flex flex-col gap-4" onSubmit={onSubmit} >
+        <form class="border border-white/20 rounded-xl p-4 flex flex-col gap-4" onSubmit={onSubmit} >
             <TextField.Root
                 value={value()}
                 onValueChange={setValue}
                 validationState={(value() == "" || value().startsWith("mutiny:")) ? "valid" : "invalid"}
-                class="flex flex-col gap-2"
+                class="flex flex-col gap-4"
             >
                 <TextField.Label class="text-sm font-semibold uppercase" >Connect Peer</TextField.Label>
                 <TextField.Input class="w-full p-2 rounded-lg text-black" placeholder="mutiny:028241..." />

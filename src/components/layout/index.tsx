@@ -1,7 +1,8 @@
-import { ParentComponent, Show } from "solid-js"
+import { ParentComponent, Show, Suspense } from "solid-js"
 import Linkify from "./Linkify"
 import { Button, ButtonLink } from "./Button"
 import { Separator } from "@kobalte/core"
+import { useMegaStore } from "~/state/megaStore"
 
 const SmallHeader: ParentComponent = (props) => <header class='text-sm font-semibold uppercase'>{props.children}</header>
 
@@ -29,6 +30,25 @@ const SafeArea: ParentComponent<{ main?: boolean }> = (props) => {
     )
 }
 
+function FullscreenLoader() {
+    return (
+        <div class="w-screen h-screen flex justify-center items-center">
+            <LoadingSpinner />
+        </div>
+    );
+}
+
+const NodeManagerGuard: ParentComponent = (props) => {
+    const [state, _] = useMegaStore();
+    return (
+        <Suspense fallback={<FullscreenLoader />}>
+            <Show when={state.node_manager}>
+                {props.children}
+            </Show>
+        </Suspense>
+    )
+}
+
 const LoadingSpinner = () => {
     return (<div role="status" class="w-full h-full grid" >
         <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-m-red place-self-center" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,4 +61,4 @@ const LoadingSpinner = () => {
 
 const Hr = () => <Separator.Root class="my-4 border-white/20" />
 
-export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr }
+export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr, NodeManagerGuard, FullscreenLoader }

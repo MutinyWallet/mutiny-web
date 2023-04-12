@@ -3,14 +3,14 @@ import { children, JSX, ParentComponent, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
 
-const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
+const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold", "disabled:opacity-50", "transition"], {
     variants: {
         intent: {
             active: "bg-white text-black",
-            inactive: "bg-black text-white border border-white disabled:opacity-50",
-            blue: "bg-[#3B6CCC] text-white",
-            red: "bg-[#F61D5B] text-white",
-            green: "bg-[#1EA67F] text-white",
+            inactive: "bg-black text-white border border-white hover:enabled:text-[#3B6CCC]",
+            blue: "bg-m-blue text-white shadow-inner-button hover:bg-m-blue-dark text-shadow-button",
+            red: "bg-m-red text-white shadow-inner-button hover:bg-m-red-dark text-shadow-button",
+            green: "bg-m-green text-white shadow-inner-button hover:bg-m-green-dark text-shadow-button",
         },
         layout: {
             flex: "flex-1",

@@ -16,16 +16,30 @@ module.exports = {
       colors: {
         "half-black": "rgba(0, 0, 0, 0.5)",
         "faint-white": "rgba(255, 255, 255, 0.1)",
-        "m-red": "#F61D5B",
         "light-text": "rgba(250, 245, 234, 0.5)",
+        "m-green": "hsla(163, 70%, 38%, 1)",
+        "m-green-dark": "hsla(163, 70%, 28%, 1)",
+        "m-blue": "hsla(220, 59%, 52%, 1)",
+        "m-blue-dark": "hsla(220, 59%, 42%, 1)",
+        "m-red": "hsla(343, 92%, 54%, 1)",
+        "m-red-dark": "hsla(343, 92%, 44%, 1)",
+        "sidebar-gray": "hsla(222, 15%, 7%, 1)"
       },
       backgroundImage: {
-        'fade-to-blue': 'linear-gradient(1.63deg, #0B215B 32.05%, rgba(11, 33, 91, 0) 84.78%)'
+        'fade-to-blue': 'linear-gradient(1.63deg, #0B215B 32.05%, rgba(11, 33, 91, 0) 84.78%)',
+        'subtle-fade': 'linear-gradient(180deg, #060A13 0%, #131E39 100%)',
+        'richer-fade': 'linear-gradient(180deg, #050914 0%, #0A1329 100%)'
       },
       dropShadow: {
-        'blue-glow': '0px 0px 32px rgba(11, 33, 91, 0.5)'
-      }
-
+        'blue-glow': '0px 0px 32px rgba(11, 33, 91, 0.5)',
+        'inner-button': '2px 2px 4px rgba(0, 0, 0, 0.1), inset 2px 2px 4px rgba(255, 255, 255, 0.25), inset -2px -2px 6px rgba(0, 0, 0, 0.3);'
+      },
+      boxShadow: {
+        'inner-button': '2px 2px 4px rgba(0, 0, 0, 0.1), inset 2px 2px 4px rgba(255, 255, 255, 0.25), inset -2px -2px 6px rgba(0, 0, 0, 0.3);'
+      },
+      textShadow: {
+        'button': '1px 1px 0px rgba(0, 0, 0, 0.4);'
+      },
     },
   },
   plugins: [
@@ -68,6 +82,17 @@ module.exports = {
       }
 
       addUtilities(newUtilities);
-    })
+    }),
+    // Text shadow!
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'text-shadow': (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      )
+    }),
   ],
 }
