@@ -1,6 +1,6 @@
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
 
-import { ParentComponent, createContext, createEffect, useContext } from "solid-js";
+import { ParentComponent, createContext, createEffect, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { setupNodeManager } from "~/logic/nodeManagerSetup";
 import { NodeManager } from "@mutinywallet/node-manager";
@@ -10,25 +10,25 @@ const MegaStoreContext = createContext<MegaStore>();
 type UserStatus = undefined | "new_here" | "waitlisted" | "approved" | "paid"
 
 export type MegaStore = [{
-    waitlist_id: string | null;
-    node_manager: NodeManager | undefined;
+    waitlist_id?: string;
+    node_manager?: NodeManager;
     user_status: UserStatus;
+    scan_result?: string;
 }, {
-    status(): Promise<UserStatus>;
+    fetchUserStatus(): Promise<UserStatus>;
     setupNodeManager(): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
 }];
 
 export const Provider: ParentComponent = (props) => {
     const [state, setState] = createStore({
-
         waitlist_id: localStorage.getItem("waitlist_id"),
         node_manager: undefined as NodeManager | undefined,
         user_status: undefined as UserStatus,
     });
 
     const actions = {
-        async status(): Promise<UserStatus> {
+        async fetchUserStatus(): Promise<UserStatus> {
             if (!state.waitlist_id) {
                 return "new_here"
             }
@@ -63,8 +63,8 @@ export const Provider: ParentComponent = (props) => {
     };
 
     // Fetch status from remote on load
-    createEffect(() => {
-        actions.status().then(status => {
+    onMount(() => {
+        actions.fetchUserStatus().then(status => {
             setState({ user_status: status })
         })
     })
