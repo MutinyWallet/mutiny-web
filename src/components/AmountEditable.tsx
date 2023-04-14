@@ -25,6 +25,7 @@ export function AmountEditable(props: { amountSats: number | bigint, setAmountSa
         setIsFullscreen(!isFullscreen());
     }
 
+    // TODO: validate this doesn't need to be reactive and can be "initialAmountSats"
     const [displayAmount, setDisplayAmount] = createSignal(props.amountSats.toString() || "0");
 
     let inputRef!: HTMLInputElement;
@@ -100,7 +101,7 @@ export function AmountEditable(props: { amountSats: number | bigint, setAmountSa
     })
 
     const prettyPrint = createMemo(() => {
-        let parsed = Number(displayAmount());
+        const parsed = Number(displayAmount());
         if (isNaN(parsed)) {
             return displayAmount();
         } else {

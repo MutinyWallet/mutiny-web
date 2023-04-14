@@ -44,7 +44,7 @@ export default function Send() {
 
     onMount(() => {
         // TODO: probably a cleaner way to make typescript happy
-        let routerInfo = location as { state?: { destination?: string } };
+        const routerInfo = location as { state?: { destination?: string } };
         if (routerInfo.state?.destination && typeof routerInfo.state.destination === "string") {
             setDestination(routerInfo.state.destination);
         }

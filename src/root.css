@@ -4,7 +4,7 @@
 
 body {
   @apply text-white bg-black;
-  @apply bg-fixed bg-no-repeat bg-richer-fade;
+  @apply bg-fixed bg-no-repeat bg-fade-to-blue;
   overscroll-behavior-y: none;
   min-height: 100.3%;
 }
