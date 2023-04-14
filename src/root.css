@@ -43,5 +43,5 @@ a {
 
 /* Missing you sveltekit */
 dd {
-  @apply mb-8 mt-4;
+  @apply mb-8 mt-2;
 }

@@ -3,7 +3,7 @@
 import { ParentComponent, createContext, createEffect, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { setupNodeManager } from "~/logic/nodeManagerSetup";
-import { NodeManager } from "@mutinywallet/node-manager";
+import { MutinyBalance, NodeManager } from "@mutinywallet/node-manager";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -14,6 +14,8 @@ export type MegaStore = [{
     node_manager?: NodeManager;
     user_status: UserStatus;
     scan_result?: string;
+    balance?: MutinyBalance;
+    last_sync?: number;
 }, {
     fetchUserStatus(): Promise<UserStatus>;
     setupNodeManager(): Promise<void>;
@@ -42,12 +44,9 @@ export const Provider: ParentComponent = (props) => {
                     return "waitlisted"
                 }
 
-                // TODO: handle paid status
-
             } catch (e) {
                 return "new_here"
             }
-
         },
         async setupNodeManager(): Promise<void> {
             try {
@@ -69,7 +68,7 @@ export const Provider: ParentComponent = (props) => {
         })
     })
 
-    // Only node manager when status is approved
+    // Only load node manager when status is approved
     createEffect(() => {
         if (state.user_status === "approved" && !state.node_manager) {
             console.log("running setup node manager...")

@@ -9,8 +9,7 @@ function prettyPrintAmount(n?: number | bigint): string {
     return n.toLocaleString()
 }
 
-export function Amount(props: { amountSats: bigint | number | undefined, showFiat?: boolean }) {
-
+export function Amount(props: { amountSats: bigint | number | undefined, showFiat?: boolean, loading?: boolean }) {
     const [state, _] = useMegaStore()
 
     async function getPrice() {
@@ -23,11 +22,11 @@ export function Amount(props: { amountSats: bigint | number | undefined, showFia
     return (
         <div class="flex flex-col gap-2">
             <h1 class="text-4xl font-light">
-                {prettyPrintAmount(props.amountSats)} <span class='text-xl'>SAT</span>
+                {props.loading ? "..." : prettyPrintAmount(props.amountSats)} <span class='text-xl'>SATS</span>
             </h1>
             <Show when={props.showFiat}>
                 <h2 class="text-xl font-light text-white/70" >
-                    &#8776; {amountInUsd()} <span class="text-sm">USD</span>
+                    &#8776; {props.loading ? "..." : amountInUsd()} <span class="text-sm">USD</span>
                 </h2>
             </Show>
         </div>

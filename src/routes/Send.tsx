@@ -10,6 +10,7 @@ import { Motion, Presence } from "@motionone/solid";
 import { useMegaStore } from "~/state/megaStore";
 import { MutinyInvoice, NodeManager } from "@mutinywallet/node-manager";
 import { bip21decode } from "~/utils/TEMPbip21";
+import { AmountEditable } from "~/components/AmountEditable";
 
 type SendSource = "lightning" | "onchain";
 
@@ -28,6 +29,16 @@ export default function Send() {
     const [invoice, setInvoice] = createSignal<MutinyInvoice>();
     const [address, setAddress] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
+
+    function clearAll() {
+        setDestination("");
+        setPrivateLabel("");
+        setAmountSats(0n);
+        setSource("lightning");
+        setInvoice(undefined);
+        setAddress(undefined);
+        setDescription(undefined);
+    }
 
     async function decode(source: string) {
         if (!source) return;
@@ -59,6 +70,7 @@ export default function Send() {
 
         } catch (e) {
             console.error("error", e)
+            clearAll();
         }
     }
 
@@ -100,26 +112,6 @@ export default function Send() {
                 <h1 class="text-2xl font-semibold uppercase border-b-2 border-b-white">Send Bitcoin</h1>
                 <dl>
                     <dt>
-                        <SmallHeader>
-                            Source
-                        </SmallHeader>
-                    </dt>
-                    <dd>
-                        <div class="flex gap-4 items-start">
-                            <Button onClick={() => setSource("lightning")} intent={source() === "lightning" ? "active" : "inactive"} layout="small">Lightning</Button>
-                            <Button onClick={() => setSource("onchain")} intent={source() === "onchain" ? "active" : "inactive"} layout="small">On-Chain</Button>
-                        </div>
-                    </dd>
-                    <dt>
-                        <SmallHeader>
-                            How Much
-                        </SmallHeader>
-                    </dt>
-                    <dd>
-                        <Amount amountSats={amountSats() || 0} showFiat />
-                    </dd>
-                    <dt>
-
                         <SmallHeader>Destination</SmallHeader>
                     </dt>
                     <dd>
@@ -140,31 +132,53 @@ export default function Send() {
                                     </div>
                                 </Button>
                             </div>}>
-                                <Presence>
-                                    <Motion
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.5 }}
-                                    >
-                                        <div class="flex flex-col gap-2">
-                                            <Show when={address()}>
-                                                <code class="line-clamp-3 text-sm break-all">{source() === "onchain" && "→"} {address()}</code>
+                                <div class="flex flex-col gap-2">
+                                    <Show when={address()}>
+                                        <code class="line-clamp-3 text-sm break-all">{source() === "onchain" && "→"} {address()}</code>
 
-                                            </Show>
-                                            <Show when={invoice()}>
-                                                <code class="line-clamp-3 text-sm break-all">{source() === "lightning" && "→"} {invoice()?.bolt11}</code>
-                                            </Show>
+                                    </Show>
+                                    <Show when={invoice()}>
+                                        <code class="line-clamp-3 text-sm break-all">{source() === "lightning" && "→"} {invoice()?.bolt11}</code>
+                                    </Show>
 
-                                        </div>
-                                        {/* <code class="line-clamp-3 text-sm break-all mb-2">{destination()}</code> */}
-                                    </Motion>
-                                </Presence>
+                                </div>
+                                {/* <code class="line-clamp-3 text-sm break-all mb-2">{destination()}</code> */}
+                                <Show when={destination()}>
+                                    <Button intent="inactive" onClick={clearAll}>Clear</Button>
+                                </Show>
+
                             </Show>
                         </InnerCard>
-
-
                     </dd>
+
+                    <Show when={address() && invoice()}>
+                        <dt>
+                            <SmallHeader>
+                                Payment Method
+                            </SmallHeader>
+                        </dt>
+                        <dd>
+                            <div class="flex gap-4 items-start">
+                                <Button onClick={() => setSource("lightning")} intent={source() === "lightning" ? "active" : "inactive"} layout="small">Lightning</Button>
+                                <Button onClick={() => setSource("onchain")} intent={source() === "onchain" ? "active" : "inactive"} layout="small">On-Chain</Button>
+                            </div>
+                        </dd>
+                    </Show>
+                    <Show when={destination()}>
+                        <dt>
+                            <SmallHeader>
+                                Amount
+                            </SmallHeader>
+                        </dt>
+                        <dd>
+                            {/* if the amount came with the invoice we can't allow setting it */}
+                            <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
+                                <AmountEditable amountSats={amountSats() || 0} setAmountSats={setAmountSats} />
+                            </Show>
+                        </dd>
+                    </Show>
+
+
                     <Show when={description()}>
                         <dt>
 
@@ -176,31 +190,32 @@ export default function Send() {
                         </dd>
                     </Show>
 
-                    <TextField.Root
-                        value={privateLabel()}
-                        onValueChange={setPrivateLabel}
-                        class="flex flex-col gap-2"
-                    >
-                        <dt>
-                            <SmallHeader>
-                                <TextField.Label>Label (private)</TextField.Label>
-                            </SmallHeader>
-                        </dt>
-                        <dd>
-                            <TextField.Input
-                                autofocus
-                                ref={el => labelInput = el}
-                                class="w-full p-2 rounded-lg text-black"
-                                placeholder="A helpful reminder of why you spent bitcoin"
-                            />
-                        </dd>
-                    </TextField.Root>
+                    <Show when={destination()}>
+                        <TextField.Root
+                            value={privateLabel()}
+                            onValueChange={setPrivateLabel}
+                            class="flex flex-col gap-2"
+                        >
+                            <dt>
+                                <SmallHeader>
+                                    <TextField.Label>Label (private)</TextField.Label>
+                                </SmallHeader>
+                            </dt>
+                            <dd>
+                                <TextField.Input
+                                    autofocus
+                                    ref={el => labelInput = el}
+                                    class="w-full p-2 rounded-lg text-black"
+                                    placeholder="A helpful reminder of why you spent bitcoin"
+                                />
+                            </dd>
+                        </TextField.Root>
+                    </Show>
                 </dl>
                 <Button disabled={!destination()} intent="blue" onClick={handleSend}>Confirm Send</Button>
-                <Show when={destination()}>
-                    <Button intent="inactive" onClick={() => setDestination("")}>Clear</Button>
-                </Show>
             </div>
+            {/* safety div */}
+            <div class="h-32" />
             <NavBar activeTab="send" />
         </SafeArea >
     )

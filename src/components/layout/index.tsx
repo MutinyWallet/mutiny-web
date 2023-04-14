@@ -24,6 +24,15 @@ const InnerCard: ParentComponent<{ title?: string }> = (props) => {
     )
 }
 
+const FancyCard: ParentComponent<{ title?: string }> = (props) => {
+    return (
+        <div class='border border-white rounded-xl border-b-4 p-4 flex flex-col gap-2'>
+            {props.title && <SmallHeader>{props.title}</SmallHeader>}
+            {props.children}
+        </div>
+    )
+}
+
 const SafeArea: ParentComponent<{ main?: boolean }> = (props) => {
     return (
         <div class="safe-top safe-left safe-right safe-bottom">
@@ -69,4 +78,4 @@ const LoadingSpinner = () => {
 
 const Hr = () => <Separator.Root class="my-4 border-white/20" />
 
-export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr, NodeManagerGuard, FullscreenLoader, InnerCard }
+export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr, NodeManagerGuard, FullscreenLoader, InnerCard, FancyCard }
