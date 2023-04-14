@@ -1,16 +1,15 @@
 import { TextField } from "@kobalte/core";
-import { Show, createResource, createSignal } from "solid-js";
+import { Show, createResource, createSignal, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
-import { Button, InnerCard, SafeArea, SmallHeader } from "~/components/layout";
-
+import { Button, ButtonLink, InnerCard, SafeArea, SmallHeader } from "~/components/layout";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
-import { Motion, Presence } from "@motionone/solid";
 import { useMegaStore } from "~/state/megaStore";
 import { MutinyInvoice, NodeManager } from "@mutinywallet/node-manager";
 import { bip21decode } from "~/utils/TEMPbip21";
 import { AmountEditable } from "~/components/AmountEditable";
+import { useLocation } from "solid-start";
 
 type SendSource = "lightning" | "onchain";
 
@@ -40,6 +39,18 @@ export default function Send() {
         setDescription(undefined);
     }
 
+    // If we were routed to by the scanner we can get the state from there
+    const location = useLocation();
+
+    onMount(() => {
+        // TODO: probably a cleaner way to make typescript happy
+        let routerInfo = location as { state?: { destination?: string } };
+        if (routerInfo.state?.destination && typeof routerInfo.state.destination === "string") {
+            setDestination(routerInfo.state.destination);
+        }
+    })
+
+    // TODO: this is pretty temp until we have WAILA
     async function decode(source: string) {
         if (!source) return;
         try {
@@ -119,18 +130,16 @@ export default function Send() {
                             <Show when={destination()} fallback={<div class="flex flex-row gap-4">
                                 <Button onClick={handlePaste}>
                                     <div class="flex flex-col gap-2 items-center">
-                                        {/* <img src={scan} class="w-8 h-8 text-white" /> */}
                                         <Paste />
                                         <span>Paste</span>
                                     </div>
                                 </Button>
-                                <Button>
+                                <ButtonLink href="/scanner">
                                     <div class="flex flex-col gap-2 items-center">
-                                        {/* <img src={scan} class="w-8 h-8 text-white" /> */}
                                         <Scan />
                                         <span>Scan QR</span>
                                     </div>
-                                </Button>
+                                </ButtonLink>
                             </div>}>
                                 <div class="flex flex-col gap-2">
                                     <Show when={address()}>
