@@ -18,7 +18,7 @@ function SingleDigitButton(props: { character: string, onClick: (c: string) => v
     );
 }
 
-export function AmountEditable(props: { amountSats: number | bigint, setAmountSats: (s: string) => void }) {
+export function AmountEditable(props: { amountSats: string, setAmountSats: (s: string) => void, onSave?: () => void }) {
     const [isFullscreen, setIsFullscreen] = createSignal(false);
 
     function toggleFullscreen() {
@@ -26,7 +26,7 @@ export function AmountEditable(props: { amountSats: number | bigint, setAmountSa
     }
 
     // TODO: validate this doesn't need to be reactive and can be "initialAmountSats"
-    const [displayAmount, setDisplayAmount] = createSignal(props.amountSats.toString() || "0");
+    const [displayAmount, setDisplayAmount] = createSignal(props.amountSats || "0");
 
     let inputRef!: HTMLInputElement;
 
@@ -113,7 +113,8 @@ export function AmountEditable(props: { amountSats: number | bigint, setAmountSa
     const [state, _] = useMegaStore()
 
     async function getPrice() {
-        return await state.node_manager?.get_bitcoin_price()
+        // return await state.node_manager?.get_bitcoin_price()
+        return 30000
     }
 
     const [price] = createResource(getPrice)
@@ -130,6 +131,10 @@ export function AmountEditable(props: { amountSats: number | bigint, setAmountSa
         } else {
             props.setAmountSats(displayAmount());
             toggleFullscreen();
+            // This is so the parent can focus the next input if it wants to
+            if (props.onSave) {
+                props.onSave();
+            }
         }
     }
 

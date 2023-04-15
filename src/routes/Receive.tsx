@@ -1,8 +1,9 @@
 import { TextField } from "@kobalte/core";
 import { createMemo, createResource, createSignal, Match, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
+import { AmountEditable } from "~/components/AmountEditable";
 import { AmountInput } from "~/components/AmountInput";
-import { Button, Card, NodeManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, Card, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
@@ -83,36 +84,44 @@ export default function Receive() {
     }
 
     async function getPrice() {
-        return await state.node_manager?.get_bitcoin_price()
+        // return await state.node_manager?.get_bitcoin_price()
+        return 30000
     }
 
     const [price] = createResource(getPrice)
 
     const amountInUsd = createMemo(() => satsToUsd(price(), parseInt(amount()) || 0, true))
 
+    function handleAmountSave() {
+        console.error("focusing label input...")
+        console.error(labelInput)
+        labelInput.focus();
+    }
+
     return (
         <NodeManagerGuard>
 
-            <SafeArea main>
-                <div class="w-full max-w-[400px] flex flex-col gap-4">
-                    <h1 class="text-2xl font-semibold uppercase border-b-2 border-b-white">Receive Bitcoin</h1>
+            <SafeArea>
+                <DefaultMain>
+                    <LargeHeader>Receive Bitcoin</LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
-                            <form class="border border-white/20 rounded-xl p-2 flex flex-col gap-4" onSubmit={onSubmit} >
-                                {/* TODO this initial amount is not reactive, hope that's okay? */}
-                                <AmountInput initialAmountSats={amount()} setAmountSats={setAmount} refSetter={el => amountInput = el} />
+                            <AmountEditable amountSats={amount() || "0"} setAmountSats={setAmount} onSave={handleAmountSave} />
+                            <div>
+                                <Button intent="glowy" layout="xs">Tag the sender</Button>
+                            </div>
+                            <form class="flex flex-col gap-4" onSubmit={onSubmit} >
                                 <TextField.Root
                                     value={label()}
                                     onValueChange={setLabel}
                                     class="flex flex-col gap-2"
                                 >
-                                    <TextField.Label class="text-sm font-semibold uppercase" >Label (private)</TextField.Label>
+                                    <TextField.Label><SmallHeader>Label (private)</SmallHeader></TextField.Label>
                                     <TextField.Input
-                                        autofocus
                                         ref={el => labelInput = el}
                                         class="w-full p-2 rounded-lg text-black" />
                                 </TextField.Root>
-                                <Button disabled={!amount() || !label()} layout="small" type="submit">Create Invoice</Button>
+                                <Button disabled={!amount() || !label()} intent="green" type="submit">Create Invoice</Button>
                             </form >
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>
@@ -139,7 +148,7 @@ export default function Receive() {
                             </Card>
                         </Match>
                     </Switch>
-                </div>
+                </DefaultMain>
                 <NavBar activeTab="none" />
             </SafeArea >
         </NodeManagerGuard>

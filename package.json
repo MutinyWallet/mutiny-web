@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@kobalte/core": "^0.8.2",
+    "@kobalte/tailwindcss": "^0.5.0",
     "@motionone/solid": "^10.16.0",
     "@mutinywallet/node-manager": "^0.2.4",
     "@nostr-dev-kit/ndk": "^0.0.13",

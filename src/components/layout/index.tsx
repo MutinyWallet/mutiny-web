@@ -1,4 +1,4 @@
-import { ParentComponent, Show, Suspense } from "solid-js"
+import { JSX, ParentComponent, Show, Suspense } from "solid-js"
 import Linkify from "./Linkify"
 import { Button, ButtonLink } from "./Button"
 import { Separator } from "@kobalte/core"
@@ -8,7 +8,7 @@ const SmallHeader: ParentComponent = (props) => <header class='text-sm font-semi
 
 const Card: ParentComponent<{ title?: string }> = (props) => {
     return (
-        <div class='rounded-xl p-4 flex flex-col gap-2 bg-[rgba(0,0,0,0.5)]'>
+        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-800'>
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.children}
         </div>
@@ -24,26 +24,34 @@ const InnerCard: ParentComponent<{ title?: string }> = (props) => {
     )
 }
 
-const FancyCard: ParentComponent<{ title?: string }> = (props) => {
+const FancyCard: ParentComponent<{ title?: string, tag?: JSX.Element }> = (props) => {
     return (
-        <div class='border border-white rounded-xl border-b-4 p-4 flex flex-col gap-2'>
-            {props.title && <SmallHeader>{props.title}</SmallHeader>}
+        <div class='border border-black/50 rounded-xl border-b-4 p-4 flex flex-col gap-2 bg-neutral-800/50 shadow-fancy-card'>
+            <div class="w-full flex justify-between items-center">
+                {props.title && <SmallHeader>{props.title}</SmallHeader>}
+                {props.tag && props.tag}
+            </div>
             {props.children}
         </div>
     )
 }
 
-const SafeArea: ParentComponent<{ main?: boolean }> = (props) => {
+const SafeArea: ParentComponent = (props) => {
     return (
         <div class="safe-top safe-left safe-right safe-bottom">
             <div class="disable-scrollbars max-h-screen h-full overflow-y-scroll md:pl-[8rem] md:pr-[6rem]">
-                <Show when={props.main} fallback={props.children}>
-                    <main class='flex flex-col py-8 px-4 items-center'>
-                        {props.children}
-                    </main>
-                </Show>
+                {props.children}
+                <div class="h-32" />
             </div>
         </div >
+    )
+}
+
+const DefaultMain: ParentComponent = (props) => {
+    return (
+        <main class="w-full max-w-[600px] flex flex-col gap-4 mx-auto p-4">
+            {props.children}
+        </main>
     )
 }
 
@@ -78,4 +86,8 @@ const LoadingSpinner = () => {
 
 const Hr = () => <Separator.Root class="my-4 border-white/20" />
 
-export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr, NodeManagerGuard, FullscreenLoader, InnerCard, FancyCard }
+const LargeHeader: ParentComponent = (props) => {
+    return (<h1 class="text-4xl font-semibold uppercase border-b-2 border-b-white my-4">{props.children}</h1>)
+}
+
+export { SmallHeader, Card, SafeArea, LoadingSpinner, Button, ButtonLink, Linkify, Hr, NodeManagerGuard, FullscreenLoader, InnerCard, FancyCard, DefaultMain, LargeHeader }

@@ -13,7 +13,8 @@ export function Amount(props: { amountSats: bigint | number | undefined, showFia
     const [state, _] = useMegaStore()
 
     async function getPrice() {
-        return await state.node_manager?.get_bitcoin_price()
+        // return await state.node_manager?.get_bitcoin_price()
+        return 30000
     }
 
     const [price] = createResource(getPrice)

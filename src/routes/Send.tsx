@@ -1,8 +1,8 @@
-import { TextField } from "@kobalte/core";
-import { Show, createResource, createSignal, onMount } from "solid-js";
+import { RadioGroup, TextField } from "@kobalte/core";
+import { For, Show, createResource, createSignal, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
-import { Button, ButtonLink, InnerCard, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, ButtonLink, DefaultMain, FancyCard, InnerCard, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
@@ -10,8 +10,11 @@ import { MutinyInvoice, NodeManager } from "@mutinywallet/node-manager";
 import { bip21decode } from "~/utils/TEMPbip21";
 import { AmountEditable } from "~/components/AmountEditable";
 import { useLocation } from "solid-start";
+import { StyledRadioGroup } from "~/components/layout/Radio";
 
 type SendSource = "lightning" | "onchain";
+
+const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fast and cool" }, { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }]
 
 export default function Send() {
     const [state, _] = useMegaStore();
@@ -118,46 +121,55 @@ export default function Send() {
     }
 
     return (
-        <SafeArea main>
-            <div class="w-full max-w-[400px] flex flex-col gap-4">
-                <h1 class="text-2xl font-semibold uppercase border-b-2 border-b-white">Send Bitcoin</h1>
+        <SafeArea>
+            <DefaultMain>
+                <LargeHeader>Send Bitcoin</LargeHeader>
+
                 <dl>
                     <dt>
                         <SmallHeader>Destination</SmallHeader>
                     </dt>
                     <dd>
-                        <InnerCard>
-                            <Show when={destination()} fallback={<div class="flex flex-row gap-4">
-                                <Button onClick={handlePaste}>
-                                    <div class="flex flex-col gap-2 items-center">
-                                        <Paste />
-                                        <span>Paste</span>
-                                    </div>
-                                </Button>
-                                <ButtonLink href="/scanner">
-                                    <div class="flex flex-col gap-2 items-center">
-                                        <Scan />
-                                        <span>Scan QR</span>
-                                    </div>
-                                </ButtonLink>
-                            </div>}>
-                                <div class="flex flex-col gap-2">
-                                    <Show when={address()}>
-                                        <code class="line-clamp-3 text-sm break-all">{source() === "onchain" && "→"} {address()}</code>
-
-                                    </Show>
-                                    <Show when={invoice()}>
-                                        <code class="line-clamp-3 text-sm break-all">{source() === "lightning" && "→"} {invoice()?.bolt11}</code>
-                                    </Show>
-
+                        <Show when={destination()} fallback={<div class="flex flex-row gap-4">
+                            <Button onClick={handlePaste}>
+                                <div class="flex flex-col gap-2 items-center">
+                                    <Paste />
+                                    <span>Paste</span>
                                 </div>
-                                {/* <code class="line-clamp-3 text-sm break-all mb-2">{destination()}</code> */}
-                                <Show when={destination()}>
-                                    <Button intent="inactive" onClick={clearAll}>Clear</Button>
+                            </Button>
+                            <ButtonLink href="/scanner">
+                                <div class="flex flex-col gap-2 items-center">
+                                    <Scan />
+                                    <span>Scan QR</span>
+                                </div>
+                            </ButtonLink>
+                        </div>}>
+                            <div class="flex gap-2 items-center">
+                                <Show when={address() && source() === "onchain"}>
+                                    <code class="truncate text-sm break-all">{"Address: "} {address()}
+                                        <Show when={description()}>
+                                            <br />
+                                            {"Description:"} {description()}
+                                        </Show>
+                                    </code>
                                 </Show>
-
-                            </Show>
-                        </InnerCard>
+                                <Show when={invoice() && source() === "lightning"}>
+                                    <code class="truncate text-sm break-all">{"Invoice: "} {invoice()?.bolt11}
+                                        <Show when={description()}>
+                                            <br />
+                                            {"Description:"} {description()}
+                                        </Show>
+                                    </code>
+                                </Show>
+                                <Button class="flex-0" intent="glowy" layout="xs" onClick={clearAll}>Clear</Button>
+                            </div>
+                            <div class="my-4">
+                                {/* if the amount came with the invoice we can't allow setting it */}
+                                <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
+                                    <AmountEditable amountSats={amountSats().toString() || "0"} setAmountSats={setAmountSats} />
+                                </Show>
+                            </div>
+                        </Show>
                     </dd>
 
                     <Show when={address() && invoice()}>
@@ -167,38 +179,9 @@ export default function Send() {
                             </SmallHeader>
                         </dt>
                         <dd>
-                            <div class="flex gap-4 items-start">
-                                <Button onClick={() => setSource("lightning")} intent={source() === "lightning" ? "active" : "inactive"} layout="small">Lightning</Button>
-                                <Button onClick={() => setSource("onchain")} intent={source() === "onchain" ? "active" : "inactive"} layout="small">On-Chain</Button>
-                            </div>
+                            <StyledRadioGroup value={source()} onValueChange={setSource} choices={PAYMENT_METHODS} />
                         </dd>
                     </Show>
-                    <Show when={destination()}>
-                        <dt>
-                            <SmallHeader>
-                                Amount
-                            </SmallHeader>
-                        </dt>
-                        <dd>
-                            {/* if the amount came with the invoice we can't allow setting it */}
-                            <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
-                                <AmountEditable amountSats={amountSats() || 0} setAmountSats={setAmountSats} />
-                            </Show>
-                        </dd>
-                    </Show>
-
-
-                    <Show when={description()}>
-                        <dt>
-
-                            <SmallHeader>Description</SmallHeader>
-                        </dt>
-                        <dd>
-
-                            <code class="line-clamp-3 text-sm break-all">{description()}</code>
-                        </dd>
-                    </Show>
-
                     <Show when={destination()}>
                         <TextField.Root
                             value={privateLabel()}
@@ -214,7 +197,7 @@ export default function Send() {
                                 <TextField.Input
                                     autofocus
                                     ref={el => labelInput = el}
-                                    class="w-full p-2 rounded-lg text-black"
+                                    class="w-full p-2 rounded-lg bg-white/10"
                                     placeholder="A helpful reminder of why you spent bitcoin"
                                 />
                             </dd>
@@ -222,9 +205,7 @@ export default function Send() {
                     </Show>
                 </dl>
                 <Button disabled={!destination()} intent="blue" onClick={handleSend}>Confirm Send</Button>
-            </div>
-            {/* safety div */}
-            <div class="h-32" />
+            </DefaultMain>
             <NavBar activeTab="send" />
         </SafeArea >
     )

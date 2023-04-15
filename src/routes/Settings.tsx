@@ -1,5 +1,6 @@
 import { useNavigate } from "solid-start";
-import { Button, SafeArea } from "~/components/layout";
+import KitchenSink from "~/components/KitchenSink";
+import { Button, Card, DefaultMain, Hr, LargeHeader, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 
@@ -31,11 +32,16 @@ export default function Settings() {
 
     return (
         <SafeArea>
-            <main class='flex flex-col gap-4 py-8 px-4 max-w-[800px] mx-auto'>
-                <Button onClick={clearWaitlistId}>Clear waitlist_id</Button>
-                <Button onClick={setTestWaitlistId}>Use test waitlist_id</Button>
-                <Button onClick={resetNode}>Reset node</Button>
-            </main>
+            <DefaultMain>
+                <LargeHeader>Settings</LargeHeader>
+                <Card title="Random utilities">
+                    <Button onClick={clearWaitlistId}>Clear waitlist_id</Button>
+                    <Button onClick={setTestWaitlistId}>Use test waitlist_id</Button>
+                    <Button onClick={resetNode}>Reset node</Button>
+                </Card>
+                <Hr />
+                <KitchenSink />
+            </DefaultMain>
             <NavBar activeTab="settings" />
         </SafeArea>
     )

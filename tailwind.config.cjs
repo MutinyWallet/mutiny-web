@@ -32,17 +32,20 @@ module.exports = {
       },
       dropShadow: {
         'blue-glow': '0px 0px 32px rgba(11, 33, 91, 0.5)',
-        'inner-button': '2px 2px 4px rgba(0, 0, 0, 0.1), inset 2px 2px 4px rgba(255, 255, 255, 0.25), inset -2px -2px 6px rgba(0, 0, 0, 0.3);'
       },
       boxShadow: {
-        'inner-button': '2px 2px 4px rgba(0, 0, 0, 0.1), inset 2px 2px 4px rgba(255, 255, 255, 0.25), inset -2px -2px 6px rgba(0, 0, 0, 0.3);'
+        'inner-button': '2px 2px 4px rgba(0, 0, 0, 0.1), inset 2px 2px 4px rgba(255, 255, 255, 0.1), inset -2px -2px 6px rgba(0, 0, 0, 0.2)',
+        'fancy-card': '0px 4px 4px rgba(0, 0, 0, 0.1)',
+        'above': '0px -4px 10px rgba(0, 0, 0, 0.25)',
       },
       textShadow: {
-        'button': '1px 1px 0px rgba(0, 0, 0, 0.4);'
+        'button': '1px 1px 0px rgba(0, 0, 0, 0.4)'
       },
     },
   },
   plugins: [
+    // default prefix is "ui"
+    require("@kobalte/tailwindcss"),
     plugin(function ({ addUtilities }) {
       const newUtilities = {
         '.safe-top': {
