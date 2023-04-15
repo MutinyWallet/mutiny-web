@@ -1,5 +1,5 @@
 import { RadioGroup, TextField } from "@kobalte/core";
-import { For, Show, createResource, createSignal, onMount } from "solid-js";
+import { For, Show, createMemo, createResource, createSignal, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
 import { Button, ButtonLink, DefaultMain, FancyCard, InnerCard, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
@@ -16,11 +16,13 @@ type SendSource = "lightning" | "onchain";
 
 const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fast and cool" }, { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }]
 
+const TEST_DEST = "bitcoin:tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe?amount=0.00001&label=heyo&lightning=lntbs10u1pjrwrdedq8dpjhjmcnp4qd60w268ve0jencwzhz048ruprkxefhj0va2uspgj4q42azdg89uupp5gngy2pqte5q5uvnwcxwl2t8fsdlla5s6xl8aar4xcsvxeus2w2pqsp5n5jp3pz3vpu92p3uswttxmw79a5lc566herwh3f2amwz2sp6f9tq9qyysgqcqpcxqrpwugv5m534ww5ukcf6sdw2m75f2ntjfh3gzeqay649256yvtecgnhjyugf74zakaf56sdh66ec9fqep2kvu6xv09gcwkv36rrkm38ylqsgpw3yfjl"
+
 export default function Send() {
     const [state, _] = useMegaStore();
 
     // These can only be set by the user
-    const [destination, setDestination] = createSignal("");
+    const [destination, setDestination] = createSignal(TEST_DEST);
     const [privateLabel, setPrivateLabel] = createSignal("");
 
     // These can be derived from the "destination" signal or set by the user
@@ -44,6 +46,12 @@ export default function Send() {
 
     // If we were routed to by the scanner we can get the state from there
     const location = useLocation();
+
+    const fakeFee = createMemo(() => {
+        if (source() === "lightning") return 69n;
+        if (source() === "onchain") return 420n;
+        return 0n;
+    })
 
     onMount(() => {
         // TODO: probably a cleaner way to make typescript happy
@@ -163,11 +171,25 @@ export default function Send() {
                                 </Show>
                                 <Button class="flex-0" intent="glowy" layout="xs" onClick={clearAll}>Clear</Button>
                             </div>
-                            <div class="my-4">
+                            <div class="my-8 flex gap-4 w-full items-center justify-around">
                                 {/* if the amount came with the invoice we can't allow setting it */}
                                 <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
                                     <AmountEditable amountSats={amountSats().toString() || "0"} setAmountSats={setAmountSats} />
                                 </Show>
+                                <div class="bg-white/10 px-4 py-2 rounded-xl">
+                                    <div class="flex gap-2 items-center">
+                                        <h2 class="text-neutral-400 font-semibold uppercase">+ Fee</h2>
+                                        <h3 class="text-xl font-light text-neutral-300">
+                                            {fakeFee().toLocaleString()} <span class='text-lg'>SATS</span>
+                                        </h3>
+                                    </div>
+                                    <div class="flex gap-2 items-center">
+                                        <h2 class="font-semibold uppercase text-white">Total</h2>
+                                        <h3 class="text-xl font-light text-white">
+                                            {(amountSats() + fakeFee()).toLocaleString()} <span class='text-lg'>SATS</span>
+                                        </h3>
+                                    </div>
+                                </div>
                             </div>
                         </Show>
                     </dd>
