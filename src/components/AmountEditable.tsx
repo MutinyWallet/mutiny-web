@@ -1,11 +1,11 @@
-import { For, Show, createEffect, createMemo, createResource, createSignal } from 'solid-js';
+import { For, createMemo, createResource, createSignal } from 'solid-js';
 import { Button } from '~/components/layout';
 import { useMegaStore } from '~/state/megaStore';
 import { satsToUsd } from '~/utils/conversions';
 import { Amount } from './Amount';
+import { Dialog } from '@kobalte/core';
 
-const CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"];
-const FULLSCREEN_STYLE = 'fixed top-0 left-0 w-screen h-screen z-50 bg-sidebar-gray p-4';
+const CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "DEL"];
 
 function SingleDigitButton(props: { character: string, onClick: (c: string) => void }) {
     return (
@@ -18,20 +18,13 @@ function SingleDigitButton(props: { character: string, onClick: (c: string) => v
     );
 }
 
-export function AmountEditable(props: { amountSats: string, setAmountSats: (s: string) => void, onSave?: () => void }) {
-    const [isFullscreen, setIsFullscreen] = createSignal(false);
-
-    function toggleFullscreen() {
-        setIsFullscreen(!isFullscreen());
-    }
-
-    // TODO: validate this doesn't need to be reactive and can be "initialAmountSats"
-    const [displayAmount, setDisplayAmount] = createSignal(props.amountSats || "0");
+export function AmountEditable(props: { initialAmountSats: string, setAmountSats: (s: bigint) => void, onSave?: () => void }) {
+    const [displayAmount, setDisplayAmount] = createSignal(props.initialAmountSats || "0");
 
     let inputRef!: HTMLInputElement;
 
     function handleCharacterInput(character: string) {
-        if (character === "⌫") {
+        if (character === "DEL") {
             setDisplayAmount(displayAmount().slice(0, -1));
         } else {
             if (displayAmount() === "0") {
@@ -44,13 +37,6 @@ export function AmountEditable(props: { amountSats: string, setAmountSats: (s: s
         // After a button press make sure we re-focus the input
         inputRef.focus()
     }
-
-    createEffect(() => {
-        if (isFullscreen()) {
-            inputRef.focus();
-        }
-    })
-
 
     // making a "controlled" input is a known hard problem
     // https://github.com/solidjs/solid/discussions/416
@@ -113,8 +99,7 @@ export function AmountEditable(props: { amountSats: string, setAmountSats: (s: s
     const [state, _] = useMegaStore()
 
     async function getPrice() {
-        // return await state.node_manager?.get_bitcoin_price()
-        return 30000
+        return await state.node_manager?.get_bitcoin_price()
     }
 
     const [price] = createResource(getPrice)
@@ -123,14 +108,15 @@ export function AmountEditable(props: { amountSats: string, setAmountSats: (s: s
     // What we're all here for in the first place: returning a value
     function handleSubmit() {
         // validate it's a number
+        console.log("handling submit...");
         const number = Number(displayAmount());
         if (isNaN(number) || number < 0) {
             setDisplayAmount("0");
             inputRef.focus();
             return;
         } else {
-            props.setAmountSats(displayAmount());
-            toggleFullscreen();
+            const bign = BigInt(displayAmount());
+            props.setAmountSats(bign);
             // This is so the parent can focus the next input if it wants to
             if (props.onSave) {
                 props.onSave();
@@ -138,22 +124,31 @@ export function AmountEditable(props: { amountSats: string, setAmountSats: (s: s
         }
     }
 
+    const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom"
+    const DIALOG_CONTENT = "h-screen-safe p-4 bg-gray/50 backdrop-blur-md bg-black/80"
+
     return (
-        <>
-            {/* TODO: a better transition than this */}
-            <div class={`cursor-pointer transition-all ${isFullscreen() && FULLSCREEN_STYLE}`}>
-                <Show when={isFullscreen()} fallback={<div class="p-4 rounded-xl border-2 border-m-blue" onClick={toggleFullscreen}>
+        <Dialog.Root>
+            <Dialog.Trigger>
+                <div class="p-4 rounded-xl border-2 border-m-blue">
                     <Amount amountSats={Number(displayAmount())} showFiat />
-                </div>}>
-                    <input ref={el => inputRef = el}
-                        type="text"
-                        class="opacity-0 absolute -z-10"
-                        value={displayAmount()}
-                        onInput={(e) => handleHiddenInput(e)}
-                    />
-                    <div class="w-full h-full max-w-[600px] mx-auto">
-                        <div class="flex flex-col gap-4 h-full">
-                            <div class="p-4 bg-black rounded-xl flex-1 flex flex-col gap-4 items-center justify-center">
+                </div>
+            </Dialog.Trigger>
+            <Dialog.Portal>
+                {/* <Dialog.Overlay class={OVERLAY} /> */}
+                <div class={DIALOG_POSITIONER}>
+                    <Dialog.Content class={DIALOG_CONTENT}>
+                        {/* TODO: figure out how to submit on enter */}
+                        <input ref={el => inputRef = el}
+                            autofocus
+                            inputmode='none'
+                            type="text"
+                            class="opacity-0 absolute -z-10"
+                            value={displayAmount()}
+                            onInput={(e) => handleHiddenInput(e)}
+                        />
+                        <div class="flex flex-col gap-4 max-w-[400px] mx-auto">
+                            <div class="p-4 bg-black rounded-xl flex flex-col gap-4 items-center justify-center">
                                 <h1 class={`font-light text-center transition-transform ease-out duration-300 text-6xl ${scale()}`}>
                                     {prettyPrint()}&nbsp;<span class='text-xl'>SATS</span>
                                 </h1>
@@ -168,18 +163,18 @@ export function AmountEditable(props: { amountSats: string, setAmountSats: (s: s
                                     )}
                                 </For>
                             </div>
-                            <div class="flex-none">
+                            {/* TODO: this feels wrong */}
+                            <Dialog.CloseButton>
                                 <Button intent="inactive" class="w-full flex-none"
                                     onClick={handleSubmit}
                                 >
                                     Set Amount
                                 </Button>
-                            </div>
+                            </Dialog.CloseButton>
                         </div>
-
-                    </div>
-                </Show>
-            </div>
-        </>
+                    </Dialog.Content>
+                </div>
+            </Dialog.Portal>
+        </Dialog.Root >
     );
 }

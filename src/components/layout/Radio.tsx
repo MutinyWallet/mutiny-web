@@ -11,9 +11,9 @@ export function StyledRadioGroup(props: { value: string, choices: Choices, onVal
                 {choice =>
                     <RadioGroup.Item value={choice.value} class="ui-checked:bg-white bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2">
                         <div class="py-3 px-4">
-                            <RadioGroup.ItemInput class="radio__input " />
-                            <RadioGroup.ItemControl class="radio__control">
-                                <RadioGroup.ItemIndicator class="radio__indicator" />
+                            <RadioGroup.ItemInput />
+                            <RadioGroup.ItemControl >
+                                <RadioGroup.ItemIndicator />
                             </RadioGroup.ItemControl>
                             <RadioGroup.ItemLabel class="ui-checked:text-m-blue text-neutral-400">
                                 <div class="block">

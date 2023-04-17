@@ -1,5 +1,5 @@
-import { createResource, createSignal, Show, Suspense } from "solid-js";
-import { Button, ButtonLink, FancyCard } from "~/components/layout";
+import { createResource, Show, Suspense } from "solid-js";
+import { ButtonLink, FancyCard } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
 

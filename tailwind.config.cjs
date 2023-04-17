@@ -64,6 +64,12 @@ module.exports = {
           paddingBottom: 'constant(safe-area-inset-bottom)',
           paddingBottom: 'env(safe-area-inset-bottom)'
         },
+        '.h-screen-safe': {
+          height: 'calc(100vh - (env(safe-area-inset-top) + env(safe-area-inset-bottom)))'
+        },
+        '.min-h-screen-safe': {
+          minHeight: 'calc(100vh - (env(safe-area-inset-top) + env(safe-area-inset-bottom)))'
+        },
         '.disable-scrollbars': {
           scrollbarWidth: 'none',
           '-ms-overflow-style': 'none',

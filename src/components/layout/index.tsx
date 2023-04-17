@@ -38,8 +38,8 @@ const FancyCard: ParentComponent<{ title?: string, tag?: JSX.Element }> = (props
 
 const SafeArea: ParentComponent = (props) => {
     return (
-        <div class="safe-top safe-left safe-right safe-bottom">
-            <div class="disable-scrollbars max-h-screen h-full overflow-y-scroll md:pl-[8rem] md:pr-[6rem]">
+        <div class="safe-top safe-left safe-right safe-bottom flex flex-col h-screen-safe">
+            <div class="flex-1 disable-scrollbars overflow-y-scroll md:pl-[8rem] md:pr-[6rem]">
                 {props.children}
                 <div class="h-32" />
             </div>

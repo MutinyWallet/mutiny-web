@@ -2,7 +2,6 @@ import { TextField } from "@kobalte/core";
 import { createMemo, createResource, createSignal, Match, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 import { AmountEditable } from "~/components/AmountEditable";
-import { AmountInput } from "~/components/AmountInput";
 import { Button, Card, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
@@ -106,7 +105,7 @@ export default function Receive() {
                     <LargeHeader>Receive Bitcoin</LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
-                            <AmountEditable amountSats={amount() || "0"} setAmountSats={setAmount} onSave={handleAmountSave} />
+                            <AmountEditable initialAmountSats={amount() || "0"} setAmountSats={setAmount} onSave={handleAmountSave} />
                             <div>
                                 <Button intent="glowy" layout="xs">Tag the sender</Button>
                             </div>

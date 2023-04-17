@@ -2,10 +2,7 @@ import logo from '~/assets/icons/mutiny-logo.svg';
 import { DefaultMain, NodeManagerGuard, SafeArea } from "~/components/layout";
 import BalanceBox from "~/components/BalanceBox";
 import NavBar from "~/components/NavBar";
-
-// TODO: use this reload prompt for real
 import ReloadPrompt from "~/components/Reload";
-import KitchenSink from './KitchenSink';
 import { Scan } from '~/assets/svg/Scan';
 import { A } from 'solid-start';
 

@@ -13,9 +13,7 @@ export default function NotFound() {
         <p>
           This is probably Paul's fault.
         </p>
-        <div class="h-full">
-
-        </div>
+        <div class="h-full" />
         <ButtonLink href="/" intent="red">Dangit</ButtonLink>
       </DefaultMain>
     </SafeArea>
