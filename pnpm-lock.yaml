@@ -10,7 +10,7 @@ dependencies:
   '@motionone/solid':
     specifier: ^10.16.0
     version: 10.16.0(solid-js@1.7.3)
-  '@mutinywallet/node-manager':
+  '@mutinywallet/mutiny-wasm':
     specifier: ^0.2.4
     version: 0.2.4
   '@nostr-dev-kit/ndk':
@@ -1621,8 +1621,8 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  /@mutinywallet/node-manager@0.2.4:
-    resolution: {integrity: sha512-Zl8Xw5WzlFiKr7mCNT/gqUp4GUPk3ZdS2l/3/zS8V9jwJAly9C0WjMoOmrg0ahO2vZ035DHzH4uQRbkWjUCFzQ==}
+  /@mutinywallet/mutiny-wasm@0.2.4:
+    resolution: {integrity: sha512-b7m0KH1KwSQiKHiCQb9vQk/a1e7b+I56GQxTbLA3JOfAf5WFGBE3V4zKFQemoO5BCGEp10IU6BbMyp9yXILs2Q==}
     dev: false
 
   /@noble/hashes@1.2.0:

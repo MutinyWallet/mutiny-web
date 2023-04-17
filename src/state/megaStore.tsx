@@ -3,7 +3,7 @@
 import { ParentComponent, createContext, createEffect, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { setupNodeManager } from "~/logic/nodeManagerSetup";
-import { MutinyBalance, NodeManager } from "@mutinywallet/node-manager";
+import { MutinyBalance, NodeManager } from "@mutinywallet/mutiny-wasm";
 
 const MegaStoreContext = createContext<MegaStore>();
 

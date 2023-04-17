@@ -2,7 +2,7 @@ import { useMegaStore } from "~/state/megaStore";
 import { Card, Hr, SmallHeader, Button, InnerCard } from "~/components/layout";
 import PeerConnectModal from "~/components/PeerConnectModal";
 import { For, Show, Suspense, createResource, createSignal } from "solid-js";
-import { MutinyChannel, MutinyPeer } from "@mutinywallet/node-manager";
+import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import { TextField } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import eify from "~/utils/eify";

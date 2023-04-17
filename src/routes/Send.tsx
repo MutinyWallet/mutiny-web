@@ -6,7 +6,7 @@ import { Button, ButtonLink, DefaultMain, LargeHeader, SafeArea, SmallHeader } f
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
-import { MutinyInvoice, NodeManager } from "@mutinywallet/node-manager";
+import { MutinyInvoice, NodeManager } from "@mutinywallet/mutiny-wasm";
 import { bip21decode } from "~/utils/TEMPbip21";
 import { AmountEditable } from "~/components/AmountEditable";
 import { useLocation } from "solid-start";

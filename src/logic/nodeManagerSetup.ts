@@ -1,5 +1,5 @@
 
-import init, { NodeManager } from '@mutinywallet/node-manager';
+import init, { NodeManager } from '@mutinywallet/mutiny-wasm';
 
 export type NodeManagerSettingStrings = {
     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
