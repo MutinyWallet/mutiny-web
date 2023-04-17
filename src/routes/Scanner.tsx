@@ -1,7 +1,7 @@
 import Reader from "~/components/Reader";
 import { createEffect, createSignal, Show } from "solid-js";
 import { useNavigate } from "solid-start";
-import { Button } from "~/components/layout";
+import { Button, SafeArea } from "~/components/layout";
 
 export default function Scanner() {
     const [scanResult, setScanResult] = createSignal<string>();
@@ -30,7 +30,7 @@ export default function Scanner() {
     })
 
     return (
-        <>
+        <div class="safe-top safe-left safe-right safe-bottom h-screen-safe">
             <Show when={scanResult()} fallback={<Reader onResult={onResult} />}>
                 <div class="w-full p-8">
                     <div class="mt-[20vw] rounded-xl p-4 flex flex-col gap-2 bg-[rgba(0,0,0,0.5)]">
@@ -53,6 +53,6 @@ export default function Scanner() {
                     <Button onClick={exit}>Cancel</Button>
                 </Show>
             </div>
-        </>
+        </div>
     );
 }
