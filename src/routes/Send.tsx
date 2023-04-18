@@ -11,6 +11,7 @@ import { bip21decode } from "~/utils/TEMPbip21";
 import { AmountEditable } from "~/components/AmountEditable";
 import { useLocation } from "solid-start";
 import { StyledRadioGroup } from "~/components/layout/Radio";
+import { SentModal } from "~/components/Sent";
 
 type SendSource = "lightning" | "onchain";
 
@@ -19,8 +20,11 @@ const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fas
 // const TEST_DEST = "bitcoin:tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe?amount=0.00001&label=heyo&lightning=lntbs10u1pjrwrdedq8dpjhjmcnp4qd60w268ve0jencwzhz048ruprkxefhj0va2uspgj4q42azdg89uupp5gngy2pqte5q5uvnwcxwl2t8fsdlla5s6xl8aar4xcsvxeus2w2pqsp5n5jp3pz3vpu92p3uswttxmw79a5lc566herwh3f2amwz2sp6f9tq9qyysgqcqpcxqrpwugv5m534ww5ukcf6sdw2m75f2ntjfh3gzeqay649256yvtecgnhjyugf74zakaf56sdh66ec9fqep2kvu6xv09gcwkv36rrkm38ylqsgpw3yfjl"
 // const TEST_DEST_ADDRESS = "tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe"
 
+type SentDetails = { nice: string }
+
 export default function Send() {
     const [state, _] = useMegaStore();
+
 
     // These can only be set by the user
     const [destination, setDestination] = createSignal("");
@@ -34,6 +38,10 @@ export default function Send() {
     const [invoice, setInvoice] = createSignal<MutinyInvoice>();
     const [address, setAddress] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
+
+    // Is sending / sent
+    const [sending, setSending] = createSignal(false);
+    const [sentDetails, setSentDetails] = createSignal<SentDetails>();
 
     function clearAll() {
         setDestination("");
@@ -110,29 +118,39 @@ export default function Send() {
     }
 
     async function handleSend() {
-        const bolt11 = invoice()?.bolt11;
-        if (source() === "lightning" && invoice() && bolt11) {
-            const nodes = await state.node_manager?.list_nodes();
-            const firstNode = nodes[0] as string || ""
-            // If the invoice has sats use that, otherwise we pass the user-defined amount
-            if (invoice()?.amount_sats) {
-                await state.node_manager?.pay_invoice(firstNode, bolt11);
+        try {
+            setSending(true);
+            const bolt11 = invoice()?.bolt11;
+            if (source() === "lightning" && invoice() && bolt11) {
+                const nodes = await state.node_manager?.list_nodes();
+                const firstNode = nodes[0] as string || ""
+                // If the invoice has sats use that, otherwise we pass the user-defined amount
+                if (invoice()?.amount_sats) {
+                    await state.node_manager?.pay_invoice(firstNode, bolt11);
+                } else {
+                    await state.node_manager?.pay_invoice(firstNode, bolt11, amountSats());
+                }
             } else {
-                await state.node_manager?.pay_invoice(firstNode, bolt11, amountSats());
-
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const txid = await state.node_manager?.send_to_address(address()!, amountSats());
+                console.error(txid)
             }
-        } else {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const txid = await state.node_manager?.send_to_address(address()!, amountSats());
-            console.error(txid)
+
+            setSentDetails({ nice: "nice" });
+            clearAll();
+            console.error("SENT");
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setSending(false);
         }
-        console.error("SENT");
     }
 
     return (
         <SafeArea>
             <DefaultMain>
                 <LargeHeader>Send Bitcoin</LargeHeader>
+                <SentModal details={sentDetails()} />
                 <dl>
                     <dt>
                         <SmallHeader>Destination</SmallHeader>
@@ -225,7 +243,7 @@ export default function Send() {
                         </TextField.Root>
                     </Show>
                 </dl>
-                <Button disabled={!destination()} intent="blue" onClick={handleSend}>Confirm Send</Button>
+                <Button disabled={!destination() || sending()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
             </DefaultMain>
             <NavBar activeTab="send" />
         </SafeArea >

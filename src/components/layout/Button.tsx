@@ -1,7 +1,8 @@
 import { cva, VariantProps } from "class-variance-authority";
-import { children, JSX, ParentComponent, splitProps } from "solid-js";
+import { children, JSX, ParentComponent, Show, splitProps, Switch } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
+import { LoadingSpinner } from ".";
 
 const button = cva("p-3 rounded-xl text-xl font-semibold disabled:opacity-50 disabled:grayscale transition", {
     variants: {
@@ -30,7 +31,9 @@ const button = cva("p-3 rounded-xl text-xl font-semibold disabled:opacity-50 dis
 // Help from https://github.com/arpadgabor/credee/blob/main/packages/www/src/components/ui/button.tsx
 
 type StyleProps = VariantProps<typeof button>
-interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement>, StyleProps { }
+interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement>, StyleProps {
+    loading?: boolean
+}
 
 export const Button: ParentComponent<ButtonProps> = props => {
     const slot = children(() => props.children)
@@ -45,8 +48,13 @@ export const Button: ParentComponent<ButtonProps> = props => {
                 layout: local.layout,
             })}
         >
-            {slot()}
-        </button>
+            <Show when={props.loading} fallback={slot()} >
+                <div class="flex justify-center">
+                    {/* TODO: constrain this to the exact height of the button */}
+                    <LoadingSpinner />
+                </div>
+            </Show>
+        </button >
     )
 }
 
