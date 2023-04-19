@@ -11,6 +11,10 @@ import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import { useCopy } from "~/utils/useCopy";
 import { JsonModal } from '~/components/JsonModal';
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { ReceiveSuccessModal } from "~/components/ReceiveSuccessModal";
+
+import party from '~/assets/party.gif';
+import { Amount } from "~/components/Amount";
 
 type OnChainTx = {
     transaction: {
@@ -223,14 +227,23 @@ export default function Receive() {
                             </Card>
                         </Match>
                         <Match when={receiveState() === "paid" && paidState() === "lightning_paid"}>
-                            <JsonModal title="They paid with lightning" open={!!paidState()} data={paymentInvoice()} setOpen={(open: boolean) => { if (!open) clearAll() }} />
+                            <ReceiveSuccessModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
+                                <div class="flex flex-col items-center gap-8">
+                                    <img src={party} alt="party" class="w-1/2 mx-auto" />
+                                    <Amount amountSats={paymentInvoice()?.amount_sats} showFiat />
+                                </div>
+                            </ReceiveSuccessModal>
                         </Match>
                         <Match when={receiveState() === "paid" && paidState() === "onchain_paid"}>
-                            <JsonModal title="They paid onchain" open={!!paidState()} data={paymentTx()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
-                                <a href={mempoolTxUrl(paymentTx()?.txid, "signet")} target="_blank" rel="noreferrer">
-                                    Mempool Link
-                                </a>
-                            </JsonModal>
+                            <ReceiveSuccessModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
+                                <div class="flex flex-col items-center gap-8">
+                                    <img src={party} alt="party" class="w-1/2 mx-auto" />
+                                    <Amount amountSats={paymentTx()?.received} showFiat />
+                                    <a href={mempoolTxUrl(paymentTx()?.txid, "signet")} target="_blank" rel="noreferrer">
+                                        Mempool Link
+                                    </a>
+                                </div>
+                            </ReceiveSuccessModal>
                         </Match>
                     </Switch>
                 </DefaultMain>

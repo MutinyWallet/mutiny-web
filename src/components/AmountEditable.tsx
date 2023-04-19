@@ -119,7 +119,7 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
         }
     }
 
-    const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom"
+    const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
     const DIALOG_CONTENT = "h-screen-safe p-4 bg-gray/50 backdrop-blur-md bg-black/80"
 
     return (
