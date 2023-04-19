@@ -5,7 +5,7 @@ import { For, JSX, Match, Show, Suspense, Switch, createMemo, createResource, cr
 import { useMegaStore } from '~/state/megaStore';
 import { MutinyInvoice } from '@mutinywallet/mutiny-wasm';
 import { prettyPrintTime } from '~/utils/prettyPrintTime';
-import { JsonModal } from './JsonModal';
+import { JsonModal } from '~/components/JsonModal';
 import mempoolTxUrl from '~/utils/mempoolTxUrl';
 
 const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
@@ -49,7 +49,6 @@ function OnChainItem(props: { item: OnChainTx }) {
                 <a href={mempoolTxUrl(props.item.txid, "signet")} target="_blank" rel="noreferrer">
                     Mempool Link
                 </a>
-
             </JsonModal>
             <div class={THREE_COLUMNS} onclick={() => setOpen(!open())}>
                 {isReceive() ? <img src={receive} alt="receive arrow" /> : <img src={send} alt="send arrow" />}

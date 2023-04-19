@@ -1,5 +1,6 @@
 import { TextField } from "@kobalte/core";
-import { createMemo, createResource, createSignal, Match, Switch } from "solid-js";
+import { MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 import { AmountEditable } from "~/components/AmountEditable";
 import { Button, Card, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
@@ -8,6 +9,32 @@ import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import { useCopy } from "~/utils/useCopy";
+import { JsonModal } from '~/components/JsonModal';
+import mempoolTxUrl from "~/utils/mempoolTxUrl";
+
+type OnChainTx = {
+    transaction: {
+        version: number
+        lock_time: number
+        input: Array<{
+            previous_output: string
+            script_sig: string
+            sequence: number
+            witness: Array<string>
+        }>
+        output: Array<{
+            value: number
+            script_pubkey: string
+        }>
+    }
+    txid: string
+    received: number
+    sent: number
+    confirmation_time: {
+        height: number
+        timestamp: number
+    }
+}
 
 function ShareButton(props: { receiveString: string }) {
     async function share(receiveString: string) {
@@ -31,7 +58,8 @@ function ShareButton(props: { receiveString: string }) {
     )
 }
 
-type ReceiveState = "edit" | "show"
+type ReceiveState = "edit" | "show" | "paid"
+type PaidState = "lightning_paid" | "onchain_paid";
 
 export default function Receive() {
     const [state, _] = useMegaStore()
@@ -40,6 +68,24 @@ export default function Receive() {
     const [label, setLabel] = createSignal("")
 
     const [receiveState, setReceiveState] = createSignal<ReceiveState>("edit")
+
+    const [bip21Raw, setBip21Raw] = createSignal<MutinyBip21RawMaterials>();
+
+    const [unified, setUnified] = createSignal("")
+
+    // The data we get after a payment
+    const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
+    const [paymentInvoice, setPaymentInvoice] = createSignal<MutinyInvoice>();
+
+    function clearAll() {
+        setAmount("")
+        setLabel("")
+        setReceiveState("edit")
+        setBip21Raw(undefined)
+        setUnified("")
+        setPaymentTx(undefined)
+        setPaymentInvoice(undefined)
+    }
 
     let amountInput!: HTMLInputElement;
     let labelInput!: HTMLInputElement;
@@ -56,21 +102,24 @@ export default function Receive() {
         labelInput.focus();
     }
 
-    const [unified, setUnified] = createSignal("")
+
 
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     async function getUnifiedQr(amount: string, label: string) {
         const bigAmount = BigInt(amount);
-        const bip21Raw = await state.node_manager?.create_bip21(bigAmount, label);
+        const raw = await state.node_manager?.create_bip21(bigAmount, label);
+
+        // Save the raw info so we can watch the address and invoice
+        setBip21Raw(raw);
 
         const params = objectToSearchParams({
-            amount: bip21Raw?.btc_amount,
-            label: bip21Raw?.description,
-            lightning: bip21Raw?.invoice
+            amount: raw?.btc_amount,
+            label: raw?.description,
+            lightning: raw?.invoice
         })
 
-        return `bitcoin:${bip21Raw?.address}?${params}`
+        return `bitcoin:${raw?.address}?${params}`
     }
 
     async function onSubmit(e: Event) {
@@ -90,9 +139,43 @@ export default function Receive() {
         labelInput.focus();
     }
 
+    async function checkIfPaid(bip21?: MutinyBip21RawMaterials): Promise<PaidState | undefined> {
+        if (bip21) {
+            console.log("checking if paid...")
+            const lightning = bip21.invoice
+            const address = bip21.address
+
+            const invoice = await state.node_manager?.get_invoice(lightning)
+
+            if (invoice && invoice.paid) {
+                setReceiveState("paid")
+                setPaymentInvoice(invoice)
+                return "lightning_paid"
+            }
+
+            const tx = await state.node_manager?.check_address(address) as OnChainTx | undefined;
+
+            if (tx) {
+                setReceiveState("paid")
+                setPaymentTx(tx)
+                return "onchain_paid"
+            }
+        }
+    }
+
+    const [paidState, { refetch }] = createResource(bip21Raw, checkIfPaid);
+
+    createEffect(() => {
+        const interval = setInterval(() => {
+            if (receiveState() === "show") refetch();
+        }, 1000); // Poll every second
+        onCleanup(() => {
+            clearInterval(interval);
+        });
+    });
+
     return (
         <NodeManagerGuard>
-
             <SafeArea>
                 <DefaultMain>
                     <LargeHeader>Receive Bitcoin</LargeHeader>
@@ -138,6 +221,16 @@ export default function Receive() {
                             <Card title="Bip21">
                                 <code class="break-all">{unified()}</code>
                             </Card>
+                        </Match>
+                        <Match when={receiveState() === "paid" && paidState() === "lightning_paid"}>
+                            <JsonModal title="They paid with lightning" open={!!paidState()} data={paymentInvoice()} setOpen={(open: boolean) => { if (!open) clearAll() }} />
+                        </Match>
+                        <Match when={receiveState() === "paid" && paidState() === "onchain_paid"}>
+                            <JsonModal title="They paid onchain" open={!!paidState()} data={paymentTx()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
+                                <a href={mempoolTxUrl(paymentTx()?.txid, "signet")} target="_blank" rel="noreferrer">
+                                    Mempool Link
+                                </a>
+                            </JsonModal>
                         </Match>
                     </Switch>
                 </DefaultMain>

@@ -23,8 +23,7 @@ const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fas
 type SentDetails = { nice: string }
 
 export default function Send() {
-    const [state, _] = useMegaStore();
-
+    const [state, actions] = useMegaStore();
 
     // These can only be set by the user
     const [destination, setDestination] = createSignal("");
@@ -133,6 +132,8 @@ export default function Send() {
             } else {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const txid = await state.node_manager?.send_to_address(address()!, amountSats());
+                // TODO: figure out if this is necessary, it takes forever
+                await actions.sync();
                 console.error(txid)
             }
 

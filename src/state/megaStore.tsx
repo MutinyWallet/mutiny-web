@@ -1,6 +1,6 @@
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
 
-import { ParentComponent, createContext, createEffect, onMount, useContext } from "solid-js";
+import { ParentComponent, createContext, createEffect, onCleanup, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { setupNodeManager } from "~/logic/nodeManagerSetup";
 import { MutinyBalance, NodeManager } from "@mutinywallet/mutiny-wasm";
@@ -21,6 +21,7 @@ export type MegaStore = [{
     fetchUserStatus(): Promise<UserStatus>;
     setupNodeManager(): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
+    sync(): Promise<void>;
 }];
 
 export const Provider: ParentComponent = (props) => {
@@ -61,6 +62,17 @@ export const Provider: ParentComponent = (props) => {
         },
         setWaitlistId(waitlist_id: string) {
             setState({ waitlist_id })
+        },
+        async sync(): Promise<void> {
+            console.time("BDK Sync Time")
+            console.groupCollapsed("BDK Sync")
+            try {
+                await state.node_manager?.sync()
+            } catch (e) {
+                console.error(e);
+            }
+            console.groupEnd();
+            console.timeEnd("BDK Sync Time")
         }
     };
 
@@ -83,6 +95,16 @@ export const Provider: ParentComponent = (props) => {
     createEffect(() => {
         state.waitlist_id ? localStorage.setItem("waitlist_id", state.waitlist_id) : localStorage.removeItem("waitlist_id");
     });
+
+    createEffect(() => {
+        const interval = setInterval(() => {
+            if (state.node_manager) actions.sync();
+        }, 60 * 1000); // Poll every minute
+
+        onCleanup(() => {
+            clearInterval(interval);
+        });
+    })
 
     const store = [state, actions] as MegaStore;
 
