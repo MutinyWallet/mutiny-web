@@ -82,14 +82,7 @@ export default function Receive() {
         setReceiveState("show")
     }
 
-    async function getPrice() {
-        // return await state.node_manager?.get_bitcoin_price()
-        return 30000
-    }
-
-    const [price] = createResource(getPrice)
-
-    const amountInUsd = createMemo(() => satsToUsd(price(), parseInt(amount()) || 0, true))
+    const amountInUsd = createMemo(() => satsToUsd(state.price, parseInt(amount()) || 0, true))
 
     function handleAmountSave() {
         console.error("focusing label input...")

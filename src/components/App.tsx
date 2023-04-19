@@ -5,6 +5,7 @@ import NavBar from "~/components/NavBar";
 import ReloadPrompt from "~/components/Reload";
 import { Scan } from '~/assets/svg/Scan';
 import { A } from 'solid-start';
+import { Activity } from './Activity';
 
 export default function App() {
     return (
@@ -15,8 +16,9 @@ export default function App() {
                         <img src={logo} class="h-10" alt="logo" />
                         <A class="p-2 hover:bg-white/5 rounded-lg active:bg-m-blue" href="scanner"><Scan /></A>
                     </header>
-                    <BalanceBox />
                     <ReloadPrompt />
+                    <BalanceBox />
+                    <Activity />
                 </DefaultMain>
                 <NavBar activeTab="home" />
             </SafeArea>

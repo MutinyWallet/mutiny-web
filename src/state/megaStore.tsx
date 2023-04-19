@@ -16,6 +16,7 @@ export type MegaStore = [{
     scan_result?: string;
     balance?: MutinyBalance;
     last_sync?: number;
+    price: number
 }, {
     fetchUserStatus(): Promise<UserStatus>;
     setupNodeManager(): Promise<void>;
@@ -27,6 +28,8 @@ export const Provider: ParentComponent = (props) => {
         waitlist_id: localStorage.getItem("waitlist_id"),
         node_manager: undefined as NodeManager | undefined,
         user_status: undefined as UserStatus,
+        // TODO: wire this up to real price once we have caching
+        price: 30000
     });
 
     const actions = {

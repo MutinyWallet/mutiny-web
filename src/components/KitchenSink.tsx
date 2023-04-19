@@ -28,7 +28,7 @@ function PeersList() {
             <Suspense>
                 <For each={peers()} fallback={<code>No peers</code>}>
                     {(peer) => (
-                        <pre class="overflow-x-auto whitespace-pre-line break-all">
+                        <pre class="overflow-x-auto whitespace-pre-wrap break-all">
                             {JSON.stringify(peer, null, 2)}
                         </pre>
                     )}
@@ -102,7 +102,7 @@ function ChannelsList() {
                 <For each={channels()} fallback={<code>No channels</code>}>
                     {(channel) => (
                         <>
-                            <pre class="overflow-x-auto whitespace-pre-line break-all">
+                            <pre class="overflow-x-auto whitespace-pre-wrap break-all">
                                 {JSON.stringify(channel, null, 2)}
                             </pre>
                             <a class="text-sm font-light opacity-50 mt-2" href={mempoolTxUrl(channel.outpoint?.split(":")[0], network)} target="_blank" rel="noreferrer">
@@ -182,7 +182,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                 </form >
             </InnerCard>
             <Show when={newChannel()}>
-                <pre class="overflow-x-auto whitespace-pre-line break-all">
+                <pre class="overflow-x-auto whitespace-pre-wrap break-all">
                     {JSON.stringify(newChannel()?.outpoint, null, 2)}
                 </pre>
                 <pre>{newChannel()?.outpoint}</pre>

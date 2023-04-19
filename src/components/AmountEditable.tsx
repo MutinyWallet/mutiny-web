@@ -98,12 +98,7 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
     // Fiat conversion
     const [state, _] = useMegaStore()
 
-    async function getPrice() {
-        return await state.node_manager?.get_bitcoin_price()
-    }
-
-    const [price] = createResource(getPrice)
-    const amountInUsd = () => satsToUsd(price(), Number(displayAmount()) || 0, true)
+    const amountInUsd = () => satsToUsd(state.price, Number(displayAmount()) || 0, true)
 
     // What we're all here for in the first place: returning a value
     function handleSubmit() {

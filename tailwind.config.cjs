@@ -70,6 +70,9 @@ module.exports = {
         '.min-h-screen-safe': {
           minHeight: 'calc(100vh - (env(safe-area-inset-top) + env(safe-area-inset-bottom)))'
         },
+        '.max-h-screen-safe': {
+          maxHeight: 'calc(100vh - (env(safe-area-inset-top) + env(safe-area-inset-bottom)))'
+        },
         '.disable-scrollbars': {
           scrollbarWidth: 'none',
           '-ms-overflow-style': 'none',

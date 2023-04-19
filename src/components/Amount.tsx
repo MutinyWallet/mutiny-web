@@ -12,12 +12,7 @@ function prettyPrintAmount(n?: number | bigint): string {
 export function Amount(props: { amountSats: bigint | number | undefined, showFiat?: boolean, loading?: boolean }) {
     const [state, _] = useMegaStore()
 
-    async function getPrice() {
-        return await state.node_manager?.get_bitcoin_price()
-    }
-
-    const [price] = createResource(getPrice)
-    const amountInUsd = () => satsToUsd(price(), Number(props.amountSats) || 0, true)
+    const amountInUsd = () => satsToUsd(state.price, Number(props.amountSats) || 0, true)
 
     return (
         <div class="flex flex-col gap-2">
