@@ -229,7 +229,7 @@ export default function Receive() {
                         <Match when={receiveState() === "paid" && paidState() === "lightning_paid"}>
                             <ReceiveSuccessModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
                                 <div class="flex flex-col items-center gap-8">
-                                    <img src={party} alt="party" class="w-1/2 mx-auto" />
+                                    <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
                                     <Amount amountSats={paymentInvoice()?.amount_sats} showFiat />
                                 </div>
                             </ReceiveSuccessModal>
@@ -237,7 +237,7 @@ export default function Receive() {
                         <Match when={receiveState() === "paid" && paidState() === "onchain_paid"}>
                             <ReceiveSuccessModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
                                 <div class="flex flex-col items-center gap-8">
-                                    <img src={party} alt="party" class="w-1/2 mx-auto" />
+                                    <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
                                     <Amount amountSats={paymentTx()?.received} showFiat />
                                     <a href={mempoolTxUrl(paymentTx()?.txid, "signet")} target="_blank" rel="noreferrer">
                                         Mempool Link

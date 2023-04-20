@@ -1,5 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import { ButtonLink, SmallHeader } from "~/components/layout";
+import close from "~/assets/icons/close.svg";
 
 const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
 const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
@@ -12,14 +13,14 @@ export function SentModal(props: { details?: { nice: string } }) {
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
-                        <div class="flex justify-between mb-2">
+                        <div class="flex justify-between mb-2 items-center">
                             <Dialog.Title>
                                 <SmallHeader>
                                     Sent!
                                 </SmallHeader>
                             </Dialog.Title>
-                            <Dialog.CloseButton class="dialog__close-button">
-                                <code>X</code>
+                            <Dialog.CloseButton class="p-2 hover:bg-white/10 rounded-lg active:bg-m-blue">
+                                <img src={close} alt="Close" />
                             </Dialog.CloseButton>
                         </div>
                         <Dialog.Description class="flex flex-col gap-4">

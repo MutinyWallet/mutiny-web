@@ -1,14 +1,49 @@
 import { useMegaStore } from "~/state/megaStore";
-import { Card, Hr, SmallHeader, Button, InnerCard } from "~/components/layout";
+import { Card, Hr, SmallHeader, Button, InnerCard, VStack } from "~/components/layout";
 import PeerConnectModal from "~/components/PeerConnectModal";
-import { For, Show, Suspense, createResource, createSignal } from "solid-js";
+import { For, Show, Suspense, createEffect, createResource, createSignal, onCleanup } from "solid-js";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
-import { TextField } from "@kobalte/core";
+import { Collapsible, TextField, toaster } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import eify from "~/utils/eify";
+import { ConfirmDialog } from "./Dialog";
+import { ToastItem, showToast } from "./Toaster";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (info?: unknown) => MutinyPeer[] | Promise<MutinyPeer[] | undefined> | null | undefined
+
+function PeerItem(props: { peer: MutinyPeer }) {
+    const [state, _] = useMegaStore()
+
+    const handleDisconnectPeer = async () => {
+        const nodes = await state.node_manager?.list_nodes();
+        const firstNode = nodes[0] as string || ""
+
+        if (props.peer.is_connected) {
+            await state.node_manager?.disconnect_peer(firstNode, props.peer.pubkey);
+        } else {
+            await state.node_manager?.delete_peer(firstNode, props.peer.pubkey);
+        }
+    };
+
+    return (
+        <Collapsible.Root>
+            <Collapsible.Trigger class="w-full">
+                <h2 class="truncate text-start text-lg font-mono bg-neutral-200 text-black rounded px-4 py-2">
+                    {">"} {props.peer.alias ? props.peer.alias : props.peer.pubkey}
+                </h2>
+            </Collapsible.Trigger>
+            <Collapsible.Content>
+                <VStack>
+                    <pre class="overflow-x-auto whitespace-pre-wrap break-all">
+                        {JSON.stringify(props.peer, null, 2)}
+                    </pre>
+                    <Button intent="glowy" layout="xs" onClick={handleDisconnectPeer}>Disconnect</Button>
+                </VStack>
+            </Collapsible.Content>
+        </Collapsible.Root>
+    )
+}
 
 function PeersList() {
     const [state, _] = useMegaStore()
@@ -19,6 +54,16 @@ function PeersList() {
 
     const [peers, { refetch }] = createResource(getPeers);
 
+    createEffect(() => {
+        // refetch peers every 5 seconds
+        const interval = setTimeout(() => {
+            refetch();
+        }, 5000);
+        onCleanup(() => {
+            clearInterval(interval);
+        });
+    })
+
     return (
         <>
             <SmallHeader>
@@ -26,13 +71,13 @@ function PeersList() {
             </SmallHeader>
             {/* By wrapping this in a suspense I don't cause the page to jump to the top */}
             <Suspense>
-                <For each={peers()} fallback={<code>No peers</code>}>
-                    {(peer) => (
-                        <pre class="overflow-x-auto whitespace-pre-wrap break-all">
-                            {JSON.stringify(peer, null, 2)}
-                        </pre>
-                    )}
-                </For>
+                <VStack>
+                    <For each={peers()} fallback={<code>No peers</code>}>
+                        {(peer) => (
+                            <PeerItem peer={peer} />
+                        )}
+                    </For>
+                </VStack>
             </Suspense>
             <Button layout="small" onClick={refetch}>Refresh Peers</Button>
             <ConnectPeer refetchPeers={refetch} />
@@ -81,6 +126,54 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
 
 type RefetchChannelsListType = (info?: unknown) => MutinyChannel[] | Promise<MutinyChannel[] | undefined> | null | undefined
 
+function ChannelItem(props: { channel: MutinyChannel, network?: string }) {
+    const [state, _] = useMegaStore()
+
+    const [confirmOpen, setConfirmOpen] = createSignal(false);
+    const [confirmLoading, setConfirmLoading] = createSignal(false);
+
+    function handleCloseChannel() {
+        setConfirmOpen(true);
+    }
+
+    async function confirmCloseChannel() {
+        setConfirmLoading(true);
+        try {
+            await state.node_manager?.close_channel(props.channel.outpoint as string)
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
+        }
+        setConfirmLoading(false);
+        setConfirmOpen(false);
+    }
+
+    return (
+        <Collapsible.Root>
+            <Collapsible.Trigger class="w-full">
+                <h2 class="truncate text-start text-lg font-mono bg-neutral-200 text-black rounded px-4 py-2">
+                    {">"} {props.channel.peer}
+                </h2>
+            </Collapsible.Trigger>
+            <Collapsible.Content>
+                <VStack>
+                    <pre class="overflow-x-auto whitespace-pre-wrap break-all">
+                        {JSON.stringify(props.channel, null, 2)}
+                    </pre>
+                    <a class="" href={mempoolTxUrl(props.channel.outpoint?.split(":")[0], props.network)} target="_blank" rel="noreferrer">
+                        Mempool Link
+                    </a>
+                    <Button intent="glowy" layout="xs" onClick={handleCloseChannel}>Close Channel</Button>
+
+                </VStack>
+                <ConfirmDialog isOpen={confirmOpen()} onConfirm={confirmCloseChannel} onCancel={() => setConfirmOpen(false)} loading={confirmLoading()}>
+                    <p>Are you sure you want to close this channel?</p>
+                </ConfirmDialog>
+            </Collapsible.Content>
+        </Collapsible.Root>
+    )
+}
+
 function ChannelsList() {
     const [state, _] = useMegaStore()
 
@@ -89,6 +182,16 @@ function ChannelsList() {
     };
 
     const [channels, { refetch }] = createResource(getChannels);
+
+    createEffect(() => {
+        // refetch channels every 5 seconds
+        const interval = setTimeout(() => {
+            refetch();
+        }, 5000);
+        onCleanup(() => {
+            clearInterval(interval);
+        });
+    })
 
     const network = state.node_manager?.get_network();
 
@@ -101,14 +204,7 @@ function ChannelsList() {
             <Suspense>
                 <For each={channels()} fallback={<code>No channels</code>}>
                     {(channel) => (
-                        <>
-                            <pre class="overflow-x-auto whitespace-pre-wrap break-all">
-                                {JSON.stringify(channel, null, 2)}
-                            </pre>
-                            <a class="text-sm font-light opacity-50 mt-2" href={mempoolTxUrl(channel.outpoint?.split(":")[0], network)} target="_blank" rel="noreferrer">
-                                Mempool Link
-                            </a>
-                        </>
+                        <ChannelItem channel={channel} network={network} />
                     )}
 
                 </For>

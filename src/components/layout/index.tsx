@@ -10,7 +10,7 @@ const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
 
 const Card: ParentComponent<{ title?: string }> = (props) => {
     return (
-        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950'>
+        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950 overflow-x-hidden'>
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.children}
         </div>
