@@ -1,4 +1,4 @@
-import { Show, createResource } from "solid-js"
+import { Show } from "solid-js"
 import { useMegaStore } from "~/state/megaStore"
 import { satsToUsd } from "~/utils/conversions"
 

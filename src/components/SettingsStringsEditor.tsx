@@ -3,7 +3,7 @@ import { TextField } from '~/components/layout/TextField';
 import { NodeManagerSettingStrings, getExistingSettings } from '~/logic/nodeManagerSetup';
 import { Button } from '~/components/layout';
 import { createSignal } from 'solid-js';
-import { deleteDb } from '~/routes/Settings';
+import { deleteDb } from '~/components/DeleteEverything';
 import { showToast } from './Toaster';
 import eify from '~/utils/eify';
 import { ConfirmDialog } from "~/components/Dialog";
@@ -11,12 +11,12 @@ import { useMegaStore } from '~/state/megaStore';
 
 export function SettingsStringsEditor() {
     const existingSettings = getExistingSettings();
-    const [settingsForm, { Form, Field, FieldArray }] = createForm<NodeManagerSettingStrings>({ initialValues: existingSettings });
+    const [_settingsForm, { Form, Field }] = createForm<NodeManagerSettingStrings>({ initialValues: existingSettings });
     const [confirmOpen, setConfirmOpen] = createSignal(false);
 
     const [settingsTemp, setSettingsTemp] = createSignal<NodeManagerSettingStrings>();
 
-    const [state, actions] = useMegaStore();
+    const [_store, actions] = useMegaStore();
 
     async function handleSubmit(values: NodeManagerSettingStrings) {
         try {
@@ -56,7 +56,10 @@ export function SettingsStringsEditor() {
     }
 
     return <Form onSubmit={handleSubmit} class="flex flex-col gap-4">
-        <ConfirmDialog loading={false} isOpen={confirmOpen()} onConfirm={confirmStateReset} onCancel={() => setConfirmOpen(false)} />
+        <ConfirmDialog loading={false} isOpen={confirmOpen()} onConfirm={confirmStateReset} onCancel={() => setConfirmOpen(false)}>
+            Are you sure? Changing networks will delete your node's state. This can't be undone!
+        </ConfirmDialog>
+        <h2 class="text-2xl font-light">Don't trust us! Use your own servers to back Mutiny.</h2>
         <Field name="network">
             {(field, props) => (
                 // TODO: make a cool select component

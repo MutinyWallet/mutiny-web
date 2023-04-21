@@ -1,5 +1,5 @@
 import { cva, VariantProps } from "class-variance-authority";
-import { children, JSX, ParentComponent, Show, splitProps, Switch } from "solid-js";
+import { children, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
 import { LoadingSpinner } from ".";

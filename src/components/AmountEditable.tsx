@@ -1,4 +1,4 @@
-import { For, createMemo, createResource, createSignal } from 'solid-js';
+import { For, createMemo, createSignal } from 'solid-js';
 import { Button } from '~/components/layout';
 import { useMegaStore } from '~/state/megaStore';
 import { satsToUsd } from '~/utils/conversions';

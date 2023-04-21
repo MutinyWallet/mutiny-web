@@ -1,5 +1,5 @@
 export function prettyPrintTime(ts: number) {
-    const options = {
+    const options: Intl.DateTimeFormatOptions = {
         weekday: 'long',
         year: 'numeric',
         month: 'short',
@@ -8,5 +8,5 @@ export function prettyPrintTime(ts: number) {
         minute: 'numeric'
     };
 
-    return new Date(ts * 1000).toLocaleString('en-US', options as any);
+    return new Date(ts * 1000).toLocaleString('en-US', options);
 }

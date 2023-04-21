@@ -3,11 +3,11 @@ import { Card, Hr, SmallHeader, Button, InnerCard, VStack } from "~/components/l
 import PeerConnectModal from "~/components/PeerConnectModal";
 import { For, Show, Suspense, createEffect, createResource, createSignal, onCleanup } from "solid-js";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
-import { Collapsible, TextField, toaster } from "@kobalte/core";
+import { Collapsible, TextField } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import eify from "~/utils/eify";
 import { ConfirmDialog } from "./Dialog";
-import { ToastItem, showToast } from "./Toaster";
+import { showToast } from "./Toaster";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (info?: unknown) => MutinyPeer[] | Promise<MutinyPeer[] | undefined> | null | undefined

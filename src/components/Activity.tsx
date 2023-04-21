@@ -1,7 +1,7 @@
 import send from '~/assets/icons/send.svg';
 import receive from '~/assets/icons/receive.svg';
-import { Card, Hr, LoadingSpinner, SmallAmount, SmallHeader, VStack } from './layout';
-import { For, JSX, Match, Show, Suspense, Switch, createMemo, createResource, createSignal } from 'solid-js';
+import { Card, LoadingSpinner, SmallAmount, SmallHeader, VStack } from './layout';
+import { For, Match, ParentComponent, Suspense, Switch, createMemo, createResource, createSignal } from 'solid-js';
 import { useMegaStore } from '~/state/megaStore';
 import { MutinyInvoice } from '@mutinywallet/mutiny-wasm';
 import { prettyPrintTime } from '~/utils/prettyPrintTime';
@@ -34,7 +34,7 @@ type Utxo = {
     is_spent: boolean
 }
 
-function SubtleText(props: { children: any }) {
+const SubtleText: ParentComponent = (props) => {
     return <h3 class='text-xs text-gray-500 uppercase'>{props.children}</h3>
 }
 
@@ -50,7 +50,7 @@ function OnChainItem(props: { item: OnChainTx }) {
                     Mempool Link
                 </a>
             </JsonModal>
-            <div class={THREE_COLUMNS} onclick={() => setOpen(!open())}>
+            <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 {isReceive() ? <img src={receive} alt="receive arrow" /> : <img src={send} alt="send arrow" />}
                 <div class={CENTER_COLUMN}>
                     <h2 class={MISSING_LABEL}>Label Missing</h2>
@@ -76,7 +76,7 @@ function InvoiceItem(props: { item: MutinyInvoice }) {
     return (
         <>
             <JsonModal open={open()} data={props.item} title="Lightning Transaction" setOpen={setOpen} />
-            <div class={THREE_COLUMNS} onclick={() => setOpen(!open())}>
+            <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 {isSend() ? <img src={send} alt="send arrow" /> : <img src={receive} alt="receive arrow" />}
                 <div class={CENTER_COLUMN}>
                     <h2 class={MISSING_LABEL}>Label Missing</h2>
@@ -101,7 +101,7 @@ function Utxo(props: { item: Utxo }) {
     return (
         <>
             <JsonModal open={open()} data={props.item} title="Unspent Transaction Output" setOpen={setOpen} />
-            <div class={THREE_COLUMNS} onclick={() => setOpen(!open())}>
+            <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 <img src={receive} alt="receive arrow" />
                 <div class={CENTER_COLUMN}>
                     <h2 class={MISSING_LABEL}>Label Missing</h2>
@@ -138,9 +138,9 @@ export function Activity() {
         return utxos;
     }
 
-    const [transactions, { refetch: refetchTransactions }] = createResource(getTransactions);
-    const [invoices, { refetch: refetchInvoices }] = createResource(getInvoices);
-    const [utxos, { refetch: refetchUtxos }] = createResource(getUtXos);
+    const [transactions, { refetch: _refetchTransactions }] = createResource(getTransactions);
+    const [invoices, { refetch: _refetchInvoices }] = createResource(getInvoices);
+    const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos);
 
     return (
         <VStack>

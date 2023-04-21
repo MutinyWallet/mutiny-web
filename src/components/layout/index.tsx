@@ -92,8 +92,8 @@ const LargeHeader: ParentComponent = (props) => {
     return (<h1 class="text-4xl font-semibold uppercase border-b-2 border-b-white my-4">{props.children}</h1>)
 }
 
-const VStack: ParentComponent = (props) => {
-    return (<div class="flex flex-col gap-4">{props.children}</div>)
+const VStack: ParentComponent<{ biggap?: boolean }> = (props) => {
+    return (<div class={`flex flex-col gap-${props.biggap ? "8" : "4"}`}>{props.children}</div>)
 }
 
 const SmallAmount: ParentComponent<{ amount: number | bigint }> = (props) => {

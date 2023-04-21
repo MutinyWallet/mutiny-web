@@ -73,7 +73,7 @@ export default function WaitlistForm() {
             </h2>
             <Form onSubmit={newHandleSubmit} class="flex flex-col gap-8">
                 <Field name="user_type">
-                    {(field, props) => (
+                    {(field, _props) => (
                         // TODO: there's probably a "real" way to do this with modular-forms
                         <StyledRadioGroup value={field.value || "nostr"} onValueChange={(newValue) => setValue(waitlistForm, "user_type", newValue as "nostr" | "email")} choices={COMMUNICATION_METHODS} />
                     )}
