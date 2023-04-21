@@ -12,7 +12,7 @@ import { useCopy } from "~/utils/useCopy";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { ReceiveSuccessModal } from "~/components/ReceiveSuccessModal";
 
-import party from '~/assets/check-spinner.gif';
+import party from '~/assets/party.gif';
 import { Amount } from "~/components/Amount";
 
 type OnChainTx = {
