@@ -14,6 +14,7 @@ import {
 } from "solid-start";
 import "./root.css";
 import { Provider as MegaStoreProvider } from "~/state/megaStore";
+import { Toaster } from "~/components/Toaster";
 
 export default function Root() {
   return (
@@ -39,6 +40,7 @@ export default function Root() {
               <Routes>
                 <FileRoutes />
               </Routes>
+              <Toaster />
             </MegaStoreProvider>
           </ErrorBoundary>
         </Suspense>

@@ -1,8 +1,7 @@
-import { Motion, Presence } from "@motionone/solid";
 import { createResource, Show, Suspense } from "solid-js";
-
-import { ButtonLink } from "~/components/layout";
+import { ButtonLink, FancyCard } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
+import { Amount } from "./Amount";
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
@@ -11,63 +10,69 @@ function prettyPrintAmount(n?: number | bigint): string {
     return n.toLocaleString()
 }
 
+function SyncingIndicator() {
+    return (
+        <div class="box-border animate-pulse px-2 py-1 -my-1 bg-white/70 rounded text-xs uppercase text-black">Syncing</div>
+    )
+}
+
 export default function BalanceBox() {
     const [state, _] = useMegaStore();
 
-    const fetchBalance = async () => {
-        if (state.node_manager) {
-            console.log("Refetching balance");
-            await state.node_manager.sync();
-            const balance = await state.node_manager.get_balance();
-            return balance
-        } else {
-            return undefined
-        }
+    const fetchOnchainBalance = async () => {
+        console.log("Refetching onchain balance");
+        const balance = await state.node_manager?.get_balance();
+        return balance
     };
 
-    const [balance, { refetch: refetchBalance }] = createResource(fetchBalance);
+    // TODO: it's hacky to do these separately, but ln doesn't need the sync so I don't want to wait
+    const fetchLnBalance = async () => {
+        console.log("Refetching ln balance");
+        const balance = await state.node_manager?.get_balance();
+        return balance
+    };
+
+    const [onChainBalance, { refetch: refetchOnChainBalance }] = createResource(fetchOnchainBalance);
+    const [lnBalance, { refetch: refetchLnBalance }] = createResource(fetchLnBalance);
+
+    function refetchBalance() {
+        refetchLnBalance();
+        refetchOnChainBalance();
+    }
 
     return (
-        <Presence>
-            <Motion
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5, easing: [0.87, 0, 0.13, 1] }}
-            >
-                <div class='border border-white rounded-xl border-b-4 p-4 flex flex-col gap-2'>
-                    <header class='text-sm font-semibold uppercase'>
-                        Balance
-                    </header>
+        <>
+            <FancyCard title="Lightning">
+                <Suspense fallback={<Amount amountSats={0} showFiat loading={true} />}>
+                    <Show when={lnBalance()}>
+                        <Amount amountSats={lnBalance()?.lightning} showFiat />
+                    </Show>
+                </Suspense>
+            </FancyCard>
+
+            <FancyCard title="On-Chain" tag={onChainBalance.loading && <SyncingIndicator />}>
+                <Suspense fallback={<Amount amountSats={0} showFiat loading={true} />}>
                     <div onClick={refetchBalance}>
-                        <h1 class='text-4xl font-light'>
-                            <Suspense fallback={"..."}>
-                                <Show when={balance()}>
-                                    <div class="flex flex-col gap-4">
-                                        <div>
-                                            {prettyPrintAmount(balance()?.confirmed)} <span class='text-xl'>SAT</span>
-                                        </div>
-                                        <Show when={balance()?.unconfirmed}>
-                                            <div class="flex flex-col gap-2">
-                                                <header class='text-sm font-semibold uppercase text-white/50'>
-                                                    Unconfirmed Balance
-                                                </header>
-                                                <div class="text-white/50">
-                                                    {prettyPrintAmount(balance()?.unconfirmed)} <span class='text-xl'>SAT</span>
-                                                </div>
-                                            </div>
-                                        </Show>
-                                    </div>
-                                </Show>
-                            </Suspense>
-                        </h1>
+                        <Amount amountSats={onChainBalance()?.confirmed} showFiat loading={onChainBalance.loading} />
                     </div>
-                    <div class="flex gap-2 py-4">
-                        <ButtonLink href="/scanner" intent="green">Send</ButtonLink>
-                        <ButtonLink href="/receive" intent="blue">Receive</ButtonLink>
-                    </div>
-                </div>
-            </Motion>
-        </Presence>
+                </Suspense>
+                <Suspense>
+                    <Show when={onChainBalance()?.unconfirmed}>
+                        <div class="flex flex-col gap-2">
+                            <header class='text-sm font-semibold uppercase text-white/50'>
+                                Unconfirmed Balance
+                            </header>
+                            <div class="text-white/50">
+                                {prettyPrintAmount(onChainBalance()?.unconfirmed)} <span class='text-sm'>SATS</span>
+                            </div>
+                        </div>
+                    </Show>
+                </Suspense>
+            </FancyCard>
+            <div class="flex gap-2 py-4">
+                <ButtonLink href="/send" intent="green">Send</ButtonLink>
+                <ButtonLink href="/receive" intent="blue">Receive</ButtonLink>
+            </div>
+        </>
     )
 }

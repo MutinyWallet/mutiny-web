@@ -1,24 +1,27 @@
 import { cva, VariantProps } from "class-variance-authority";
-import { children, JSX, ParentComponent, splitProps } from "solid-js";
+import { children, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
+import { LoadingSpinner } from ".";
 
-const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
+const button = cva("p-3 rounded-xl text-xl font-semibold disabled:opacity-50 disabled:grayscale transition", {
     variants: {
+        // TODO: button hover has to work different than buttonlinks (like disabled state)
         intent: {
-            active: "bg-white text-black",
-            inactive: "bg-black text-white border border-white disabled:opacity-50",
-            blue: "bg-[#3B6CCC] text-white",
-            red: "bg-[#F61D5B] text-white",
-            green: "bg-[#1EA67F] text-white",
+            active: "bg-white text-black border border-white hover:text-[#3B6CCC]",
+            inactive: "bg-black text-white border border-white hover:text-[#3B6CCC]",
+            glowy: "bg-black/10 shadow-xl text-white border border-m-blue hover:m-blue-dark hover:text-m-blue",
+            blue: "bg-m-blue text-white shadow-inner-button hover:bg-m-blue-dark text-shadow-button",
+            red: "bg-m-red text-white shadow-inner-button hover:bg-m-red-dark text-shadow-button",
+            green: "bg-m-green text-white shadow-inner-button hover:bg-m-green-dark text-shadow-button",
         },
         layout: {
             flex: "flex-1",
             pad: "px-8",
-            small: "p-1 w-auto",
+            small: "px-4 py-2 w-auto text-lg",
+            xs: "px-2 py-1 w-auto rounded-lg font-normal text-base"
         },
     },
-
     defaultVariants: {
         intent: "inactive",
         layout: "flex"
@@ -28,7 +31,9 @@ const button = cva(["p-4", "rounded-xl", "text-xl", "font-semibold"], {
 // Help from https://github.com/arpadgabor/credee/blob/main/packages/www/src/components/ui/button.tsx
 
 type StyleProps = VariantProps<typeof button>
-interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement>, StyleProps { }
+interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement>, StyleProps {
+    loading?: boolean
+}
 
 export const Button: ParentComponent<ButtonProps> = props => {
     const slot = children(() => props.children)
@@ -43,8 +48,13 @@ export const Button: ParentComponent<ButtonProps> = props => {
                 layout: local.layout,
             })}
         >
-            {slot()}
-        </button>
+            <Show when={props.loading} fallback={slot()} >
+                <div class="flex justify-center">
+                    {/* TODO: constrain this to the exact height of the button */}
+                    <LoadingSpinner />
+                </div>
+            </Show>
+        </button >
     )
 }
 

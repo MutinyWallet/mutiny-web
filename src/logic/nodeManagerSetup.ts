@@ -1,35 +1,52 @@
 
-import init, { NodeManager } from '@mutinywallet/node-manager';
+import init, { NodeManager } from '@mutinywallet/mutiny-wasm';
 
+// export type NodeManagerSettingStrings = {
+//     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
+// }
+
+type Network = "mainnet" | "testnet" | "regtest" | "signet";
 export type NodeManagerSettingStrings = {
-    network?: string, proxy?: string, esplora?: string
+    network?: Network, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 }
 
 export function getExistingSettings(): NodeManagerSettingStrings {
     const network = localStorage.getItem('MUTINY_SETTINGS_network') || import.meta.env.VITE_NETWORK;
     const proxy = localStorage.getItem('MUTINY_SETTINGS_proxy') || import.meta.env.VITE_PROXY;
     const esplora = localStorage.getItem('MUTINY_SETTINGS_esplora') || import.meta.env.VITE_ESPLORA;
+    const rgs = localStorage.getItem('MUTINY_SETTINGS_rgs') || import.meta.env.VITE_RGS;
+    const lsp = localStorage.getItem('MUTINY_SETTINGS_lsp') || import.meta.env.VITE_LSP;
 
-    return { network, proxy, esplora }
+    return { network, proxy, esplora, rgs, lsp }
 }
 
 export async function setAndGetMutinySettings(settings?: NodeManagerSettingStrings): Promise<NodeManagerSettingStrings> {
-    let { network, proxy, esplora } = settings || {};
+    let { network, proxy, esplora, rgs, lsp } = settings || {};
 
     const existingSettings = getExistingSettings();
     try {
         network = network || existingSettings.network;
         proxy = proxy || existingSettings.proxy;
         esplora = esplora || existingSettings.esplora;
+        rgs = rgs || existingSettings.rgs;
+        lsp = lsp || existingSettings.lsp;
 
         if (!network || !proxy || !esplora) {
             throw new Error("Missing a default setting for network, proxy, or esplora. Check your .env file to make sure it looks like .env.sample")
         }
+
         localStorage.setItem('MUTINY_SETTINGS_network', network);
         localStorage.setItem('MUTINY_SETTINGS_proxy', proxy);
         localStorage.setItem('MUTINY_SETTINGS_esplora', esplora);
 
-        return { network, proxy, esplora }
+        if (!rgs || !lsp) {
+            console.warn("RGS or LSP not set")
+        }
+
+        rgs && localStorage.setItem('MUTINY_SETTINGS_rgs', rgs);
+        lsp && localStorage.setItem('MUTINY_SETTINGS_lsp', lsp);
+
+        return { network, proxy, esplora, rgs, lsp }
     } catch (error) {
         console.error(error)
         throw error
@@ -52,18 +69,20 @@ export async function checkForWasm() {
     }
 }
 
-export async function setupNodeManager(): Promise<NodeManager> {
+export async function setupNodeManager(settings?: NodeManagerSettingStrings): Promise<NodeManager> {
     const _ = await init();
 
     console.time("Setup");
     console.log("Starting setup...")
-    const { network, proxy, esplora } = await setAndGetMutinySettings()
+    const { network, proxy, esplora, rgs, lsp } = await setAndGetMutinySettings(settings)
     console.log("Initializing Node Manager")
     console.log("Using network", network);
     console.log("Using proxy", proxy);
     console.log("Using esplora address", esplora);
+    console.log("Using rgs address", rgs);
+    console.log("Using lsp address", lsp);
 
-    const nodeManager = await new NodeManager("", undefined, proxy, network, esplora)
+    const nodeManager = await new NodeManager("", undefined, proxy, network, esplora, rgs, lsp)
 
     const nodes = await nodeManager.list_nodes();
 

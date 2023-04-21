@@ -16,19 +16,36 @@ module.exports = {
       colors: {
         "half-black": "rgba(0, 0, 0, 0.5)",
         "faint-white": "rgba(255, 255, 255, 0.1)",
-        "m-red": "#F61D5B",
         "light-text": "rgba(250, 245, 234, 0.5)",
+        "m-green": "hsla(163, 70%, 38%, 1)",
+        "m-green-dark": "hsla(163, 70%, 28%, 1)",
+        "m-blue": "hsla(220, 59%, 52%, 1)",
+        "m-blue-dark": "hsla(220, 59%, 42%, 1)",
+        "m-red": "hsla(343, 92%, 54%, 1)",
+        "m-red-dark": "hsla(343, 92%, 44%, 1)",
+        "sidebar-gray": "hsla(222, 15%, 7%, 1)"
       },
       backgroundImage: {
-        'fade-to-blue': 'linear-gradient(1.63deg, #0B215B 32.05%, rgba(11, 33, 91, 0) 84.78%)'
+        'fade-to-blue': 'linear-gradient(1.63deg, #0B215B 32.05%, rgba(11, 33, 91, 0) 84.78%)',
+        'subtle-fade': 'linear-gradient(180deg, #060A13 0%, #131E39 100%)',
+        'richer-fade': 'linear-gradient(180deg, hsla(224, 20%, 8%, 1) 0%, hsla(224, 20%, 15%, 1) 100%)'
       },
       dropShadow: {
-        'blue-glow': '0px 0px 32px rgba(11, 33, 91, 0.5)'
-      }
-
+        'blue-glow': '0px 0px 32px rgba(11, 33, 91, 0.5)',
+      },
+      boxShadow: {
+        'inner-button': '2px 2px 4px rgba(0, 0, 0, 0.1), inset 2px 2px 4px rgba(255, 255, 255, 0.1), inset -2px -2px 6px rgba(0, 0, 0, 0.2)',
+        'fancy-card': '0px 4px 4px rgba(0, 0, 0, 0.1)',
+        'above': '0px -4px 10px rgba(0, 0, 0, 0.25)',
+      },
+      textShadow: {
+        'button': '1px 1px 0px rgba(0, 0, 0, 0.4)'
+      },
     },
   },
   plugins: [
+    // default prefix is "ui"
+    require("@kobalte/tailwindcss"),
     plugin(function ({ addUtilities }) {
       const newUtilities = {
         '.safe-top': {
@@ -46,6 +63,15 @@ module.exports = {
         '.safe-bottom': {
           paddingBottom: 'constant(safe-area-inset-bottom)',
           paddingBottom: 'env(safe-area-inset-bottom)'
+        },
+        '.h-screen-safe': {
+          height: 'calc(100vh - (env(safe-area-inset-top) + env(safe-area-inset-bottom)))'
+        },
+        '.min-h-screen-safe': {
+          minHeight: 'calc(100vh - (env(safe-area-inset-top) + env(safe-area-inset-bottom)))'
+        },
+        '.max-h-screen-safe': {
+          maxHeight: 'calc(100vh - (env(safe-area-inset-top) + env(safe-area-inset-bottom)))'
         },
         '.disable-scrollbars': {
           scrollbarWidth: 'none',
@@ -66,8 +92,18 @@ module.exports = {
           }
         }
       }
-
       addUtilities(newUtilities);
-    })
+    }),
+    // Text shadow!
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'text-shadow': (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      )
+    }),
   ],
 }

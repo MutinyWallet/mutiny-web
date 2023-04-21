@@ -3,8 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply text-white bg-black;
-  @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b];
+  @apply text-white bg-neutral-900;
   overscroll-behavior-y: none;
   min-height: 100.3%;
 }
@@ -39,4 +38,9 @@ a {
 
 #video-container .scan-region-highlight-svg {
   display: none;
+}
+
+/* Missing you sveltekit */
+dd {
+  @apply mb-8 mt-2;
 }

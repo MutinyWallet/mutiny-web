@@ -1,4 +1,4 @@
-import { NodeManager } from "@mutinywallet/node-manager";
+import { NodeManager } from "@mutinywallet/mutiny-wasm";
 
 export function satsToUsd(amount: number | undefined, price: number, formatted: boolean): string {
     if (typeof amount !== "number" || isNaN(amount)) {

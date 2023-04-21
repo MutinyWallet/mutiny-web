@@ -4,15 +4,7 @@ import { Switch, Match } from "solid-js";
 import { WaitlistAlreadyIn } from "~/components/waitlist/WaitlistAlreadyIn";
 import WaitlistForm from "~/components/waitlist/WaitlistForm";
 import { useMegaStore } from "~/state/megaStore";
-import { LoadingSpinner } from "~/components/layout";
-
-function FullscreenLoader() {
-  return (
-    <div class="w-screen h-screen flex justify-center items-center">
-      <LoadingSpinner />
-    </div>
-  );
-}
+import { FullscreenLoader } from "~/components/layout";
 
 export default function Home() {
   const [state, _] = useMegaStore();
@@ -20,8 +12,8 @@ export default function Home() {
   return (
     <>
       <Switch fallback={<FullscreenLoader />} >
-        {/* TODO: might need this state.node_manager guard on all wallet routes */}
-        <Match when={state.user_status === "approved" && state.node_manager}>
+        {/* TODO: can you put a suspense around a match? */}
+        <Match when={state.user_status === "approved"}>
           <App />
         </Match>
         <Match when={state.user_status === "waitlisted"}>
@@ -32,6 +24,5 @@ export default function Home() {
         </Match>
       </Switch>
     </>
-
   );
 }
