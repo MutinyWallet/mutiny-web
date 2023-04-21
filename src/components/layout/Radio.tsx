@@ -9,16 +9,16 @@ export function StyledRadioGroup(props: { value: string, choices: Choices, onVal
         <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)} class="grid w-full gap-4 grid-cols-2">
             <For each={props.choices}>
                 {choice =>
-                    <RadioGroup.Item value={choice.value} class="ui-checked:bg-white bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2">
+                    <RadioGroup.Item value={choice.value} class="ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2">
                         <div class="py-3 px-4">
                             <RadioGroup.ItemInput />
                             <RadioGroup.ItemControl >
                                 <RadioGroup.ItemIndicator />
                             </RadioGroup.ItemControl>
-                            <RadioGroup.ItemLabel class="ui-checked:text-m-blue text-neutral-400">
+                            <RadioGroup.ItemLabel class="ui-checked:text-white text-neutral-400">
                                 <div class="block">
                                     <div class="text-lg font-semibold">{choice.label}</div>
-                                    <div class="text-lg font-light">{choice.caption}</div>
+                                    <div class="text-sm font-light">{choice.caption}</div>
                                 </div>
                             </RadioGroup.ItemLabel>
                         </div>

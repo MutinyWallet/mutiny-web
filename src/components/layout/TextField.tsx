@@ -39,9 +39,9 @@ export function TextField(props: TextFieldProps) {
             </Show>
             <Show
                 when={props.multiline}
-                fallback={<KTextField.Input {...fieldProps} type={props.type} class="w-full p-2 rounded-lg bg-white/10" />}
+                fallback={<KTextField.Input {...fieldProps} type={props.type} class="w-full p-2 rounded-lg bg-white/10 placeholder-neutral-400" />}
             >
-                <KTextField.TextArea {...fieldProps} autoResize class="w-full p-2 rounded-lg bg-white/10" />
+                <KTextField.TextArea {...fieldProps} autoResize class="w-full p-2 rounded-lg bg-white/10 placeholder-neutral-400" />
             </Show>
             <KTextField.ErrorMessage>{props.error}</KTextField.ErrorMessage>
         </KTextField.Root>

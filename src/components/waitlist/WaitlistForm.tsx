@@ -1,116 +1,110 @@
-import { createSignal } from "solid-js";
-import { Button, LoadingSpinner } from "~/components/layout";
-
-const INPUT = "w-full mb-4 p-2 rounded-lg text-black"
+import { Match, Switch, createSignal } from "solid-js";
+import { Button } from "~/components/layout";
+import { StyledRadioGroup } from "../layout/Radio";
+import { TextField } from "../layout/TextField";
+import { SubmitHandler, createForm, email, getValue, required, setValue } from "@modular-forms/solid";
+import { showToast } from "../Toaster";
+import eify from "~/utils/eify";
+import logo from '~/assets/icons/mutiny-logo.svg';
 
 const WAITLIST_ENDPOINT = "https://waitlist.mutiny-waitlist.workers.dev/waitlist";
 
+const COMMUNICATION_METHODS = [{ value: "nostr", label: "Nostr", caption: "Your freshest npub" }, { value: "email", label: "Email", caption: "Burners welcome" }]
+
+type WaitlistForm = {
+    user_type: "nostr" | "email",
+    id: string
+    comment?: string
+}
+
+const initialValues: WaitlistForm = { user_type: "nostr", id: "", comment: "" };
+
 export default function WaitlistForm() {
-    const [nostr, setNostr] = createSignal(true);
-    const [error, setError] = createSignal<string | undefined>(undefined);
+    const [waitlistForm, { Form, Field }] = createForm<WaitlistForm>({ initialValues });
+
     const [loading, setLoading] = createSignal(false);
 
-    // Form submission function that takes the form data and sends it to the backend
-    const handleSubmit = async (e: Event) => {
-        e.preventDefault();
-        setError(undefined);
-        setLoading(true);
-        const form = e.currentTarget;
-        const data = new FormData(form as HTMLFormElement);
-        const value = Object.fromEntries(data.entries());
-        console.log(value);
+    const newHandleSubmit: SubmitHandler<WaitlistForm> = async (f: WaitlistForm) => {
+        console.log(f);
 
-        let payload: null | { user_type: string, id: string, comment: string } = null;
-
-        if (nostr()) {
-            payload = {
-                user_type: "nostr",
-                id: value.pubkey as string,
-                comment: value.comments as string
-            }
-        } else {
-            payload = {
-                user_type: "email",
-                id: value.email as string,
-                comment: value.comments as string
-            }
-        }
-
-        console.log(payload);
-
+        // TODO: not sure why waitlistForm.submitting doesn't work for me
+        // https://modularforms.dev/solid/guides/handle-submission
+        setLoading(true)
         try {
-            if (!payload || !payload.id) {
-                throw new Error("nope");
-            }
-
             const res = await fetch(WAITLIST_ENDPOINT, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(f)
             })
 
             if (res.status !== 200) {
                 throw new Error("nope");
             } else {
                 // On success set the id in local storage and reload the page
-                localStorage.setItem('waitlist_id', payload.id);
+                localStorage.setItem('waitlist_id', f.id);
                 window.location.reload();
             }
 
         } catch (e) {
-            if (nostr()) {
-                setError("Something went wrong. Are you sure that's a valid npub?");
+            if (f.user_type === "nostr") {
+                const error = new Error("Something went wrong. Are you sure that's a valid npub?")
+                showToast(eify(error))
+
             } else {
-                setError("Something went wrong. Are you sure that's a valid email?");
+                const error = new Error("Something went wrong. Not sure what.")
+                showToast(eify(error))
             }
-            setTimeout(() => setLoading(false), 1000);
             return
+        } finally {
+            setLoading(false)
         }
     }
 
     return (
-        <main class='flex flex-col gap-4 py-8 px-4 max-w-xl mx-auto drop-shadow-blue-glow'>
+        <main class='flex flex-col gap-8 py-8 px-4 max-w-xl mx-auto'>
+            <a href="https://mutinywallet.com">
+                <img src={logo} class="h-10" alt="logo" />
+            </a>
             <h1 class='text-4xl font-bold'>Join Waitlist</h1>
-            {/* HTML form with three inputs: nostr pubkey (text), email (text), and a textarea for comments */}
             <h2 class="text-xl">
                 Sign up for our waitlist and we'll send a message when Mutiny Wallet is ready for you.
             </h2>
-            <div class="p-8 rounded-xl bg-half-black">
-                <div class="flex gap-4 mb-6">
-                    <Button intent={nostr() ? "active" : "inactive"} onClick={() => setNostr(true)}>Nostr</Button>
-                    <Button intent={nostr() ? "inactive" : "active"} onClick={() => setNostr(false)}> Email</Button>
-                </div>
-                {error() &&
-                    <div class="mb-6">
-                        <p class="text-m-red">Error: {error()}</p>
-                    </div>
-                }
-                <form class="flex flex-col items-start gap-2" onSubmit={handleSubmit}>
-                    {nostr() &&
-                        <>
-                            <label class="font-semibold" for="pubkey">Nostr npub or NIP-05</label>
-                            <input class={INPUT} type="text" id="pubkey" name="pubkey" placeholder="npub..." />
-                        </>
-                    }
-                    {
-                        !nostr() &&
-                        <>
-                            <label class="font-semibold" for="email">Email</label>
-                            <input class={INPUT} type="text" id="email" name="email" placeholder="email@mutinywallet.com" />
-                        </>
-                    }
-                    <label class="font-semibold" for="comments">Comments</label>
-                    <textarea class={INPUT} id="comments" name="comments" rows={4} placeholder="I want a lightning wallet that does..." />
-                    {loading() &&
-                        <LoadingSpinner />
-                    }
-                    {!loading() &&
-                        <Button intent="red" layout="pad" >Submit</Button>
-                    }
-                </form>
-            </div>
+            <Form onSubmit={newHandleSubmit} class="flex flex-col gap-8">
+                <Field name="user_type">
+                    {(field, props) => (
+                        // TODO: there's probably a "real" way to do this with modular-forms
+                        <StyledRadioGroup value={field.value || "nostr"} onValueChange={(newValue) => setValue(waitlistForm, "user_type", newValue as "nostr" | "email")} choices={COMMUNICATION_METHODS} />
+                    )}
+                </Field>
+                <Switch>
+                    <Match when={getValue(waitlistForm, 'user_type', { shouldActive: false }) === 'nostr'}>
+                        <Field name="id"
+                            validate={[required("We need some way to contact you")]}
+                        >
+                            {(field, props) => (
+                                <TextField  {...props} value={field.value} error={field.error} label="Nostr npub or NIP-05" placeholder="npub..." />
+                            )}
+                        </Field>
+                    </Match>
+                    <Match when={getValue(waitlistForm, 'user_type', { shouldActive: false }) === 'email'}>
+                        <Field name="id"
+                            validate={[required("We need some way to contact you"), email("That doesn't look like an email address to me")]}
+                        >
+                            {(field, props) => (
+                                <TextField  {...props} value={field.value} error={field.error} label="Email" placeholder="email@nokycemail.com" />
+                            )}
+                        </Field>
+                    </Match>
+                </Switch>
+                <Field name="comment">
+                    {(field, props) => (
+                        <TextField multiline {...props} value={field.value} error={field.error} label="Comments" placeholder="I want a lightning wallet that does..." />
+                    )}
+                </Field>
+                <Button loading={loading()} disabled={loading() || !waitlistForm.dirty || waitlistForm.submitting || waitlistForm.invalid} class="self-start" intent="red" type="submit" layout="pad">Submit</Button>
+            </Form>
         </main>
     )
 }
