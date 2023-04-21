@@ -1,8 +1,13 @@
 
 import init, { NodeManager } from '@mutinywallet/mutiny-wasm';
 
+// export type NodeManagerSettingStrings = {
+//     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
+// }
+
+type Network = "mainnet" | "testnet" | "regtest" | "signet";
 export type NodeManagerSettingStrings = {
-    network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
+    network?: Network, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 }
 
 export function getExistingSettings(): NodeManagerSettingStrings {
@@ -64,12 +69,12 @@ export async function checkForWasm() {
     }
 }
 
-export async function setupNodeManager(): Promise<NodeManager> {
+export async function setupNodeManager(settings?: NodeManagerSettingStrings): Promise<NodeManager> {
     const _ = await init();
 
     console.time("Setup");
     console.log("Starting setup...")
-    const { network, proxy, esplora, rgs, lsp } = await setAndGetMutinySettings()
+    const { network, proxy, esplora, rgs, lsp } = await setAndGetMutinySettings(settings)
     console.log("Initializing Node Manager")
     console.log("Using network", network);
     console.log("Using proxy", proxy);

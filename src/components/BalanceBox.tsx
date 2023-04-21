@@ -49,10 +49,7 @@ export default function BalanceBox() {
                     </Show>
                 </Suspense>
             </FancyCard>
-            <div class="flex gap-2 py-4">
-                <ButtonLink href="/send" intent="green">Send</ButtonLink>
-                <ButtonLink href="/receive" intent="blue">Receive</ButtonLink>
-            </div>
+
             <FancyCard title="On-Chain" tag={onChainBalance.loading && <SyncingIndicator />}>
                 <Suspense fallback={<Amount amountSats={0} showFiat loading={true} />}>
                     <div onClick={refetchBalance}>
@@ -72,6 +69,10 @@ export default function BalanceBox() {
                     </Show>
                 </Suspense>
             </FancyCard>
+            <div class="flex gap-2 py-4">
+                <ButtonLink href="/send" intent="green">Send</ButtonLink>
+                <ButtonLink href="/receive" intent="blue">Receive</ButtonLink>
+            </div>
         </>
     )
 }

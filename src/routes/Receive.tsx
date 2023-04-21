@@ -9,11 +9,10 @@ import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import { useCopy } from "~/utils/useCopy";
-import { JsonModal } from '~/components/JsonModal';
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { ReceiveSuccessModal } from "~/components/ReceiveSuccessModal";
 
-import party from '~/assets/party.gif';
+import party from '~/assets/check-spinner.gif';
 import { Amount } from "~/components/Amount";
 
 type OnChainTx = {

@@ -2,7 +2,7 @@
 
 import { ParentComponent, createContext, createEffect, onCleanup, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
-import { setupNodeManager } from "~/logic/nodeManagerSetup";
+import { NodeManagerSettingStrings, setupNodeManager } from "~/logic/nodeManagerSetup";
 import { MutinyBalance, NodeManager } from "@mutinywallet/mutiny-wasm";
 
 const MegaStoreContext = createContext<MegaStore>();
@@ -19,7 +19,7 @@ export type MegaStore = [{
     price: number
 }, {
     fetchUserStatus(): Promise<UserStatus>;
-    setupNodeManager(): Promise<void>;
+    setupNodeManager(settings?: NodeManagerSettingStrings): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
     sync(): Promise<void>;
 }];
@@ -52,9 +52,9 @@ export const Provider: ParentComponent = (props) => {
                 return "new_here"
             }
         },
-        async setupNodeManager(): Promise<void> {
+        async setupNodeManager(settings?: NodeManagerSettingStrings): Promise<void> {
             try {
-                const nodeManager = await setupNodeManager()
+                const nodeManager = await setupNodeManager(settings)
                 setState({ node_manager: nodeManager })
             } catch (e) {
                 console.error(e)

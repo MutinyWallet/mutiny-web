@@ -1,0 +1,49 @@
+import { TextField as KTextField } from '@kobalte/core';
+import { type JSX, Show, splitProps } from 'solid-js';
+
+type TextFieldProps = {
+    name: string;
+    type?: 'text' | 'email' | 'tel' | 'password' | 'url' | 'date';
+    label?: string;
+    placeholder?: string;
+    value: string | undefined;
+    error: string;
+    required?: boolean;
+    multiline?: boolean;
+    ref: (element: HTMLInputElement | HTMLTextAreaElement) => void;
+    onInput: JSX.EventHandler<HTMLInputElement | HTMLTextAreaElement, InputEvent>;
+    onChange: JSX.EventHandler<HTMLInputElement | HTMLTextAreaElement, Event>;
+    onBlur: JSX.EventHandler<HTMLInputElement | HTMLTextAreaElement, FocusEvent>;
+};
+
+export function TextField(props: TextFieldProps) {
+    const [fieldProps] = splitProps(props, [
+        'placeholder',
+        'ref',
+        'onInput',
+        'onChange',
+        'onBlur',
+    ]);
+    return (
+        <KTextField.Root
+            class="flex flex-col gap-2"
+            name={props.name}
+            value={props.value}
+            validationState={props.error ? 'invalid' : 'valid'}
+            isRequired={props.required}
+        >
+            <Show when={props.label}>
+                <KTextField.Label class="text-sm uppercase font-semibold">
+                    {props.label}
+                </KTextField.Label>
+            </Show>
+            <Show
+                when={props.multiline}
+                fallback={<KTextField.Input {...fieldProps} type={props.type} class="w-full p-2 rounded-lg bg-white/10" />}
+            >
+                <KTextField.TextArea {...fieldProps} autoResize class="w-full p-2 rounded-lg bg-white/10" />
+            </Show>
+            <KTextField.ErrorMessage>{props.error}</KTextField.ErrorMessage>
+        </KTextField.Root>
+    );
+}
