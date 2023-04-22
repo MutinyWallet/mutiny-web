@@ -14,6 +14,7 @@ import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import party from '~/assets/party.gif';
 import { Amount } from "~/components/Amount";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
+import { BackButton } from "~/components/layout/BackButton";
 
 type OnChainTx = {
     transaction: {
@@ -181,6 +182,7 @@ export default function Receive() {
         <NodeManagerGuard>
             <SafeArea>
                 <DefaultMain>
+                    <BackButton />
                     <LargeHeader>Receive Bitcoin</LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
@@ -246,7 +248,7 @@ export default function Receive() {
                         </Match>
                     </Switch>
                 </DefaultMain>
-                <NavBar activeTab="none" />
+                <NavBar activeTab="receive" />
             </SafeArea >
         </NodeManagerGuard>
     )

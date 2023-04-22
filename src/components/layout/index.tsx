@@ -89,7 +89,7 @@ const LoadingSpinner = (props: { big?: boolean }) => {
 const Hr = () => <Separator.Root class="my-4 border-white/20" />
 
 const LargeHeader: ParentComponent = (props) => {
-    return (<h1 class="text-4xl font-semibold uppercase border-b-2 border-b-white my-4">{props.children}</h1>)
+    return (<h1 class="text-4xl font-semibold uppercase border-b-2 border-b-white mt-2 mb-4">{props.children}</h1>)
 }
 
 const VStack: ParentComponent<{ biggap?: boolean }> = (props) => {

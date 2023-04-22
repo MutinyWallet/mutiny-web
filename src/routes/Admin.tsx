@@ -2,12 +2,14 @@ import { DeleteEverything } from "~/components/DeleteEverything";
 import KitchenSink from "~/components/KitchenSink";
 import NavBar from "~/components/NavBar";
 import { Card, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
+import { BackButton } from "~/components/layout/BackButton";
 
 export default function Admin() {
     return (
         <NodeManagerGuard>
             <SafeArea>
                 <DefaultMain>
+                    <BackButton href="/settings" title="Settings" />
                     <LargeHeader>Admin</LargeHeader>
                     <VStack>
                         <Card><p>If you know what you're doing you're in the right place!</p></Card>

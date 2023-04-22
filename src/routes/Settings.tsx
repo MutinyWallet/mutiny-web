@@ -1,4 +1,5 @@
 import { ButtonLink, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, VStack } from "~/components/layout";
+import { BackButton } from "~/components/layout/BackButton";
 import NavBar from "~/components/NavBar";
 import { SeedWords } from "~/components/SeedWords";
 import { SettingsStringsEditor } from "~/components/SettingsStringsEditor";
@@ -11,6 +12,7 @@ export default function Settings() {
         <NodeManagerGuard>
             <SafeArea>
                 <DefaultMain>
+                    <BackButton />
                     <LargeHeader>Settings</LargeHeader>
                     <VStack biggap>
                         <VStack>
