@@ -21,6 +21,7 @@ export default function BalanceBox() {
 
     const fetchOnchainBalance = async () => {
         console.log("Refetching onchain balance");
+        await state.node_manager?.sync();
         const balance = await state.node_manager?.get_balance();
         return balance
     };

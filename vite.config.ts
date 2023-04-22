@@ -41,6 +41,10 @@ const pwaOptions: Partial<VitePWAOptions> = {
 export default defineConfig({
   server: {
     port: 3420,
+    fs: {
+      // Allow serving files from one level up (so that if mutiny-node is a sibling folder we can use it locally)
+      allow: [".."]
+    }
   },
   plugins: [wasm(), solid({ ssr: false }), VitePWA(pwaOptions)],
   resolve: {
@@ -50,4 +54,5 @@ export default defineConfig({
     // This is necessary because otherwise `vite dev` can't find the wasm
     exclude: ["@mutinywallet/mutiny-wasm"],
   },
+
 });
