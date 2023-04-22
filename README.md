@@ -1,30 +1,32 @@
-# SolidStart
+### Running Mutiny Web
 
-Everything you need to build a Solid project, powered by [`solid-start`](https://start.solidjs.com);
-
-## Creating a project
-
-```bash
-# create a new project in the current directory
-npm init solid@latest
-
-# create a new project in my-app
-npm init solid@latest my-app
+```
+pnpm install
+pnpm run dev
 ```
 
-## Developing
+### Local
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+To make local development easier with a latest local version of [the node manager](https://github.com/MutinyWallet/mutiny-node), you may want to `pnpm link` it.
 
-```bash
-npm run dev
+Due to how [Vite's dev server works](https://vitejs.dev/config/server-options.html#server-fs-allow), the linked `mutiny-node` project folder should be a sibling of this `mutiny-web` folder. Alternatively you can change the allow path in `vite.config.ts`.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+In your `mutiny-node` local repo:
+
+```
+just link
 ```
 
-## Building
+(on a Mac you might need to prefix `just link` with these flags: `AR=/opt/homebrew/opt/llvm/bin/llvm-ar CC=/opt/homebrew/opt/llvm/bin/clang`)
 
-Solid apps are built with _adapters_, which optimise your project for deployment to different environments.
+Now in this repo, link them.
 
-By default, `npm run build` will generate a Node app that you can run with `npm start`. To use a different adapter, add it to the `devDependencies` in `package.json` and specify in your `vite.config.js`.
+```
+just local
+```
+
+To revert back and use the remote version of mutiny-wasm:
+
+```
+just remote
+```
