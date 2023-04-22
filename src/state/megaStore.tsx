@@ -4,6 +4,7 @@ import { ParentComponent, createContext, createEffect, onCleanup, onMount, useCo
 import { createStore } from "solid-js/store";
 import { NodeManagerSettingStrings, setupNodeManager } from "~/logic/nodeManagerSetup";
 import { MutinyBalance, NodeManager } from "@mutinywallet/mutiny-wasm";
+import { ParsedParams } from "~/routes/Scanner";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -13,7 +14,7 @@ export type MegaStore = [{
     waitlist_id?: string;
     node_manager?: NodeManager;
     user_status: UserStatus;
-    scan_result?: string;
+    scan_result?: ParsedParams;
     balance?: MutinyBalance;
     last_sync?: number;
     price: number
@@ -21,6 +22,7 @@ export type MegaStore = [{
     fetchUserStatus(): Promise<UserStatus>;
     setupNodeManager(settings?: NodeManagerSettingStrings): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
+    setScanResult(scan_result: ParsedParams | undefined): void;
     sync(): Promise<void>;
 }];
 
@@ -29,6 +31,7 @@ export const Provider: ParentComponent = (props) => {
         waitlist_id: localStorage.getItem("waitlist_id"),
         node_manager: undefined as NodeManager | undefined,
         user_status: undefined as UserStatus,
+        scan_result: undefined as ParsedParams | undefined,
         // TODO: wire this up to real price once we have caching
         price: 30000
     });
@@ -73,6 +76,9 @@ export const Provider: ParentComponent = (props) => {
             }
             console.groupEnd();
             console.timeEnd("BDK Sync Time")
+        },
+        setScanResult(scan_result: ParsedParams) {
+            setState({ scan_result })
         }
     };
 

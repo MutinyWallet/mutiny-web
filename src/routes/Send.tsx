@@ -1,17 +1,19 @@
 import { TextField } from "@kobalte/core";
-import { Show, createMemo, createResource, createSignal, onMount } from "solid-js";
+import { Show, createEffect, createMemo, createResource, createSignal, onCleanup, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
 import { Button, ButtonLink, DefaultMain, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
-import { MutinyInvoice, NodeManager } from "@mutinywallet/mutiny-wasm";
-import { bip21decode } from "~/utils/TEMPbip21";
+import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { AmountEditable } from "~/components/AmountEditable";
-import { useLocation } from "solid-start";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { SentModal } from "~/components/Sent";
+import { ParsedParams, toParsedParams } from "./Scanner";
+import init from "@mutinywallet/waila-wasm";
+import { showToast } from "~/components/Toaster";
+import eify from "~/utils/eify";
 
 type SendSource = "lightning" | "onchain";
 
@@ -23,10 +25,24 @@ const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fas
 type SentDetails = { nice: string }
 
 export default function Send() {
+    let waila;
+
+    onMount(() => {
+        init().then((w) => {
+            waila = w;
+        });
+
+    })
+
+    // TODO: Is this just implied?
+    onCleanup(() => {
+        waila = undefined;
+    })
+
     const [state, actions] = useMegaStore();
 
     // These can only be set by the user
-    const [destination, setDestination] = createSignal("");
+    const [destination, setDestination] = createSignal<ParsedParams>();
     const [privateLabel, setPrivateLabel] = createSignal("");
 
     // These can be derived from the "destination" signal or set by the user
@@ -43,7 +59,7 @@ export default function Send() {
     const [sentDetails, setSentDetails] = createSignal<SentDetails>();
 
     function clearAll() {
-        setDestination("");
+        setDestination(undefined);
         setPrivateLabel("");
         setAmountSats(0n);
         setSource("lightning");
@@ -52,9 +68,6 @@ export default function Send() {
         setDescription(undefined);
     }
 
-    // If we were routed to by the scanner we can get the state from there
-    const location = useLocation();
-
     const fakeFee = createMemo(() => {
         if (source() === "lightning") return 69n;
         if (source() === "onchain") return 420n;
@@ -62,57 +75,54 @@ export default function Send() {
     })
 
     onMount(() => {
-        // TODO: probably a cleaner way to make typescript happy
-        const routerInfo = location as { state?: { destination?: string } };
-        if (routerInfo.state?.destination && typeof routerInfo.state.destination === "string") {
-            setDestination(routerInfo.state.destination);
+        if (state.scan_result) {
+            setDestination(state.scan_result);
         }
     })
 
-    // TODO: this is pretty temp until we have WAILA
-    async function decode(source: string) {
-        if (!source) return;
+    // Rerun every time the destination changes
+    createEffect(() => {
+        const source = destination();
+        console.log(source)
+        if (!source) return undefined;
         try {
-            const { address, label, lightning, amount } = bip21decode(source);
+            if (source.address) setAddress(source.address)
+            if (source.memo) setDescription(source.memo);
 
-            setAddress(address)
-
-            if (lightning) {
-                const invoice = await state.node_manager?.decode_invoice(lightning);
-                if (invoice?.amount_sats) setAmountSats(invoice.amount_sats);
-                setInvoice(invoice)
-                // We can stick with default lightning because there's an invoice
-                setSource("lightning")
+            if (source.invoice) {
+                state.node_manager?.decode_invoice(source.invoice).then(invoice => {
+                    if (invoice?.amount_sats) setAmountSats(invoice.amount_sats);
+                    setInvoice(invoice)
+                    setSource("lightning")
+                });
             } else {
-                // If we can't use the lightning amount we have to use the float btc amount
-                const amt = NodeManager.convert_btc_to_sats(amount || 0);
-                setAmountSats(amt);
-
-                // We use onchain because there's no invoice
+                setAmountSats(source.amount_sats || 0n);
                 setSource("onchain")
             }
-
-            if (label) setDescription(label);
-
-            setInvoice(invoice)
-
-            return invoice
-
+            // Return the source just to trigger `decodedDestination` as not undefined
+            return source
         } catch (e) {
             console.error("error", e)
             clearAll();
         }
-    }
-
-    // IMPORTANT: pass the signal but don't "call" the signal (`destination`, not `destination()`)
-    const [decodedDestination] = createResource(destination, decode);
-
-    let labelInput!: HTMLInputElement;
+    })
 
     function handlePaste() {
         navigator.clipboard.readText().then(text => {
-            setDestination(text);
-            labelInput.focus();
+            if (text) {
+                const network = state.node_manager?.get_network() || "signet";
+                const result = toParsedParams(text || "", network);
+                if (!result.ok) {
+                    showToast(result.error);
+                    return;
+                } else {
+                    if (result.value?.address || result.value?.invoice) {
+                        setDestination(result.value);
+                        // Important! we need to clear the scan result once we've used it
+                        actions.setScanResult(undefined);
+                    }
+                }
+            }
         });
     }
 
@@ -136,11 +146,10 @@ export default function Send() {
                 await actions.sync();
                 console.error(txid)
             }
-
             setSentDetails({ nice: "nice" });
             clearAll();
-            console.error("SENT");
         } catch (e) {
+            showToast(eify(e))
             console.error(e);
         } finally {
             setSending(false);
@@ -157,7 +166,7 @@ export default function Send() {
                         <SmallHeader>Destination</SmallHeader>
                     </dt>
                     <dd>
-                        <Show when={decodedDestination()} fallback={<div class="flex flex-row gap-4">
+                        <Show when={address() || invoice()} fallback={<div class="flex flex-row gap-4">
                             <Button onClick={handlePaste}>
                                 <div class="flex flex-col gap-2 items-center">
                                     <Paste />
@@ -236,7 +245,6 @@ export default function Send() {
                             <dd>
                                 <TextField.Input
                                     autofocus
-                                    ref={el => labelInput = el}
                                     class="w-full p-2 rounded-lg bg-white/10"
                                     placeholder="A helpful reminder of why you spent bitcoin"
                                 />
