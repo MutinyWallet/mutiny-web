@@ -1,18 +1,18 @@
 import mutiny_m from '~/assets/icons/m.svg';
-// import scan from '~/assets/icons/scan.svg';
 import airplane from '~/assets/icons/airplane.svg';
 import settings from '~/assets/icons/settings.svg';
+import receive from '~/assets/icons/big-receive.svg';
 
 import { A } from "solid-start";
 
-type ActiveTab = 'home' | 'scan' | 'send' | 'settings' | 'none';
+type ActiveTab = 'home' | 'scan' | 'send' | 'receive' | 'settings' | 'none';
 
 export default function NavBar(props: { activeTab: ActiveTab }) {
-    const activeStyle = 'h-full border-t-2 border-b-2 border-b-sidebar-gray flex flex-col justify-center md:border-t-0 md:border-b-0 md:p-2 md:bg-black md:rounded-lg'
-    const inactiveStyle = "md:p-2 md:hover:bg-white/5 md:rounded-lg md:active:bg-m-blue"
+    const activeStyle = 'border-t-0 border-b-0 p-2 bg-black rounded-lg'
+    const inactiveStyle = "p-2 hover:bg-white/5 rounded-lg active:bg-m-blue"
     return (
-        <nav class='backdrop-blur-xl fixed bottom-0 md:shadow-none shadow-above z-40 w-full safe-bottom md:top-0 md:bottom-auto md:left-0 md:w-auto md:h-full'>
-            <ul class='h-16 flex justify-between px-16 items-center md:flex-col md:justify-start md:gap-4 md:px-4 md:mt-4'>
+        <nav class='hidden md:block fixed shadow-none z-40 safe-bottom top-0 bottom-auto left-0 h-full'>
+            <ul class='h-16 flex flex-col justify-start gap-4 px-4 mt-4'>
                 <li class={props.activeTab === "home" ? activeStyle : inactiveStyle}>
                     <A href="/">
                         <img src={mutiny_m} alt="home" />
@@ -21,6 +21,11 @@ export default function NavBar(props: { activeTab: ActiveTab }) {
                 <li class={props.activeTab === "send" ? activeStyle : inactiveStyle}>
                     <A href="/send">
                         <img src={airplane} alt="send" />
+                    </A>
+                </li>
+                <li class={props.activeTab === "receive" ? activeStyle : inactiveStyle}>
+                    <A href="/receive">
+                        <img src={receive} alt="receive" />
                     </A>
                 </li>
                 <li class={props.activeTab === "settings" ? activeStyle : inactiveStyle}>

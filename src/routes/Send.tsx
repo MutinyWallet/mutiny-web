@@ -16,6 +16,7 @@ import eify from "~/utils/eify";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import handshake from "~/assets/handshake.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { BackButton } from "~/components/layout/BackButton";
 
 type SendSource = "lightning" | "onchain";
 
@@ -168,6 +169,7 @@ export default function Send() {
         <NodeManagerGuard>
             <SafeArea>
                 <DefaultMain>
+                    <BackButton />
                     <LargeHeader>Send Bitcoin</LargeHeader>
                     {/* <SentModal details={sentDetails()} /> */}
                     <FullscreenModal title="Sent!" open={!!sentDetails()} setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }} onConfirm={() => setSentDetails(undefined)}>
