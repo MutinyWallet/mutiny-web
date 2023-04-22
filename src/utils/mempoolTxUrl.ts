@@ -6,7 +6,7 @@ export default function mempoolTxUrl(txid?: string, network?: string) {
 
     if (network) {
         switch (network) {
-            case "mainnet":
+            case "bitcoin":
                 return `https://mempool.space/tx/${txid}`
             case "testnet":
                 return `https://mempool.space/testnet/tx/${txid}`

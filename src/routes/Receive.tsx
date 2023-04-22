@@ -10,10 +10,10 @@ import { satsToUsd } from "~/utils/conversions";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import { useCopy } from "~/utils/useCopy";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { ReceiveSuccessModal } from "~/components/ReceiveSuccessModal";
 
 import party from '~/assets/party.gif';
 import { Amount } from "~/components/Amount";
+import { FullscreenModal } from "~/components/layout/FullscreenModal";
 
 type OnChainTx = {
     transaction: {
@@ -226,15 +226,15 @@ export default function Receive() {
                             </Card>
                         </Match>
                         <Match when={receiveState() === "paid" && paidState() === "lightning_paid"}>
-                            <ReceiveSuccessModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
+                            <FullscreenModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
                                 <div class="flex flex-col items-center gap-8">
                                     <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
                                     <Amount amountSats={paymentInvoice()?.amount_sats} showFiat />
                                 </div>
-                            </ReceiveSuccessModal>
+                            </FullscreenModal>
                         </Match>
                         <Match when={receiveState() === "paid" && paidState() === "onchain_paid"}>
-                            <ReceiveSuccessModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
+                            <FullscreenModal title="Payment Received!" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
                                 <div class="flex flex-col items-center gap-8">
                                     <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
                                     <Amount amountSats={paymentTx()?.received} showFiat />
@@ -242,7 +242,7 @@ export default function Receive() {
                                         Mempool Link
                                     </a>
                                 </div>
-                            </ReceiveSuccessModal>
+                            </FullscreenModal>
                         </Match>
                     </Switch>
                 </DefaultMain>

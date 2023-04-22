@@ -48,6 +48,6 @@ export default defineConfig({
   },
   optimizeDeps: {
     // This is necessary because otherwise `vite dev` can't find the wasm
-    exclude: ["@mutinywallet/mutiny-wasm"],
+    exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"],
   },
 });

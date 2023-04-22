@@ -5,7 +5,7 @@ import init, { NodeManager } from '@mutinywallet/mutiny-wasm';
 //     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 // }
 
-type Network = "mainnet" | "testnet" | "regtest" | "signet";
+type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 export type NodeManagerSettingStrings = {
     network?: Network, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 }

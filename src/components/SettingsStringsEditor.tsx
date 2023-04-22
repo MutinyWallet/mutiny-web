@@ -66,7 +66,7 @@ export function SettingsStringsEditor() {
                 <div class="flex flex-col gap-2">
                     <label class="text-sm font-semibold uppercase">Network</label>
                     <select {...field} {...props} class="bg-black rounded-xl border border-white px-4 py-2">
-                        <option value="mainnet">Mainnet</option>
+                        <option value="bitcoin">Mainnet</option>
                         <option value="testnet">Testnet</option>
                         <option value="regtest">Regtest</option>
                         <option value="signet">Signet</option>

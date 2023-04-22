@@ -7,8 +7,16 @@ import close from "~/assets/icons/close.svg";
 const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
 const DIALOG_CONTENT = "h-screen-safe p-4 bg-gray/50 backdrop-blur-md bg-black/80"
 
+type FullscreenModalProps = {
+    title: string,
+    open: boolean,
+    setOpen: (open: boolean) => void,
+    children?: JSX.Element,
+    onConfirm?: () => void
+    confirmText?: string
+}
 
-export function ReceiveSuccessModal(props: { title: string, open: boolean, setOpen: (open: boolean) => void, children?: JSX.Element }) {
+export function FullscreenModal(props: FullscreenModalProps) {
     return (
         <Dialog.Root isOpen={props.open} onOpenChange={(isOpen) => props.setOpen(isOpen)}>
             <Dialog.Portal>
@@ -26,7 +34,7 @@ export function ReceiveSuccessModal(props: { title: string, open: boolean, setOp
                         </div>
                         <Dialog.Description class="flex flex-col gap-4">
                             {props.children}
-                            <Button onClick={(_) => props.setOpen(false)}>Nice</Button>
+                            <Button onClick={(_) => props.onConfirm ? props.onConfirm() : props.setOpen(false)}>{props.confirmText ?? "Nice"}</Button>
                         </Dialog.Description>
                     </Dialog.Content>
                 </div>
