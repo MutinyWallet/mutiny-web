@@ -16,6 +16,9 @@ dependencies:
   '@mutinywallet/mutiny-wasm':
     specifier: ^0.2.5
     version: 0.2.5
+  '@mutinywallet/waila-wasm':
+    specifier: ^0.1.4
+    version: 0.1.4
   '@nostr-dev-kit/ndk':
     specifier: ^0.0.13
     version: 0.0.13(eslint-import-resolver-typescript@2.7.1)(typescript@4.9.5)
@@ -1634,6 +1637,10 @@ packages:
 
   /@mutinywallet/mutiny-wasm@0.2.5:
     resolution: {integrity: sha512-tszk0H77+nG+dPi2m0w0NXo4yXciTQVTGW3qvW+/JIrrcduWaAbiKqeTgGNDnXJNjen+t44nypj4iDlKzRV1fg==}
+    dev: false
+
+  /@mutinywallet/waila-wasm@0.1.4:
+    resolution: {integrity: sha512-znZVl84VAzlVQPAySeE3eu6wyCDT/ms4vH6umbwZsnl2APg3IZInco8GjrPhcayNB20J5Abd3affT7PXMYDINg==}
     dev: false
 
   /@noble/curves@1.0.0:

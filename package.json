@@ -34,6 +34,7 @@
     "@modular-forms/solid": "^0.12.0",
     "@motionone/solid": "^10.16.0",
     "@mutinywallet/mutiny-wasm": "^0.2.5",
+    "@mutinywallet/waila-wasm": "^0.1.4",
     "@nostr-dev-kit/ndk": "^0.0.13",
     "@solidjs/meta": "^0.28.4",
     "@solidjs/router": "^0.8.2",

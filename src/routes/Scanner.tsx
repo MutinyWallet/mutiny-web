@@ -1,7 +1,8 @@
 import Reader from "~/components/Reader";
-import { createEffect, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, onMount, Show } from "solid-js";
 import { useNavigate } from "solid-start";
 import { Button } from "~/components/layout";
+import init, { PaymentParams } from "@mutinywallet/waila-wasm";
 
 export default function Scanner() {
     const [scanResult, setScanResult] = createSignal<string>();
@@ -22,9 +23,22 @@ export default function Scanner() {
         });
     }
 
+    let waila;
+
+    onMount(() => {
+        init().then((w) => {
+            waila = w;
+        });
+    })
+
     // When we have a nice result we can head over to the send screen
     createEffect(() => {
         if (scanResult()) {
+            let params = new PaymentParams(scanResult() || "");
+            console.log(params.address)
+            console.log(params.invoice)
+            console.log(params.amount_sats)
+            console.log(params.network)
             navigate("/send", { state: { destination: scanResult() } })
         }
     })
