@@ -15,6 +15,7 @@ import party from '~/assets/party.gif';
 import { Amount } from "~/components/Amount";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import { BackButton } from "~/components/layout/BackButton";
+import { TagEditor } from "~/components/TagEditor";
 
 type OnChainTx = {
     transaction: {
@@ -181,28 +182,21 @@ export default function Receive() {
     return (
         <NodeManagerGuard>
             <SafeArea>
-                <DefaultMain>
+                <main class="max-w-[600px] flex flex-col gap-4 mx-auto p-4">
                     <BackButton />
                     <LargeHeader>Receive Bitcoin</LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
-                            <AmountEditable initialAmountSats={amount() || "0"} setAmountSats={setAmount} onSave={handleAmountSave} />
-                            <div>
-                                <Button intent="glowy" layout="xs">Tag the sender</Button>
-                            </div>
-                            <form class="flex flex-col gap-4" onSubmit={onSubmit} >
-                                <TextField.Root
-                                    value={label()}
-                                    onValueChange={setLabel}
-                                    class="flex flex-col gap-2"
-                                >
-                                    <TextField.Label><SmallHeader>Label (private)</SmallHeader></TextField.Label>
-                                    <TextField.Input
-                                        ref={el => labelInput = el}
-                                        class="w-full p-2 rounded-lg text-black" />
-                                </TextField.Root>
-                                <Button disabled={!amount() || !label()} intent="green" type="submit">Create Invoice</Button>
-                            </form >
+                            <dl>
+                                <dd>
+
+                                    <AmountEditable initialAmountSats={amount() || "0"} setAmountSats={setAmount} onSave={handleAmountSave} />
+                                </dd>
+                                <dd>
+                                    <TagEditor />
+                                </dd>
+                            </dl>
+                            <Button class="w-full" disabled={!amount() || !label()} intent="green" onClick={onSubmit}>Create Invoice</Button>
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>
                             <div class="w-full bg-white rounded-xl">
@@ -247,7 +241,7 @@ export default function Receive() {
                             </FullscreenModal>
                         </Match>
                     </Switch>
-                </DefaultMain>
+                </main>
                 <NavBar activeTab="receive" />
             </SafeArea >
         </NodeManagerGuard>

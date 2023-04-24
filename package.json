@@ -38,6 +38,7 @@
     "@nostr-dev-kit/ndk": "^0.0.13",
     "@solidjs/meta": "^0.28.4",
     "@solidjs/router": "^0.8.2",
+    "@thisbeyond/solid-select": "^0.14.0",
     "class-variance-authority": "^0.4.0",
     "nostr-tools": "^1.10.1",
     "qr-scanner": "^1.4.2",
