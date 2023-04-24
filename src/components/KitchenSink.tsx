@@ -293,6 +293,39 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
     )
 }
 
+function LnUrlAuth() {
+    const [state, _] = useMegaStore()
+
+    const [value, setValue] = createSignal("");
+
+    const onSubmit = async (e: SubmitEvent) => {
+        e.preventDefault();
+
+        const lnurl = value().trim();
+        await state.node_manager?.lnurl_auth(0, lnurl)
+
+        setValue("");
+    };
+
+    return (
+        <InnerCard>
+            <form class="flex flex-col gap-4" onSubmit={onSubmit} >
+                <TextField.Root
+                    value={value()}
+                    onValueChange={setValue}
+                    validationState={(value() == "" || value().toLowerCase().startsWith("lnurl")) ? "valid" : "invalid"}
+                    class="flex flex-col gap-4"
+                >
+                    <TextField.Label class="text-sm font-semibold uppercase" >LNURL Auth</TextField.Label>
+                    <TextField.Input class="w-full p-2 rounded-lg text-black" placeholder="LNURL..." />
+                    <TextField.ErrorMessage class="text-red-500">Expecting something like LNURL...</TextField.ErrorMessage>
+                </TextField.Root>
+                <Button layout="small" type="submit">Auth</Button>
+            </form >
+        </InnerCard>
+    )
+}
+
 export default function KitchenSink() {
     return (
         <Card title="Kitchen Sink">
@@ -301,6 +334,8 @@ export default function KitchenSink() {
             <PeersList />
             <Hr />
             <ChannelsList />
+            <Hr />
+            <LnUrlAuth />
         </Card>
     )
 }
