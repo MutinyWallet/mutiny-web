@@ -96,6 +96,10 @@ const VStack: ParentComponent<{ biggap?: boolean }> = (props) => {
     return (<div class={`flex flex-col gap-${props.biggap ? "8" : "4"}`}>{props.children}</div>)
 }
 
+const HStack: ParentComponent<{ biggap?: boolean }> = (props) => {
+    return (<div class={`flex gap-${props.biggap ? "8" : "4"}`}>{props.children}</div>)
+}
+
 const SmallAmount: ParentComponent<{ amount: number | bigint }> = (props) => {
     return (<h2 class="font-light text-lg">{props.amount.toLocaleString()} <span class="text-sm">SATS</span></h2>)
 }
@@ -116,5 +120,6 @@ export {
     DefaultMain,
     LargeHeader,
     VStack,
+    HStack,
     SmallAmount
 }

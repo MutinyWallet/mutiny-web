@@ -16,7 +16,13 @@ export type ParsedParams = {
 }
 
 export function toParsedParams(str: string, ourNetwork: string): Result<ParsedParams> {
-    const params = new PaymentParams(str || "")
+    let params;
+    try {
+        params = new PaymentParams(str || "")
+    } catch (e) {
+        console.error(e)
+        return { ok: false, error: new Error("Invalid payment request") }
+    }
 
     console.log("params network:", params.network)
     console.log("our network:", ourNetwork)
