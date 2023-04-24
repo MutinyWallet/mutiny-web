@@ -1,8 +1,7 @@
-import { TextField } from "@kobalte/core";
 import { Match, Show, Switch, createEffect, createMemo, createResource, createSignal, onCleanup, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
-import { Button, ButtonLink, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, ButtonLink, DefaultMain, HStack, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
@@ -10,7 +9,6 @@ import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { AmountEditable } from "~/components/AmountEditable";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { ParsedParams, toParsedParams } from "./Scanner";
-import init from "@mutinywallet/waila-wasm";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
@@ -28,23 +26,10 @@ const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fas
 type SentDetails = { amount: bigint, destination: string, txid?: string }
 
 export default function Send() {
-    let waila;
-
-    onMount(() => {
-        init().then((w) => {
-            waila = w;
-        });
-
-    })
-
-    // TODO: Is this just implied?
-    onCleanup(() => {
-        waila = undefined;
-    })
-
     const [state, actions] = useMegaStore();
 
     // These can only be set by the user
+    const [fieldDestination, setFieldDestination] = createSignal("");
     const [destination, setDestination] = createSignal<ParsedParams>();
     const [privateLabel, setPrivateLabel] = createSignal("");
 
@@ -69,6 +54,7 @@ export default function Send() {
         setInvoice(undefined);
         setAddress(undefined);
         setDescription(undefined);
+        setFieldDestination("");
     }
 
     const fakeFee = createMemo(() => {
@@ -110,22 +96,36 @@ export default function Send() {
         }
     })
 
-    function handlePaste() {
-        navigator.clipboard.readText().then(text => {
-            if (text) {
-                const network = state.node_manager?.get_network() || "signet";
-                const result = toParsedParams(text || "", network);
-                if (!result.ok) {
-                    showToast(result.error);
-                    return;
-                } else {
-                    if (result.value?.address || result.value?.invoice) {
-                        setDestination(result.value);
-                        // Important! we need to clear the scan result once we've used it
-                        actions.setScanResult(undefined);
-                    }
+    function parsePaste(text: string) {
+        if (text) {
+            const network = state.node_manager?.get_network() || "signet";
+            const result = toParsedParams(text || "", network);
+            if (!result.ok) {
+                showToast(result.error);
+                return;
+            } else {
+                if (result.value?.address || result.value?.invoice) {
+                    setDestination(result.value);
+                    // Important! we need to clear the scan result once we've used it
+                    actions.setScanResult(undefined);
                 }
             }
+        }
+    }
+
+    function handleDecode() {
+        const text = fieldDestination();
+        parsePaste(text);
+    }
+
+    function handlePaste() {
+        if (!navigator.clipboard.readText) return showToast(new Error("Clipboard not supported"));
+
+        navigator.clipboard.readText().then(text => {
+            setFieldDestination(text);
+            parsePaste(text);
+        }).catch((e) => {
+            showToast(new Error("Failed to read clipboard: " + e.message))
         });
     }
 
@@ -171,7 +171,6 @@ export default function Send() {
                 <DefaultMain>
                     <BackButton />
                     <LargeHeader>Send Bitcoin</LargeHeader>
-                    {/* <SentModal details={sentDetails()} /> */}
                     <FullscreenModal title="Sent!" open={!!sentDetails()} setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }} onConfirm={() => setSentDetails(undefined)}>
                         <div class="flex flex-col items-center gap-8">
                             <img src={handshake} alt="party" class="w-1/2 mx-auto max-w-[50vh] zoom-image" />
@@ -231,20 +230,26 @@ export default function Send() {
                                     </div>
                                 </Match>
                                 <Match when={true}>
-                                    <div class="flex flex-row gap-4">
-                                        <Button onClick={handlePaste}>
-                                            <div class="flex flex-col gap-2 items-center">
-                                                <Paste />
-                                                <span>Paste</span>
-                                            </div>
-                                        </Button>
-                                        <ButtonLink href="/scanner">
-                                            <div class="flex flex-col gap-2 items-center">
-                                                <Scan />
-                                                <span>Scan QR</span>
-                                            </div>
-                                        </ButtonLink>
-                                    </div>
+                                    <VStack>
+                                        <textarea value={fieldDestination()} onInput={(e) => setFieldDestination(e.currentTarget.value)} placeholder="bitcoin:..." class="p-2 rounded-lg bg-white/10 placeholder-neutral-400" />
+                                        <Button disabled={!fieldDestination()} intent="blue" onClick={handleDecode}>Decode</Button>
+                                        <HStack>
+                                            <Button onClick={handlePaste}>
+                                                <div class="flex flex-col gap-2 items-center">
+                                                    <Paste />
+                                                    <span>Paste</span>
+                                                </div>
+                                            </Button>
+                                            <ButtonLink href="/scanner">
+                                                <div class="flex flex-col gap-2 items-center">
+                                                    <Scan />
+                                                    <span>Scan QR</span>
+                                                </div>
+                                            </ButtonLink>
+                                        </HStack>
+
+
+                                    </VStack>
                                 </Match>
                             </Switch>
                         </dd>
@@ -258,31 +263,13 @@ export default function Send() {
                                 <StyledRadioGroup value={source()} onValueChange={setSource} choices={PAYMENT_METHODS} />
                             </dd>
                         </Show>
-                        <Show when={destination()}>
-                            <TextField.Root
-                                value={privateLabel()}
-                                onValueChange={setPrivateLabel}
-                                class="flex flex-col gap-2"
-                            >
-                                <dt>
-                                    <SmallHeader>
-                                        <TextField.Label>Label (private)</TextField.Label>
-                                    </SmallHeader>
-                                </dt>
-                                <dd>
-                                    <TextField.Input
-                                        autofocus
-                                        class="w-full p-2 rounded-lg bg-white/10"
-                                        placeholder="A helpful reminder of why you spent bitcoin"
-                                    />
-                                </dd>
-                            </TextField.Root>
-                        </Show>
                     </dl>
-                    <Button disabled={!destination() || sending()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
+                    <Show when={destination()}>
+                        <Button disabled={!destination() || sending()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
+                    </Show>
                 </DefaultMain>
                 <NavBar activeTab="send" />
             </SafeArea >
-        </NodeManagerGuard>
+        </NodeManagerGuard >
     )
 }

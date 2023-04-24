@@ -1,5 +1,6 @@
 
-import init, { NodeManager } from '@mutinywallet/mutiny-wasm';
+import initNodeManager, { NodeManager } from '@mutinywallet/mutiny-wasm';
+import initWaila from '@mutinywallet/waila-wasm'
 
 // export type NodeManagerSettingStrings = {
 //     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
@@ -70,7 +71,9 @@ export async function checkForWasm() {
 }
 
 export async function setupNodeManager(settings?: NodeManagerSettingStrings): Promise<NodeManager> {
-    const _ = await init();
+    await initNodeManager();
+    // Might as well init waila while we're at it
+    await initWaila();
 
     console.time("Setup");
     console.log("Starting setup...")
