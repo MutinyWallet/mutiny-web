@@ -15,6 +15,7 @@ import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import { BackButton } from "~/components/layout/BackButton";
 import { TagEditor, TagItem } from "~/components/TagEditor";
 import { StyledRadioGroup } from "~/components/layout/Radio";
+import { showToast } from "~/components/Toaster";
 
 type OnChainTx = {
     transaction: {
@@ -136,18 +137,23 @@ export default function Receive() {
 
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
-        const raw = await state.node_manager?.create_bip21(bigAmount, "TODO DELETE ME");
+        try {
+            const raw = await state.node_manager?.create_bip21(bigAmount, "TODO DELETE ME");
+            // Save the raw info so we can watch the address and invoice
+            setBip21Raw(raw);
 
-        // Save the raw info so we can watch the address and invoice
-        setBip21Raw(raw);
+            const params = objectToSearchParams({
+                amount: raw?.btc_amount,
+                label: raw?.description,
+                lightning: raw?.invoice
+            })
 
-        const params = objectToSearchParams({
-            amount: raw?.btc_amount,
-            label: raw?.description,
-            lightning: raw?.invoice
-        })
+            return `bitcoin:${raw?.address}?${params}`
 
-        return `bitcoin:${raw?.address}?${params}`
+        } catch (e) {
+            showToast(new Error("Couldn't create invoice. Are you asking for enough?"))
+            console.error(e)
+        }
     }
 
     async function onSubmit(e: Event) {
@@ -155,7 +161,7 @@ export default function Receive() {
 
         const unifiedQr = await getUnifiedQr(amount())
 
-        setUnified(unifiedQr)
+        setUnified(unifiedQr || "")
         setReceiveState("show")
     }
 
@@ -193,9 +199,6 @@ export default function Receive() {
             clearInterval(interval);
         });
     });
-
-
-
 
     return (
         <NodeManagerGuard>

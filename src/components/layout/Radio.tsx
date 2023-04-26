@@ -6,7 +6,7 @@ type Choices = { value: string, label: string, caption: string }[]
 // TODO: how could would it be if we could just pass the estimated fees in here?
 export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, }) {
     return (
-        <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)} class={`grid w-full gap-${props.small ? 2 : 4} grid-cols-${props.choices.length}`}>
+        <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)} class={`grid w-full gap-${props.small ? "2" : "4"} grid-cols-${props.choices.length.toString()}`}>
             <For each={props.choices}>
                 {choice =>
                     <RadioGroup.Item value={choice.value} class="ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2">
