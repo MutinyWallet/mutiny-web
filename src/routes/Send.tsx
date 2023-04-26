@@ -171,7 +171,7 @@ export default function Send() {
                 <DefaultMain>
                     <BackButton />
                     <LargeHeader>Send Bitcoin</LargeHeader>
-                    <FullscreenModal title="Sent!" open={!!sentDetails()} setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }} onConfirm={() => setSentDetails(undefined)}>
+                    <FullscreenModal title="Sent" open={!!sentDetails()} setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }} onConfirm={() => setSentDetails(undefined)}>
                         <div class="flex flex-col items-center gap-8">
                             <img src={handshake} alt="party" class="w-1/2 mx-auto max-w-[50vh] zoom-image" />
                             <Amount amountSats={sentDetails()?.amount} showFiat />
@@ -247,8 +247,6 @@ export default function Send() {
                                                 </div>
                                             </ButtonLink>
                                         </HStack>
-
-
                                     </VStack>
                                 </Match>
                             </Switch>

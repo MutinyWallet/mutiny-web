@@ -18,8 +18,11 @@ function SingleDigitButton(props: { character: string, onClick: (c: string) => v
     );
 }
 
-export function AmountEditable(props: { initialAmountSats: string, setAmountSats: (s: bigint) => void, onSave?: () => void }) {
+export function AmountEditable(props: { initialAmountSats: string, setAmountSats: (s: bigint) => void }) {
+    const [isOpen, setIsOpen] = createSignal(false);
+
     const [displayAmount, setDisplayAmount] = createSignal(props.initialAmountSats || "0");
+
 
     let inputRef!: HTMLInputElement;
 
@@ -101,9 +104,12 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
     const amountInUsd = () => satsToUsd(state.price, Number(displayAmount()) || 0, true)
 
     // What we're all here for in the first place: returning a value
-    function handleSubmit() {
+    function handleSubmit(e: SubmitEvent | MouseEvent) {
+        e.preventDefault()
+
         // validate it's a number
         console.log("handling submit...");
+        console.log(displayAmount());
         const number = Number(displayAmount());
         if (isNaN(number) || number < 0) {
             setDisplayAmount("0");
@@ -112,36 +118,36 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
         } else {
             const bign = BigInt(displayAmount());
             props.setAmountSats(bign);
-            // This is so the parent can focus the next input if it wants to
-            if (props.onSave) {
-                props.onSave();
-            }
         }
+
+        setIsOpen(false);
     }
 
     const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
     const DIALOG_CONTENT = "h-screen-safe p-4 bg-gray/50 backdrop-blur-md bg-black/80"
 
+
+
     return (
-        <Dialog.Root>
-            <Dialog.Trigger>
-                <div class="p-4 rounded-xl border-2 border-m-blue">
-                    <Amount amountSats={Number(displayAmount())} showFiat />
-                </div>
-            </Dialog.Trigger>
+        <Dialog.Root isOpen={isOpen()}>
+            <button onClick={() => setIsOpen(true)} class="p-4 rounded-xl border-2 border-m-blue">
+                <Amount amountSats={Number(displayAmount())} showFiat />
+            </button>
             <Dialog.Portal>
                 {/* <Dialog.Overlay class={OVERLAY} /> */}
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
                         {/* TODO: figure out how to submit on enter */}
-                        <input ref={el => inputRef = el}
-                            autofocus
-                            inputmode='none'
-                            type="text"
-                            class="opacity-0 absolute -z-10"
-                            value={displayAmount()}
-                            onInput={(e) => handleHiddenInput(e)}
-                        />
+                        <form onSubmit={handleSubmit}>
+                            <input ref={el => inputRef = el}
+                                autofocus
+                                inputmode='none'
+                                type="text"
+                                class="opacity-0 absolute -z-10"
+                                value={displayAmount()}
+                                onInput={(e) => handleHiddenInput(e)}
+                            />
+                        </form>
                         <div class="flex flex-col gap-4 max-w-[400px] mx-auto">
                             <div class="p-4 bg-black rounded-xl flex flex-col gap-4 items-center justify-center">
                                 <h1 class={`font-light text-center transition-transform ease-out duration-300 text-6xl ${scale()}`}>
@@ -159,13 +165,9 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
                                 </For>
                             </div>
                             {/* TODO: this feels wrong */}
-                            <Dialog.CloseButton>
-                                <Button intent="inactive" class="w-full flex-none"
-                                    onClick={handleSubmit}
-                                >
-                                    Set Amount
-                                </Button>
-                            </Dialog.CloseButton>
+                            <Button intent="inactive" class="w-full flex-none" onClick={handleSubmit}>
+                                Set Amount
+                            </Button>
                         </div>
                     </Dialog.Content>
                 </div>
