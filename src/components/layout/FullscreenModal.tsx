@@ -1,7 +1,7 @@
 
 import { Dialog } from "@kobalte/core";
 import { JSX } from "solid-js";
-import { Button, SmallHeader } from "~/components/layout";
+import { Button, LargeHeader, SmallHeader } from "~/components/layout";
 import close from "~/assets/icons/close.svg";
 
 const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
@@ -24,9 +24,9 @@ export function FullscreenModal(props: FullscreenModalProps) {
                     <Dialog.Content class={DIALOG_CONTENT}>
                         <div class="flex justify-between items-center mb-2">
                             <Dialog.Title>
-                                <SmallHeader>
+                                <LargeHeader>
                                     {props.title}
-                                </SmallHeader>
+                                </LargeHeader>
                             </Dialog.Title>
                             <Dialog.CloseButton class="p-2 hover:bg-white/10 rounded-lg active:bg-m-blue">
                                 <img src={close} alt="Close" />
