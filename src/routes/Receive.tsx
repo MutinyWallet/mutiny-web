@@ -138,7 +138,7 @@ export default function Receive() {
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
         try {
-            const raw = await state.node_manager?.create_bip21(bigAmount, "TODO DELETE ME");
+            const raw = await state.node_manager?.create_bip21(bigAmount);
             // Save the raw info so we can watch the address and invoice
             setBip21Raw(raw);
 
