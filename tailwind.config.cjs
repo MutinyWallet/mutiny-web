@@ -6,6 +6,12 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    'grid-cols-1',
+    'grid-cols-2',
+    'gap-2',
+    'gap-4'
+  ],
   variants: {
     extend: {
       borderWidth: ['responsive', 'last', 'hover', 'focus'],
