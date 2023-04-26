@@ -13,6 +13,7 @@ export type ParsedParams = {
     amount_sats?: bigint;
     network?: string;
     memo?: string;
+    node_pubkey?: string;
 }
 
 export function toParsedParams(str: string, ourNetwork: string): Result<ParsedParams> {
@@ -24,8 +25,11 @@ export function toParsedParams(str: string, ourNetwork: string): Result<ParsedPa
         return { ok: false, error: new Error("Invalid payment request") }
     }
 
+    console.log("params:", params.node_pubkey)
     console.log("params network:", params.network)
     console.log("our network:", ourNetwork)
+
+
 
     // TODO: "testnet" and "signet" are encoded the same I guess?
     if (params.network === "testnet" || params.network === "signet") {
@@ -33,7 +37,11 @@ export function toParsedParams(str: string, ourNetwork: string): Result<ParsedPa
             // noop
         }
     } else if (params.network !== ourNetwork) {
-        return { ok: false, error: new Error(`Destination is for ${params.network} but you're on ${ourNetwork}`) }
+        if (params.node_pubkey) {
+            // noop
+        } else {
+            return { ok: false, error: new Error(`Destination is for ${params.network} but you're on ${ourNetwork}`) }
+        }
     }
 
     return {
@@ -42,7 +50,8 @@ export function toParsedParams(str: string, ourNetwork: string): Result<ParsedPa
             invoice: params.invoice,
             amount_sats: params.amount_sats,
             network: params.network,
-            memo: params.memo
+            memo: params.memo,
+            node_pubkey: params.node_pubkey,
         }
     }
 }
@@ -84,7 +93,7 @@ export default function Scanner() {
                 showToast(result.error);
                 return;
             } else {
-                if (result.value?.address || result.value?.invoice) {
+                if (result.value?.address || result.value?.invoice || result.value?.node_pubkey) {
                     actions.setScanResult(result.value);
                     navigate("/send")
                 }
