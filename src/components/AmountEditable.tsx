@@ -1,20 +1,27 @@
-import { For, createMemo, createSignal } from 'solid-js';
+import { For, Show, createMemo, createSignal } from 'solid-js';
 import { Button } from '~/components/layout';
 import { useMegaStore } from '~/state/megaStore';
 import { satsToUsd } from '~/utils/conversions';
 import { Amount } from './Amount';
 import { Dialog } from '@kobalte/core';
+import close from "~/assets/icons/close.svg";
 
 const CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "DEL"];
 
-function SingleDigitButton(props: { character: string, onClick: (c: string) => void }) {
+const FIXED_AMOUNTS = [{ label: "10k", amount: "10000" }, { label: "100k", amount: "100000" }, { label: "1m", amount: "1000000" }]
+
+function SingleDigitButton(props: { character: string, onClick: (c: string) => void, fiat: boolean }) {
     return (
-        <button
-            class="p-2 rounded-lg hover:bg-white/10 active:bg-m-blue text-white text-4xl font-semi font-mono"
-            onClick={() => props.onClick(props.character)}
-        >
-            {props.character}
-        </button>
+        // Skip the "." if it's fiat
+        <Show when={props.fiat || !(props.character === ".")} fallback={<div />}>
+            <button
+                disabled={props.character === "."}
+                class="disabled:opacity-50 p-2 rounded-lg hover:bg-white/10 active:bg-m-blue text-white text-4xl font-semi font-mono"
+                onClick={() => props.onClick(props.character)}
+            >
+                {props.character}
+            </button>
+        </Show>
     );
 }
 
@@ -124,9 +131,7 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
     }
 
     const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
-    const DIALOG_CONTENT = "h-screen-safe p-4 bg-gray/50 backdrop-blur-md bg-black/80"
-
-
+    const DIALOG_CONTENT = "h-screen-safe flex flex-col justify-between p-4 backdrop-blur-md bg-neutral-800/70"
 
     return (
         <Dialog.Root isOpen={isOpen()}>
@@ -136,8 +141,13 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
             <Dialog.Portal>
                 {/* <Dialog.Overlay class={OVERLAY} /> */}
                 <div class={DIALOG_POSITIONER}>
-                    <Dialog.Content class={DIALOG_CONTENT}>
+                    <Dialog.Content class={DIALOG_CONTENT} onEscapeKeyDown={() => setIsOpen(false)}>
                         {/* TODO: figure out how to submit on enter */}
+                        <div class="w-full flex justify-end">
+                            <button tabindex="-1" onClick={() => setIsOpen(false)} class="hover:bg-white/10 rounded-lg active:bg-m-blue">
+                                <img src={close} alt="Close" />
+                            </button>
+                        </div>
                         <form onSubmit={handleSubmit}>
                             <input ref={el => inputRef = el}
                                 autofocus
@@ -148,24 +158,30 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
                                 onInput={(e) => handleHiddenInput(e)}
                             />
                         </form>
-                        <div class="flex flex-col gap-4 max-w-[400px] mx-auto">
-                            <div class="p-4 bg-black rounded-xl flex flex-col gap-4 items-center justify-center">
-                                <h1 class={`font-light text-center transition-transform ease-out duration-300 text-6xl ${scale()}`}>
+                        <div class="flex flex-col flex-1 justify-around gap-4 max-w-[400px] mx-auto w-full">
+                            <div class="w-full p-4 flex flex-col gap-4 items-center justify-center">
+                                <h1 class={`font-light text-center transition-transform ease-out duration-300 text-5xl ${scale()}`}>
                                     {prettyPrint()}&nbsp;<span class='text-xl'>SATS</span>
                                 </h1>
                                 <h2 class="text-xl font-light text-white/70" >
                                     &#8776; {amountInUsd()} <span class="text-sm">USD</span>
                                 </h2>
                             </div>
-                            <div class="grid grid-cols-3 w-full flex-none">
-                                <For each={CHARACTERS}>
-                                    {(character) => (
-                                        <SingleDigitButton character={character} onClick={handleCharacterInput} />
+                            <div class="flex justify-center gap-4 my-2">
+                                <For each={FIXED_AMOUNTS}>
+                                    {(amount) => (
+                                        <button onClick={() => setDisplayAmount(amount.amount)} class="py-2 px-4 rounded-lg bg-white/10">{amount.label}</button>
                                     )}
                                 </For>
                             </div>
-                            {/* TODO: this feels wrong */}
-                            <Button intent="inactive" class="w-full flex-none" onClick={handleSubmit}>
+                            <div class="grid grid-cols-3 w-full flex-none">
+                                <For each={CHARACTERS}>
+                                    {(character) => (
+                                        <SingleDigitButton fiat={false} character={character} onClick={handleCharacterInput} />
+                                    )}
+                                </For>
+                            </div>
+                            <Button intent="blue" class="w-full flex-none" onClick={handleSubmit}>
                                 Set Amount
                             </Button>
                         </div>
