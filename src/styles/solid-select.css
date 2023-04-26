@@ -54,13 +54,13 @@
 }
 
 .solid-select-option > mark {
-  @apply underline;
+  @apply underline bg-white/10 text-white;
 }
 .solid-select-option {
   @apply cursor-default select-none p-1 hover:bg-neutral-800 rounded;
 }
 .solid-select-option[data-disabled="true"] {
-  @apply pointer-events-none text-neutral-500;
+  @apply pointer-events-none opacity-50;
 }
 .solid-select-list-placeholder {
   @apply cursor-default select-none;
