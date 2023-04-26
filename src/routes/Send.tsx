@@ -55,6 +55,7 @@ export default function Send() {
         setInvoice(undefined);
         setAddress(undefined);
         setDescription(undefined);
+        setNodePubkey(undefined);
         setFieldDestination("");
     }
 
@@ -79,16 +80,16 @@ export default function Send() {
             if (source.address) setAddress(source.address)
             if (source.memo) setDescription(source.memo);
 
-            if (source.node_pubkey) {
-                setAmountSats(source.amount_sats || 0n);
-                setNodePubkey(source.node_pubkey);
-                setSource("lightning")
-            } else if (source.invoice) {
+            if (source.invoice) {
                 state.node_manager?.decode_invoice(source.invoice).then(invoice => {
                     if (invoice?.amount_sats) setAmountSats(invoice.amount_sats);
                     setInvoice(invoice)
                     setSource("lightning")
                 });
+            } else if (source.node_pubkey) {
+                setAmountSats(source.amount_sats || 0n);
+                setNodePubkey(source.node_pubkey);
+                setSource("lightning")
             } else {
                 setAmountSats(source.amount_sats || 0n);
                 setSource("onchain")
