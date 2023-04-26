@@ -10,8 +10,8 @@ import mempoolTxUrl from '~/utils/mempoolTxUrl';
 
 const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
 const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
-const MISSING_LABEL = 'py-1 px-2 bg-m-red rounded inline-block text-sm'
-const RIGHT_COLUMN = 'flex flex-col items-right text-right'
+const MISSING_LABEL = 'py-1 px-2 bg-white/10 rounded inline-block text-sm'
+const RIGHT_COLUMN = 'flex flex-col items-right text-right max-w-[8rem]'
 
 type OnChainTx = {
     txid: string
@@ -19,8 +19,10 @@ type OnChainTx = {
     sent: number
     fee?: number
     confirmation_time?: {
-        height: number
-        timestamp: number
+        "Confirmed": {
+            height: number
+            time: number
+        }
     }
 }
 
@@ -53,7 +55,7 @@ function OnChainItem(props: { item: OnChainTx }) {
             <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 {isReceive() ? <img src={receive} alt="receive arrow" /> : <img src={send} alt="send arrow" />}
                 <div class={CENTER_COLUMN}>
-                    <h2 class={MISSING_LABEL}>Label Missing</h2>
+                    <h2 class={MISSING_LABEL}>Unknown</h2>
                     {isReceive() ? <SmallAmount amount={props.item.received} /> : <SmallAmount amount={props.item.sent} />}
                     {/* <h2 class="truncate">Txid: {props.item.txid}</h2> */}
                 </div>
@@ -61,7 +63,7 @@ function OnChainItem(props: { item: OnChainTx }) {
                     <SmallHeader class={isReceive() ? "text-m-green" : "text-m-red"}>
                         {isReceive() ? "RECEIVE" : "SEND"}
                     </SmallHeader>
-                    <SubtleText>{props.item.confirmation_time ? prettyPrintTime(props.item.confirmation_time.timestamp) : "Unconfirmed"}</SubtleText>
+                    <SubtleText>{props.item.confirmation_time ? prettyPrintTime(props.item.confirmation_time.Confirmed.time) : "Unconfirmed"}</SubtleText>
                 </div>
             </div>
         </>
@@ -79,7 +81,7 @@ function InvoiceItem(props: { item: MutinyInvoice }) {
             <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 {isSend() ? <img src={send} alt="send arrow" /> : <img src={receive} alt="receive arrow" />}
                 <div class={CENTER_COLUMN}>
-                    <h2 class={MISSING_LABEL}>Label Missing</h2>
+                    <h2 class={MISSING_LABEL}>Unknown</h2>
                     <SmallAmount amount={props.item.amount_sats || 0} />
                 </div>
                 <div class={RIGHT_COLUMN}>
@@ -104,7 +106,7 @@ function Utxo(props: { item: Utxo }) {
             <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 <img src={receive} alt="receive arrow" />
                 <div class={CENTER_COLUMN}>
-                    <h2 class={MISSING_LABEL}>Label Missing</h2>
+                    <h2 class={MISSING_LABEL}>Unknown</h2>
                     <SmallAmount amount={props.item.txout.value} />
                 </div>
                 <div class={RIGHT_COLUMN}>
