@@ -29,7 +29,7 @@ export function showToast(arg: ToastArg) {
 
 export function ToastItem(props: { toastId: number, title: string, description: string, isError?: boolean }) {
     return (
-        <Toast.Root toastId={props.toastId} class={`w-[80vw] max-w-[400px] p-4 bg-neutral-900/80 backdrop-blur-md shadow-xl rounded-xl border ${props.isError ? "border-m-red/50" : "border-white/10"} `}>
+        <Toast.Root toastId={props.toastId} class={`w-[80vw] max-w-[400px] mx-auto p-4 bg-neutral-900/80 backdrop-blur-md shadow-xl rounded-xl border ${props.isError ? "border-m-red/50" : "border-white/10"} `}>
             <div class="flex gap-4 w-full justify-between">
                 <div>
                     <Toast.Title>
