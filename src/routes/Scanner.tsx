@@ -102,7 +102,7 @@ export default function Scanner() {
     })
 
     return (
-        <div class="safe-top safe-left safe-right safe-bottom h-screen-safe">
+        <div class="safe-top safe-left safe-right safe-bottom h-full">
             <Reader onResult={onResult} />
             <div class="w-full flex flex-col items-center fixed bottom-[2rem] gap-8 px-8">
                 <div class="w-full max-w-[800px] flex flex-col gap-2">
