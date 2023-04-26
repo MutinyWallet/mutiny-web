@@ -6,6 +6,7 @@ type Choices = { value: string, label: string, caption: string }[]
 // TODO: how could would it be if we could just pass the estimated fees in here?
 export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, }) {
     return (
+        // TODO: rewrite this with CVA, props are bad for tailwind
         <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)} class={`grid w-full gap-${props.small ? "2" : "4"} grid-cols-${props.choices.length.toString()}`}>
             <For each={props.choices}>
                 {choice =>
