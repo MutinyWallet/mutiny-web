@@ -229,7 +229,7 @@ export default function Send() {
                                         </Show>
                                         <Button class="flex-0" intent="glowy" layout="xs" onClick={clearAll}>Clear</Button>
                                     </div>
-                                    <div class="my-8 flex gap-4 w-full items-center justify-around">
+                                    <div class="my-8 flex flex-col md:flex-row md:justify-center gap-4 w-full items-start">
                                         {/* if the amount came with the invoice we can't allow setting it */}
                                         <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
                                             <AmountEditable initialAmountSats={amountSats().toString() || "0"} setAmountSats={setAmountSats} />
@@ -238,13 +238,13 @@ export default function Send() {
                                             <div class="flex gap-2 items-center">
                                                 <h2 class="text-neutral-400 font-semibold uppercase">+ Fee</h2>
                                                 <h3 class="text-xl font-light text-neutral-300">
-                                                    {fakeFee().toLocaleString()} <span class='text-lg'>SATS</span>
+                                                    {fakeFee().toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
                                                 </h3>
                                             </div>
                                             <div class="flex gap-2 items-center">
                                                 <h2 class="font-semibold uppercase text-white">Total</h2>
                                                 <h3 class="text-xl font-light text-white">
-                                                    {(amountSats().valueOf() + fakeFee().valueOf()).toLocaleString()} <span class='text-lg'>SATS</span>
+                                                    {(amountSats().valueOf() + fakeFee().valueOf()).toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
                                                 </h3>
                                             </div>
                                         </div>
