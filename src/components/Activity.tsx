@@ -150,7 +150,7 @@ export function Activity() {
                 <Card title="On-chain">
                     <Switch>
                         <Match when={transactions.loading}>
-                            <LoadingSpinner big />
+                            <LoadingSpinner wide />
                         </Match>
                         <Match when={transactions.state === "ready" && transactions().length === 0}>
                             <code>No transactions (empty state)</code>
@@ -167,7 +167,7 @@ export function Activity() {
                 <Card title="Lightning">
                     <Switch>
                         <Match when={invoices.loading}>
-                            <LoadingSpinner big />
+                            <LoadingSpinner wide />
                         </Match>
                         <Match when={invoices.state === "ready" && invoices().length === 0}>
                             <code>No invoices (empty state)</code>
@@ -184,7 +184,7 @@ export function Activity() {
                 <Card title="UTXOs">
                     <Switch>
                         <Match when={utxos.loading}>
-                            <LoadingSpinner big />
+                            <LoadingSpinner wide />
                         </Match>
                         <Match when={utxos.state === "ready" && utxos().length === 0}>
                             <code>No utxos (empty state)</code>
