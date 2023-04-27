@@ -68,13 +68,11 @@ export const Provider: ParentComponent = (props) => {
         },
         async sync(): Promise<void> {
             console.time("BDK Sync Time")
-            console.groupCollapsed("BDK Sync")
             try {
                 await state.node_manager?.sync()
             } catch (e) {
                 console.error(e);
             }
-            console.groupEnd();
             console.timeEnd("BDK Sync Time")
         },
         setScanResult(scan_result: ParsedParams) {

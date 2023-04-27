@@ -30,7 +30,7 @@ export default function Root() {
         <Meta name="theme-color" content="#000000" />
         <Meta name="description" content="Lightning wallet for the web" />
         <Link rel="icon" href="/favicon.ico" />
-        <Link rel="apple-touch-icon" href="/180.png" sizes="180x180" />
+        <Link rel="apple-touch-icon" href="/images/icon.png" sizes="512x512" />
         <Link rel="mask-icon" href="/mutiny_logo_mask.svg" color="#000" />
       </Head>
       <Body>

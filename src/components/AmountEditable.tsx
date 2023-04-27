@@ -131,7 +131,7 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
     }
 
     const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
-    const DIALOG_CONTENT = "h-screen-safe flex flex-col justify-between p-4 backdrop-blur-md bg-neutral-800/70"
+    const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-md bg-neutral-800/70"
 
     return (
         <Dialog.Root isOpen={isOpen()}>

@@ -39,6 +39,7 @@ export default function Send() {
 
     // These can only be derived from the "destination" signal
     const [invoice, setInvoice] = createSignal<MutinyInvoice>();
+    const [nodePubkey, setNodePubkey] = createSignal<string>();
     const [address, setAddress] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
 
@@ -54,6 +55,7 @@ export default function Send() {
         setInvoice(undefined);
         setAddress(undefined);
         setDescription(undefined);
+        setNodePubkey(undefined);
         setFieldDestination("");
     }
 
@@ -84,6 +86,10 @@ export default function Send() {
                     setInvoice(invoice)
                     setSource("lightning")
                 });
+            } else if (source.node_pubkey) {
+                setAmountSats(source.amount_sats || 0n);
+                setNodePubkey(source.node_pubkey);
+                setSource("lightning")
             } else {
                 setAmountSats(source.amount_sats || 0n);
                 setSource("onchain")
@@ -104,7 +110,7 @@ export default function Send() {
                 showToast(result.error);
                 return;
             } else {
-                if (result.value?.address || result.value?.invoice) {
+                if (result.value?.address || result.value?.invoice || result.value?.node_pubkey) {
                     setDestination(result.value);
                     // Important! we need to clear the scan result once we've used it
                     actions.setScanResult(undefined);
@@ -146,6 +152,12 @@ export default function Send() {
                     await state.node_manager?.pay_invoice(firstNode, bolt11, amountSats());
                     sentDetails.amount = amountSats();
                 }
+            } else if (source() === "lightning" && nodePubkey()) {
+                const nodes = await state.node_manager?.list_nodes();
+                const firstNode = nodes[0] as string || ""
+                const invoice = await state.node_manager?.keysend(firstNode, nodePubkey()!, amountSats());
+                console.log(invoice?.value)
+                sentDetails.amount = amountSats();
             } else {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const txid = await state.node_manager?.send_to_address(address()!, amountSats());
@@ -164,6 +176,10 @@ export default function Send() {
             setSending(false);
         }
     }
+
+    const sendButtonDisabled = createMemo(() => {
+        return !destination() || sending() || amountSats() === 0n;
+    })
 
     return (
         <NodeManagerGuard>
@@ -188,7 +204,7 @@ export default function Send() {
                         </dt>
                         <dd>
                             <Switch>
-                                <Match when={address() || invoice()}>
+                                <Match when={address() || invoice() || nodePubkey()}>
                                     <div class="flex gap-2 items-center">
                                         <Show when={address() && source() === "onchain"}>
                                             <code class="truncate text-sm break-all">{"Address: "} {address()}
@@ -206,9 +222,14 @@ export default function Send() {
                                                 </Show>
                                             </code>
                                         </Show>
+                                        <Show when={nodePubkey() && source() === "lightning"}>
+                                            <code class="truncate text-sm break-all">{"Node Pubkey: "} {nodePubkey()}
+
+                                            </code>
+                                        </Show>
                                         <Button class="flex-0" intent="glowy" layout="xs" onClick={clearAll}>Clear</Button>
                                     </div>
-                                    <div class="my-8 flex gap-4 w-full items-center justify-around">
+                                    <div class="my-8 flex flex-col md:flex-row md:justify-center gap-4 w-full items-start">
                                         {/* if the amount came with the invoice we can't allow setting it */}
                                         <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
                                             <AmountEditable initialAmountSats={amountSats().toString() || "0"} setAmountSats={setAmountSats} />
@@ -217,13 +238,13 @@ export default function Send() {
                                             <div class="flex gap-2 items-center">
                                                 <h2 class="text-neutral-400 font-semibold uppercase">+ Fee</h2>
                                                 <h3 class="text-xl font-light text-neutral-300">
-                                                    {fakeFee().toLocaleString()} <span class='text-lg'>SATS</span>
+                                                    {fakeFee().toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
                                                 </h3>
                                             </div>
                                             <div class="flex gap-2 items-center">
                                                 <h2 class="font-semibold uppercase text-white">Total</h2>
                                                 <h3 class="text-xl font-light text-white">
-                                                    {(amountSats().valueOf() + fakeFee().valueOf()).toLocaleString()} <span class='text-lg'>SATS</span>
+                                                    {(amountSats().valueOf() + fakeFee().valueOf()).toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
                                                 </h3>
                                             </div>
                                         </div>
@@ -263,7 +284,7 @@ export default function Send() {
                         </Show>
                     </dl>
                     <Show when={destination()}>
-                        <Button disabled={!destination() || sending()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
+                        <Button disabled={sendButtonDisabled()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
                     </Show>
                 </DefaultMain>
                 <NavBar activeTab="send" />

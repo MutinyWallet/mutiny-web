@@ -17,11 +17,11 @@ export function Amount(props: { amountSats: bigint | number | undefined, showFia
     return (
         <div class="flex flex-col gap-2">
             <h1 class="text-4xl font-light">
-                {props.loading ? "..." : prettyPrintAmount(props.amountSats)} <span class='text-xl'>SATS</span>
+                {props.loading ? "..." : prettyPrintAmount(props.amountSats)}&nbsp;<span class='text-xl'>SATS</span>
             </h1>
             <Show when={props.showFiat}>
                 <h2 class="text-xl font-light text-white/70" >
-                    &#8776; {props.loading ? "..." : amountInUsd()} <span class="text-sm">USD</span>
+                    &#8776; {props.loading ? "..." : amountInUsd()}&nbsp;<span class="text-sm">USD</span>
                 </h2>
             </Show>
         </div>
