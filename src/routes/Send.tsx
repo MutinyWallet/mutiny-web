@@ -70,6 +70,7 @@ export default function Send() {
     onMount(() => {
         if (state.scan_result) {
             setDestination(state.scan_result);
+            actions.setScanResult(undefined);
         }
     })
 
