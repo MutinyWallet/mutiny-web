@@ -19,7 +19,7 @@ type OnChainTx = {
     sent: number
     fee?: number
     confirmation_time?: {
-        "Confirmed": {
+        "Confirmed"?: {
             height: number
             time: number
         }
@@ -63,7 +63,7 @@ function OnChainItem(props: { item: OnChainTx }) {
                     <SmallHeader class={isReceive() ? "text-m-green" : "text-m-red"}>
                         {isReceive() ? "RECEIVE" : "SEND"}
                     </SmallHeader>
-                    <SubtleText>{props.item.confirmation_time ? prettyPrintTime(props.item.confirmation_time.Confirmed.time) : "Unconfirmed"}</SubtleText>
+                    <SubtleText>{props.item.confirmation_time?.Confirmed ? prettyPrintTime(props.item.confirmation_time?.Confirmed?.time) : "Unconfirmed"}</SubtleText>
                 </div>
             </div>
         </>

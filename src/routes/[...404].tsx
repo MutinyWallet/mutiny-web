@@ -5,7 +5,6 @@ import { ButtonLink, DefaultMain, LargeHeader, SafeArea } from "~/components/lay
 export default function NotFound() {
   return (
     <SafeArea>
-
       <Title>Not Found</Title>
       <HttpStatusCode code={404} />
       <DefaultMain>
