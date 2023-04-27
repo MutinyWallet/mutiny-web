@@ -5,7 +5,7 @@ import { Button, LargeHeader, SmallHeader } from "~/components/layout";
 import close from "~/assets/icons/close.svg";
 
 const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
-const DIALOG_CONTENT = "h-full p-4 bg-gray/50 backdrop-blur-md bg-black/80"
+const DIALOG_CONTENT = "h-full flex flex-col justify-between p-4 bg-gray/50 backdrop-blur-md bg-black/80"
 
 type FullscreenModalProps = {
     title: string,
@@ -34,8 +34,10 @@ export function FullscreenModal(props: FullscreenModalProps) {
                         </div>
                         <Dialog.Description class="flex flex-col gap-4">
                             {props.children}
-                            <Button onClick={(_) => props.onConfirm ? props.onConfirm() : props.setOpen(false)}>{props.confirmText ?? "Nice"}</Button>
                         </Dialog.Description>
+                        <div class="w-full flex">
+                            <Button onClick={(_) => props.onConfirm ? props.onConfirm() : props.setOpen(false)}>{props.confirmText ?? "Nice"}</Button>
+                        </div>
                     </Dialog.Content>
                 </div>
             </Dialog.Portal>

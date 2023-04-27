@@ -30,7 +30,7 @@ export function showToast(arg: ToastArg) {
 export function ToastItem(props: { toastId: number, title: string, description: string, isError?: boolean }) {
     return (
         <Toast.Root toastId={props.toastId} class={`w-[80vw] max-w-[400px] mx-auto p-4 bg-neutral-900/80 backdrop-blur-md shadow-xl rounded-xl border ${props.isError ? "border-m-red/50" : "border-white/10"} `}>
-            <div class="flex gap-4 w-full justify-between">
+            <div class="flex gap-4 w-full justify-between items-start">
                 <div>
                     <Toast.Title>
                         <SmallHeader>
@@ -43,7 +43,7 @@ export function ToastItem(props: { toastId: number, title: string, description: 
                         </p>
                     </Toast.Description>
                 </div>
-                <Toast.CloseButton class="hover:bg-white/10 rounded-lg active:bg-m-blue">
+                <Toast.CloseButton class="hover:bg-white/10 rounded-lg active:bg-m-blue w-[5rem]">
                     <img src={close} alt="Close" />
                 </Toast.CloseButton>
             </div>

@@ -12,7 +12,8 @@ import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
-import handshake from "~/assets/handshake.png";
+import handshake from "~/assets/hands/handshake.png";
+import thumbsdown from "~/assets/hands/thumbsdown.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { BackButton } from "~/components/layout/BackButton";
 
@@ -23,7 +24,8 @@ const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fas
 // const TEST_DEST = "bitcoin:tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe?amount=0.00001&label=heyo&lightning=lntbs10u1pjrwrdedq8dpjhjmcnp4qd60w268ve0jencwzhz048ruprkxefhj0va2uspgj4q42azdg89uupp5gngy2pqte5q5uvnwcxwl2t8fsdlla5s6xl8aar4xcsvxeus2w2pqsp5n5jp3pz3vpu92p3uswttxmw79a5lc566herwh3f2amwz2sp6f9tq9qyysgqcqpcxqrpwugv5m534ww5ukcf6sdw2m75f2ntjfh3gzeqay649256yvtecgnhjyugf74zakaf56sdh66ec9fqep2kvu6xv09gcwkv36rrkm38ylqsgpw3yfjl"
 // const TEST_DEST_ADDRESS = "tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe"
 
-type SentDetails = { amount: bigint, destination: string, txid?: string }
+// TODO: better success / fail type
+type SentDetails = { amount?: bigint, destination?: string, txid?: string, failure_reason?: string }
 
 export default function Send() {
     const [state, actions] = useMegaStore();
@@ -68,6 +70,7 @@ export default function Send() {
     onMount(() => {
         if (state.scan_result) {
             setDestination(state.scan_result);
+            actions.setScanResult(undefined);
         }
     })
 
@@ -155,10 +158,16 @@ export default function Send() {
             } else if (source() === "lightning" && nodePubkey()) {
                 const nodes = await state.node_manager?.list_nodes();
                 const firstNode = nodes[0] as string || ""
-                const invoice = await state.node_manager?.keysend(firstNode, nodePubkey()!, amountSats());
-                console.log(invoice?.value)
-                sentDetails.amount = amountSats();
-            } else {
+                const payment = await state.node_manager?.keysend(firstNode, nodePubkey()!, amountSats());
+                console.log(payment?.value)
+
+                // TODO: handle timeouts
+                if (!payment?.paid) {
+                    throw new Error("Keysend failed")
+                } else {
+                    sentDetails.amount = amountSats();
+                }
+            } else if (source() === "onchain" && address()) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const txid = await state.node_manager?.send_to_address(address()!, amountSats());
                 sentDetails.amount = amountSats();
@@ -170,7 +179,10 @@ export default function Send() {
             setSentDetails(sentDetails as SentDetails);
             clearAll();
         } catch (e) {
-            showToast(eify(e))
+            const error = eify(e)
+            setSentDetails({ failure_reason: error.message });
+            // TODO: figure out ux of when we want to show toast vs error screen
+            // showToast(eify(e))
             console.error(e);
         } finally {
             setSending(false);
@@ -187,15 +199,29 @@ export default function Send() {
                 <DefaultMain>
                     <BackButton />
                     <LargeHeader>Send Bitcoin</LargeHeader>
-                    <FullscreenModal title="Sent" open={!!sentDetails()} setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }} onConfirm={() => setSentDetails(undefined)}>
-                        <div class="flex flex-col items-center gap-8">
-                            <img src={handshake} alt="party" class="w-1/2 mx-auto max-w-[50vh] zoom-image" />
-                            <Amount amountSats={sentDetails()?.amount} showFiat />
-                            <Show when={sentDetails()?.txid}>
-                                <a href={mempoolTxUrl(sentDetails()?.txid, state.node_manager?.get_network())} target="_blank" rel="noreferrer">
-                                    Mempool Link
-                                </a>
-                            </Show>
+                    <FullscreenModal
+                        title={sentDetails()?.amount ? "Sent" : "Payment Failed"}
+                        confirmText={sentDetails()?.amount ? "Nice" : "Too Bad"}
+                        open={!!sentDetails()}
+                        setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }}
+                        onConfirm={() => setSentDetails(undefined)}
+                    >
+                        <div class="flex flex-col items-center gap-8 h-full">
+                            <Switch>
+                                <Match when={sentDetails()?.failure_reason}>
+                                    <img src={thumbsdown} alt="thumbs down" class="w-1/2 mx-auto max-w-[50vh]" />
+                                    <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">{sentDetails()?.failure_reason}</p>
+                                </Match>
+                                <Match when={true}>
+                                    <img src={handshake} alt="handshake" class="w-1/2 mx-auto max-w-[50vh]" />
+                                    <Amount amountSats={sentDetails()?.amount} showFiat />
+                                    <Show when={sentDetails()?.txid}>
+                                        <a href={mempoolTxUrl(sentDetails()?.txid, state.node_manager?.get_network())} target="_blank" rel="noreferrer">
+                                            Mempool Link
+                                        </a>
+                                    </Show>
+                                </Match>
+                            </Switch>
                         </div>
                     </FullscreenModal>
                     <dl>
@@ -229,7 +255,7 @@ export default function Send() {
                                         </Show>
                                         <Button class="flex-0" intent="glowy" layout="xs" onClick={clearAll}>Clear</Button>
                                     </div>
-                                    <div class="my-8 flex flex-col md:flex-row md:justify-center gap-4 w-full items-start">
+                                    <div class="my-8 flex flex-col sm:flex-row sm:justify-center gap-4 w-full items-center justify-center">
                                         {/* if the amount came with the invoice we can't allow setting it */}
                                         <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
                                             <AmountEditable initialAmountSats={amountSats().toString() || "0"} setAmountSats={setAmountSats} />
