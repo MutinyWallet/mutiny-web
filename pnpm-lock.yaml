@@ -11,8 +11,8 @@ dependencies:
     specifier: ^0.12.0
     version: 0.12.0(solid-js@1.7.3)
   '@mutinywallet/mutiny-wasm':
-    specifier: ^0.2.7
-    version: 0.2.7
+    specifier: ^0.2.8
+    version: 0.2.8
   '@mutinywallet/waila-wasm':
     specifier: ^0.1.5
     version: 0.1.5
@@ -1583,8 +1583,8 @@ packages:
       solid-js: 1.7.3
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.2.7:
-    resolution: {integrity: sha512-AssJjkqDdYLD9kzJWfMJe1lZL+uGDBJbmd5ehUokdLKGbIrSpUzBO8hWDjWxI8dteci4laApZ/WfVRjVW7PQ9Q==}
+  /@mutinywallet/mutiny-wasm@0.2.8:
+    resolution: {integrity: sha512-SaLdJTsK4XTW0xmD3Du8AnHw/hvbomxCbyANyA2IbV4aybtPPgRDcGwRsyCegPioYQHP0skqzwsi1E6k44GIBw==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.1.5:
@@ -1903,7 +1903,7 @@ packages:
       '@babel/types': 7.21.4
       '@types/babel__generator': 7.6.4
       '@types/babel__template': 7.4.1
-      '@types/babel__traverse': 7.18.4
+      '@types/babel__traverse': 7.18.5
 
   /@types/babel__generator@7.6.4:
     resolution: {integrity: sha512-tFkciB9j2K755yrTALxD44McOrk+gfpIpvC3sxHjRawj6PfnQxrse4Clq5y/Rq+G3mrBurMax/lG8Qn2t9mSsg==}
@@ -1916,8 +1916,8 @@ packages:
       '@babel/parser': 7.21.4
       '@babel/types': 7.21.4
 
-  /@types/babel__traverse@7.18.4:
-    resolution: {integrity: sha512-TLG7CsGZZmX9aDF78UuJxnNTfQyRUFU0OYIVyIblr0/wd/HvsIo8wmuB90CszeD2MtLLAE9Tt4cWvk+KVkyGIw==}
+  /@types/babel__traverse@7.18.5:
+    resolution: {integrity: sha512-enCvTL8m/EHS/zIvJno9nE+ndYPh1/oNFzRYRmtUqJICG2VnCSBzMLW5VN2KCQU91f23tsNKR8v7VJJQMatl7Q==}
     dependencies:
       '@babel/types': 7.21.4
 
@@ -2327,7 +2327,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001481
-      electron-to-chromium: 1.4.372
+      electron-to-chromium: 1.4.375
       node-releases: 2.0.10
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
 
@@ -2610,8 +2610,8 @@ packages:
       jake: 10.8.5
     dev: true
 
-  /electron-to-chromium@1.4.372:
-    resolution: {integrity: sha512-MrlFq/j+TYHOjeWsWGYfzevc25HNeJdsF6qaLFrqBTRWZQtWkb1myq/Q2veLWezVaa5OcSZ99CFwTT4aF4Mung==}
+  /electron-to-chromium@1.4.375:
+    resolution: {integrity: sha512-czSmDyWG5qmb4TcwD5lhVDP6viDPtHfrIzw0CnzisRpziiUaq+ffptBHs70d9YkFtrxzaDvOmFPeVRVNwMt2rQ==}
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -4433,8 +4433,8 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
 
-  /rxjs@7.8.0:
-    resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
+  /rxjs@7.8.1:
+    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
       tslib: 2.5.0
 
@@ -5141,7 +5141,7 @@ packages:
       joi: 17.9.2
       lodash: 4.17.21
       minimist: 1.2.8
-      rxjs: 7.8.0
+      rxjs: 7.8.1
     transitivePeerDependencies:
       - debug
 

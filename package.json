@@ -1,6 +1,6 @@
 {
   "name": "mws",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "dev": "solid-start dev",
     "build": "solid-start build",
@@ -32,7 +32,7 @@
     "@kobalte/core": "^0.8.2",
     "@kobalte/tailwindcss": "^0.5.0",
     "@modular-forms/solid": "^0.12.0",
-    "@mutinywallet/mutiny-wasm": "^0.2.7",
+    "@mutinywallet/mutiny-wasm": "^0.2.8",
     "@mutinywallet/waila-wasm": "^0.1.5",
     "@solidjs/meta": "^0.28.4",
     "@solidjs/router": "^0.8.2",
