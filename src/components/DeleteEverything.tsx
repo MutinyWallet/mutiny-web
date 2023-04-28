@@ -23,13 +23,14 @@ export function DeleteEverything() {
     async function resetNode() {
         setConfirmLoading(true);
         deleteDb("gossip")
+        deleteDb("wallet")
         localStorage.clear();
         showToast({ title: "Deleted", description: `Deleted all data` })
         setConfirmOpen(false);
         setConfirmLoading(false);
         setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+            window.location.href = "/";
+        }, 3000);
     }
 
     async function confirmReset() {
