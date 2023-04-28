@@ -2,7 +2,6 @@ import { createSignal } from "solid-js";
 import { ConfirmDialog } from "~/components/Dialog";
 import { Button } from "~/components/layout";
 import { showToast } from "~/components/Toaster";
-import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 
 export function deleteDb(name: string) {
@@ -22,8 +21,6 @@ export function deleteDb(name: string) {
 }
 
 export function DeleteEverything() {
-    const [_store, actions] = useMegaStore();
-
     async function resetNode() {
         try {
             setConfirmLoading(true);
@@ -38,10 +35,9 @@ export function DeleteEverything() {
             }, 3000);
         } catch (e) {
             console.error(e)
-            showToast(eify(e))
-        } finally {
             setConfirmOpen(false);
             setConfirmLoading(false);
+            showToast(eify(e))
         }
 
     }
