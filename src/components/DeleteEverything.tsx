@@ -29,8 +29,8 @@ export function DeleteEverything() {
         setConfirmOpen(false);
         setConfirmLoading(false);
         setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+            window.location.href = "/";
+        }, 3000);
     }
 
     async function confirmReset() {
