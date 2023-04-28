@@ -9,7 +9,7 @@ import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import { useCopy } from "~/utils/useCopy";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 
-import party from '~/assets/party.gif';
+import party from '~/assets/hands/handsup.png';
 import { Amount } from "~/components/Amount";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import { BackButton } from "~/components/layout/BackButton";
