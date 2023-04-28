@@ -1,5 +1,5 @@
 import { Title } from "solid-start";
-import { ButtonLink, DefaultMain, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, ButtonLink, DefaultMain, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
 
 export default function ErrorDisplay(props: { error: Error }) {
     return (
@@ -13,7 +13,7 @@ export default function ErrorDisplay(props: { error: Error }) {
                         {props.error.name}</span>: {props.error.message}
                 </p>
                 <div class="h-full" />
-                <ButtonLink href="/" intent="red">Dangit</ButtonLink>
+                <Button onClick={() => window.location.href = "/"} intent="red">Dangit</Button>
             </DefaultMain>
         </SafeArea>
     );
