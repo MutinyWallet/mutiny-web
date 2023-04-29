@@ -14,6 +14,7 @@ type UserStatus = undefined | "new_here" | "waitlisted" | "approved" | "paid"
 export type MegaStore = [{
     waitlist_id?: string;
     mutiny_wallet?: MutinyWallet;
+    deleting: boolean;
     user_status: UserStatus;
     scan_result?: ParsedParams;
     balance?: MutinyBalance;
@@ -25,6 +26,7 @@ export type MegaStore = [{
 }, {
     fetchUserStatus(): Promise<UserStatus>;
     setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void>;
+    deleteMutinyWallet(): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
     setScanResult(scan_result: ParsedParams | undefined): void;
     sync(): Promise<void>;
@@ -36,6 +38,7 @@ export const Provider: ParentComponent = (props) => {
     const [state, setState] = createStore({
         waitlist_id: localStorage.getItem("waitlist_id"),
         mutiny_wallet: undefined as MutinyWallet | undefined,
+        deleting: false,
         user_status: undefined as UserStatus,
         scan_result: undefined as ParsedParams | undefined,
         // TODO: wire this up to real price once we have caching
@@ -73,6 +76,16 @@ export const Provider: ParentComponent = (props) => {
             } catch (e) {
                 console.error(e)
             }
+        },
+        async deleteMutinyWallet(): Promise<void> {
+            await state.mutiny_wallet?.stop();
+            setState((prevState) => ({
+                ...prevState,
+                mutiny_wallet: undefined,
+                deleting: true,
+            }));
+            MutinyWallet.import_json("{}");
+            localStorage.clear();
         },
         setWaitlistId(waitlist_id: string) {
             setState({ waitlist_id })
@@ -115,7 +128,7 @@ export const Provider: ParentComponent = (props) => {
 
     // Only load node manager when status is approved
     createEffect(() => {
-        if (state.user_status === "approved" && !state.mutiny_wallet) {
+        if (state.user_status === "approved" && !state.mutiny_wallet && !state.deleting) {
             console.log("running setup node manager...")
             actions.setupMutinyWallet().then(() => console.log("node manager setup done"))
         }

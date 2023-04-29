@@ -22,29 +22,7 @@ export function deleteDb(name: string) {
 }
 
 export function DeleteEverything() {
-    const [_store, actions] = useMegaStore();
-
-    async function resetNode() {
-        try {
-            setConfirmLoading(true);
-            deleteDb("gossip")
-            deleteDb("wallet")
-            localStorage.clear();
-
-            showToast({ title: "Deleted", description: `Deleted all data` })
-
-            setTimeout(() => {
-                window.location.href = "/";
-            }, 3000);
-        } catch (e) {
-            console.error(e)
-            showToast(eify(e))
-        } finally {
-            setConfirmOpen(false);
-            setConfirmLoading(false);
-        }
-
-    }
+    const [_state, actions] = useMegaStore();
 
     async function confirmReset() {
         setConfirmOpen(true);
@@ -52,6 +30,25 @@ export function DeleteEverything() {
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
     const [confirmLoading, setConfirmLoading] = createSignal(false);
+
+
+    async function resetNode() {
+        try {
+            setConfirmLoading(true);
+            await actions.deleteMutinyWallet();
+            showToast({ title: "Deleted", description: `Deleted all data` })
+
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000);
+        } catch (e) {
+            console.error(e)
+            showToast(eify(e))
+        } finally {
+            setConfirmOpen(false);
+            setConfirmLoading(false);
+        }
+    }
 
     return (
         <>
