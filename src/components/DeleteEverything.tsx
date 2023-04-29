@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import { ConfirmDialog } from "~/components/Dialog";
 import { Button } from "~/components/layout";
 import { showToast } from "~/components/Toaster";
+import { useMegaStore } from "~/state/megaStore";
 
 export function deleteDb(name: string) {
     const req = indexedDB.deleteDatabase(name);
@@ -20,7 +21,11 @@ export function deleteDb(name: string) {
 }
 
 export function DeleteEverything() {
+    const [state, actions] = useMegaStore();
     async function resetNode() {
+        await state.node_manager?.stop();
+        await state.node_manager?.free();
+        await actions.deleteNodeManager();
         setConfirmLoading(true);
         deleteDb("gossip")
         deleteDb("wallet")
@@ -28,9 +33,11 @@ export function DeleteEverything() {
         showToast({ title: "Deleted", description: `Deleted all data` })
         setConfirmOpen(false);
         setConfirmLoading(false);
+	/*
         setTimeout(() => {
             window.location.href = "/";
         }, 3000);
+	*/
     }
 
     async function confirmReset() {

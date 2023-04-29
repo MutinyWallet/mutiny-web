@@ -13,6 +13,7 @@ type UserStatus = undefined | "new_here" | "waitlisted" | "approved" | "paid"
 export type MegaStore = [{
     waitlist_id?: string;
     node_manager?: NodeManager;
+    deleting: boolean;
     user_status: UserStatus;
     scan_result?: ParsedParams;
     balance?: MutinyBalance;
@@ -21,6 +22,7 @@ export type MegaStore = [{
 }, {
     fetchUserStatus(): Promise<UserStatus>;
     setupNodeManager(settings?: NodeManagerSettingStrings): Promise<void>;
+    deleteNodeManager(): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
     setScanResult(scan_result: ParsedParams | undefined): void;
     sync(): Promise<void>;
@@ -30,6 +32,7 @@ export const Provider: ParentComponent = (props) => {
     const [state, setState] = createStore({
         waitlist_id: localStorage.getItem("waitlist_id"),
         node_manager: undefined as NodeManager | undefined,
+	deleting: false,
         user_status: undefined as UserStatus,
         scan_result: undefined as ParsedParams | undefined,
         // TODO: wire this up to real price once we have caching
@@ -63,6 +66,13 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e)
             }
         },
+        async deleteNodeManager(): Promise<void> {
+            setState((prevState) => ({
+                ...prevState,
+                node_manager: undefined,
+		deleting: true,
+            }));
+        },
         setWaitlistId(waitlist_id: string) {
             setState({ waitlist_id })
         },
@@ -89,7 +99,7 @@ export const Provider: ParentComponent = (props) => {
 
     // Only load node manager when status is approved
     createEffect(() => {
-        if (state.user_status === "approved" && !state.node_manager) {
+        if (state.user_status === "approved" && !state.node_manager && !state.deleting) {
             console.log("running setup node manager...")
             actions.setupNodeManager().then(() => console.log("node manager setup done"))
         }
