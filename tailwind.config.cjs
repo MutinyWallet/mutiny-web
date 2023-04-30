@@ -10,7 +10,9 @@ module.exports = {
     'grid-cols-1',
     'grid-cols-2',
     'gap-2',
-    'gap-4'
+    'gap-4',
+    'outline-m-red',
+    'outline-m-blue',
   ],
   variants: {
     extend: {

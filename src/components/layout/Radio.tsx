@@ -4,13 +4,13 @@ import { For, Show } from "solid-js";
 type Choices = { value: string, label: string, caption: string }[]
 
 // TODO: how could would it be if we could just pass the estimated fees in here?
-export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, }) {
+export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, red?: boolean }) {
     return (
         // TODO: rewrite this with CVA, props are bad for tailwind
         <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)} class={`grid w-full gap-${props.small ? "2" : "4"} grid-cols-${props.choices.length.toString()}`}>
             <For each={props.choices}>
                 {choice =>
-                    <RadioGroup.Item value={choice.value} class="ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2">
+                    <RadioGroup.Item value={choice.value} class={`ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ${props.red ? "ui-checked:outline-m-red" : "ui-checked:outline-m-blue"} ui-checked:outline-2`}>
                         <div class={props.small ? "py-2 px-2" : "py-3 px-4"}>
                             <RadioGroup.ItemInput />
                             <RadioGroup.ItemControl >
