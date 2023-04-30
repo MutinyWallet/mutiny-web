@@ -1,4 +1,4 @@
-import { Component, createEffect, createMemo, createResource, createSignal, For, Match, onMount, ParentComponent, Show, Suspense, Switch } from "solid-js";
+import { Component, createEffect, createMemo, createResource, createSignal, For, Match, onCleanup, onMount, ParentComponent, Show, Suspense, Switch } from "solid-js";
 import { CENTER_COLUMN, MISSING_LABEL, REDSHIFT_LABEL, RIGHT_COLUMN, THREE_COLUMNS, UtxoItem } from "~/components/Activity";
 import { Card, DefaultMain, LargeHeader, LoadingSpinner, NiceP, NodeManagerGuard, SafeArea, SmallAmount, SmallHeader, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
@@ -251,6 +251,32 @@ export default function Redshift() {
         setChosenUtxo(undefined);
     }
 
+    async function redshiftUtxo(utxo: UtxoItem) {
+        console.log("Redshifting utxo", utxo.outpoint)
+        const redshift = await state.node_manager?.init_redshift(utxo.outpoint);
+        console.log(redshift)
+    }
+
+    async function checkRedshift(redshiftItems: any) {
+        const rs = redshiftItems[0] as RedshiftResult;
+        console.log("Checking redshift", rs.input_utxo)
+        const redshift = await state.node_manager?.get_redshift(rs.input_utxo);
+        console.log(redshift)
+    }
+
+    const [initializedRedshift, { refetch: _refetchRedshift }] = createResource(chosenUtxo, redshiftUtxo);
+
+    const [redshiftResource, { refetch }] = createResource(initializedRedshift, checkRedshift);
+
+    createEffect(() => {
+        const interval = setInterval(() => {
+            if (chosenUtxo()) refetch();
+        }, 1000); // Poll every second
+        onCleanup(() => {
+            clearInterval(interval);
+        });
+    });
+
     return (
         <NodeManagerGuard>
             <SafeArea>
@@ -258,6 +284,7 @@ export default function Redshift() {
                     <BackLink />
                     <LargeHeader>Redshift</LargeHeader>
                     <VStack biggap>
+                        <pre>{JSON.stringify(redshiftResource(), null, 2)}</pre>
                         <Switch>
                             <Match when={shiftStage() === "choose"}>
                                 <VStack>
