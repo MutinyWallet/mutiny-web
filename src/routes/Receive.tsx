@@ -265,7 +265,7 @@ export default function Receive() {
                         <Match when={receiveState() === "paid" && paidState() === "lightning_paid"}>
                             <FullscreenModal title="Payment Received" open={!!paidState()} setOpen={(open: boolean) => { if (!open) clearAll() }}>
                                 <div class="flex flex-col items-center gap-8">
-                                    <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
+                                    <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh]" />
                                     <Amount amountSats={paymentInvoice()?.amount_sats} showFiat />
                                 </div>
                             </FullscreenModal>
