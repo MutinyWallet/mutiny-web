@@ -4,20 +4,27 @@ import { Button, ButtonLink } from "./Button"
 import { Separator } from "@kobalte/core"
 import { useMegaStore } from "~/state/megaStore"
 
-const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
+export {
+    Button,
+    ButtonLink,
+    Linkify,
+}
+
+export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
     return <header class={`text-sm font-semibold uppercase ${props.class}`}>{props.children}</header>
 }
 
-const Card: ParentComponent<{ title?: string }> = (props) => {
+export const Card: ParentComponent<{ title?: string, titleElement?: JSX.Element }> = (props) => {
     return (
         <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950 overflow-x-hidden'>
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
+            {props.titleElement && props.titleElement}
             {props.children}
         </div>
     )
 }
 
-const InnerCard: ParentComponent<{ title?: string }> = (props) => {
+export const InnerCard: ParentComponent<{ title?: string }> = (props) => {
     return (
         <div class='rounded-xl p-4 flex flex-col gap-2 border border-white/10 bg-[rgba(255,255,255,0.05)]'>
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
@@ -26,7 +33,7 @@ const InnerCard: ParentComponent<{ title?: string }> = (props) => {
     )
 }
 
-const FancyCard: ParentComponent<{ title?: string, tag?: JSX.Element }> = (props) => {
+export const FancyCard: ParentComponent<{ title?: string, tag?: JSX.Element }> = (props) => {
     return (
         <div class='border border-black/50 rounded-xl border-b-4 p-4 flex flex-col gap-2 bg-neutral-800/50 shadow-fancy-card'>
             <div class="w-full flex justify-between items-center">
@@ -38,7 +45,7 @@ const FancyCard: ParentComponent<{ title?: string, tag?: JSX.Element }> = (props
     )
 }
 
-const SafeArea: ParentComponent = (props) => {
+export const SafeArea: ParentComponent = (props) => {
     return (
         <div class="safe-top safe-left safe-right safe-bottom">
             {/* <div class="flex-1 disable-scrollbars overflow-y-scroll md:pl-[8rem] md:pr-[6rem]"> */}
@@ -48,7 +55,7 @@ const SafeArea: ParentComponent = (props) => {
     )
 }
 
-const DefaultMain: ParentComponent = (props) => {
+export const DefaultMain: ParentComponent = (props) => {
     return (
         <main class="w-full max-w-[600px] flex flex-col gap-4 mx-auto p-4">
             {props.children}
@@ -56,7 +63,7 @@ const DefaultMain: ParentComponent = (props) => {
     )
 }
 
-function FullscreenLoader() {
+export const FullscreenLoader = () => {
     return (
         <div class="w-screen h-screen flex justify-center items-center">
             <LoadingSpinner />
@@ -64,7 +71,7 @@ function FullscreenLoader() {
     );
 }
 
-const NodeManagerGuard: ParentComponent = (props) => {
+export const NodeManagerGuard: ParentComponent = (props) => {
     const [state, _] = useMegaStore();
     return (
         <Suspense fallback={<FullscreenLoader />}>
@@ -75,7 +82,7 @@ const NodeManagerGuard: ParentComponent = (props) => {
     )
 }
 
-const LoadingSpinner = (props: { big?: boolean, wide?: boolean }) => {
+export const LoadingSpinner = (props: { big?: boolean, wide?: boolean }) => {
     return (<div role="status" class={props.big ? "w-full h-full grid" : props.wide ? "w-full" : ""} >
         <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-m-red place-self-center" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
@@ -85,40 +92,26 @@ const LoadingSpinner = (props: { big?: boolean, wide?: boolean }) => {
     </div>);
 }
 
-const Hr = () => <Separator.Root class="my-4 border-white/20" />
+export const Hr = () => <Separator.Root class="my-4 border-white/20" />
 
-const LargeHeader: ParentComponent = (props) => {
+export const LargeHeader: ParentComponent = (props) => {
     return (<h1 class="text-4xl font-semibold uppercase border-b-2 border-b-white mt-2 mb-4">{props.children}</h1>)
 }
 
-const VStack: ParentComponent<{ biggap?: boolean }> = (props) => {
+export const VStack: ParentComponent<{ biggap?: boolean }> = (props) => {
     return (<div class={`flex flex-col gap-${props.biggap ? "8" : "4"}`}>{props.children}</div>)
 }
 
-const HStack: ParentComponent<{ biggap?: boolean }> = (props) => {
+export const HStack: ParentComponent<{ biggap?: boolean }> = (props) => {
     return (<div class={`flex gap-${props.biggap ? "8" : "4"}`}>{props.children}</div>)
 }
 
-const SmallAmount: ParentComponent<{ amount: number | bigint }> = (props) => {
+export const SmallAmount: ParentComponent<{ amount: number | bigint }> = (props) => {
     return (<h2 class="font-light text-lg">{props.amount.toLocaleString()} <span class="text-sm">SATS</span></h2>)
 }
 
-export {
-    SmallHeader,
-    Card,
-    SafeArea,
-    LoadingSpinner,
-    Button,
-    ButtonLink,
-    Linkify,
-    Hr,
-    NodeManagerGuard,
-    FullscreenLoader,
-    InnerCard,
-    FancyCard,
-    DefaultMain,
-    LargeHeader,
-    VStack,
-    HStack,
-    SmallAmount
+export const NiceP: ParentComponent = (props) => {
+    return (<p class="text-2xl font-light">{props.children}</p>)
 }
+
+
