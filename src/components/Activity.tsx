@@ -1,13 +1,15 @@
 import send from '~/assets/icons/send.svg';
 import receive from '~/assets/icons/receive.svg';
 import { ButtonLink, Card, LoadingSpinner, SmallAmount, SmallHeader, VStack } from './layout';
-import { For, Match, ParentComponent, Suspense, Switch, createMemo, createResource, createSignal } from 'solid-js';
+import { For, Match, ParentComponent, Show, Suspense, Switch, createMemo, createResource, createSignal } from 'solid-js';
 import { useMegaStore } from '~/state/megaStore';
 import { MutinyInvoice } from '@mutinywallet/mutiny-wasm';
 import { prettyPrintTime } from '~/utils/prettyPrintTime';
 import { JsonModal } from '~/components/JsonModal';
 import mempoolTxUrl from '~/utils/mempoolTxUrl';
 import wave from "~/assets/wave.gif"
+import utxoIcon from '~/assets/icons/coin.svg';
+import { getRedshifted } from '~/utils/fakeLabels';
 
 export const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
 export const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
@@ -56,7 +58,9 @@ function OnChainItem(props: { item: OnChainTx }) {
                 </a>
             </JsonModal>
             <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
-                {isReceive() ? <img src={receive} alt="receive arrow" /> : <img src={send} alt="send arrow" />}
+                <div class="flex items-center">
+                    {isReceive() ? <img src={receive} alt="receive arrow" /> : <img src={send} alt="send arrow" />}
+                </div>
                 <div class={CENTER_COLUMN}>
                     <h2 class={MISSING_LABEL}>Unknown</h2>
                     {isReceive() ? <SmallAmount amount={props.item.received} /> : <SmallAmount amount={props.item.sent} />}
@@ -82,7 +86,9 @@ function InvoiceItem(props: { item: MutinyInvoice }) {
         <>
             <JsonModal open={open()} data={props.item} title="Lightning Transaction" setOpen={setOpen} />
             <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
-                {isSend() ? <img src={send} alt="send arrow" /> : <img src={receive} alt="receive arrow" />}
+                <div class="flex items-center">
+                    {isSend() ? <img src={send} alt="send arrow" /> : <img src={receive} alt="receive arrow" />}
+                </div>
                 <div class={CENTER_COLUMN}>
                     <h2 class={MISSING_LABEL}>Unknown</h2>
                     <SmallAmount amount={props.item.amount_sats || 0} />
@@ -103,18 +109,26 @@ function Utxo(props: { item: UtxoItem }) {
 
     const [open, setOpen] = createSignal(false)
 
+    const redshifted = createMemo(() => getRedshifted(props.item.outpoint));
+
     return (
         <>
             <JsonModal open={open()} data={props.item} title="Unspent Transaction Output" setOpen={setOpen} />
             <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
-                <img src={receive} alt="receive arrow" />
+                <div class="flex items-center">
+                    <img src={utxoIcon} alt="coin" />
+                </div>
                 <div class={CENTER_COLUMN}>
-                    <h2 class={MISSING_LABEL}>Unknown</h2>
+                    <div class="flex gap-2">
+                        <Show when={redshifted()} fallback={<h2 class={MISSING_LABEL}>Unknown</h2>}>
+                            <h2 class={REDSHIFT_LABEL}>Redshift</h2>
+                        </Show>
+                    </div>
                     <SmallAmount amount={props.item.txout.value} />
                 </div>
                 <div class={RIGHT_COLUMN}>
                     <SmallHeader class={spent() ? "text-m-red" : "text-m-green"}>
-                        {spent() ? "SPENT" : "UNSPENT"}
+                        {/* {spent() ? "SPENT" : "UNSPENT"} */}
                     </SmallHeader>
                 </div>
             </div>

@@ -12,12 +12,11 @@ import { ProgressBar } from "~/components/layout/ProgressBar";
 import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { Amount } from "~/components/Amount";
-
+import { getRedshifted, setRedshifted } from "~/utils/fakeLabels";
 
 type ShiftOption = "utxo" | "lightning"
 
 type ShiftStage = "choose" | "observe" | "success" | "failure"
-
 
 type OutPoint = string; // Replace with the actual TypeScript type for OutPoint
 type RedshiftStatus = any; // Replace with the actual TypeScript type for RedshiftStatus
@@ -65,18 +64,11 @@ function RedshiftReport(props: { redshift: RedshiftResult }) {
         return utxos.find((utxo) => utxo.outpoint === outpoint);
     }
 
-    const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos);
-    //     <VStack>
+    createEffect(() => {
+        setRedshifted(true, props.redshift?.output_utxo)
+    })
 
-    //     {/* {JSON.stringify(props.channel, null, 2)} */}
-    //     <Amount amountSats={props.channel.size} />
-    //     <KV key={"Peer"} value={props.channel.peer} />
-    //     <KV key={"Outpoint"} value={props.channel.outpoint} />
-    //     {/* TODO: don't hardcode this */}
-    //     <a class="" href={mempoolTxUrl(props.channel.outpoint?.split(":")[0], "signet")} target="_blank" rel="noreferrer">
-    //         View on mempool
-    //     </a>
-    // </VStack>
+    const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos);
 
     const inputUtxo = createMemo(() => {
         console.log(utxos())
@@ -96,7 +88,7 @@ function RedshiftReport(props: { redshift: RedshiftResult }) {
                 <NiceP>We did it. Here's your new UTXO:</NiceP>
                 <Show when={utxos() && outputUtxo()}>
                     <Card>
-                        <Utxo item={outputUtxo()!} redshifted />
+                        <Utxo item={outputUtxo()!} />
                     </Card>
                 </Show>
             </VStack>
@@ -104,11 +96,11 @@ function RedshiftReport(props: { redshift: RedshiftResult }) {
                 <NiceP>What happened?</NiceP>
                 <Card>
                     <VStack biggap>
-                        <KV key="Input utxo">
+                        {/* <KV key="Input utxo">
                             <Show when={utxos() && inputUtxo()}>
                                 <Utxo item={inputUtxo()!} />
                             </Show>
-                        </KV>
+                        </KV> */}
                         <KV key="Starting amount">
                             <Amount amountSats={props.redshift.amount_sats} />
                         </KV>
@@ -145,8 +137,8 @@ function RedshiftReport(props: { redshift: RedshiftResult }) {
 
 const SHIFT_OPTIONS = [{ value: "utxo", label: "UTXO", caption: "Trade your UTXO for a fresh UTXO" }, { value: "lightning", label: "Lightning", caption: "Convert your UTXO into Lightning" }]
 
-export function Utxo(props: { item: UtxoItem, onClick?: () => void, redshifted?: boolean }) {
-    const spent = createMemo(() => props.item.is_spent);
+export function Utxo(props: { item: UtxoItem, onClick?: () => void }) {
+    const redshifted = createMemo(() => getRedshifted(props.item.outpoint));
     return (
         <>
             <div class={THREE_COLUMNS} onClick={props.onClick}>
@@ -155,7 +147,7 @@ export function Utxo(props: { item: UtxoItem, onClick?: () => void, redshifted?:
                 </div>
                 <div class={CENTER_COLUMN}>
                     <div class="flex gap-2">
-                        <Show when={props.redshifted} fallback={<h2 class={MISSING_LABEL}>Unknown</h2>}>
+                        <Show when={redshifted()} fallback={<h2 class={MISSING_LABEL}>Unknown</h2>}>
                             <h2 class={REDSHIFT_LABEL}>Redshift</h2>
                         </Show>
                     </div>
@@ -214,34 +206,6 @@ const KV: ParentComponent<{ key: string }> = (props) => {
     )
 }
 
-const KVPre: ParentComponent<{ key: string }> = (props) => {
-    return (
-        <div class="flex flex-col gap-2">
-            <p class="text-sm font-semibold uppercase">{props.key}</p>
-            <pre class="whitespace-pre-wrap break-all">
-                {props.children}
-            </pre>
-        </div>
-    )
-}
-
-function SingleChannel(props: { channel: MutinyChannel }) {
-    return (
-        <VStack>
-
-            {/* {JSON.stringify(props.channel, null, 2)} */}
-            <Amount amountSats={props.channel.size} />
-            <KV key={"Peer"}>{props.channel.peer}</KV>
-            <KV key={"Outpoint"}>{props.channel.outpoint}</KV>
-            {/* TODO: don't hardcode this */}
-            <a class="" href={mempoolTxUrl(props.channel.outpoint?.split(":")[0], "signet")} target="_blank" rel="noreferrer">
-                View on mempool
-            </a>
-        </VStack>
-    )
-}
-
-
 export default function Redshift() {
     const [state, _actions] = useMegaStore();
 
@@ -273,6 +237,14 @@ export default function Redshift() {
         }
     })
 
+    const redshiftedUtxos = createMemo(() => {
+        return utxos()?.filter((utxo) => getRedshifted(utxo.outpoint))
+    })
+
+    const unredshiftedUtxos = createMemo(() => {
+        return utxos()?.filter((utxo) => !getRedshifted(utxo.outpoint))
+    })
+
     function resetState() {
         setShiftStage("choose");
         setShiftType("utxo");
@@ -300,11 +272,11 @@ export default function Redshift() {
                                                 <Match when={utxos.loading}>
                                                     <LoadingSpinner wide />
                                                 </Match>
-                                                <Match when={utxos.state === "ready" && utxos().length === 0}>
+                                                <Match when={utxos.state === "ready" && unredshiftedUtxos()?.length === 0}>
                                                     <code>No utxos (empty state)</code>
                                                 </Match>
-                                                <Match when={utxos.state === "ready" && utxos().length >= 0}>
-                                                    <For each={utxos()}>
+                                                <Match when={utxos.state === "ready" && unredshiftedUtxos() && unredshiftedUtxos()!.length >= 0}>
+                                                    <For each={unredshiftedUtxos()}>
                                                         {(utxo) =>
                                                             <Utxo item={utxo} onClick={() => setChosenUtxo(utxo)} />
                                                         }
@@ -319,13 +291,13 @@ export default function Redshift() {
                                                 <Match when={utxos.loading}>
                                                     <LoadingSpinner wide />
                                                 </Match>
-                                                <Match when={utxos.state === "ready" && utxos().length === 0}>
+                                                <Match when={utxos.state === "ready" && redshiftedUtxos()?.length === 0}>
                                                     <code>No utxos (empty state)</code>
                                                 </Match>
-                                                <Match when={utxos.state === "ready" && utxos().length >= 0}>
-                                                    <For each={utxos()}>
+                                                <Match when={utxos.state === "ready" && redshiftedUtxos() && redshiftedUtxos()!.length >= 0}>
+                                                    <For each={redshiftedUtxos()}>
                                                         {(utxo) =>
-                                                            <Utxo redshifted item={utxo} />
+                                                            <Utxo item={utxo} />
                                                         }
                                                     </For>
                                                 </Match>
