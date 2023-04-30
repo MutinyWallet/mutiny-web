@@ -12,7 +12,7 @@ import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import party from '~/assets/hands/handsup.png';
 import { Amount } from "~/components/Amount";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
-import { BackButton } from "~/components/layout/BackButton";
+import { BackLink } from "~/components/layout/BackLink";
 import { TagEditor, TagItem } from "~/components/TagEditor";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { showToast } from "~/components/Toaster";
@@ -204,7 +204,7 @@ export default function Receive() {
         <NodeManagerGuard>
             <SafeArea>
                 <main class="max-w-[600px] flex flex-col gap-4 mx-auto p-4">
-                    <BackButton />
+                    <BackLink />
                     <LargeHeader>Receive Bitcoin</LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>

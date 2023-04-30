@@ -15,7 +15,7 @@ import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import handshake from "~/assets/hands/handshake.png";
 import thumbsdown from "~/assets/hands/thumbsdown.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { BackButton } from "~/components/layout/BackButton";
+import { BackLink } from "~/components/layout/BackLink";
 
 type SendSource = "lightning" | "onchain";
 
@@ -197,7 +197,7 @@ export default function Send() {
         <NodeManagerGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackButton />
+                    <BackLink />
                     <LargeHeader>Send Bitcoin</LargeHeader>
                     <FullscreenModal
                         title={sentDetails()?.amount ? "Sent" : "Payment Failed"}
