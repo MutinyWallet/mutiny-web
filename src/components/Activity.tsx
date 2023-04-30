@@ -1,17 +1,19 @@
 import send from '~/assets/icons/send.svg';
 import receive from '~/assets/icons/receive.svg';
-import { Card, LoadingSpinner, SmallAmount, SmallHeader, VStack } from './layout';
+import { ButtonLink, Card, LoadingSpinner, SmallAmount, SmallHeader, VStack } from './layout';
 import { For, Match, ParentComponent, Suspense, Switch, createMemo, createResource, createSignal } from 'solid-js';
 import { useMegaStore } from '~/state/megaStore';
 import { MutinyInvoice } from '@mutinywallet/mutiny-wasm';
 import { prettyPrintTime } from '~/utils/prettyPrintTime';
 import { JsonModal } from '~/components/JsonModal';
 import mempoolTxUrl from '~/utils/mempoolTxUrl';
+import wave from "~/assets/wave.gif"
 
-const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
-const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
-const MISSING_LABEL = 'py-1 px-2 bg-white/10 rounded inline-block text-sm'
-const RIGHT_COLUMN = 'flex flex-col items-right text-right max-w-[8rem]'
+export const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
+export const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
+export const MISSING_LABEL = 'py-1 px-2 bg-white/10 rounded inline-block text-sm'
+export const REDSHIFT_LABEL = 'py-1 px-2 bg-white text-m-red rounded inline-block text-sm'
+export const RIGHT_COLUMN = 'flex flex-col items-right text-right max-w-[8rem]'
 
 type OnChainTx = {
     txid: string
@@ -26,14 +28,15 @@ type OnChainTx = {
     }
 }
 
-type Utxo = {
+export type UtxoItem = {
     outpoint: string
     txout: {
         value: number
         script_pubkey: string
     }
     keychain: string
-    is_spent: boolean
+    is_spent: boolean,
+    redshifted?: boolean
 }
 
 const SubtleText: ParentComponent = (props) => {
@@ -95,7 +98,7 @@ function InvoiceItem(props: { item: MutinyInvoice }) {
     )
 }
 
-function Utxo(props: { item: Utxo }) {
+function Utxo(props: { item: UtxoItem }) {
     const spent = createMemo(() => props.item.is_spent);
 
     const [open, setOpen] = createSignal(false)
@@ -136,7 +139,7 @@ export function Activity() {
 
     const getUtXos = async () => {
         console.log("Getting utxos");
-        const utxos = await state.node_manager?.list_utxos() as Utxo[];
+        const utxos = await state.node_manager?.list_utxos() as UtxoItem[];
         return utxos;
     }
 
@@ -197,6 +200,7 @@ export function Activity() {
                             </For>
                         </Match>
                     </Switch>
+                    <ButtonLink href="/redshift" layout="small" class="flex items-center gap-2 self-center hover:text-m-red">Redshift <img src={wave} class="h-4" alt="redshift"></img></ButtonLink>
                 </Card>
             </Suspense>
         </VStack>
