@@ -165,7 +165,9 @@ export function Utxo(props: { item: UtxoItem, onClick?: () => void }) {
 
 const FAKE_STATES = ["Creating a new node", "Opening a channel", "Sending funds through", "Closing the channel", "Redshift complete"]
 
-function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void }, utxo: UtxoItem) {
+function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void, utxo: UtxoItem }) {
+    const [state, _actions] = useMegaStore();
+
     const [fakeStage, setFakeStage] = createSignal(2);
 
     const [sentAmount, setSentAmount] = createSignal(0);
@@ -182,6 +184,39 @@ function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void }, ut
             }
         }, 1000)
     })
+
+    async function checkRedshift(outpoint: string) {
+        // const rs = redshiftItems[0] as RedshiftResult;
+        console.log("Checking redshift", outpoint)
+        const redshift = await state.node_manager?.get_redshift(outpoint);
+        console.log(redshift)
+        return redshift
+    }
+
+    const [redshiftResource, { refetch }] = createResource(props.utxo.outpoint, checkRedshift);
+
+    onMount(() => {
+        const interval = setInterval(() => {
+            if (redshiftResource()) refetch();
+            // if (sentAmount() === 200000) {
+            //     clearInterval(interval)
+            //     props.setShiftStage("success");
+            //     // setSentAmount((0))
+
+            // } else {
+            //     setSentAmount((sentAmount() + 50000))
+            // }
+        }, 1000)
+    })
+
+    // createEffect(() => {
+    //     const interval = setInterval(() => {
+    //         if (chosenUtxo()) refetch();
+    //     }, 1000); // Poll every second
+    //     onCleanup(() => {
+    //         clearInterval(interval);
+    //     });
+    // });
 
     return (
         <>
@@ -231,11 +266,7 @@ export default function Redshift() {
     const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos);
     const [channels, { refetch: _refetchChannels }] = createResource(getChannels);
 
-    createEffect(() => {
-        if (chosenUtxo()) {
-            setShiftStage("observe");
-        }
-    })
+
 
     const redshiftedUtxos = createMemo(() => {
         return utxos()?.filter((utxo) => getRedshifted(utxo.outpoint))
@@ -254,28 +285,18 @@ export default function Redshift() {
     async function redshiftUtxo(utxo: UtxoItem) {
         console.log("Redshifting utxo", utxo.outpoint)
         const redshift = await state.node_manager?.init_redshift(utxo.outpoint);
+        console.log("Redshift initialized:")
         console.log(redshift)
-    }
-
-    async function checkRedshift(redshiftItems: any) {
-        const rs = redshiftItems[0] as RedshiftResult;
-        console.log("Checking redshift", rs.input_utxo)
-        const redshift = await state.node_manager?.get_redshift(rs.input_utxo);
-        console.log(redshift)
+        return redshift
     }
 
     const [initializedRedshift, { refetch: _refetchRedshift }] = createResource(chosenUtxo, redshiftUtxo);
 
-    const [redshiftResource, { refetch }] = createResource(initializedRedshift, checkRedshift);
-
     createEffect(() => {
-        const interval = setInterval(() => {
-            if (chosenUtxo()) refetch();
-        }, 1000); // Poll every second
-        onCleanup(() => {
-            clearInterval(interval);
-        });
-    });
+        if (chosenUtxo() && initializedRedshift()) {
+            setShiftStage("observe");
+        }
+    })
 
     return (
         <NodeManagerGuard>
@@ -284,7 +305,7 @@ export default function Redshift() {
                     <BackLink />
                     <LargeHeader>Redshift</LargeHeader>
                     <VStack biggap>
-                        <pre>{JSON.stringify(redshiftResource(), null, 2)}</pre>
+                        {/* <pre>{JSON.stringify(redshiftResource(), null, 2)}</pre> */}
                         <Switch>
                             <Match when={shiftStage() === "choose"}>
                                 <VStack>
@@ -333,8 +354,8 @@ export default function Redshift() {
                                     </Suspense>
                                 </VStack>
                             </Match>
-                            <Match when={shiftStage() === "observe"}>
-                                <ShiftObserver setShiftStage={setShiftStage} />
+                            <Match when={shiftStage() === "observe" && chosenUtxo()}>
+                                <ShiftObserver setShiftStage={setShiftStage} utxo={chosenUtxo()!} />
                             </Match>
                             <Match when={shiftStage() === "success"}>
                                 <VStack biggap>
