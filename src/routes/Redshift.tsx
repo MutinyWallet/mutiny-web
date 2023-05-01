@@ -51,7 +51,7 @@ const dummyRedshift: RedshiftResult = {
     fees_paid: BigInt(2500),
 };
 
-function RedshiftReport(props: { redshift: RedshiftResult }) {
+function RedshiftReport(props: { redshift: RedshiftResult, utxo: UtxoItem }) {
     const [state, _actions] = useMegaStore();
 
     const getUtXos = async () => {
@@ -64,9 +64,6 @@ function RedshiftReport(props: { redshift: RedshiftResult }) {
         return utxos.find((utxo) => utxo.outpoint === outpoint);
     }
 
-    createEffect(() => {
-        setRedshifted(true, props.redshift?.output_utxo)
-    })
 
     const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos);
 
@@ -77,58 +74,92 @@ function RedshiftReport(props: { redshift: RedshiftResult }) {
         return foundUtxo
     })
 
-    const outputUtxo = createMemo(() => {
-        return findUtxoByOutpoint(props.redshift.output_utxo, utxos())
+
+    async function checkRedshift(outpoint: string) {
+        // const rs = redshiftItems[0] as RedshiftResult;
+        console.log("Checking redshift", outpoint)
+        const redshift = await state.node_manager?.get_redshift(outpoint);
+        console.log(redshift)
+        return redshift[0]
+    }
+
+    const [redshiftResource, { refetch }] = createResource(props.utxo.outpoint, checkRedshift);
+    onMount(() => {
+        const interval = setInterval(() => {
+            if (redshiftResource()) refetch();
+            // if (sentAmount() === 200000) {
+            //     clearInterval(interval)
+            //     props.setShiftStage("success");
+            //     // setSentAmount((0))
+
+            // } else {
+            //     setSentAmount((sentAmount() + 50000))
+            // }
+        }, 1000)
     })
+
+    const outputUtxo = createMemo(() => {
+        return findUtxoByOutpoint(redshiftResource()?.output_utxo, utxos())
+    })
+
+    createEffect(() => {
+        setRedshifted(true, redshiftResource()?.output_utxo)
+    })
+
 
     return (
         <VStack biggap>
 
-            <VStack>
+            {/* <VStack>
                 <NiceP>We did it. Here's your new UTXO:</NiceP>
                 <Show when={utxos() && outputUtxo()}>
                     <Card>
                         <Utxo item={outputUtxo()!} />
                     </Card>
                 </Show>
-            </VStack>
+            </VStack> */}
             <VStack>
                 <NiceP>What happened?</NiceP>
-                <Card>
-                    <VStack biggap>
-                        {/* <KV key="Input utxo">
+                <Show when={redshiftResource()}>
+
+                    <Card>
+                        <VStack biggap>
+                            {/* <KV key="Input utxo">
                             <Show when={utxos() && inputUtxo()}>
                                 <Utxo item={inputUtxo()!} />
                             </Show>
                         </KV> */}
-                        <KV key="Starting amount">
-                            <Amount amountSats={props.redshift.amount_sats} />
-                        </KV>
-                        <KV key="Fees paid">
-                            <Amount amountSats={props.redshift.fees_paid} />
-                        </KV>
-                        <KV key="Change">
-                            <Amount amountSats={props.redshift.change_amt} />
-                        </KV>
-                        <KV key="Outbound channel">
-                            <VStack>
-                                <pre class="whitespace-pre-wrap break-all">{props.redshift.introduction_channel}</pre>
-                                <a class="" href={mempoolTxUrl(props.redshift.introduction_channel?.split(":")[0], "signet")} target="_blank" rel="noreferrer">
-                                    View on mempool
-                                </a>
-                            </VStack>
-                        </KV>
-                        <KV key="Return channel">
-                            <VStack>
-                                <pre class="whitespace-pre-wrap break-all">{props.redshift.output_channel}</pre>
-                                <a class="" href={mempoolTxUrl(props.redshift.output_channel?.split(":")[0], "signet")} target="_blank" rel="noreferrer">
-                                    View on mempool
-                                </a>
+                            <KV key="Starting amount">
+                                <Amount amountSats={redshiftResource().amount_sats} />
+                            </KV>
+                            <KV key="Fees paid">
+                                <Amount amountSats={redshiftResource().fees_paid} />
+                            </KV>
+                            <KV key="Change">
+                                <Amount amountSats={redshiftResource().change_amt} />
+                            </KV>
+                            <KV key="Outbound channel">
+                                <VStack>
+                                    <pre class="whitespace-pre-wrap break-all">{redshiftResource().introduction_channel}</pre>
+                                    <a class="" href={mempoolTxUrl(redshiftResource().introduction_channel?.split(":")[0], "signet")} target="_blank" rel="noreferrer">
+                                        View on mempool
+                                    </a>
+                                </VStack>
+                            </KV>
+                            <Show when={redshiftResource().output_channel}>
+                                <KV key="Return channel">
+                                    <VStack>
+                                        <pre class="whitespace-pre-wrap break-all">{redshiftResource().output_channel}</pre>
+                                        <a class="" href={mempoolTxUrl(redshiftResource().output_channel?.split(":")[0], "signet")} target="_blank" rel="noreferrer">
+                                            View on mempool
+                                        </a>
 
-                            </VStack>
-                        </KV>
-                    </VStack>
-                </Card>
+                                    </VStack>
+                                </KV>
+                            </Show>
+                        </VStack>
+                    </Card>
+                </Show>
                 <SmallHeader></SmallHeader>
             </VStack>
         </VStack>
@@ -195,19 +226,19 @@ function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void, utxo
 
     const [redshiftResource, { refetch }] = createResource(props.utxo.outpoint, checkRedshift);
 
-    onMount(() => {
-        const interval = setInterval(() => {
-            if (redshiftResource()) refetch();
-            // if (sentAmount() === 200000) {
-            //     clearInterval(interval)
-            //     props.setShiftStage("success");
-            //     // setSentAmount((0))
+    // onMount(() => {
+    //     const interval = setInterval(() => {
+    //         if (redshiftResource()) refetch();
+    //         // if (sentAmount() === 200000) {
+    //         //     clearInterval(interval)
+    //         //     props.setShiftStage("success");
+    //         //     // setSentAmount((0))
 
-            // } else {
-            //     setSentAmount((sentAmount() + 50000))
-            // }
-        }, 1000)
-    })
+    //         // } else {
+    //         //     setSentAmount((sentAmount() + 50000))
+    //         // }
+    //     }, 1000)
+    // })
 
     // createEffect(() => {
     //     const interval = setInterval(() => {
@@ -294,6 +325,7 @@ export default function Redshift() {
 
     createEffect(() => {
         if (chosenUtxo() && initializedRedshift()) {
+            // window.location.href = "/"
             setShiftStage("observe");
         }
     })
@@ -357,9 +389,9 @@ export default function Redshift() {
                             <Match when={shiftStage() === "observe" && chosenUtxo()}>
                                 <ShiftObserver setShiftStage={setShiftStage} utxo={chosenUtxo()!} />
                             </Match>
-                            <Match when={shiftStage() === "success"}>
+                            <Match when={shiftStage() === "success" && chosenUtxo()}>
                                 <VStack biggap>
-                                    <RedshiftReport redshift={dummyRedshift} />
+                                    <RedshiftReport redshift={dummyRedshift} utxo={chosenUtxo()!} />
                                     <Button intent="red" onClick={resetState}>Nice</Button>
                                 </VStack>
                             </Match>
