@@ -17,7 +17,7 @@ export const MISSING_LABEL = 'py-1 px-2 bg-white/10 rounded inline-block text-sm
 export const REDSHIFT_LABEL = 'py-1 px-2 bg-white text-m-red rounded inline-block text-sm'
 export const RIGHT_COLUMN = 'flex flex-col items-right text-right max-w-[8rem]'
 
-type OnChainTx = {
+export type OnChainTx = {
     txid: string
     received: number
     sent: number
