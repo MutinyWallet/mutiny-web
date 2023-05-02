@@ -2,6 +2,7 @@ import { Select, createOptions } from "@thisbeyond/solid-select";
 import "~/styles/solid-select.css"
 import { SmallHeader } from "./layout";
 import { For } from "solid-js";
+import { ContactEditor } from "./ContactEditor";
 
 // take two arrays, subtract the second from the first, then return the first
 function subtract<T>(a: T[], b: T[]) {
@@ -41,6 +42,11 @@ export function TagEditor(props: { title: string, values: TagItem[], setValues: 
         createable: createValue,
     });
 
+    const newContact = (name: string) => {
+        const contact: TagItem = { id: createUniqueId(), name, kind: "contact" };
+        onChange([...props.selectedValues, contact])
+    }
+
     return (
         <div class="flex flex-col gap-2 flex-grow flex-shrink flex-1" >
             <SmallHeader>{props.title}</SmallHeader>
@@ -57,7 +63,8 @@ export function TagEditor(props: { title: string, values: TagItem[], setValues: 
                         <div onClick={() => onChange([...props.selectedValues, contact])} class="border border-l-white/50 border-r-white/50 border-t-white/75 border-b-white/25 bg-m-blue px-1 py-[0.5] rounded cursor-pointer hover:outline-white hover:outline-1">{contact.name}</div>
                     )}
                 </For>
-                <button class="border border-l-white/50 border-r-white/50 border-t-white/75 border-b-white/25 bg-black px-1 py-[0.5] rounded cursor-pointer hover:outline-white hover:outline-1">+ Add Contact</button>
+                {/* <button class="border border-l-white/50 border-r-white/50 border-t-white/75 border-b-white/25 bg-black px-1 py-[0.5] rounded cursor-pointer hover:outline-white hover:outline-1">+ Add Contact</button> */}
+                <ContactEditor createContact={newContact} />
             </div>
         </div >
     )
