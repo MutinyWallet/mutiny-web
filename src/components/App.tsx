@@ -1,5 +1,5 @@
 import logo from '~/assets/icons/mutiny-logo.svg';
-import { DefaultMain, NodeManagerGuard, SafeArea } from "~/components/layout";
+import { DefaultMain, MutinyManagerGuard, SafeArea } from "~/components/layout";
 import BalanceBox from "~/components/BalanceBox";
 import NavBar from "~/components/NavBar";
 import ReloadPrompt from "~/components/Reload";
@@ -9,7 +9,7 @@ import settings from '~/assets/icons/settings.svg';
 
 export default function App() {
     return (
-        <NodeManagerGuard>
+        <MutinyManagerGuard>
             <SafeArea>
                 <DefaultMain>
                     <header class="w-full flex justify-between items-center mt-4 mb-2">
@@ -22,6 +22,6 @@ export default function App() {
                 </DefaultMain>
                 <NavBar activeTab="home" />
             </SafeArea>
-        </NodeManagerGuard>
+        </MutinyManagerGuard>
     );
 }

@@ -1,17 +1,17 @@
 
-import initNodeManager, { NodeManager } from '@mutinywallet/mutiny-wasm';
+import initMutinyManager, { MutinyManager } from '@mutinywallet/mutiny-wasm';
 import initWaila from '@mutinywallet/waila-wasm'
 
-// export type NodeManagerSettingStrings = {
+// export type MutinyManagerSettingStrings = {
 //     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 // }
 
 type Network = "bitcoin" | "testnet" | "regtest" | "signet";
-export type NodeManagerSettingStrings = {
+export type MutinyManagerSettingStrings = {
     network?: Network, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 }
 
-export function getExistingSettings(): NodeManagerSettingStrings {
+export function getExistingSettings(): MutinyManagerSettingStrings {
     const network = localStorage.getItem('MUTINY_SETTINGS_network') || import.meta.env.VITE_NETWORK;
     const proxy = localStorage.getItem('MUTINY_SETTINGS_proxy') || import.meta.env.VITE_PROXY;
     const esplora = localStorage.getItem('MUTINY_SETTINGS_esplora') || import.meta.env.VITE_ESPLORA;
@@ -21,7 +21,7 @@ export function getExistingSettings(): NodeManagerSettingStrings {
     return { network, proxy, esplora, rgs, lsp }
 }
 
-export async function setAndGetMutinySettings(settings?: NodeManagerSettingStrings): Promise<NodeManagerSettingStrings> {
+export async function setAndGetMutinySettings(settings?: MutinyManagerSettingStrings): Promise<MutinyManagerSettingStrings> {
     let { network, proxy, esplora, rgs, lsp } = settings || {};
 
     const existingSettings = getExistingSettings();
@@ -70,29 +70,29 @@ export async function checkForWasm() {
     }
 }
 
-export async function setupNodeManager(settings?: NodeManagerSettingStrings): Promise<NodeManager> {
-    await initNodeManager();
+export async function setupMutinyManager(settings?: MutinyManagerSettingStrings): Promise<MutinyManager> {
+    await initMutinyManager();
     // Might as well init waila while we're at it
     await initWaila();
 
     console.time("Setup");
     console.log("Starting setup...")
     const { network, proxy, esplora, rgs, lsp } = await setAndGetMutinySettings(settings)
-    console.log("Initializing Node Manager")
+    console.log("Initializing Mutiny Manager")
     console.log("Using network", network);
     console.log("Using proxy", proxy);
     console.log("Using esplora address", esplora);
     console.log("Using rgs address", rgs);
     console.log("Using lsp address", lsp);
 
-    const nodeManager = await new NodeManager("", undefined, proxy, network, esplora, rgs, lsp)
+    const mutinyManager = await new MutinyManager("", undefined, proxy, network, esplora, rgs, lsp)
 
-    const nodes = await nodeManager.list_nodes();
+    const nodes = await mutinyManager.list_nodes();
 
     // If we don't have any nodes yet, create one
     if (!nodes.length) {
-        await nodeManager?.new_node()
+        await mutinyManager?.new_node()
     }
 
-    return nodeManager
+    return mutinyManager
 }

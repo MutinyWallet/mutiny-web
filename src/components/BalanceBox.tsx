@@ -21,15 +21,15 @@ export default function BalanceBox() {
 
     const fetchOnchainBalance = async () => {
         console.log("Refetching onchain balance");
-        await state.node_manager?.sync();
-        const balance = await state.node_manager?.get_balance();
+        await state.mutiny_manager?.sync();
+        const balance = await state.mutiny_manager?.get_balance();
         return balance
     };
 
     // TODO: it's hacky to do these separately, but ln doesn't need the sync so I don't want to wait
     const fetchLnBalance = async () => {
         console.log("Refetching ln balance");
-        const balance = await state.node_manager?.get_balance();
+        const balance = await state.mutiny_manager?.get_balance();
         return balance
     };
 

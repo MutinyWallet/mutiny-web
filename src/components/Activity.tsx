@@ -141,19 +141,19 @@ export function Activity() {
 
     const getTransactions = async () => {
         console.log("Getting onchain txs");
-        const txs = await state.node_manager?.list_onchain() as OnChainTx[];
+        const txs = await state.mutiny_manager?.list_onchain() as OnChainTx[];
         return txs.reverse();
     }
 
     const getInvoices = async () => {
         console.log("Getting invoices");
-        const invoices = await state.node_manager?.list_invoices() as MutinyInvoice[];
+        const invoices = await state.mutiny_manager?.list_invoices() as MutinyInvoice[];
         return invoices.filter((inv) => inv.paid).reverse();
     }
 
     const getUtXos = async () => {
         console.log("Getting utxos");
-        const utxos = await state.node_manager?.list_utxos() as UtxoItem[];
+        const utxos = await state.mutiny_manager?.list_utxos() as UtxoItem[];
         return utxos;
     }
 

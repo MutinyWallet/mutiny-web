@@ -1,6 +1,6 @@
 import { Component, createEffect, createMemo, createResource, createSignal, For, Match, onCleanup, onMount, ParentComponent, Show, Suspense, Switch } from "solid-js";
 import { CENTER_COLUMN, MISSING_LABEL, REDSHIFT_LABEL, RIGHT_COLUMN, THREE_COLUMNS, UtxoItem } from "~/components/Activity";
-import { Card, DefaultMain, LargeHeader, LoadingSpinner, NiceP, NodeManagerGuard, SafeArea, SmallAmount, SmallHeader, VStack } from "~/components/layout";
+import { Card, DefaultMain, LargeHeader, LoadingSpinner, NiceP, MutinyManagerGuard, SafeArea, SmallAmount, SmallHeader, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import NavBar from "~/components/NavBar";
@@ -56,7 +56,7 @@ function RedshiftReport(props: { redshift: RedshiftResult, utxo: UtxoItem }) {
 
     const getUtXos = async () => {
         console.log("Getting utxos");
-        return await state.node_manager?.list_utxos() as UtxoItem[];
+        return await state.mutiny_manager?.list_utxos() as UtxoItem[];
     }
 
     function findUtxoByOutpoint(outpoint?: string, utxos: UtxoItem[] = []): UtxoItem | undefined {
@@ -78,7 +78,7 @@ function RedshiftReport(props: { redshift: RedshiftResult, utxo: UtxoItem }) {
     async function checkRedshift(outpoint: string) {
         // const rs = redshiftItems[0] as RedshiftResult;
         console.log("Checking redshift", outpoint)
-        const redshift = await state.node_manager?.get_redshift(outpoint);
+        const redshift = await state.mutiny_manager?.get_redshift(outpoint);
         console.log(redshift)
         return redshift[0]
     }
@@ -219,7 +219,7 @@ function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void, utxo
     async function checkRedshift(outpoint: string) {
         // const rs = redshiftItems[0] as RedshiftResult;
         console.log("Checking redshift", outpoint)
-        const redshift = await state.node_manager?.get_redshift(outpoint);
+        const redshift = await state.mutiny_manager?.get_redshift(outpoint);
         console.log(redshift)
         return redshift
     }
@@ -282,13 +282,13 @@ export default function Redshift() {
 
     const getUtXos = async () => {
         console.log("Getting utxos");
-        return await state.node_manager?.list_utxos() as UtxoItem[];
+        return await state.mutiny_manager?.list_utxos() as UtxoItem[];
     }
 
     const getChannels = async () => {
         console.log("Getting channels");
-        await state.node_manager?.sync()
-        const channels = await state.node_manager?.list_channels() as Promise<MutinyChannel[]>;
+        await state.mutiny_manager?.sync()
+        const channels = await state.mutiny_manager?.list_channels() as Promise<MutinyChannel[]>;
         console.log(channels)
         return channels
 
@@ -315,7 +315,7 @@ export default function Redshift() {
 
     async function redshiftUtxo(utxo: UtxoItem) {
         console.log("Redshifting utxo", utxo.outpoint)
-        const redshift = await state.node_manager?.init_redshift(utxo.outpoint);
+        const redshift = await state.mutiny_manager?.init_redshift(utxo.outpoint);
         console.log("Redshift initialized:")
         console.log(redshift)
         return redshift
@@ -331,7 +331,7 @@ export default function Redshift() {
     })
 
     return (
-        <NodeManagerGuard>
+        <MutinyManagerGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
@@ -405,6 +405,6 @@ export default function Redshift() {
                 </DefaultMain>
                 <NavBar activeTab="redshift" />
             </SafeArea>
-        </NodeManagerGuard>
+        </MutinyManagerGuard>
     )
 }

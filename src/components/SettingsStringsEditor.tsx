@@ -1,6 +1,6 @@
 import { createForm, url } from '@modular-forms/solid';
 import { TextField } from '~/components/layout/TextField';
-import { NodeManagerSettingStrings, getExistingSettings } from '~/logic/nodeManagerSetup';
+import { MutinyManagerSettingStrings, getExistingSettings } from '~/logic/mutinyManagerSetup';
 import { Button } from '~/components/layout';
 import { createSignal } from 'solid-js';
 import { deleteDb } from '~/components/DeleteEverything';
@@ -11,14 +11,14 @@ import { useMegaStore } from '~/state/megaStore';
 
 export function SettingsStringsEditor() {
     const existingSettings = getExistingSettings();
-    const [_settingsForm, { Form, Field }] = createForm<NodeManagerSettingStrings>({ initialValues: existingSettings });
+    const [_settingsForm, { Form, Field }] = createForm<MutinyManagerSettingStrings>({ initialValues: existingSettings });
     const [confirmOpen, setConfirmOpen] = createSignal(false);
 
-    const [settingsTemp, setSettingsTemp] = createSignal<NodeManagerSettingStrings>();
+    const [settingsTemp, setSettingsTemp] = createSignal<MutinyManagerSettingStrings>();
 
     const [_store, actions] = useMegaStore();
 
-    async function handleSubmit(values: NodeManagerSettingStrings) {
+    async function handleSubmit(values: MutinyManagerSettingStrings) {
         try {
             const existing = getExistingSettings();
             const newSettings = { ...existing, ...values }
@@ -28,7 +28,7 @@ export function SettingsStringsEditor() {
                 setSettingsTemp(newSettings);
                 setConfirmOpen(true);
             } else {
-                await actions.setupNodeManager(newSettings);
+                await actions.setupMutinyManager(newSettings);
                 window.location.reload();
             }
         } catch (e) {
@@ -45,7 +45,7 @@ export function SettingsStringsEditor() {
             showToast({ title: "Deleted", description: `Deleted all data` })
             const loadedValues = settingsTemp();
 
-            await actions.setupNodeManager(loadedValues);
+            await actions.setupMutinyManager(loadedValues);
             window.location.reload();
         } catch (e) {
             console.error(e)
