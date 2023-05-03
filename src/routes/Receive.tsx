@@ -1,5 +1,5 @@
 import { MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { createEffect, createResource, createSignal, For, Match, onCleanup, Switch } from "solid-js";
+import { createEffect, createResource, createSignal, For, Match, onCleanup, onMount, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 import { AmountEditable } from "~/components/AmountEditable";
 import { Button, Card, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
@@ -11,11 +11,12 @@ import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { Amount } from "~/components/Amount";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import { BackLink } from "~/components/layout/BackLink";
-import { TagEditor, TagItem } from "~/components/TagEditor";
+import { TagEditor } from "~/components/TagEditor";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { showToast } from "~/components/Toaster";
 import { useNavigate } from "solid-start";
 import megacheck from "~/assets/icons/megacheck.png";
+import { TagItem, listTags } from "~/state/contacts";
 
 type OnChainTx = {
     transaction: {
@@ -45,9 +46,9 @@ const createUniqueId = () => Math.random().toString(36).substr(2, 9);
 
 const fakeContacts: TagItem[] = [
     { id: createUniqueId(), name: "Unknown", kind: "text" },
-    { id: createUniqueId(), name: "Alice", kind: "contact" },
-    { id: createUniqueId(), name: "Bob", kind: "contact" },
-    { id: createUniqueId(), name: "Carol", kind: "contact" },
+    // { id: createUniqueId(), name: "Alice", kind: "contact" },
+    // { id: createUniqueId(), name: "Bob", kind: "contact" },
+    // { id: createUniqueId(), name: "Carol", kind: "contact" },
 ]
 
 const RECEIVE_FLAVORS = [{ value: "unified", label: "Unified", caption: "Sender decides" }, { value: "lightning", label: "Lightning", caption: "Fast and cool" }, { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }]
@@ -90,7 +91,16 @@ export default function Receive() {
 
     // Tagging stuff
     const [selectedValues, setSelectedValues] = createSignal<TagItem[]>([]);
-    const [values, setValues] = createSignal([...fakeContacts]);
+
+    // const [tagItems] = createResource(listTags);
+
+    const [values, setValues] = createSignal<TagItem[]>([{ id: createUniqueId(), name: "Unknown", kind: "text" }]);
+
+    onMount(() => {
+        listTags().then((tags) => {
+            setValues(prev => [...prev, ...tags || []])
+        });
+    })
 
     // The data we get after a payment
     const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
@@ -216,7 +226,6 @@ export default function Receive() {
                                 <dd>
                                     <TagEditor title="Tag the origin" values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} />
                                 </dd>
-
                             </dl>
                             <Button class="w-full" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Invoice</Button>
                         </Match>

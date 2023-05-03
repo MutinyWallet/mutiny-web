@@ -1,108 +1,77 @@
-import { For, ParentComponent, createMemo, createSignal } from "solid-js";
-import { CENTER_COLUMN, MISSING_LABEL, OnChainTx, RIGHT_COLUMN, THREE_COLUMNS } from "~/components/Activity";
-import { DeleteEverything } from "~/components/DeleteEverything";
-import { JsonModal } from "~/components/JsonModal";
-import KitchenSink from "~/components/KitchenSink";
+import { For, Show, createResource } from "solid-js";
 import NavBar from "~/components/NavBar";
-import { Card, DefaultMain, Hr, LargeHeader, NodeManagerGuard, SafeArea, SmallAmount, SmallHeader, VStack } from "~/components/layout";
-import { BackButton } from "~/components/layout/BackButton";
-import { StyledRadioGroup } from "~/components/layout/Radio";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import send from '~/assets/icons/send.svg';
-import receive from '~/assets/icons/receive.svg';
-import { prettyPrintTime } from "~/utils/prettyPrintTime";
-
-const NAMES = ["alice", "bob", "carol", "dave", "ethan", "frank", "graham", "hancock"]
+import { Button, Card, DefaultMain, LargeHeader, NiceP, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
+import { BackLink } from "~/components/layout/BackLink";
+import { CombinedActivity, Activity as MutinyActivity } from "~/components/Activity";
+import { A } from "solid-start";
+import settings from '~/assets/icons/settings.svg';
+import { ContactItem, addContact, editContact, listContacts } from "~/state/contacts";
+import { Tabs } from "@kobalte/core";
+import { gradientsPerContact } from "~/utils/gradientHash";
+import { ContactEditor } from "~/components/ContactEditor";
+import { ContactViewer } from "~/components/ContactViewer";
 
 function ContactRow() {
+    const [contacts, { refetch }] = createResource(listContacts)
+    const [gradients] = createResource(contacts, gradientsPerContact);
+
+    async function createContact(contact: ContactItem) {
+        await addContact(contact)
+        refetch();
+    }
+
+    async function saveContact(contact: ContactItem) {
+        await editContact(contact)
+        refetch();
+    }
+
     return (
-        <div class="w-full overflow-x-scroll flex gap-2 disable-scrollbars">
-            <div class="flex flex-col items-center">
-                <div class="bg-neutral-500 flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase ">
-                    +
-                </div>
-                <div class="overflow-ellipsis">
-                    new
-                </div>
-            </div>
-            <For each={NAMES}>
-                {(name) => (
-                    <div class="flex flex-col items-center">
-                        <div class="bg-pink-500 flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase ">
-                            {name[0]}
-                        </div>
-                        <div class="overflow-ellipsis">
-                            {name}
-                        </div>
-                    </div>
-                )}
-            </For>
+        <div class="w-full overflow-x-scroll flex gap-4 disable-scrollbars">
+            <ContactEditor list createContact={createContact} />
+            <Show when={contacts() && gradients()}>
+                <For each={contacts()}>
+                    {(contact) => (
+                        <ContactViewer contact={contact} gradient={gradients()?.get(contact.id)} saveContact={saveContact} />
+                    )}
+                </For>
+            </Show>
         </div>
     )
 }
 
-const CHOICES = [
-    { value: "mutiny", label: "Mutiny", caption: "Your wallet activity" },
-    { value: "nostr", label: "Zaps", caption: "Your friends on nostr" },
-]
-
-const SubtleText: ParentComponent = (props) => {
-    return <h3 class='text-xs text-gray-500 uppercase'>{props.children}</h3>
-}
-
-function OnChainItem(props: { item: OnChainTx }) {
-    const isReceive = createMemo(() => props.item.received > 0);
-
-    const [open, setOpen] = createSignal(false)
-
-    return (
-        <>
-            <JsonModal open={open()} data={props.item} title="On-Chain Transaction" setOpen={setOpen}>
-                <a href={mempoolTxUrl(props.item.txid, "signet")} target="_blank" rel="noreferrer">
-                    Mempool Link
-                </a>
-            </JsonModal>
-            <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
-                <div class="flex items-center">
-                    {isReceive() ? <img src={receive} alt="receive arrow" /> : <img src={send} alt="send arrow" />}
-                </div>
-                <div class={CENTER_COLUMN}>
-                    <h2 class={MISSING_LABEL}>Unknown</h2>
-                    {isReceive() ? <SmallAmount amount={props.item.received} /> : <SmallAmount amount={props.item.sent} />}
-                    {/* <h2 class="truncate">Txid: {props.item.txid}</h2> */}
-                </div>
-                <div class={RIGHT_COLUMN}>
-                    <SmallHeader class={isReceive() ? "text-m-green" : "text-m-red"}>
-                        {isReceive() ? "RECEIVE" : "SEND"}
-                    </SmallHeader>
-                    <SubtleText>{props.item.confirmation_time?.Confirmed ? prettyPrintTime(props.item.confirmation_time?.Confirmed?.time) : "Unconfirmed"}</SubtleText>
-                </div>
-            </div>
-        </>
-    )
-}
+const TAB = "flex-1 inline-block px-8 py-4 text-lg font-semibold rounded-lg ui-selected:bg-white/10 bg-neutral-950 hover:bg-white/10"
 
 export default function Activity() {
-    const [choice, setChoice] = createSignal(CHOICES[0].value)
     return (
         <NodeManagerGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackButton />
-                    <LargeHeader>Activity</LargeHeader>
+                    <BackLink />
+                    <LargeHeader action={<A class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue" href="/settings"><img src={settings} alt="Settings" /></A>}>Activity</LargeHeader>
                     <ContactRow />
-                    <Hr />
-                    <StyledRadioGroup choices={CHOICES} value={choice()} onValueChange={setChoice} />
-                    <VStack>
-                        {/* <Card><p>If you know what you're doing you're in the right place!</p></Card>
-                        <KitchenSink />
-                        <div class='rounded-xl p-4 flex flex-col gap-2 bg-m-red overflow-x-hidden'>
-                            <SmallHeader>Danger zone</SmallHeader>
-                            <DeleteEverything />
-                        </div> */}
-                    </VStack>
+                    <Tabs.Root defaultValue="mutiny">
+                        <Tabs.List class="relative flex justify-around mt-4 mb-8 gap-1 bg-neutral-950 p-1 rounded-xl">
+                            <Tabs.Trigger value="mutiny" class={TAB}>Mutiny</Tabs.Trigger>
+                            <Tabs.Trigger value="nostr" class={TAB}>Nostr</Tabs.Trigger>
+                            {/* <Tabs.Indicator class="absolute bg-m-blue transition-all bottom-[-1px] h-[2px]" /> */}
+                        </Tabs.List>
+                        <Tabs.Content value="mutiny">
+                            {/* <MutinyActivity /> */}
+                            <Card title="Activity">
+                                <CombinedActivity />
+                            </Card>
+                        </Tabs.Content>
+                        <Tabs.Content value="nostr">
+                            <VStack>
+                                <div class="my-8 flex flex-col items-center gap-4 text-center max-w-[20rem] mx-auto">
+                                    <NiceP>Import your contacts from nostr to see who they're zapping.</NiceP>
+                                    <Button disabled intent="blue">Coming soon</Button>
+                                </div>
+                            </VStack>
+                        </Tabs.Content>
+                    </Tabs.Root>
                 </DefaultMain>
-                <NavBar activeTab="none" />
+                <NavBar activeTab="activity" />
             </SafeArea>
         </NodeManagerGuard>
     )

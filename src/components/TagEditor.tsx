@@ -1,8 +1,9 @@
 import { Select, createOptions } from "@thisbeyond/solid-select";
 import "~/styles/solid-select.css"
 import { SmallHeader } from "./layout";
-import { For } from "solid-js";
+import { For, createUniqueId } from "solid-js";
 import { ContactEditor } from "./ContactEditor";
+import { ContactItem, TagItem, TextItem, addContact } from "~/state/contacts";
 
 // take two arrays, subtract the second from the first, then return the first
 function subtract<T>(a: T[], b: T[]) {
@@ -10,20 +11,12 @@ function subtract<T>(a: T[], b: T[]) {
     return a.filter(x => !set.has(x));
 };
 
-// simple math.random based id generator
-const createUniqueId = () => Math.random().toString(36).substr(2, 9);
-
-export type TagItem = {
-    id: string;
-    name: string;
-    kind: "text" | "contact";
-}
-
-const createValue = (name: string) => {
+const createValue = (name: string): TextItem => {
     return { id: createUniqueId(), name, kind: "text" };
 };
 
 export function TagEditor(props: { title: string, values: TagItem[], setValues: (values: TagItem[]) => void, selectedValues: TagItem[], setSelectedValues: (values: TagItem[]) => void }) {
+    console.log(props.values);
     const onChange = (selected: TagItem[]) => {
         props.setSelectedValues(selected);
 
@@ -42,8 +35,8 @@ export function TagEditor(props: { title: string, values: TagItem[], setValues: 
         createable: createValue,
     });
 
-    const newContact = (name: string) => {
-        const contact: TagItem = { id: createUniqueId(), name, kind: "contact" };
+    const newContact = async (contact: ContactItem) => {
+        await addContact(contact)
         onChange([...props.selectedValues, contact])
     }
 
@@ -59,8 +52,13 @@ export function TagEditor(props: { title: string, values: TagItem[], setValues: 
             />
             <div class="flex gap-2 flex-wrap">
                 <For each={subtract(props.values, props.selectedValues).slice(0, 3)}>
-                    {(contact) => (
-                        <div onClick={() => onChange([...props.selectedValues, contact])} class="border border-l-white/50 border-r-white/50 border-t-white/75 border-b-white/25 bg-m-blue px-1 py-[0.5] rounded cursor-pointer hover:outline-white hover:outline-1">{contact.name}</div>
+                    {(tag) => (
+                        <div onClick={() => onChange([...props.selectedValues, tag])}
+                            class="border border-l-white/50 border-r-white/50 border-t-white/75 border-b-white/25  px-1 py-[0.5] rounded cursor-pointer hover:outline-white hover:outline-1"
+                            classList={{ "bg-black": tag.kind === "text", "bg-m-blue": tag.kind === "contact" && tag.color === "blue", "bg-m-green": tag.kind === "contact" && tag.color === "green", "bg-m-red": tag.kind === "contact" && tag.color === "red", "bg-[#898989]": tag.kind === "contact" && tag.color === "gray" }}
+                        >
+                            {tag.name}
+                        </div>
                     )}
                 </For>
                 {/* <button class="border border-l-white/50 border-r-white/50 border-t-white/75 border-b-white/25 bg-black px-1 py-[0.5] rounded cursor-pointer hover:outline-white hover:outline-1">+ Add Contact</button> */}
