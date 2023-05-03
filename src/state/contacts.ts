@@ -42,6 +42,13 @@ export async function addContact(contact: ContactItem): Promise<void> {
     localStorage.setItem("contacts", JSON.stringify(contacts));
 }
 
+export async function editContact(contact: ContactItem): Promise<void> {
+    const contacts = await listContacts();
+    const index = contacts.findIndex(c => c.id === contact.id);
+    contacts[index] = contact;
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+}
+
 export async function addTextTag(text: TextItem): Promise<void> {
     const texts = await listTexts();
     texts.push(text);

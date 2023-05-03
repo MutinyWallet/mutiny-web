@@ -16,7 +16,7 @@ type RadioGroupProps = {
 };
 type Color = "blue" | "green" | "red" | "gray"
 
-const colorVariants = {
+export const colorVariants = {
     blue: "bg-m-blue",
     green: "bg-m-green",
     red: "bg-m-red",

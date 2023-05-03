@@ -16,7 +16,7 @@ export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
 
 export const Card: ParentComponent<{ title?: string, titleElement?: JSX.Element }> = (props) => {
     return (
-        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950 overflow-x-hidden'>
+        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950 overflow-x-hidden w-full'>
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.titleElement && props.titleElement}
             {props.children}
@@ -94,8 +94,15 @@ export const LoadingSpinner = (props: { big?: boolean, wide?: boolean }) => {
 
 export const Hr = () => <Separator.Root class="my-4 border-white/20" />
 
-export const LargeHeader: ParentComponent = (props) => {
-    return (<h1 class="text-4xl font-semibold uppercase border-b-2 border-b-white mt-2 mb-4">{props.children}</h1>)
+export const LargeHeader: ParentComponent<{ action?: JSX.Element }> = (props) => {
+    return (
+        <header class="w-full flex justify-between items-center mt-4 mb-2">
+            <h1 class="text-4xl font-semibold">{props.children}</h1>
+            <Show when={props.action}>
+                {props.action}
+            </Show>
+        </header>
+    )
 }
 
 export const VStack: ParentComponent<{ biggap?: boolean }> = (props) => {
@@ -106,8 +113,8 @@ export const HStack: ParentComponent<{ biggap?: boolean }> = (props) => {
     return (<div class={`flex gap-${props.biggap ? "8" : "4"}`}>{props.children}</div>)
 }
 
-export const SmallAmount: ParentComponent<{ amount: number | bigint }> = (props) => {
-    return (<h2 class="font-light text-lg">{props.amount.toLocaleString()} <span class="text-sm">SATS</span></h2>)
+export const SmallAmount: ParentComponent<{ amount: number | bigint, sign?: string }> = (props) => {
+    return (<h2 class="font-light text-lg">{props.sign ? `${props.sign} ` : ""}{props.amount.toLocaleString()} <span class="text-sm">SATS</span></h2>)
 }
 
 export const NiceP: ParentComponent = (props) => {
