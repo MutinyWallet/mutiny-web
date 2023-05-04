@@ -6,6 +6,7 @@ import ReloadPrompt from "~/components/Reload";
 import { A } from 'solid-start';
 import { Activity } from './Activity';
 import settings from '~/assets/icons/settings.svg';
+import { OnboardWarning } from './OnboardWarning';
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
                         <img src={logo} class="h-10" alt="logo" />
                         <A class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue" href="/settings"><img src={settings} alt="Settings" /></A>
                     </header>
+                    <OnboardWarning />
                     <ReloadPrompt />
                     <BalanceBox />
                     <Activity />

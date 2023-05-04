@@ -1,4 +1,4 @@
-import { createResource, Show, Suspense } from "solid-js";
+import { Show, Suspense } from "solid-js";
 import { ButtonLink, FancyCard } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
@@ -17,54 +17,26 @@ function SyncingIndicator() {
 }
 
 export default function BalanceBox() {
-    const [state, _] = useMegaStore();
-
-    const fetchOnchainBalance = async () => {
-        console.log("Refetching onchain balance");
-        await state.mutiny_wallet?.sync();
-        const balance = await state.mutiny_wallet?.get_balance();
-        return balance
-    };
-
-    // TODO: it's hacky to do these separately, but ln doesn't need the sync so I don't want to wait
-    const fetchLnBalance = async () => {
-        console.log("Refetching ln balance");
-        const balance = await state.mutiny_wallet?.get_balance();
-        return balance
-    };
-
-    const [onChainBalance, { refetch: refetchOnChainBalance }] = createResource(fetchOnchainBalance);
-    const [lnBalance, { refetch: refetchLnBalance }] = createResource(fetchLnBalance);
-
-    function refetchBalance() {
-        refetchLnBalance();
-        refetchOnChainBalance();
-    }
+    const [state, actions] = useMegaStore();
 
     return (
         <>
             <FancyCard title="Lightning">
-                <Suspense fallback={<Amount amountSats={0} showFiat loading={true} />}>
-                    <Show when={lnBalance()}>
-                        <Amount amountSats={lnBalance()?.lightning} showFiat />
-                    </Show>
-                </Suspense>
+                <Amount amountSats={state.balance?.lightning || 0} showFiat />
             </FancyCard>
 
-            <FancyCard title="On-Chain" tag={onChainBalance.loading && <SyncingIndicator />}>
-                <Suspense fallback={<Amount amountSats={0} showFiat loading={true} />}>
-                    <div onClick={refetchBalance}>
-                        <Amount amountSats={onChainBalance()?.confirmed} showFiat loading={onChainBalance.loading} />
-                    </div>
-                </Suspense>
+            <FancyCard title="On-Chain" tag={state.is_syncing && <SyncingIndicator />}>
+                <div onClick={actions.sync}>
+                    <Amount amountSats={state.balance?.confirmed} showFiat />
+                </div>
                 <Suspense>
-                    <Show when={onChainBalance()?.unconfirmed}>
+                    <Show when={state.balance?.unconfirmed}>
                         <div class="flex flex-col gap-2">
                             <header class='text-sm font-semibold uppercase text-white/50'>
                                 Unconfirmed Balance
                             </header>
                             <div class="text-white/50">
-                                {prettyPrintAmount(onChainBalance()?.unconfirmed)} <span class='text-sm'>SATS</span>
+                                {prettyPrintAmount(state.balance?.unconfirmed)} <span class='text-sm'>SATS</span>
                             </div>
                         </div>
                     </Show>

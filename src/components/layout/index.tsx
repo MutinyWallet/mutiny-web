@@ -113,5 +113,3 @@ export const SmallAmount: ParentComponent<{ amount: number | bigint }> = (props)
 export const NiceP: ParentComponent = (props) => {
     return (<p class="text-2xl font-light">{props.children}</p>)
 }
-
-
