@@ -1,4 +1,4 @@
-import { Match, Show, Switch, createEffect, createMemo, createResource, createSignal, onCleanup, onMount } from "solid-js";
+import { Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
 import { Button, ButtonLink, DefaultMain, HStack, LargeHeader, MutinyWalletGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
@@ -16,6 +16,7 @@ import handshake from "~/assets/hands/handshake.png";
 import thumbsdown from "~/assets/hands/thumbsdown.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { BackLink } from "~/components/layout/BackLink";
+import { useNavigate } from "solid-start";
 
 type SendSource = "lightning" | "onchain";
 
@@ -29,6 +30,7 @@ type SentDetails = { amount?: bigint, destination?: string, txid?: string, failu
 
 export default function Send() {
     const [state, actions] = useMegaStore();
+    const navigate = useNavigate()
 
     // These can only be set by the user
     const [fieldDestination, setFieldDestination] = createSignal("");
@@ -168,8 +170,9 @@ export default function Send() {
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "onchain" && address()) {
+                // FIXME: actual labels
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats());
+                const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), []);
                 sentDetails.amount = amountSats();
                 sentDetails.destination = address();
                 // TODO: figure out if this is necessary, it takes forever
@@ -204,7 +207,7 @@ export default function Send() {
                         confirmText={sentDetails()?.amount ? "Nice" : "Too Bad"}
                         open={!!sentDetails()}
                         setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }}
-                        onConfirm={() => setSentDetails(undefined)}
+                        onConfirm={() => { setSentDetails(undefined); navigate("/"); }}
                     >
                         <div class="flex flex-col items-center gap-8 h-full">
                             <Switch>
