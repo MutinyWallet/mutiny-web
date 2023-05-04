@@ -1,5 +1,6 @@
-// Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
+/* @refresh reload */
 
+// Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
 import { ParentComponent, createContext, createEffect, onCleanup, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { NodeManagerSettingStrings, setupNodeManager } from "~/logic/nodeManagerSetup";
@@ -16,14 +17,19 @@ export type MegaStore = [{
     user_status: UserStatus;
     scan_result?: ParsedParams;
     balance?: MutinyBalance;
+    is_syncing?: boolean;
     last_sync?: number;
     price: number
+    has_backed_up: boolean,
+    dismissed_restore_prompt: boolean
 }, {
     fetchUserStatus(): Promise<UserStatus>;
     setupNodeManager(settings?: NodeManagerSettingStrings): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
     setScanResult(scan_result: ParsedParams | undefined): void;
     sync(): Promise<void>;
+    dismissRestorePrompt(): void;
+    setHasBackedUp(): void;
 }];
 
 export const Provider: ParentComponent = (props) => {
@@ -33,7 +39,12 @@ export const Provider: ParentComponent = (props) => {
         user_status: undefined as UserStatus,
         scan_result: undefined as ParsedParams | undefined,
         // TODO: wire this up to real price once we have caching
-        price: 30000
+        price: 30000,
+        has_backed_up: localStorage.getItem("has_backed_up") === "true",
+        balance: undefined as MutinyBalance | undefined,
+        last_sync: undefined as number | undefined,
+        is_syncing: false,
+        dismissed_restore_prompt: localStorage.getItem("dismissed_restore_prompt") === "true"
     });
 
     const actions = {
@@ -69,14 +80,29 @@ export const Provider: ParentComponent = (props) => {
         async sync(): Promise<void> {
             console.time("BDK Sync Time")
             try {
-                await state.node_manager?.sync()
+                if (state.node_manager && !state.is_syncing) {
+                    setState({ is_syncing: true })
+                    await state.node_manager?.sync()
+                    const balance = await state.node_manager?.get_balance();
+                    setState({ balance, last_sync: Date.now() })
+                }
             } catch (e) {
                 console.error(e);
+            } finally {
+                setState({ is_syncing: false })
             }
             console.timeEnd("BDK Sync Time")
         },
         setScanResult(scan_result: ParsedParams) {
             setState({ scan_result })
+        },
+        setHasBackedUp() {
+            localStorage.setItem("has_backed_up", "true")
+            setState({ has_backed_up: true })
+        },
+        dismissRestorePrompt() {
+            localStorage.setItem("dismissed_restore_prompt", "true")
+            setState({ dismissed_restore_prompt: true })
         }
     };
 
@@ -101,8 +127,8 @@ export const Provider: ParentComponent = (props) => {
     });
 
     createEffect(() => {
-        const interval = setInterval(() => {
-            if (state.node_manager) actions.sync();
+        const interval = setInterval(async () => {
+            await actions.sync();
         }, 60 * 1000); // Poll every minute
 
         onCleanup(() => {

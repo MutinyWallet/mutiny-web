@@ -103,6 +103,10 @@ const SmallAmount: ParentComponent<{ amount: number | bigint }> = (props) => {
     return (<h2 class="font-light text-lg">{props.amount.toLocaleString()} <span class="text-sm">SATS</span></h2>)
 }
 
+export const NiceP: ParentComponent = (props) => {
+    return (<p class="text-2xl font-light">{props.children}</p>)
+}
+
 export {
     SmallHeader,
     Card,
