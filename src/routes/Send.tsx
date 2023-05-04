@@ -12,8 +12,8 @@ import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
-import handshake from "~/assets/hands/handshake.png";
-import thumbsdown from "~/assets/hands/thumbsdown.png";
+import megacheck from "~/assets/icons/megacheck.png"
+import megaex from "~/assets/icons/megaex.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { BackLink } from "~/components/layout/BackLink";
 import { useNavigate } from "solid-start";
@@ -212,11 +212,11 @@ export default function Send() {
                         <div class="flex flex-col items-center gap-8 h-full">
                             <Switch>
                                 <Match when={sentDetails()?.failure_reason}>
-                                    <img src={thumbsdown} alt="thumbs down" class="w-1/2 mx-auto max-w-[50vh]" />
+                                    <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[50vh]" />
                                     <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">{sentDetails()?.failure_reason}</p>
                                 </Match>
                                 <Match when={true}>
-                                    <img src={handshake} alt="handshake" class="w-1/2 mx-auto max-w-[50vh]" />
+                                    <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh]" />
                                     <Amount amountSats={sentDetails()?.amount} showFiat />
                                     <Show when={sentDetails()?.txid}>
                                         <a href={mempoolTxUrl(sentDetails()?.txid, state.mutiny_wallet?.get_network())} target="_blank" rel="noreferrer">
