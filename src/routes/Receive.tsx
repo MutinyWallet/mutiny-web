@@ -8,8 +8,6 @@ import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import { useCopy } from "~/utils/useCopy";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-
-import party from '~/assets/hands/handsup.png';
 import { Amount } from "~/components/Amount";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import { BackButton } from "~/components/layout/BackButton";
@@ -17,6 +15,7 @@ import { TagEditor, TagItem } from "~/components/TagEditor";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { showToast } from "~/components/Toaster";
 import { useNavigate } from "solid-start";
+import megacheck from "~/assets/icons/megacheck.png";
 
 type OnChainTx = {
     transaction: {
@@ -272,7 +271,7 @@ export default function Receive() {
                                 onConfirm={() => { clearAll(); navigate("/"); }}
                             >
                                 <div class="flex flex-col items-center gap-8">
-                                    <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
+                                    <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
                                     <Amount amountSats={paymentInvoice()?.amount_sats} showFiat />
                                 </div>
                             </FullscreenModal>
@@ -285,7 +284,7 @@ export default function Receive() {
                                 onConfirm={() => { clearAll(); navigate("/"); }}
                             >
                                 <div class="flex flex-col items-center gap-8">
-                                    <img src={party} alt="party" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
+                                    <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
                                     <Amount amountSats={paymentTx()?.received} showFiat />
                                     <a href={mempoolTxUrl(paymentTx()?.txid, "signet")} target="_blank" rel="noreferrer">
                                         Mempool Link
