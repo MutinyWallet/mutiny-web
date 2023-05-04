@@ -16,6 +16,7 @@ import handshake from "~/assets/hands/handshake.png";
 import thumbsdown from "~/assets/hands/thumbsdown.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { BackButton } from "~/components/layout/BackButton";
+import { useNavigate } from "solid-start";
 
 type SendSource = "lightning" | "onchain";
 
@@ -29,6 +30,7 @@ type SentDetails = { amount?: bigint, destination?: string, txid?: string, failu
 
 export default function Send() {
     const [state, actions] = useMegaStore();
+    const navigate = useNavigate()
 
     // These can only be set by the user
     const [fieldDestination, setFieldDestination] = createSignal("");
@@ -204,7 +206,7 @@ export default function Send() {
                         confirmText={sentDetails()?.amount ? "Nice" : "Too Bad"}
                         open={!!sentDetails()}
                         setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }}
-                        onConfirm={() => setSentDetails(undefined)}
+                        onConfirm={() => { setSentDetails(undefined); navigate("/"); }}
                     >
                         <div class="flex flex-col items-center gap-8 h-full">
                             <Switch>
