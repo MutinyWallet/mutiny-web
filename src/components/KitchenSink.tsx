@@ -6,8 +6,9 @@ import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import { Collapsible, TextField } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import eify from "~/utils/eify";
-import { ConfirmDialog } from "./Dialog";
-import { showToast } from "./Toaster";
+import { ConfirmDialog } from "~/components/Dialog";
+import { showToast } from "~/components/Toaster";
+import { ImportExport } from "~/components/ImportExport";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (info?: unknown) => MutinyPeer[] | Promise<MutinyPeer[] | undefined> | null | undefined
@@ -326,6 +327,8 @@ function LnUrlAuth() {
     )
 }
 
+
+
 export default function KitchenSink() {
     return (
         <Card title="Kitchen Sink">
@@ -336,6 +339,8 @@ export default function KitchenSink() {
             <ChannelsList />
             <Hr />
             <LnUrlAuth />
+            <Hr />
+            <ImportExport />
         </Card>
     )
 }

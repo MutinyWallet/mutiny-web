@@ -9,7 +9,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "@types/node": "^18.16.3",
+    "@types/node": "^18.16.4",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "autoprefixer": "^10.4.14",
@@ -23,7 +23,7 @@
     "solid-start-node": "^0.2.26",
     "tailwindcss": "^3.3.2",
     "typescript": "^4.9.5",
-    "vite": "^4.3.4",
+    "vite": "^4.3.5",
     "vite-plugin-pwa": "^0.14.7",
     "vite-plugin-wasm": "^3.2.2",
     "workbox-window": "^6.5.4"
@@ -34,6 +34,7 @@
     "@modular-forms/solid": "^0.13.1",
     "@mutinywallet/mutiny-wasm": "^0.2.8",
     "@mutinywallet/waila-wasm": "^0.1.5",
+    "@solid-primitives/upload": "^0.0.111",
     "@solidjs/meta": "^0.28.4",
     "@solidjs/router": "^0.8.2",
     "@thisbeyond/solid-select": "^0.14.0",

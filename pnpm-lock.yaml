@@ -16,6 +16,9 @@ dependencies:
   '@mutinywallet/waila-wasm':
     specifier: ^0.1.5
     version: 0.1.5
+  '@solid-primitives/upload':
+    specifier: ^0.0.111
+    version: 0.0.111(solid-js@1.7.4)
   '@solidjs/meta':
     specifier: ^0.28.4
     version: 0.28.4(solid-js@1.7.4)
@@ -42,15 +45,15 @@ dependencies:
     version: 0.0.8(qr.js@0.0.0)(solid-js@1.7.4)
   solid-start:
     specifier: ^0.2.26
-    version: 0.2.26(@solidjs/meta@0.28.4)(@solidjs/router@0.8.2)(solid-js@1.7.4)(solid-start-node@0.2.26)(vite@4.3.4)
+    version: 0.2.26(@solidjs/meta@0.28.4)(@solidjs/router@0.8.2)(solid-js@1.7.4)(solid-start-node@0.2.26)(vite@4.3.5)
   undici:
     specifier: ^5.22.0
     version: 5.22.0
 
 devDependencies:
   '@types/node':
-    specifier: ^18.16.3
-    version: 18.16.3
+    specifier: ^18.16.4
+    version: 18.16.4
   '@typescript-eslint/eslint-plugin':
     specifier: ^5.59.2
     version: 5.59.2(@typescript-eslint/parser@5.59.2)(eslint@8.39.0)(typescript@4.9.5)
@@ -83,7 +86,7 @@ devDependencies:
     version: 8.4.23
   solid-start-node:
     specifier: ^0.2.26
-    version: 0.2.26(solid-start@0.2.26)(undici@5.22.0)(vite@4.3.4)
+    version: 0.2.26(solid-start@0.2.26)(undici@5.22.0)(vite@4.3.5)
   tailwindcss:
     specifier: ^3.3.2
     version: 3.3.2
@@ -91,14 +94,14 @@ devDependencies:
     specifier: ^4.9.5
     version: 4.9.5
   vite:
-    specifier: ^4.3.4
-    version: 4.3.4(@types/node@18.16.3)
+    specifier: ^4.3.5
+    version: 4.3.5(@types/node@18.16.4)
   vite-plugin-pwa:
     specifier: ^0.14.7
-    version: 0.14.7(vite@4.3.4)(workbox-build@6.5.4)(workbox-window@6.5.4)
+    version: 0.14.7(vite@4.3.5)(workbox-build@6.5.4)(workbox-window@6.5.4)
   vite-plugin-wasm:
     specifier: ^3.2.2
-    version: 3.2.2(vite@4.3.4)
+    version: 3.2.2(vite@4.3.5)
   workbox-window:
     specifier: ^6.5.4
     version: 6.5.4
@@ -1641,7 +1644,7 @@ packages:
       rollup: 2.79.1
     dev: true
 
-  /@rollup/plugin-commonjs@24.1.0(rollup@3.21.4):
+  /@rollup/plugin-commonjs@24.1.0(rollup@3.21.5):
     resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1650,15 +1653,15 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@3.21.4)
+      '@rollup/pluginutils': 5.0.2(rollup@3.21.5)
       commondir: 1.0.1
       estree-walker: 2.0.2
       glob: 8.1.0
       is-reference: 1.2.1
       magic-string: 0.27.0
-      rollup: 3.21.4
+      rollup: 3.21.5
 
-  /@rollup/plugin-json@6.0.0(rollup@3.21.4):
+  /@rollup/plugin-json@6.0.0(rollup@3.21.5):
     resolution: {integrity: sha512-i/4C5Jrdr1XUarRhVu27EEwjt4GObltD7c+MkCIpO2QIbojw8MUs+CCTqOphQi3Qtg1FLmYt+l+6YeoIf51J7w==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1667,8 +1670,8 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@3.21.4)
-      rollup: 3.21.4
+      '@rollup/pluginutils': 5.0.2(rollup@3.21.5)
+      rollup: 3.21.5
 
   /@rollup/plugin-node-resolve@11.2.1(rollup@2.79.1):
     resolution: {integrity: sha512-yc2n43jcqVyGE2sqV5/YCmocy9ArjVAP/BeXyTtADTBBX6V0e5UMqwO8CdQ0kzjb6zu5P1qMzsScCMRvE9OlVg==}
@@ -1685,7 +1688,7 @@ packages:
       rollup: 2.79.1
     dev: true
 
-  /@rollup/plugin-node-resolve@15.0.2(rollup@3.21.4):
+  /@rollup/plugin-node-resolve@15.0.2(rollup@3.21.5):
     resolution: {integrity: sha512-Y35fRGUjC3FaurG722uhUuG8YHOJRJQbI6/CkbRkdPotSpDj9NtIN85z1zrcyDcCQIW4qp5mgG72U+gJ0TAFEg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1694,13 +1697,13 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@3.21.4)
+      '@rollup/pluginutils': 5.0.2(rollup@3.21.5)
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-builtin-module: 3.2.1
       is-module: 1.0.0
       resolve: 1.22.2
-      rollup: 3.21.4
+      rollup: 3.21.5
 
   /@rollup/plugin-replace@2.4.2(rollup@2.79.1):
     resolution: {integrity: sha512-IGcu+cydlUMZ5En85jxHH4qj2hta/11BHq95iHEyb2sbgiN0eCdzvUcHw5gt9pBL5lTi4JDYJ1acCoMGpTvEZg==}
@@ -1712,7 +1715,7 @@ packages:
       rollup: 2.79.1
     dev: true
 
-  /@rollup/plugin-replace@5.0.2(rollup@3.21.4):
+  /@rollup/plugin-replace@5.0.2(rollup@3.21.5):
     resolution: {integrity: sha512-M9YXNekv/C/iHHK+cvORzfRYfPbq0RDD8r0G+bMiTXjNGKulPnCT9O3Ss46WfhI6ZOCgApOP7xAdmCQJ+U2LAA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1721,9 +1724,9 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@3.21.4)
+      '@rollup/pluginutils': 5.0.2(rollup@3.21.5)
       magic-string: 0.27.0
-      rollup: 3.21.4
+      rollup: 3.21.5
     dev: true
 
   /@rollup/pluginutils@3.1.0(rollup@2.79.1):
@@ -1738,7 +1741,7 @@ packages:
       rollup: 2.79.1
     dev: true
 
-  /@rollup/pluginutils@5.0.2(rollup@3.21.4):
+  /@rollup/pluginutils@5.0.2(rollup@3.21.5):
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1750,7 +1753,7 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.21.4
+      rollup: 3.21.5
 
   /@scure/base@1.1.1:
     resolution: {integrity: sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==}
@@ -1840,6 +1843,15 @@ packages:
 
   /@solid-primitives/static-store@0.0.2(solid-js@1.7.4):
     resolution: {integrity: sha512-JR51MmoZbFWE7fmzm0NnfS4RuLHpzXpPqAb7RJu3fHDGHp+q7v4KylseULcailINzDIosHQXbpiDQlj2Lx9zbQ==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/utils': 6.1.0(solid-js@1.7.4)
+      solid-js: 1.7.4
+    dev: false
+
+  /@solid-primitives/upload@0.0.111(solid-js@1.7.4):
+    resolution: {integrity: sha512-Bxe2W5oJu7kRurmxr+ftvOojKhy5JUM91md2nBcedwrq1EspqWggV2ZOHauGcn8hg86W8p9Y+N8dmv16QHNRxQ==}
     peerDependencies:
       solid-js: ^1.6.12
     dependencies:
@@ -1943,8 +1955,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/node@18.16.3:
-    resolution: {integrity: sha512-OPs5WnnT1xkCBiuQrZA4+YAV4HEJejmHneyraIaxsbev5yCEr6KMwINNFP9wQeFIw8FWcoTqF3vQsa5CDaI+8Q==}
+  /@types/node@18.16.4:
+    resolution: {integrity: sha512-LUhvPmAKAbgm+p/K11IWszLZVoZDlMF4NRmqbhEzDz/CnCuehPkZXwZbBCKGJsgjnuVejotBwM7B3Scrq4EqDw==}
 
   /@types/offscreencanvas@2019.7.0:
     resolution: {integrity: sha512-PGcyveRIpL1XIqK8eBsmRBt76eFgtzuPiSTyKHZxnGemp2yzGzWpjYKAfK3wIMiU7eH+851yEpiuP8JZerTmWg==}
@@ -1953,7 +1965,7 @@ packages:
   /@types/resolve@1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 18.16.3
+      '@types/node': 18.16.4
     dev: true
 
   /@types/resolve@1.20.2:
@@ -2331,7 +2343,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001482
-      electron-to-chromium: 1.4.382
+      electron-to-chromium: 1.4.384
       node-releases: 2.0.10
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
 
@@ -2614,8 +2626,8 @@ packages:
       jake: 10.8.5
     dev: true
 
-  /electron-to-chromium@1.4.382:
-    resolution: {integrity: sha512-czMavlW52VIPgutbVL9JnZIZuFijzsG1ww/1z2Otu1r1q+9Qe2bTsH3My3sZarlvwyqHM6+mnZfEnt2Vr4dsIg==}
+  /electron-to-chromium@1.4.384:
+    resolution: {integrity: sha512-I97q0MmRAAqj53+a8vZsDkEXBZki+ehYAOPzwtQzALip52aEp2+BJqHFtTlsfjoqVZYwPpHC8wM6MbsSZQ/Eqw==}
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3755,7 +3767,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.16.3
+      '@types/node': 18.16.4
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -4388,7 +4400,7 @@ packages:
       terser: 5.17.1
     dev: true
 
-  /rollup-plugin-visualizer@5.9.0(rollup@3.21.4):
+  /rollup-plugin-visualizer@5.9.0(rollup@3.21.5):
     resolution: {integrity: sha512-bbDOv47+Bw4C/cgs0czZqfm8L82xOZssk4ayZjG40y9zbXclNk7YikrZTDao6p7+HDiGxrN0b65SgZiVm9k1Cg==}
     engines: {node: '>=14'}
     hasBin: true
@@ -4400,17 +4412,17 @@ packages:
     dependencies:
       open: 8.4.2
       picomatch: 2.3.1
-      rollup: 3.21.4
+      rollup: 3.21.5
       source-map: 0.7.4
       yargs: 17.7.2
 
-  /rollup-route-manifest@1.0.0(rollup@3.21.4):
+  /rollup-route-manifest@1.0.0(rollup@3.21.5):
     resolution: {integrity: sha512-3CmcMmCLAzJDUXiO3z6386/Pt8/k9xTZv8gIHyXI8hYGoAInnYdOsFXiGGzQRMy6TXR1jUZme2qbdwjH2nFMjg==}
     engines: {node: '>=8'}
     peerDependencies:
       rollup: '>=2.0.0'
     dependencies:
-      rollup: 3.21.4
+      rollup: 3.21.5
       route-sort: 1.0.0
 
   /rollup@2.79.1:
@@ -4421,8 +4433,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /rollup@3.21.4:
-    resolution: {integrity: sha512-N5LxpvDolOm9ueiCp4NfB80omMDqb45ShtsQw2+OT3f11uJ197dv703NZvznYHP6RWR85wfxanXurXKG3ux2GQ==}
+  /rollup@3.21.5:
+    resolution: {integrity: sha512-a4NTKS4u9PusbUJcfF4IMxuqjFzjm6ifj76P54a7cKnvVzJaG12BLVR+hgU2YDGHzyMMQNxLAZWuALsn8q2oQg==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -4548,28 +4560,28 @@ packages:
       '@babel/types': 7.21.5
       solid-js: 1.7.4
 
-  /solid-start-node@0.2.26(solid-start@0.2.26)(undici@5.22.0)(vite@4.3.4):
+  /solid-start-node@0.2.26(solid-start@0.2.26)(undici@5.22.0)(vite@4.3.5):
     resolution: {integrity: sha512-8vciTGoQV+lIlCUSVHJPazlaoKDRfBowDkPeBr/EZdmtbcMOKoJYf/APPQWFspylF+nhzunMf0+zJP90VtMEYg==}
     peerDependencies:
       solid-start: '*'
       undici: ^5.8.0
       vite: '*'
     dependencies:
-      '@rollup/plugin-commonjs': 24.1.0(rollup@3.21.4)
-      '@rollup/plugin-json': 6.0.0(rollup@3.21.4)
-      '@rollup/plugin-node-resolve': 15.0.2(rollup@3.21.4)
+      '@rollup/plugin-commonjs': 24.1.0(rollup@3.21.5)
+      '@rollup/plugin-json': 6.0.0(rollup@3.21.5)
+      '@rollup/plugin-node-resolve': 15.0.2(rollup@3.21.5)
       compression: 1.7.4
       polka: 1.0.0-next.22
-      rollup: 3.21.4
+      rollup: 3.21.5
       sirv: 2.0.3
-      solid-start: 0.2.26(@solidjs/meta@0.28.4)(@solidjs/router@0.8.2)(solid-js@1.7.4)(solid-start-node@0.2.26)(vite@4.3.4)
+      solid-start: 0.2.26(@solidjs/meta@0.28.4)(@solidjs/router@0.8.2)(solid-js@1.7.4)(solid-start-node@0.2.26)(vite@4.3.5)
       terser: 5.17.1
       undici: 5.22.0
-      vite: 4.3.4(@types/node@18.16.3)
+      vite: 4.3.5(@types/node@18.16.4)
     transitivePeerDependencies:
       - supports-color
 
-  /solid-start@0.2.26(@solidjs/meta@0.28.4)(@solidjs/router@0.8.2)(solid-js@1.7.4)(solid-start-node@0.2.26)(vite@4.3.4):
+  /solid-start@0.2.26(@solidjs/meta@0.28.4)(@solidjs/router@0.8.2)(solid-js@1.7.4)(solid-start-node@0.2.26)(vite@4.3.5):
     resolution: {integrity: sha512-kne2HZlnSMzsirdnvNs1CsDqBl0L0uvKKt1t4de1CH7JIngyqoMcER97jTE0Ejr84KknANaKAdvJAzZcL7Ueng==}
     hasBin: true
     peerDependencies:
@@ -4625,19 +4637,19 @@ packages:
       get-port: 6.1.2
       parse-multipart-data: 1.5.0
       picocolors: 1.0.0
-      rollup: 3.21.4
-      rollup-plugin-visualizer: 5.9.0(rollup@3.21.4)
-      rollup-route-manifest: 1.0.0(rollup@3.21.4)
+      rollup: 3.21.5
+      rollup-plugin-visualizer: 5.9.0(rollup@3.21.5)
+      rollup-route-manifest: 1.0.0(rollup@3.21.5)
       sade: 1.8.1
       set-cookie-parser: 2.6.0
       sirv: 2.0.3
       solid-js: 1.7.4
-      solid-start-node: 0.2.26(solid-start@0.2.26)(undici@5.22.0)(vite@4.3.4)
+      solid-start-node: 0.2.26(solid-start@0.2.26)(undici@5.22.0)(vite@4.3.5)
       terser: 5.17.1
       undici: 5.22.0
-      vite: 4.3.4(@types/node@18.16.3)
-      vite-plugin-inspect: 0.7.25(rollup@3.21.4)(vite@4.3.4)
-      vite-plugin-solid: 2.7.0(solid-js@1.7.4)(vite@4.3.4)
+      vite: 4.3.5(@types/node@18.16.4)
+      vite-plugin-inspect: 0.7.25(rollup@3.21.5)(vite@4.3.5)
+      vite-plugin-solid: 2.7.0(solid-js@1.7.4)(vite@4.3.5)
       wait-on: 6.0.1(debug@4.3.4)
     transitivePeerDependencies:
       - supports-color
@@ -5032,43 +5044,43 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  /vite-plugin-inspect@0.7.25(rollup@3.21.4)(vite@4.3.4):
+  /vite-plugin-inspect@0.7.25(rollup@3.21.5)(vite@4.3.5):
     resolution: {integrity: sha512-11j3hG3stRfFkoI+adIDX+KvZueWNgd9lFGdh7lgm0IjGqpP6luCQAMSSnHHV7AZXaTE06X+bUG3M68diz8ZyA==}
     engines: {node: '>=14'}
     peerDependencies:
       vite: ^3.1.0 || ^4.0.0
     dependencies:
       '@antfu/utils': 0.7.2
-      '@rollup/pluginutils': 5.0.2(rollup@3.21.4)
+      '@rollup/pluginutils': 5.0.2(rollup@3.21.5)
       debug: 4.3.4
       fs-extra: 11.1.1
       picocolors: 1.0.0
       sirv: 2.0.3
-      vite: 4.3.4(@types/node@18.16.3)
+      vite: 4.3.5(@types/node@18.16.4)
     transitivePeerDependencies:
       - rollup
       - supports-color
 
-  /vite-plugin-pwa@0.14.7(vite@4.3.4)(workbox-build@6.5.4)(workbox-window@6.5.4):
+  /vite-plugin-pwa@0.14.7(vite@4.3.5)(workbox-build@6.5.4)(workbox-window@6.5.4):
     resolution: {integrity: sha512-dNJaf0fYOWncmjxv9HiSa2xrSjipjff7IkYE5oIUJ2x5HKu3cXgA8LRgzOwTc5MhwyFYRSU0xyN0Phbx3NsQYw==}
     peerDependencies:
       vite: ^3.1.0 || ^4.0.0
       workbox-build: ^6.5.4
       workbox-window: ^6.5.4
     dependencies:
-      '@rollup/plugin-replace': 5.0.2(rollup@3.21.4)
+      '@rollup/plugin-replace': 5.0.2(rollup@3.21.5)
       debug: 4.3.4
       fast-glob: 3.2.12
       pretty-bytes: 6.1.0
-      rollup: 3.21.4
-      vite: 4.3.4(@types/node@18.16.3)
+      rollup: 3.21.5
+      vite: 4.3.5(@types/node@18.16.4)
       workbox-build: 6.5.4
       workbox-window: 6.5.4
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite-plugin-solid@2.7.0(solid-js@1.7.4)(vite@4.3.4):
+  /vite-plugin-solid@2.7.0(solid-js@1.7.4)(vite@4.3.5):
     resolution: {integrity: sha512-avp/Jl5zOp/Itfo67xtDB2O61U7idviaIp4mLsjhCa13PjKNasz+IID0jYTyqUp9SFx6/PmBr6v4KgDppqompg==}
     peerDependencies:
       solid-js: ^1.7.2
@@ -5081,21 +5093,21 @@ packages:
       merge-anything: 5.1.5
       solid-js: 1.7.4
       solid-refresh: 0.5.2(solid-js@1.7.4)
-      vite: 4.3.4(@types/node@18.16.3)
-      vitefu: 0.2.4(vite@4.3.4)
+      vite: 4.3.5(@types/node@18.16.4)
+      vitefu: 0.2.4(vite@4.3.5)
     transitivePeerDependencies:
       - supports-color
 
-  /vite-plugin-wasm@3.2.2(vite@4.3.4):
+  /vite-plugin-wasm@3.2.2(vite@4.3.5):
     resolution: {integrity: sha512-cdbBUNR850AEoMd5nvLmnyeq63CSfoP1ctD/L2vLk/5+wsgAPlAVAzUK5nGKWO/jtehNlrSSHLteN+gFQw7VOA==}
     peerDependencies:
       vite: ^2 || ^3 || ^4
     dependencies:
-      vite: 4.3.4(@types/node@18.16.3)
+      vite: 4.3.5(@types/node@18.16.4)
     dev: true
 
-  /vite@4.3.4(@types/node@18.16.3):
-    resolution: {integrity: sha512-f90aqGBoxSFxWph2b39ae2uHAxm5jFBBdnfueNxZAT1FTpM13ccFQExCaKbR2xFW5atowjleRniQ7onjJ22QEg==}
+  /vite@4.3.5(@types/node@18.16.4):
+    resolution: {integrity: sha512-0gEnL9wiRFxgz40o/i/eTBwm+NEbpUeTWhzKrZDSdKm6nplj+z4lKz8ANDgildxHm47Vg8EUia0aicKbawUVVA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -5119,14 +5131,14 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.16.3
+      '@types/node': 18.16.4
       esbuild: 0.17.18
       postcss: 8.4.23
-      rollup: 3.21.4
+      rollup: 3.21.5
     optionalDependencies:
       fsevents: 2.3.2
 
-  /vitefu@0.2.4(vite@4.3.4):
+  /vitefu@0.2.4(vite@4.3.5):
     resolution: {integrity: sha512-fanAXjSaf9xXtOOeno8wZXIhgia+CZury481LsDaV++lSvcU2R9Ch2bPh3PYFyoHW+w9LqAeYRISVQjUIew14g==}
     peerDependencies:
       vite: ^3.0.0 || ^4.0.0
@@ -5134,7 +5146,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 4.3.4(@types/node@18.16.3)
+      vite: 4.3.5(@types/node@18.16.4)
 
   /wait-on@6.0.1(debug@4.3.4):
     resolution: {integrity: sha512-zht+KASY3usTY5u2LgaNqn/Cd8MukxLGjdcZxT2ns5QzDmTFc4XoWBgC+C/na+sMRZTuVygQoMYwdcVjHnYIVw==}
