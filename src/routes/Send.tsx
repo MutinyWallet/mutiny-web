@@ -12,10 +12,11 @@ import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
-import handshake from "~/assets/hands/handshake.png";
-import thumbsdown from "~/assets/hands/thumbsdown.png";
+import megacheck from "~/assets/icons/megacheck.png"
+import megaex from "~/assets/icons/megaex.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { BackButton } from "~/components/layout/BackButton";
+import { useNavigate } from "solid-start";
 
 type SendSource = "lightning" | "onchain";
 
@@ -29,6 +30,7 @@ type SentDetails = { amount?: bigint, destination?: string, txid?: string, failu
 
 export default function Send() {
     const [state, actions] = useMegaStore();
+    const navigate = useNavigate()
 
     // These can only be set by the user
     const [fieldDestination, setFieldDestination] = createSignal("");
@@ -204,16 +206,16 @@ export default function Send() {
                         confirmText={sentDetails()?.amount ? "Nice" : "Too Bad"}
                         open={!!sentDetails()}
                         setOpen={(open: boolean) => { if (!open) setSentDetails(undefined) }}
-                        onConfirm={() => setSentDetails(undefined)}
+                        onConfirm={() => { setSentDetails(undefined); navigate("/"); }}
                     >
                         <div class="flex flex-col items-center gap-8 h-full">
                             <Switch>
                                 <Match when={sentDetails()?.failure_reason}>
-                                    <img src={thumbsdown} alt="thumbs down" class="w-1/2 mx-auto max-w-[50vh]" />
+                                    <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[50vh]" />
                                     <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">{sentDetails()?.failure_reason}</p>
                                 </Match>
                                 <Match when={true}>
-                                    <img src={handshake} alt="handshake" class="w-1/2 mx-auto max-w-[50vh]" />
+                                    <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh]" />
                                     <Amount amountSats={sentDetails()?.amount} showFiat />
                                     <Show when={sentDetails()?.txid}>
                                         <a href={mempoolTxUrl(sentDetails()?.txid, state.node_manager?.get_network())} target="_blank" rel="noreferrer">

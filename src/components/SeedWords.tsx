@@ -1,27 +1,36 @@
-import { Match, Switch, createSignal } from "solid-js"
+import { For, Match, Switch, createMemo, createSignal } from "solid-js"
 
-export function SeedWords(props: { words: string }) {
+export function SeedWords(props: { words: string, setHasSeen?: (hasSeen: boolean) => void }) {
     const [shouldShow, setShouldShow] = createSignal(false)
 
     function toggleShow() {
         setShouldShow(!shouldShow())
+        if (shouldShow()) {
+            props.setHasSeen?.(true)
+        }
     }
 
-    return (<pre class="flex items-center gap-4 bg-m-red p-4 rounded-xl overflow-hidden">
+    const splitWords = createMemo(() => props.words.split(" "))
+
+    return (<button class="flex items-center gap-4 bg-m-red p-4 rounded-xl overflow-hidden" onClick={toggleShow}>
         <Switch>
             <Match when={!shouldShow()}>
-                <div onClick={toggleShow} class="cursor-pointer">
+                <div class="cursor-pointer">
                     <code class="text-red">TAP TO REVEAL SEED WORDS</code>
                 </div>
             </Match>
 
             <Match when={shouldShow()}>
-                <div onClick={toggleShow} class="cursor-pointer overflow-hidden">
-                    <p class="font-mono w-full whitespace-pre-wrap">
-                        {props.words}
-                    </p>
-                </div>
+                <ol class="cursor-pointer overflow-hidden grid grid-cols-2 w-full list-decimal list-inside">
+                    <For each={splitWords()}>
+                        {(word) => (
+                            <li class="font-mono text-left">
+                                {word}
+                            </li>
+                        )}
+                    </For>
+                </ol>
             </Match>
         </Switch>
-    </pre >)
+    </button >)
 }
