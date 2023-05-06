@@ -2,7 +2,7 @@ import { MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-was
 import { createEffect, createResource, createSignal, For, Match, onCleanup, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 import { AmountEditable } from "~/components/AmountEditable";
-import { Button, Card, LargeHeader, MutinyManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, Card, LargeHeader, MutinyWalletGuard, SafeArea, SmallHeader } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
@@ -138,7 +138,7 @@ export default function Receive() {
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
         try {
-            const raw = await state.mutiny_manager?.create_bip21(bigAmount);
+            const raw = await state.mutiny_wallet?.create_bip21(bigAmount);
             // Save the raw info so we can watch the address and invoice
             setBip21Raw(raw);
 
@@ -171,7 +171,7 @@ export default function Receive() {
             const lightning = bip21.invoice
             const address = bip21.address
 
-            const invoice = await state.mutiny_manager?.get_invoice(lightning)
+            const invoice = await state.mutiny_wallet?.get_invoice(lightning)
 
             if (invoice && invoice.paid) {
                 setReceiveState("paid")
@@ -179,7 +179,7 @@ export default function Receive() {
                 return "lightning_paid"
             }
 
-            const tx = await state.mutiny_manager?.check_address(address) as OnChainTx | undefined;
+            const tx = await state.mutiny_wallet?.check_address(address) as OnChainTx | undefined;
 
             if (tx) {
                 setReceiveState("paid")
@@ -201,7 +201,7 @@ export default function Receive() {
     });
 
     return (
-        <MutinyManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <main class="max-w-[600px] flex flex-col gap-4 mx-auto p-4">
                     <BackLink />
@@ -285,6 +285,6 @@ export default function Receive() {
                 </main>
                 <NavBar activeTab="receive" />
             </SafeArea >
-        </MutinyManagerGuard>
+        </MutinyWalletGuard>
     )
 }

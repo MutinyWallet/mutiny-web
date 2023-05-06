@@ -1,6 +1,6 @@
 import { Component, createEffect, createMemo, createResource, createSignal, For, Match, onCleanup, onMount, ParentComponent, Show, Suspense, Switch } from "solid-js";
 import { CENTER_COLUMN, MISSING_LABEL, REDSHIFT_LABEL, RIGHT_COLUMN, THREE_COLUMNS, UtxoItem } from "~/components/Activity";
-import { Card, DefaultMain, LargeHeader, LoadingSpinner, NiceP, MutinyManagerGuard, SafeArea, SmallAmount, SmallHeader, VStack } from "~/components/layout";
+import { Card, DefaultMain, LargeHeader, LoadingSpinner, NiceP, MutinyWalletGuard, SafeArea, SmallAmount, SmallHeader, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import NavBar from "~/components/NavBar";
@@ -19,12 +19,12 @@ type ShiftOption = "utxo" | "lightning"
 type ShiftStage = "choose" | "observe" | "success" | "failure"
 
 type OutPoint = string; // Replace with the actual TypeScript type for OutPoint
-type RedshiftStatus = any; // Replace with the actual TypeScript type for RedshiftStatus
+type RedshiftStatus = string; // Replace with the actual TypeScript type for RedshiftStatus
 type RedshiftRecipient = any; // Replace with the actual TypeScript type for RedshiftRecipient
 type PublicKey = any; // Replace with the actual TypeScript type for PublicKey
 
 interface RedshiftResult {
-    id: bigint;
+    id: string;
     input_utxo: OutPoint;
     status: RedshiftStatus;
     recipient: RedshiftRecipient;
@@ -38,9 +38,9 @@ interface RedshiftResult {
 }
 
 const dummyRedshift: RedshiftResult = {
-    id: BigInt(1),
+    id: "44036599c37d590899e8d5d920860286",
     input_utxo: "44036599c37d590899e8d5d92086028695d2c2966fdc354ce1da9a9eac610a53:1",
-    status: {}, // Replace with a dummy value for RedshiftStatus
+    status: "Completed", // Replace with a dummy value for RedshiftStatus
     recipient: {}, // Replace with a dummy value for RedshiftRecipient
     output_utxo: "44036599c37d590899e8d5d92086028695d2c2966fdc354ce1da9a9eac610a53:1",
     introduction_channel: "a7773e57f8595848a635e9af105927cac9ecaf292d71a76456ae0455bd3c9c64:0",
@@ -56,7 +56,7 @@ function RedshiftReport(props: { redshift: RedshiftResult, utxo: UtxoItem }) {
 
     const getUtXos = async () => {
         console.log("Getting utxos");
-        return await state.mutiny_manager?.list_utxos() as UtxoItem[];
+        return await state.mutiny_wallet?.list_utxos() as UtxoItem[];
     }
 
     function findUtxoByOutpoint(outpoint?: string, utxos: UtxoItem[] = []): UtxoItem | undefined {
@@ -75,15 +75,15 @@ function RedshiftReport(props: { redshift: RedshiftResult, utxo: UtxoItem }) {
     })
 
 
-    async function checkRedshift(outpoint: string) {
+    async function checkRedshift(id: string) {
         // const rs = redshiftItems[0] as RedshiftResult;
-        console.log("Checking redshift", outpoint)
-        const redshift = await state.mutiny_manager?.get_redshift(outpoint);
+        console.log("Checking redshift", id)
+        const redshift = await state.mutiny_wallet?.get_redshift(id);
         console.log(redshift)
-        return redshift[0]
+        return redshift;
     }
 
-    const [redshiftResource, { refetch }] = createResource(props.utxo.outpoint, checkRedshift);
+    const [redshiftResource, { refetch }] = createResource(props.redshift.id, checkRedshift);
     onMount(() => {
         const interval = setInterval(() => {
             if (redshiftResource()) refetch();
@@ -196,7 +196,7 @@ export function Utxo(props: { item: UtxoItem, onClick?: () => void }) {
 
 const FAKE_STATES = ["Creating a new node", "Opening a channel", "Sending funds through", "Closing the channel", "Redshift complete"]
 
-function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void, utxo: UtxoItem }) {
+function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void, redshiftId: String }) {
     const [state, _actions] = useMegaStore();
 
     const [fakeStage, setFakeStage] = createSignal(2);
@@ -216,15 +216,14 @@ function ShiftObserver(props: { setShiftStage: (stage: ShiftStage) => void, utxo
         }, 1000)
     })
 
-    async function checkRedshift(outpoint: string) {
-        // const rs = redshiftItems[0] as RedshiftResult;
-        console.log("Checking redshift", outpoint)
-        const redshift = await state.mutiny_manager?.get_redshift(outpoint);
+    async function checkRedshift(id: string) {
+        console.log("Checking redshift", id)
+        const redshift = await state.mutiny_wallet?.get_redshift(id);
         console.log(redshift)
         return redshift
     }
 
-    const [redshiftResource, { refetch }] = createResource(props.utxo.outpoint, checkRedshift);
+    const [redshiftResource, { refetch }] = createResource(props.redshiftId, checkRedshift);
 
     // onMount(() => {
     //     const interval = setInterval(() => {
@@ -282,13 +281,13 @@ export default function Redshift() {
 
     const getUtXos = async () => {
         console.log("Getting utxos");
-        return await state.mutiny_manager?.list_utxos() as UtxoItem[];
+        return await state.mutiny_wallet?.list_utxos() as UtxoItem[];
     }
 
     const getChannels = async () => {
         console.log("Getting channels");
-        await state.mutiny_manager?.sync()
-        const channels = await state.mutiny_manager?.list_channels() as Promise<MutinyChannel[]>;
+        await state.mutiny_wallet?.sync()
+        const channels = await state.mutiny_wallet?.list_channels() as Promise<MutinyChannel[]>;
         console.log(channels)
         return channels
 
@@ -315,7 +314,7 @@ export default function Redshift() {
 
     async function redshiftUtxo(utxo: UtxoItem) {
         console.log("Redshifting utxo", utxo.outpoint)
-        const redshift = await state.mutiny_manager?.init_redshift(utxo.outpoint);
+        const redshift = await state.mutiny_wallet?.init_redshift(utxo.outpoint);
         console.log("Redshift initialized:")
         console.log(redshift)
         return redshift
@@ -331,7 +330,7 @@ export default function Redshift() {
     })
 
     return (
-        <MutinyManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
@@ -405,6 +404,6 @@ export default function Redshift() {
                 </DefaultMain>
                 <NavBar activeTab="redshift" />
             </SafeArea>
-        </MutinyManagerGuard>
+        </MutinyWalletGuard>
     )
 }

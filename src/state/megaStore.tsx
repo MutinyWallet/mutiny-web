@@ -2,8 +2,8 @@
 
 import { ParentComponent, createContext, createEffect, onCleanup, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
-import { MutinyManagerSettingStrings, setupMutinyManager } from "~/logic/mutinyManagerSetup";
-import { MutinyBalance, MutinyManager } from "@mutinywallet/mutiny-wasm";
+import { MutinyWalletSettingStrings, setupMutinyWallet } from "~/logic/mutinyWalletSetup";
+import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ParsedParams } from "~/routes/Scanner";
 
 const MegaStoreContext = createContext<MegaStore>();
@@ -12,7 +12,7 @@ type UserStatus = undefined | "new_here" | "waitlisted" | "approved" | "paid"
 
 export type MegaStore = [{
     waitlist_id?: string;
-    mutiny_manager?: MutinyManager;
+    mutiny_wallet?: MutinyWallet;
     user_status: UserStatus;
     scan_result?: ParsedParams;
     balance?: MutinyBalance;
@@ -20,7 +20,7 @@ export type MegaStore = [{
     price: number
 }, {
     fetchUserStatus(): Promise<UserStatus>;
-    setupMutinyManager(settings?: MutinyManagerSettingStrings): Promise<void>;
+    setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
     setScanResult(scan_result: ParsedParams | undefined): void;
     sync(): Promise<void>;
@@ -29,7 +29,7 @@ export type MegaStore = [{
 export const Provider: ParentComponent = (props) => {
     const [state, setState] = createStore({
         waitlist_id: localStorage.getItem("waitlist_id"),
-        mutiny_manager: undefined as MutinyManager | undefined,
+        mutiny_wallet: undefined as MutinyWallet | undefined,
         user_status: undefined as UserStatus,
         scan_result: undefined as ParsedParams | undefined,
         // TODO: wire this up to real price once we have caching
@@ -55,10 +55,10 @@ export const Provider: ParentComponent = (props) => {
                 return "new_here"
             }
         },
-        async setupMutinyManager(settings?: MutinyManagerSettingStrings): Promise<void> {
+        async setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void> {
             try {
-                const mutinyManager = await setupMutinyManager(settings)
-                setState({ mutiny_manager: mutinyManager })
+                const mutinyWallet = await setupMutinyWallet(settings)
+                setState({ mutiny_wallet: mutinyWallet })
             } catch (e) {
                 console.error(e)
             }
@@ -69,7 +69,7 @@ export const Provider: ParentComponent = (props) => {
         async sync(): Promise<void> {
             console.time("BDK Sync Time")
             try {
-                await state.mutiny_manager?.sync()
+                await state.mutiny_wallet?.sync()
             } catch (e) {
                 console.error(e);
             }
@@ -89,9 +89,9 @@ export const Provider: ParentComponent = (props) => {
 
     // Only load node manager when status is approved
     createEffect(() => {
-        if (state.user_status === "approved" && !state.mutiny_manager) {
+        if (state.user_status === "approved" && !state.mutiny_wallet) {
             console.log("running setup node manager...")
-            actions.setupMutinyManager().then(() => console.log("node manager setup done"))
+            actions.setupMutinyWallet().then(() => console.log("node manager setup done"))
         }
     })
 
@@ -102,7 +102,7 @@ export const Provider: ParentComponent = (props) => {
 
     createEffect(() => {
         const interval = setInterval(() => {
-            if (state.mutiny_manager) actions.sync();
+            if (state.mutiny_wallet) actions.sync();
         }, 60 * 1000); // Poll every minute
 
         onCleanup(() => {

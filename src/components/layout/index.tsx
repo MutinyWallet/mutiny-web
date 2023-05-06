@@ -71,11 +71,11 @@ export const FullscreenLoader = () => {
     );
 }
 
-export const MutinyManagerGuard: ParentComponent = (props) => {
+export const MutinyWalletGuard: ParentComponent = (props) => {
     const [state, _] = useMegaStore();
     return (
         <Suspense fallback={<FullscreenLoader />}>
-            <Show when={state.mutiny_manager}>
+            <Show when={state.mutiny_wallet}>
                 {props.children}
             </Show>
         </Suspense>

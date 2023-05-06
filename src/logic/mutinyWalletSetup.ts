@@ -1,17 +1,17 @@
 
-import initMutinyManager, { MutinyManager } from '@mutinywallet/mutiny-wasm';
+import initMutinyWallet, { MutinyWallet } from '@mutinywallet/mutiny-wasm';
 import initWaila from '@mutinywallet/waila-wasm'
 
-// export type MutinyManagerSettingStrings = {
+// export type MutinyWalletSettingStrings = {
 //     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 // }
 
 type Network = "bitcoin" | "testnet" | "regtest" | "signet";
-export type MutinyManagerSettingStrings = {
+export type MutinyWalletSettingStrings = {
     network?: Network, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 }
 
-export function getExistingSettings(): MutinyManagerSettingStrings {
+export function getExistingSettings(): MutinyWalletSettingStrings {
     const network = localStorage.getItem('MUTINY_SETTINGS_network') || import.meta.env.VITE_NETWORK;
     const proxy = localStorage.getItem('MUTINY_SETTINGS_proxy') || import.meta.env.VITE_PROXY;
     const esplora = localStorage.getItem('MUTINY_SETTINGS_esplora') || import.meta.env.VITE_ESPLORA;
@@ -21,7 +21,7 @@ export function getExistingSettings(): MutinyManagerSettingStrings {
     return { network, proxy, esplora, rgs, lsp }
 }
 
-export async function setAndGetMutinySettings(settings?: MutinyManagerSettingStrings): Promise<MutinyManagerSettingStrings> {
+export async function setAndGetMutinySettings(settings?: MutinyWalletSettingStrings): Promise<MutinyWalletSettingStrings> {
     let { network, proxy, esplora, rgs, lsp } = settings || {};
 
     const existingSettings = getExistingSettings();
@@ -70,8 +70,8 @@ export async function checkForWasm() {
     }
 }
 
-export async function setupMutinyManager(settings?: MutinyManagerSettingStrings): Promise<MutinyManager> {
-    await initMutinyManager();
+export async function setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<MutinyWallet> {
+    await initMutinyWallet();
     // Might as well init waila while we're at it
     await initWaila();
 
@@ -85,14 +85,14 @@ export async function setupMutinyManager(settings?: MutinyManagerSettingStrings)
     console.log("Using rgs address", rgs);
     console.log("Using lsp address", lsp);
 
-    const mutinyManager = await new MutinyManager("", undefined, proxy, network, esplora, rgs, lsp)
+    const mutinyWallet = await new MutinyWallet("", undefined, proxy, network, esplora, rgs, lsp)
 
-    const nodes = await mutinyManager.list_nodes();
+    const nodes = await mutinyWallet.list_nodes();
 
     // If we don't have any nodes yet, create one
     if (!nodes.length) {
-        await mutinyManager?.new_node()
+        await mutinyWallet?.new_node()
     }
 
-    return mutinyManager
+    return mutinyWallet
 }
