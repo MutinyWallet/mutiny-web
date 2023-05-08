@@ -91,9 +91,6 @@ export default function Receive() {
 
     // Tagging stuff
     const [selectedValues, setSelectedValues] = createSignal<TagItem[]>([]);
-
-    // const [tagItems] = createResource(listTags);
-
     const [values, setValues] = createSignal<TagItem[]>([{ id: createUniqueId(), name: "Unknown", kind: "text" }]);
 
     onMount(() => {
@@ -224,7 +221,7 @@ export default function Receive() {
                                     <AmountEditable initialAmountSats={amount() || "0"} setAmountSats={setAmount} />
                                 </dd>
                                 <dd>
-                                    <TagEditor title="Tag the origin" values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} />
+                                    <TagEditor title="Tag the origin" values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it coming from?" />
                                 </dd>
                             </dl>
                             <Button class="w-full" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Invoice</Button>

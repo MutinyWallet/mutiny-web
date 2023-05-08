@@ -15,7 +15,7 @@ const createValue = (name: string): TextItem => {
     return { id: createUniqueId(), name, kind: "text" };
 };
 
-export function TagEditor(props: { title: string, values: TagItem[], setValues: (values: TagItem[]) => void, selectedValues: TagItem[], setSelectedValues: (values: TagItem[]) => void }) {
+export function TagEditor(props: { title: string, values: TagItem[], setValues: (values: TagItem[]) => void, selectedValues: TagItem[], setSelectedValues: (values: TagItem[]) => void, placeholder: string }) {
     console.log(props.values);
     const onChange = (selected: TagItem[]) => {
         props.setSelectedValues(selected);
@@ -47,7 +47,7 @@ export function TagEditor(props: { title: string, values: TagItem[], setValues: 
                 multiple
                 initialValue={props.selectedValues}
                 onChange={onChange}
-                placeholder="Where's it coming from?"
+                placeholder={props.placeholder}
                 {...selectProps}
             />
             <div class="flex gap-2 flex-wrap">
