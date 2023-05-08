@@ -9,12 +9,12 @@
   },
   "type": "module",
   "devDependencies": {
-    "@types/node": "^18.16.4",
+    "@types/node": "^18.16.5",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "autoprefixer": "^10.4.14",
     "esbuild": "^0.14.54",
-    "eslint": "^8.39.0",
+    "eslint": "^8.40.0",
     "eslint-import-resolver-typescript": "2.7.1",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-prettier": "4.2.1",
@@ -31,7 +31,7 @@
   "dependencies": {
     "@kobalte/core": "^0.8.2",
     "@kobalte/tailwindcss": "^0.5.0",
-    "@modular-forms/solid": "^0.13.1",
+    "@modular-forms/solid": "^0.13.2",
     "@mutinywallet/mutiny-wasm": "^0.2.8",
     "@mutinywallet/waila-wasm": "^0.1.5",
     "@solid-primitives/upload": "^0.0.111",
@@ -41,7 +41,7 @@
     "class-variance-authority": "^0.4.0",
     "nostr-tools": "^1.10.1",
     "qr-scanner": "^1.4.2",
-    "solid-js": "^1.7.4",
+    "solid-js": "^1.7.5",
     "solid-qr-code": "^0.0.8",
     "solid-start": "^0.2.26",
     "undici": "^5.22.0"
