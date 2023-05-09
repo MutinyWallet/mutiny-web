@@ -1,5 +1,6 @@
 import { ButtonLink, DefaultMain, LargeHeader, MutinyWalletGuard, SafeArea, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
+import { Logs } from "~/components/Logs";
 import NavBar from "~/components/NavBar";
 import { SeedWords } from "~/components/SeedWords";
 import { SettingsStringsEditor } from "~/components/SettingsStringsEditor";
@@ -20,6 +21,7 @@ export default function Settings() {
                             <SeedWords words={store.mutiny_wallet?.show_seed() || ""} />
                         </VStack>
                         <SettingsStringsEditor />
+                        <Logs />
                         <ButtonLink href="/admin">"I know what I'm doing"</ButtonLink>
                     </VStack>
                 </DefaultMain>
