@@ -1,6 +1,7 @@
 {
   "name": "mws",
   "version": "0.2.0",
+  "license": "MIT",
   "scripts": {
     "dev": "solid-start dev",
     "build": "solid-start build",
