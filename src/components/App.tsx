@@ -21,11 +21,12 @@ export default function App() {
                     <ReloadPrompt />
                     <BalanceBox />
                     <Card title="Activity">
+                        <div class="p-1" />
                         <VStack>
                             <CombinedActivity limit={3} />
                             {/* <ButtonLink href="/activity">View All</ButtonLink> */}
-                            <A href="/activity" class="text-m-red active:text-m-red/80 text-xl font-semibold no-underline self-center">View All</A>
                         </VStack>
+                        <A href="/activity" class="text-m-red active:text-m-red/80 text-xl font-semibold no-underline self-center">View All</A>
                     </Card>
                 </DefaultMain>
                 <NavBar activeTab="home" />

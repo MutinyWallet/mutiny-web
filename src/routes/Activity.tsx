@@ -58,7 +58,10 @@ export default function Activity() {
                         <Tabs.Content value="mutiny">
                             {/* <MutinyActivity /> */}
                             <Card title="Activity">
-                                <CombinedActivity />
+                                <div class="p-1" />
+                                <VStack>
+                                    <CombinedActivity />
+                                </VStack>
                             </Card>
                         </Tabs.Content>
                         <Tabs.Content value="nostr">

@@ -10,6 +10,7 @@ import mempoolTxUrl from '~/utils/mempoolTxUrl';
 import wave from "~/assets/wave.gif"
 import utxoIcon from '~/assets/icons/coin.svg';
 import { getRedshifted } from '~/utils/fakeLabels';
+import { ActivityItem } from './ActivityItem';
 
 export const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
 export const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
@@ -57,7 +58,15 @@ function OnChainItem(props: { item: OnChainTx }) {
                     Mempool Link
                 </a>
             </JsonModal>
-            <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
+            <ActivityItem
+                kind={"onchain"}
+                labels={[]}
+                amount={isReceive() ? props.item.received : props.item.sent}
+                date={props.item.confirmation_time?.Confirmed?.time}
+                positive={isReceive()}
+                onClick={() => setOpen(!open())}
+            />
+            {/* <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 <div class="flex items-center">
                     {isReceive() ? <img src={receive} alt="receive arrow" /> : <img src={send} alt="send arrow" />}
                 </div>
@@ -71,7 +80,7 @@ function OnChainItem(props: { item: OnChainTx }) {
                     </SmallHeader>
                     <SubtleText>{props.item.confirmation_time?.Confirmed ? prettyPrintTime(props.item.confirmation_time?.Confirmed?.time) : "Unconfirmed"}</SubtleText>
                 </div>
-            </div>
+            </div> */}
         </>
     )
 }
@@ -84,7 +93,8 @@ function InvoiceItem(props: { item: MutinyInvoice }) {
     return (
         <>
             <JsonModal open={open()} data={props.item} title="Lightning Transaction" setOpen={setOpen} />
-            <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
+            <ActivityItem kind={"lightning"} labels={[]} amount={props.item.amount_sats || 0n} date={props.item.last_updated} positive={!isSend()} onClick={() => setOpen(!open())} />
+            {/* <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 <div class="flex items-center">
                     {isSend() ? <img src={send} alt="send arrow" /> : <img src={receive} alt="receive arrow" />}
                 </div>
@@ -98,7 +108,7 @@ function InvoiceItem(props: { item: MutinyInvoice }) {
                     </SmallHeader>
                     <SubtleText>{prettyPrintTime(Number(props.item.expire))}</SubtleText>
                 </div>
-            </div >
+            </div > */}
         </>
     )
 }
@@ -243,7 +253,9 @@ export function CombinedActivity(props: { limit?: number }) {
         })
 
         invoices.forEach((invoice) => {
-            activity.push({ type: "lightning", item: invoice, time: Number(invoice.expire) })
+            if (invoice.paid) {
+                activity.push({ type: "lightning", item: invoice, time: Number(invoice.expire) })
+            }
         })
 
         if (props.limit) {
