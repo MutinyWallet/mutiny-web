@@ -123,7 +123,7 @@ export const NiceP: ParentComponent = (props) => {
 
 export const TinyButton: ParentComponent<{ onClick: () => void }> = (props) => {
     return (
-        <button class="py-1 px-2 rounded-lg bg-white/10" onClick={props.onClick}>
+        <button class="py-1 px-2 rounded-lg bg-white/10" onClick={() => props.onClick()}>
             {props.children}
         </button>
     )

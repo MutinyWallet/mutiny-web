@@ -236,7 +236,7 @@ export function CombinedActivity(props: { limit?: number }) {
         const txs = await state.mutiny_wallet?.list_onchain() as OnChainTx[];
         const invoices = await state.mutiny_wallet?.list_invoices() as MutinyInvoice[];
 
-        let activity: ActivityItem[] = [];
+        const activity: ActivityItem[] = [];
 
         txs.forEach((tx) => {
             activity.push({ type: "onchain", item: tx, time: tx.confirmation_time?.Confirmed?.time || Date.now() })

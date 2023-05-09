@@ -4,6 +4,10 @@ import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
 import { AmountEditable } from "./AmountEditable";
 
+const noop = () => {
+    // do nothing
+}
+
 const KeyValue: ParentComponent<{ key: string, gray?: boolean }> = (props) => {
     return (
         <div class="flex justify-between items-center" classList={{ "text-neutral-400": props.gray }}>
@@ -54,7 +58,7 @@ export function AmountCard(props: { amountSats: string, fee?: string, initialOpe
                             <KeyValue key="Amount">
                                 <Show when={props.isAmountEditable} fallback={<InlineAmount amount={props.amountSats} />
                                 }>
-                                    <AmountEditable initialOpen={props.initialOpen ?? false} initialAmountSats={props.amountSats.toString()} setAmountSats={props.setAmountSats ? props.setAmountSats : () => { }} />
+                                    <AmountEditable initialOpen={props.initialOpen ?? false} initialAmountSats={props.amountSats.toString()} setAmountSats={props.setAmountSats ? props.setAmountSats : noop} />
                                 </Show>
                             </KeyValue>
                             <KeyValue gray key="+ Fee">
@@ -74,7 +78,7 @@ export function AmountCard(props: { amountSats: string, fee?: string, initialOpe
                             <KeyValue key="Amount">
                                 <Show when={props.isAmountEditable} fallback={<InlineAmount amount={props.amountSats} />
                                 }>
-                                    <AmountEditable initialOpen={props.initialOpen ?? false} initialAmountSats={props.amountSats.toString()} setAmountSats={props.setAmountSats ? props.setAmountSats : () => { }} />
+                                    <AmountEditable initialOpen={props.initialOpen ?? false} initialAmountSats={props.amountSats.toString()} setAmountSats={props.setAmountSats ? props.setAmountSats : noop} />
                                 </Show>
                             </KeyValue>
                             <USDShower amountSats={props.amountSats} />

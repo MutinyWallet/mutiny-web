@@ -1,6 +1,7 @@
 import { Show, createSignal, onMount } from "solid-js";
 import { Button, ButtonLink, SmallHeader, VStack } from "./layout";
 import { useMegaStore } from "~/state/megaStore";
+import { showToast } from "./Toaster";
 
 export function OnboardWarning() {
     const [state, actions] = useMegaStore();
@@ -25,7 +26,7 @@ export function OnboardWarning() {
                             Do you want to restore an existing Mutiny Wallet?
                         </p>
                         <div class="w-full flex gap-2">
-                            <Button intent="green" onClick={() => { }}>Restore</Button>
+                            <Button intent="green" onClick={() => { showToast({ title: "Unimplemented", description: "We don't do that yet" }) }}>Restore</Button>
                             <Button onClick={actions.dismissRestorePrompt}>Nope</Button>
                         </div>
                     </VStack>
