@@ -5,7 +5,7 @@ import { useCopy } from "~/utils/useCopy";
 
 const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
 const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
-const DIALOG_CONTENT = "max-w-[600px] max-h-full p-4 bg-gray/50 backdrop-blur-md shadow-xl rounded-xl border border-white/10"
+const DIALOG_CONTENT = "max-w-[600px] max-h-full mx-4 p-4 bg-neutral-900/50 backdrop-blur-md shadow-xl rounded-xl border border-white/10"
 
 export function JsonModal(props: { title: string, open: boolean, data?: unknown, setOpen: (open: boolean) => void, children?: JSX.Element }) {
     const json = createMemo(() => JSON.stringify(props.data, null, 2));

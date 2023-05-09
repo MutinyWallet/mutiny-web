@@ -14,9 +14,7 @@ async function generateGradientFromHashedString(str: string) {
 }
 
 export async function gradientsPerContact(contacts: ContactItem[]) {
-    // 
-    // let gradients: { [key: string]: string } = {};
-    let gradients = new Map();
+    const gradients = new Map();
     for (const contact of contacts) {
         const gradient = await generateGradientFromHashedString(contact.name);
         gradients.set(contact.id, gradient);

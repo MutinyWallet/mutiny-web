@@ -1,12 +1,11 @@
-import { Match, Show, Switch, createEffect, createMemo, createResource, createSignal, onCleanup, onMount } from "solid-js";
+import { Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
-import { Button, ButtonLink, DefaultMain, HStack, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
+import { Button, ButtonLink, Card, DefaultMain, HStack, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
 import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { AmountEditable } from "~/components/AmountEditable";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
@@ -17,16 +16,103 @@ import megaex from "~/assets/icons/megaex.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { useNavigate } from "solid-start";
 import { BackLink } from "~/components/layout/BackLink";
+import { TagEditor } from "~/components/TagEditor";
+import { TagItem, createUniqueId, listTags } from "~/state/contacts";
+import { StringShower } from "~/components/ShareCard";
+import { AmountCard } from "~/components/AmountCard";
 
 type SendSource = "lightning" | "onchain";
-
-const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fast and cool" }, { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }]
 
 // const TEST_DEST = "bitcoin:tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe?amount=0.00001&label=heyo&lightning=lntbs10u1pjrwrdedq8dpjhjmcnp4qd60w268ve0jencwzhz048ruprkxefhj0va2uspgj4q42azdg89uupp5gngy2pqte5q5uvnwcxwl2t8fsdlla5s6xl8aar4xcsvxeus2w2pqsp5n5jp3pz3vpu92p3uswttxmw79a5lc566herwh3f2amwz2sp6f9tq9qyysgqcqpcxqrpwugv5m534ww5ukcf6sdw2m75f2ntjfh3gzeqay649256yvtecgnhjyugf74zakaf56sdh66ec9fqep2kvu6xv09gcwkv36rrkm38ylqsgpw3yfjl"
 // const TEST_DEST_ADDRESS = "tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe"
 
 // TODO: better success / fail type
 type SentDetails = { amount?: bigint, destination?: string, txid?: string, failure_reason?: string }
+
+function MethodChooser(props: { source: SendSource, setSource: (source: string) => void }) {
+    const [store, _actions] = useMegaStore();
+
+    const methods = createMemo(() => {
+        return [
+            { value: "lightning", label: "Lightning", caption: store.balance?.lightning ? `${store.balance?.lightning.toLocaleString()} SATS` : "No balance" },
+            { value: "onchain", label: "On-chain", caption: store.balance?.confirmed ? `${store.balance?.confirmed.toLocaleString()} SATS` : "No balance" }
+        ]
+
+    })
+    return (
+        <StyledRadioGroup accent="white" value={props.source} onValueChange={props.setSource} choices={methods()} />
+    )
+}
+
+function DestinationInput(props: {
+    fieldDestination: string,
+    setFieldDestination: (destination: string) => void,
+    handleDecode: () => void,
+    handlePaste: () => void,
+}) {
+    return (
+        <VStack>
+            <SmallHeader>Destination</SmallHeader>
+            <textarea value={props.fieldDestination} onInput={(e) => props.setFieldDestination(e.currentTarget.value)} placeholder="bitcoin:..." class="p-2 rounded-lg bg-white/10 placeholder-neutral-400" />
+            <Button disabled={!props.fieldDestination} intent="blue" onClick={props.handleDecode}>Decode</Button>
+            <HStack>
+                <Button onClick={props.handlePaste}>
+                    <div class="flex flex-col gap-2 items-center">
+                        <Paste />
+                        <span>Paste</span>
+                    </div>
+                </Button>
+                <ButtonLink href="/scanner">
+                    <div class="flex flex-col gap-2 items-center">
+                        <Scan />
+                        <span>Scan QR</span>
+                    </div>
+                </ButtonLink>
+            </HStack>
+        </VStack>
+    )
+}
+
+function DestinationShower(props: {
+    source: SendSource,
+    description?: string,
+    address?: string,
+    invoice?: MutinyInvoice,
+    nodePubkey?: string,
+    clearAll: () => void,
+}) {
+    return (
+        <Switch>
+            <Match when={props.address && props.source === "onchain"}>
+                <StringShower text={props.address || ""} />
+            </Match>
+            <Match when={props.invoice && props.source === "lightning"}>
+                <StringShower text={props.invoice?.bolt11 || ""} />
+            </Match>
+            <Match when={props.nodePubkey && props.source === "lightning"}>
+                <StringShower text={props.nodePubkey || ""} />
+            </Match>
+        </Switch>
+
+    )
+}
+
+function SendTags() {
+    // Tagging stuff
+    const [selectedValues, setSelectedValues] = createSignal<TagItem[]>([]);
+    const [values, setValues] = createSignal<TagItem[]>([{ id: createUniqueId(), name: "Unknown", kind: "text" }]);
+
+    onMount(() => {
+        listTags().then((tags) => {
+            setValues(prev => [...prev, ...tags || []])
+        });
+    })
+
+    return (
+        <TagEditor values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it going to?" />
+    )
+}
+
 
 export default function Send() {
     const [state, actions] = useMegaStore();
@@ -35,7 +121,6 @@ export default function Send() {
     // These can only be set by the user
     const [fieldDestination, setFieldDestination] = createSignal("");
     const [destination, setDestination] = createSignal<ParsedParams>();
-    const [privateLabel, setPrivateLabel] = createSignal("");
 
     // These can be derived from the "destination" signal or set by the user
     const [amountSats, setAmountSats] = createSignal(0n);
@@ -53,7 +138,6 @@ export default function Send() {
 
     function clearAll() {
         setDestination(undefined);
-        setPrivateLabel("");
         setAmountSats(0n);
         setSource("lightning");
         setInvoice(undefined);
@@ -144,7 +228,7 @@ export default function Send() {
         try {
             setSending(true);
             const bolt11 = invoice()?.bolt11;
-            let sentDetails: Partial<SentDetails> = {};
+            const sentDetails: Partial<SentDetails> = {};
             if (source() === "lightning" && invoice() && bolt11) {
                 const nodes = await state.node_manager?.list_nodes();
                 const firstNode = nodes[0] as string || ""
@@ -226,94 +310,28 @@ export default function Send() {
                             </Switch>
                         </div>
                     </FullscreenModal>
-                    <dl>
-                        <dt>
-                            <SmallHeader>Destination</SmallHeader>
-                        </dt>
-                        <dd>
-                            <Switch>
-                                <Match when={address() || invoice() || nodePubkey()}>
-                                    <div class="flex gap-2 items-center">
-                                        <Show when={address() && source() === "onchain"}>
-                                            <code class="truncate text-sm break-all">{"Address: "} {address()}
-                                                <Show when={description()}>
-                                                    <br />
-                                                    {"Description:"} {description()}
-                                                </Show>
-                                            </code>
-                                        </Show>
-                                        <Show when={invoice() && source() === "lightning"}>
-                                            <code class="truncate text-sm break-all">{"Invoice: "} {invoice()?.bolt11}
-                                                <Show when={description()}>
-                                                    <br />
-                                                    {"Description:"} {description()}
-                                                </Show>
-                                            </code>
-                                        </Show>
-                                        <Show when={nodePubkey() && source() === "lightning"}>
-                                            <code class="truncate text-sm break-all">{"Node Pubkey: "} {nodePubkey()}
-
-                                            </code>
-                                        </Show>
-                                        <Button class="flex-0" intent="glowy" layout="xs" onClick={clearAll}>Clear</Button>
-                                    </div>
-                                    <div class="my-8 flex flex-col sm:flex-row sm:justify-center gap-4 w-full items-center justify-center">
-                                        {/* if the amount came with the invoice we can't allow setting it */}
-                                        <Show when={!(invoice()?.amount_sats)} fallback={<Amount amountSats={amountSats() || 0} showFiat />}>
-                                            <AmountEditable initialAmountSats={amountSats().toString() || "0"} setAmountSats={setAmountSats} />
-                                        </Show>
-                                        <div class="bg-white/10 px-4 py-2 rounded-xl">
-                                            <div class="flex gap-2 items-center">
-                                                <h2 class="text-neutral-400 font-semibold uppercase">+ Fee</h2>
-                                                <h3 class="text-xl font-light text-neutral-300">
-                                                    {fakeFee().toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
-                                                </h3>
-                                            </div>
-                                            <div class="flex gap-2 items-center">
-                                                <h2 class="font-semibold uppercase text-white">Total</h2>
-                                                <h3 class="text-xl font-light text-white">
-                                                    {(amountSats().valueOf() + fakeFee().valueOf()).toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
-                                                </h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Match>
-                                <Match when={true}>
+                    <VStack biggap>
+                        <Switch>
+                            <Match when={address() || invoice() || nodePubkey()}>
+                                <Show when={address() && invoice()}>
+                                    <MethodChooser source={source()} setSource={setSource} />
+                                </Show>
+                                <Card>
                                     <VStack>
-                                        <textarea value={fieldDestination()} onInput={(e) => setFieldDestination(e.currentTarget.value)} placeholder="bitcoin:..." class="p-2 rounded-lg bg-white/10 placeholder-neutral-400" />
-                                        <Button disabled={!fieldDestination()} intent="blue" onClick={handleDecode}>Decode</Button>
-                                        <HStack>
-                                            <Button onClick={handlePaste}>
-                                                <div class="flex flex-col gap-2 items-center">
-                                                    <Paste />
-                                                    <span>Paste</span>
-                                                </div>
-                                            </Button>
-                                            <ButtonLink href="/scanner">
-                                                <div class="flex flex-col gap-2 items-center">
-                                                    <Scan />
-                                                    <span>Scan QR</span>
-                                                </div>
-                                            </ButtonLink>
-                                        </HStack>
+                                        <DestinationShower source={source()} description={description()} invoice={invoice()} address={address()} nodePubkey={nodePubkey()} clearAll={clearAll} />
+                                        <SendTags />
                                     </VStack>
-                                </Match>
-                            </Switch>
-                        </dd>
-                        <Show when={address() && invoice()}>
-                            <dt>
-                                <SmallHeader>
-                                    Payment Method
-                                </SmallHeader>
-                            </dt>
-                            <dd>
-                                <StyledRadioGroup value={source()} onValueChange={setSource} choices={PAYMENT_METHODS} />
-                            </dd>
+                                </Card>
+                                <AmountCard amountSats={amountSats().toString()} setAmountSats={setAmountSats} fee={fakeFee().toString()} isAmountEditable={!(invoice()?.amount_sats)} />
+                            </Match>
+                            <Match when={true}>
+                                <DestinationInput fieldDestination={fieldDestination()} setFieldDestination={setFieldDestination} handleDecode={handleDecode} handlePaste={handlePaste} />
+                            </Match>
+                        </Switch>
+                        <Show when={destination()}>
+                            <Button disabled={sendButtonDisabled()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
                         </Show>
-                    </dl>
-                    <Show when={destination()}>
-                        <Button disabled={sendButtonDisabled()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
-                    </Show>
+                    </VStack>
                 </DefaultMain>
                 <NavBar activeTab="send" />
             </SafeArea >

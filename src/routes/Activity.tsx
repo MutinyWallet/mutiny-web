@@ -1,8 +1,8 @@
 import { For, Show, createResource } from "solid-js";
 import NavBar from "~/components/NavBar";
-import { Button, Card, DefaultMain, LargeHeader, NiceP, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
+import { Button, Card, DefaultMain, LargeHeader, NiceP, NodeManagerGuard, SafeArea, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
-import { CombinedActivity, Activity as MutinyActivity } from "~/components/Activity";
+import { CombinedActivity } from "~/components/Activity";
 import { A } from "solid-start";
 import settings from '~/assets/icons/settings.svg';
 import { ContactItem, addContact, editContact, listContacts } from "~/state/contacts";

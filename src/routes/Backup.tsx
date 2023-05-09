@@ -1,10 +1,10 @@
 import { Button, DefaultMain, LargeHeader, NiceP, NodeManagerGuard, SafeArea, VStack } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useNavigate } from 'solid-start';
-import { BackButton } from '~/components/layout/BackButton';
 import { SeedWords } from '~/components/SeedWords';
 import { useMegaStore } from '~/state/megaStore';
 import { Show, createSignal } from 'solid-js';
+import { BackLink } from "~/components/layout/BackLink";
 
 export default function App() {
     const [store, actions] = useMegaStore();
@@ -21,7 +21,7 @@ export default function App() {
         <NodeManagerGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackButton />
+                    <BackLink />
                     <LargeHeader>Backup</LargeHeader>
                     <VStack>
                         <NiceP>Let's get these funds secured.</NiceP>

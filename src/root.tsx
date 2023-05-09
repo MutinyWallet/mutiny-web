@@ -28,7 +28,7 @@ export default function Root() {
           content="width=device-width, initial-scale=1.0 height=device-height viewport-fit=cover user-scalable=no"
         />
         <Link rel="manifest" href="/manifest.webmanifest" />
-        <Meta name="theme-color" content="#000000" />
+        <Meta name="theme-color" content="rgb(23,23,23)" />
         <Meta name="description" content="Lightning wallet for the web" />
         <Link rel="icon" href="/favicon.ico" />
         <Link rel="apple-touch-icon" href="/images/icon.png" sizes="512x512" />

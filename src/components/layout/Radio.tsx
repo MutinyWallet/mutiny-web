@@ -4,13 +4,19 @@ import { For, Show } from "solid-js";
 type Choices = { value: string, label: string, caption: string }[]
 
 // TODO: how could would it be if we could just pass the estimated fees in here?
-export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, red?: boolean }) {
+export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, accent?: "red" | "white" }) {
     return (
         // TODO: rewrite this with CVA, props are bad for tailwind
-        <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)} class={`grid w-full gap-${props.small ? "2" : "4"} grid-cols-${props.choices.length.toString()}`}>
+        <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)}
+            class={"grid w-full gap-4"}
+            classList={{ "grid-cols-2": props.choices.length === 2, "grid-cols-3": props.choices.length === 3, "gap-2": props.small }}
+        >
             <For each={props.choices}>
                 {choice =>
-                    <RadioGroup.Item value={choice.value} class={`ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ${props.red ? "ui-checked:outline-m-red" : "ui-checked:outline-m-blue"} ui-checked:outline-2`}>
+                    <RadioGroup.Item value={choice.value}
+                        class={`ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2`}
+                        classList={{ "ui-checked:outline-m-red": props.accent === "red", "ui-checked:outline-white": props.accent === "white" }}
+                    >
                         <div class={props.small ? "py-2 px-2" : "py-3 px-4"}>
                             <RadioGroup.ItemInput />
                             <RadioGroup.ItemControl >

@@ -1,10 +1,11 @@
-import { For, Show, createMemo, createSignal } from 'solid-js';
+import { For, ParentComponent, Show, createMemo, createSignal } from 'solid-js';
 import { Button } from '~/components/layout';
 import { useMegaStore } from '~/state/megaStore';
 import { satsToUsd } from '~/utils/conversions';
-import { Amount } from './Amount';
 import { Dialog } from '@kobalte/core';
 import close from "~/assets/icons/close.svg";
+import pencil from "~/assets/icons/pencil.svg";
+import { InlineAmount } from './AmountCard';
 
 const CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "DEL"];
 
@@ -25,8 +26,8 @@ function SingleDigitButton(props: { character: string, onClick: (c: string) => v
     );
 }
 
-export function AmountEditable(props: { initialAmountSats: string, setAmountSats: (s: bigint) => void }) {
-    const [isOpen, setIsOpen] = createSignal(false);
+export const AmountEditable: ParentComponent<{ initialAmountSats: string, initialOpen: boolean, setAmountSats: (s: bigint) => void }> = (props) => {
+    const [isOpen, setIsOpen] = createSignal(props.initialOpen);
 
     const [displayAmount, setDisplayAmount] = createSignal(props.initialAmountSats || "0");
 
@@ -135,8 +136,13 @@ export function AmountEditable(props: { initialAmountSats: string, setAmountSats
 
     return (
         <Dialog.Root isOpen={isOpen()}>
-            <button onClick={() => setIsOpen(true)} class="p-4 rounded-xl border-2 border-m-blue">
-                <Amount amountSats={Number(displayAmount())} showFiat />
+            <button onClick={() => setIsOpen(true)} class="px-4 py-2 rounded-xl border-2 border-m-blue flex gap-2 items-center">
+                {/* <Amount amountSats={Number(displayAmount())} showFiat /><span>&#x270F;&#xFE0F;</span> */}
+                <Show when={displayAmount() !== "0"} fallback={<div class="inline-block font-semibold">Set amount</div>}>
+                    <InlineAmount amount={displayAmount()} />
+                </Show>
+                <img src={pencil} alt="Edit" />
+                {/* {props.children} */}
             </button>
             <Dialog.Portal>
                 {/* <Dialog.Overlay class={OVERLAY} /> */}
