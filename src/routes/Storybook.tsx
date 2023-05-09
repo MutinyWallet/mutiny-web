@@ -1,6 +1,7 @@
 import { ActivityItem } from "~/components/ActivityItem";
 import { AmountCard } from "~/components/AmountCard";
 import NavBar from "~/components/NavBar";
+import { OnboardWarning } from "~/components/OnboardWarning";
 import { ShareCard } from "~/components/ShareCard";
 import { Card, DefaultMain, LargeHeader, SafeArea, VStack } from "~/components/layout";
 
@@ -10,14 +11,15 @@ export default function Admin() {
         <SafeArea>
             <DefaultMain>
                 <LargeHeader>Storybook</LargeHeader>
+                <OnboardWarning />
                 <VStack>
                     <AmountCard amountSats={"100000"} fee={"69"} />
                     <ShareCard text={SAMPLE} />
                     <Card title="Activity">
-                        <ActivityItem kind="lightning" name="benthecarman" amount={100000} date={1683664966} />
-                        <ActivityItem kind="onchain" name="tony" amount={42000000} positive date={1683664966} />
-                        <ActivityItem kind="onchain" name="a fake name that is too long" amount={42000000} date={1683664966} />
-                        <ActivityItem kind="onchain" name="a fake name that is too long" amount={42000000} date={1683664966} />
+                        <ActivityItem kind="lightning" labels={["benthecarman"]} amount={100000} date={1683664966} />
+                        <ActivityItem kind="onchain" labels={["tony"]} amount={42000000} positive date={1683664966} />
+                        <ActivityItem kind="onchain" labels={["a fake name thati is too long"]} amount={42000000} date={1683664966} />
+                        <ActivityItem kind="onchain" labels={["a fake name thati is too long"]} amount={42000000} date={1683664966} />
                     </Card>
                 </VStack>
             </DefaultMain>

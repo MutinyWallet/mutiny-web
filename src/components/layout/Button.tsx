@@ -4,7 +4,7 @@ import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
 import { LoadingSpinner } from ".";
 
-const button = cva("p-3 rounded-xl text-xl font-semibold disabled:opacity-50 disabled:grayscale transition", {
+const button = cva("p-3 rounded-xl  font-semibold disabled:opacity-50 disabled:grayscale transition", {
     variants: {
         // TODO: button hover has to work different than buttonlinks (like disabled state)
         intent: {
@@ -16,10 +16,10 @@ const button = cva("p-3 rounded-xl text-xl font-semibold disabled:opacity-50 dis
             green: "bg-m-green text-white shadow-inner-button hover:bg-m-green-dark text-shadow-button",
         },
         layout: {
-            flex: "flex-1",
-            pad: "px-8",
+            flex: "flex-1 text-xl",
+            pad: "px-8 text-xl",
             small: "px-4 py-2 w-auto text-lg",
-            xs: "px-2 py-1 w-auto rounded-lg font-normal text-base"
+            xs: "px-4 py-2 w-auto rounded-lg text-base"
         },
     },
     defaultVariants: {
