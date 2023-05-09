@@ -16,7 +16,7 @@ export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
 
 export const Card: ParentComponent<{ title?: string, titleElement?: JSX.Element }> = (props) => {
     return (
-        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950 overflow-x-hidden w-full'>
+        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950/50 overflow-x-hidden w-full'>
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.titleElement && props.titleElement}
             {props.children}
@@ -97,7 +97,7 @@ export const Hr = () => <Separator.Root class="my-4 border-white/20" />
 export const LargeHeader: ParentComponent<{ action?: JSX.Element }> = (props) => {
     return (
         <header class="w-full flex justify-between items-center mt-4 mb-2">
-            <h1 class="text-4xl font-semibold">{props.children}</h1>
+            <h1 class="text-3xl font-semibold">{props.children}</h1>
             <Show when={props.action}>
                 {props.action}
             </Show>
@@ -121,5 +121,16 @@ export const NiceP: ParentComponent = (props) => {
     return (<p class="text-2xl font-light">{props.children}</p>)
 }
 
+export const TinyButton: ParentComponent<{ onClick: () => void }> = (props) => {
+    return (
+        <button class="py-1 px-2 rounded-lg bg-white/10" onClick={props.onClick}>
+            {props.children}
+        </button>
+    )
+}
 
-
+export const Indicator: ParentComponent = (props) => {
+    return (
+        <div class="box-border animate-pulse px-2 py-1 -my-1 bg-white/70 rounded text-xs uppercase text-black">{props.children}</div>
+    )
+}
