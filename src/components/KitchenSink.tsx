@@ -303,7 +303,7 @@ function LnUrlAuth() {
         e.preventDefault();
 
         const lnurl = value().trim();
-        await state.node_manager?.lnurl_auth(0, lnurl)
+        await state.mutiny_wallet?.lnurl_auth(0, lnurl)
 
         setValue("");
     };

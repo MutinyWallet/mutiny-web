@@ -1,4 +1,4 @@
-import { Button, DefaultMain, LargeHeader, NiceP, NodeManagerGuard, SafeArea, VStack } from "~/components/layout";
+import { Button, DefaultMain, LargeHeader, NiceP, MutinyWalletGuard, SafeArea, VStack } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useNavigate } from 'solid-start';
 import { SeedWords } from '~/components/SeedWords';
@@ -18,7 +18,7 @@ export default function App() {
     }
 
     return (
-        <NodeManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
@@ -30,7 +30,7 @@ export default function App() {
                             If you clear your browser history, or lose your device, these 12 words are the only way you can restore your wallet.
                         </NiceP>
                         <NiceP>Mutiny is self-custodial. It's all up to you...</NiceP>
-                        <SeedWords words={store.node_manager?.show_seed() || ""} setHasSeen={setHasSeenBackup} />
+                        <SeedWords words={store.mutiny_wallet?.show_seed() || ""} setHasSeen={setHasSeenBackup} />
                         <Show when={hasSeenBackup()}>
                             <NiceP>You are responsible for your funds!</NiceP>
                         </Show>
@@ -39,6 +39,6 @@ export default function App() {
                 </DefaultMain>
                 <NavBar activeTab="none" />
             </SafeArea>
-        </NodeManagerGuard>
+        </MutinyWalletGuard>
     );
 }

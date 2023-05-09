@@ -35,14 +35,14 @@ export default function NavBar(props: { activeTab: ActiveTab }) {
                         <img src={userClock} alt="activity" />
                     </A>
                 </li>
-                <li class={props.activeTab === "settings" ? activeStyle : inactiveStyle}>
-                    <A href="/settings">
-                        <img src={settings} alt="settings" />
-                    </A>
-                </li>
                 <li class={props.activeTab === "redshift" ? activeStyle : inactiveStyle}>
                     <A href="/redshift">
                         <img src={redshift} alt="redshift" width={36} />
+                    </A>
+                </li>
+                <li class={props.activeTab === "settings" ? activeStyle : inactiveStyle}>
+                    <A href="/settings">
+                        <img src={settings} alt="settings" />
                     </A>
                 </li>
             </ul>
