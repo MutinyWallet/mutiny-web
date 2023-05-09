@@ -1,12 +1,12 @@
 import { DeleteEverything } from "~/components/DeleteEverything";
 import KitchenSink from "~/components/KitchenSink";
 import NavBar from "~/components/NavBar";
-import { Card, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
+import { Card, DefaultMain, LargeHeader, MutinyWalletGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 
 export default function Admin() {
     return (
-        <NodeManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink href="/settings" title="Settings" />
@@ -22,6 +22,6 @@ export default function Admin() {
                 </DefaultMain>
                 <NavBar activeTab="none" />
             </SafeArea>
-        </NodeManagerGuard>
+        </MutinyWalletGuard>
     )
 }

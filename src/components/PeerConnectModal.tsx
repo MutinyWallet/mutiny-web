@@ -3,7 +3,7 @@ import { As, Dialog } from "@kobalte/core";
 import { Button, Card } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Show, createResource } from "solid-js";
-import { getExistingSettings } from "~/logic/nodeManagerSetup";
+import { getExistingSettings } from "~/logic/mutinyWalletSetup";
 import getHostname from "~/utils/getHostname";
 
 const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
@@ -15,9 +15,9 @@ export default function PeerConnectModal() {
     const [state, _] = useMegaStore()
 
     const getPeerConnectString = async () => {
-        if (state.node_manager) {
+        if (state.mutiny_wallet) {
             const { proxy } = getExistingSettings();
-            const nodes = await state.node_manager.list_nodes();
+            const nodes = await state.mutiny_wallet.list_nodes();
             const firstNode = nodes[0] as string || ""
             const hostName = getHostname(proxy || "")
             const connectString = `mutiny:${firstNode}@${hostName}`

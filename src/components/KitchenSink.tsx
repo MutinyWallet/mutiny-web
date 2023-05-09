@@ -17,13 +17,13 @@ function PeerItem(props: { peer: MutinyPeer }) {
     const [state, _] = useMegaStore()
 
     const handleDisconnectPeer = async () => {
-        const nodes = await state.node_manager?.list_nodes();
+        const nodes = await state.mutiny_wallet?.list_nodes();
         const firstNode = nodes[0] as string || ""
 
         if (props.peer.is_connected) {
-            await state.node_manager?.disconnect_peer(firstNode, props.peer.pubkey);
+            await state.mutiny_wallet?.disconnect_peer(firstNode, props.peer.pubkey);
         } else {
-            await state.node_manager?.delete_peer(firstNode, props.peer.pubkey);
+            await state.mutiny_wallet?.delete_peer(firstNode, props.peer.pubkey);
         }
     };
 
@@ -50,7 +50,7 @@ function PeersList() {
     const [state, _] = useMegaStore()
 
     const getPeers = async () => {
-        return await state.node_manager?.list_peers() as Promise<MutinyPeer[]>
+        return await state.mutiny_wallet?.list_peers() as Promise<MutinyPeer[]>
     };
 
     const [peers, { refetch }] = createResource(getPeers);
@@ -95,10 +95,10 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
         e.preventDefault();
 
         const peerConnectString = value().trim();
-        const nodes = await state.node_manager?.list_nodes();
+        const nodes = await state.mutiny_wallet?.list_nodes();
         const firstNode = nodes[0] as string || ""
 
-        await state.node_manager?.connect_to_peer(firstNode, peerConnectString)
+        await state.mutiny_wallet?.connect_to_peer(firstNode, peerConnectString)
 
         await props.refetchPeers()
 
@@ -140,7 +140,7 @@ function ChannelItem(props: { channel: MutinyChannel, network?: string }) {
     async function confirmCloseChannel() {
         setConfirmLoading(true);
         try {
-            await state.node_manager?.close_channel(props.channel.outpoint as string)
+            await state.mutiny_wallet?.close_channel(props.channel.outpoint as string)
         } catch (e) {
             console.error(e);
             showToast(eify(e));
@@ -179,7 +179,7 @@ function ChannelsList() {
     const [state, _] = useMegaStore()
 
     const getChannels = async () => {
-        return await state.node_manager?.list_channels() as Promise<MutinyChannel[]>
+        return await state.mutiny_wallet?.list_channels() as Promise<MutinyChannel[]>
     };
 
     const [channels, { refetch }] = createResource(getChannels);
@@ -194,7 +194,7 @@ function ChannelsList() {
         });
     })
 
-    const network = state.node_manager?.get_network();
+    const network = state.mutiny_wallet?.get_network();
 
     return (
         <>
@@ -236,10 +236,10 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
             const pubkey = peerPubkey().trim();
             const bigAmount = BigInt(amount());
 
-            const nodes = await state.node_manager?.list_nodes();
+            const nodes = await state.mutiny_wallet?.list_nodes();
             const firstNode = nodes[0] as string || ""
 
-            const new_channel = await state.node_manager?.open_channel(firstNode, pubkey, bigAmount)
+            const new_channel = await state.mutiny_wallet?.open_channel(firstNode, pubkey, bigAmount)
 
             setNewChannel(new_channel)
 
@@ -303,7 +303,7 @@ function LnUrlAuth() {
         e.preventDefault();
 
         const lnurl = value().trim();
-        await state.node_manager?.lnurl_auth(0, lnurl)
+        await state.mutiny_wallet?.lnurl_auth(0, lnurl)
 
         setValue("");
     };

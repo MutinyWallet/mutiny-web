@@ -1,4 +1,4 @@
-import { ButtonLink, DefaultMain, LargeHeader, NodeManagerGuard, SafeArea, VStack } from "~/components/layout";
+import { ButtonLink, DefaultMain, LargeHeader, MutinyWalletGuard, SafeArea, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import NavBar from "~/components/NavBar";
 import { SeedWords } from "~/components/SeedWords";
@@ -9,7 +9,7 @@ export default function Settings() {
     const [store, _actions] = useMegaStore();
 
     return (
-        <NodeManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
@@ -17,7 +17,7 @@ export default function Settings() {
                     <VStack biggap>
                         <VStack>
                             <p class="text-2xl font-light">Write down these words or you'll die!</p>
-                            <SeedWords words={store.node_manager?.show_seed() || ""} />
+                            <SeedWords words={store.mutiny_wallet?.show_seed() || ""} />
                         </VStack>
                         <SettingsStringsEditor />
                         <ButtonLink href="/admin">"I know what I'm doing"</ButtonLink>
@@ -25,6 +25,6 @@ export default function Settings() {
                 </DefaultMain>
                 <NavBar activeTab="settings" />
             </SafeArea>
-        </NodeManagerGuard>
+        </MutinyWalletGuard>
     )
 }

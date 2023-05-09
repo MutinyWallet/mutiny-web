@@ -1,11 +1,11 @@
-import { NodeManager } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 
 export function satsToUsd(amount: number | undefined, price: number, formatted: boolean): string {
     if (typeof amount !== "number" || isNaN(amount)) {
         return ""
     }
     try {
-        const btc = NodeManager.convert_sats_to_btc(BigInt(Math.floor(amount)));
+        const btc = MutinyWallet.convert_sats_to_btc(BigInt(Math.floor(amount)));
         const usd = btc * price;
 
         if (formatted) {
@@ -26,7 +26,7 @@ export function usdToSats(amount: number | undefined, price: number, formatted: 
     }
     try {
         const btc = price / amount;
-        const sats = NodeManager.convert_btc_to_sats(btc);
+        const sats = MutinyWallet.convert_btc_to_sats(btc);
         if (formatted) {
             return parseInt(sats.toString()).toLocaleString();
         } else {

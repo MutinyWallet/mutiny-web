@@ -1,17 +1,21 @@
 import send from '~/assets/icons/send.svg';
 import receive from '~/assets/icons/receive.svg';
-import { Card, LoadingSpinner, NiceP, SmallAmount, SmallHeader, VStack } from './layout';
-import { For, Match, ParentComponent, Suspense, Switch, createMemo, createResource, createSignal } from 'solid-js';
+import { ButtonLink, Card, LoadingSpinner, NiceP, SmallAmount, SmallHeader, VStack } from './layout';
+import { For, Match, ParentComponent, Show, Suspense, Switch, createMemo, createResource, createSignal } from 'solid-js';
 import { useMegaStore } from '~/state/megaStore';
 import { MutinyInvoice } from '@mutinywallet/mutiny-wasm';
 import { prettyPrintTime } from '~/utils/prettyPrintTime';
 import { JsonModal } from '~/components/JsonModal';
 import mempoolTxUrl from '~/utils/mempoolTxUrl';
+import wave from "~/assets/wave.gif"
+import utxoIcon from '~/assets/icons/coin.svg';
+import { getRedshifted } from '~/utils/fakeLabels';
 
 export const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
 export const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
 export const MISSING_LABEL = 'py-1 px-2 bg-white/10 rounded inline-block text-sm'
-export const RIGHT_COLUMN = 'flex flex-col items-right text-right max-w-[9rem]'
+export const REDSHIFT_LABEL = 'py-1 px-2 bg-white text-m-red rounded inline-block text-sm'
+export const RIGHT_COLUMN = 'flex flex-col items-right text-right max-w-[8rem]'
 
 export type OnChainTx = {
     txid: string
@@ -26,14 +30,15 @@ export type OnChainTx = {
     }
 }
 
-type Utxo = {
+export type UtxoItem = {
     outpoint: string
     txout: {
         value: number
         script_pubkey: string
     }
     keychain: string
-    is_spent: boolean
+    is_spent: boolean,
+    redshifted?: boolean
 }
 
 const SubtleText: ParentComponent = (props) => {
@@ -58,8 +63,7 @@ function OnChainItem(props: { item: OnChainTx }) {
                 </div>
                 <div class={CENTER_COLUMN}>
                     <h2 class={MISSING_LABEL}>Unknown</h2>
-                    {isReceive() ? <SmallAmount amount={props.item.received} sign="+" /> : <SmallAmount amount={props.item.sent} />}
-                    {/* <h2 class="truncate">Txid: {props.item.txid}</h2> */}
+                    {isReceive() ? <SmallAmount amount={props.item.received} /> : <SmallAmount amount={props.item.sent} />}
                 </div>
                 <div class={RIGHT_COLUMN}>
                     <SmallHeader>
@@ -99,23 +103,31 @@ function InvoiceItem(props: { item: MutinyInvoice }) {
     )
 }
 
-function Utxo(props: { item: Utxo }) {
+function Utxo(props: { item: UtxoItem }) {
     const spent = createMemo(() => props.item.is_spent);
 
     const [open, setOpen] = createSignal(false)
+
+    const redshifted = createMemo(() => getRedshifted(props.item.outpoint));
 
     return (
         <>
             <JsonModal open={open()} data={props.item} title="Unspent Transaction Output" setOpen={setOpen} />
             <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
-                <img src={receive} alt="receive arrow" />
+                <div class="flex items-center">
+                    <img src={utxoIcon} alt="coin" />
+                </div>
                 <div class={CENTER_COLUMN}>
-                    <h2 class={MISSING_LABEL}>Unknown</h2>
+                    <div class="flex gap-2">
+                        <Show when={redshifted()} fallback={<h2 class={MISSING_LABEL}>Unknown</h2>}>
+                            <h2 class={REDSHIFT_LABEL}>Redshift</h2>
+                        </Show>
+                    </div>
                     <SmallAmount amount={props.item.txout.value} />
                 </div>
                 <div class={RIGHT_COLUMN}>
                     <SmallHeader class={spent() ? "text-m-red" : "text-m-green"}>
-                        {spent() ? "SPENT" : "UNSPENT"}
+                        {/* {spent() ? "SPENT" : "UNSPENT"} */}
                     </SmallHeader>
                 </div>
             </div>
@@ -128,19 +140,19 @@ export function Activity() {
 
     const getTransactions = async () => {
         console.log("Getting onchain txs");
-        const txs = await state.node_manager?.list_onchain() as OnChainTx[];
+        const txs = await state.mutiny_wallet?.list_onchain() as OnChainTx[];
         return txs.reverse();
     }
 
     const getInvoices = async () => {
         console.log("Getting invoices");
-        const invoices = await state.node_manager?.list_invoices() as MutinyInvoice[];
+        const invoices = await state.mutiny_wallet?.list_invoices() as MutinyInvoice[];
         return invoices.filter((inv) => inv.paid).reverse();
     }
 
     const getUtXos = async () => {
         console.log("Getting utxos");
-        const utxos = await state.node_manager?.list_utxos() as Utxo[];
+        const utxos = await state.mutiny_wallet?.list_utxos() as UtxoItem[];
         return utxos;
     }
 
@@ -201,6 +213,7 @@ export function Activity() {
                             </For>
                         </Match>
                     </Switch>
+                    <ButtonLink href="/redshift" layout="small" class="flex items-center gap-2 self-center hover:text-m-red">Redshift <img src={wave} class="h-4" alt="redshift"></img></ButtonLink>
                 </Card>
             </Suspense>
         </VStack>
@@ -220,8 +233,8 @@ export function CombinedActivity(props: { limit?: number }) {
 
     const getAllActivity = async () => {
         console.log("Getting all activity");
-        const txs = await state.node_manager?.list_onchain() as OnChainTx[];
-        const invoices = await state.node_manager?.list_invoices() as MutinyInvoice[];
+        const txs = await state.mutiny_wallet?.list_onchain() as OnChainTx[];
+        const invoices = await state.mutiny_wallet?.list_invoices() as MutinyInvoice[];
 
         const activity: ActivityItem[] = [];
 

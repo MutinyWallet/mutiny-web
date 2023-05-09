@@ -3,8 +3,8 @@
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
 import { ParentComponent, createContext, createEffect, onCleanup, onMount, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
-import { NodeManagerSettingStrings, setupNodeManager } from "~/logic/nodeManagerSetup";
-import { MutinyBalance, NodeManager } from "@mutinywallet/mutiny-wasm";
+import { MutinyWalletSettingStrings, setupMutinyWallet } from "~/logic/mutinyWalletSetup";
+import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ParsedParams } from "~/routes/Scanner";
 
 const MegaStoreContext = createContext<MegaStore>();
@@ -13,7 +13,8 @@ type UserStatus = undefined | "new_here" | "waitlisted" | "approved" | "paid"
 
 export type MegaStore = [{
     waitlist_id?: string;
-    node_manager?: NodeManager;
+    mutiny_wallet?: MutinyWallet;
+    deleting: boolean;
     user_status: UserStatus;
     scan_result?: ParsedParams;
     balance?: MutinyBalance;
@@ -24,7 +25,8 @@ export type MegaStore = [{
     dismissed_restore_prompt: boolean
 }, {
     fetchUserStatus(): Promise<UserStatus>;
-    setupNodeManager(settings?: NodeManagerSettingStrings): Promise<void>;
+    setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void>;
+    deleteMutinyWallet(): Promise<void>;
     setWaitlistId(waitlist_id: string): void;
     setScanResult(scan_result: ParsedParams | undefined): void;
     sync(): Promise<void>;
@@ -35,7 +37,8 @@ export type MegaStore = [{
 export const Provider: ParentComponent = (props) => {
     const [state, setState] = createStore({
         waitlist_id: localStorage.getItem("waitlist_id"),
-        node_manager: undefined as NodeManager | undefined,
+        mutiny_wallet: undefined as MutinyWallet | undefined,
+        deleting: false,
         user_status: undefined as UserStatus,
         scan_result: undefined as ParsedParams | undefined,
         // TODO: wire this up to real price once we have caching
@@ -66,13 +69,23 @@ export const Provider: ParentComponent = (props) => {
                 return "new_here"
             }
         },
-        async setupNodeManager(settings?: NodeManagerSettingStrings): Promise<void> {
+        async setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void> {
             try {
-                const nodeManager = await setupNodeManager(settings)
-                setState({ node_manager: nodeManager })
+                const mutinyWallet = await setupMutinyWallet(settings)
+                setState({ mutiny_wallet: mutinyWallet })
             } catch (e) {
                 console.error(e)
             }
+        },
+        async deleteMutinyWallet(): Promise<void> {
+            await state.mutiny_wallet?.stop();
+            setState((prevState) => ({
+                ...prevState,
+                mutiny_wallet: undefined,
+                deleting: true,
+            }));
+            MutinyWallet.import_json("{}");
+            localStorage.clear();
         },
         setWaitlistId(waitlist_id: string) {
             setState({ waitlist_id })
@@ -80,10 +93,10 @@ export const Provider: ParentComponent = (props) => {
         async sync(): Promise<void> {
             console.time("BDK Sync Time")
             try {
-                if (state.node_manager && !state.is_syncing) {
+                if (state.mutiny_wallet && !state.is_syncing) {
                     setState({ is_syncing: true })
-                    await state.node_manager?.sync()
-                    const balance = await state.node_manager?.get_balance();
+                    await state.mutiny_wallet?.sync()
+                    const balance = await state.mutiny_wallet?.get_balance();
                     setState({ balance, last_sync: Date.now() })
                 }
             } catch (e) {
@@ -115,9 +128,9 @@ export const Provider: ParentComponent = (props) => {
 
     // Only load node manager when status is approved
     createEffect(() => {
-        if (state.user_status === "approved" && !state.node_manager) {
+        if (state.user_status === "approved" && !state.mutiny_wallet && !state.deleting) {
             console.log("running setup node manager...")
-            actions.setupNodeManager().then(() => console.log("node manager setup done"))
+            actions.setupMutinyWallet().then(() => console.log("node manager setup done"))
         }
     })
 

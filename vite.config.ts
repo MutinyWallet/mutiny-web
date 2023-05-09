@@ -52,7 +52,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     // Don't want vite to bundle these late during dev causing reload
-    include: ["qr-scanner", "nostr-tools", "class-variance-authority"],
+    include: ["qr-scanner", "nostr-tools", "class-variance-authority", "@kobalte/core", "@solid-primitives/upload"],
     // This is necessary because otherwise `vite dev` can't find the wasm
     exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"],
   },

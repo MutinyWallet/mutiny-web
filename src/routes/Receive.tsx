@@ -1,7 +1,7 @@
 import { MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { Button, Card, Indicator, LargeHeader, NodeManagerGuard, SafeArea } from "~/components/layout";
+import { Button, Card, Indicator, LargeHeader, MutinyWalletGuard, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
@@ -104,13 +104,13 @@ export default function Receive() {
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
         try {
-            const raw = await state.node_manager?.create_bip21(bigAmount);
+            // FIXME: actual labels
+            const raw = await state.mutiny_wallet?.create_bip21(bigAmount, []);
             // Save the raw info so we can watch the address and invoice
             setBip21Raw(raw);
 
             const params = objectToSearchParams({
                 amount: raw?.btc_amount,
-                label: raw?.description,
                 lightning: raw?.invoice
             })
 
@@ -138,7 +138,7 @@ export default function Receive() {
             const lightning = bip21.invoice
             const address = bip21.address
 
-            const invoice = await state.node_manager?.get_invoice(lightning)
+            const invoice = await state.mutiny_wallet?.get_invoice(lightning)
 
             if (invoice && invoice.paid) {
                 setReceiveState("paid")
@@ -146,7 +146,7 @@ export default function Receive() {
                 return "lightning_paid"
             }
 
-            const tx = await state.node_manager?.check_address(address) as OnChainTx | undefined;
+            const tx = await state.mutiny_wallet?.check_address(address) as OnChainTx | undefined;
 
             if (tx) {
                 setReceiveState("paid")
@@ -168,7 +168,7 @@ export default function Receive() {
     });
 
     return (
-        <NodeManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <main class="max-w-[600px] flex flex-col flex-1 gap-4 mx-auto p-4  overflow-y-auto">
                     <Show when={receiveState() === "show"} fallback={<BackLink />}>
@@ -229,6 +229,6 @@ export default function Receive() {
                 </main>
                 <NavBar activeTab="receive" />
             </SafeArea >
-        </NodeManagerGuard>
+        </MutinyWalletGuard>
     )
 }

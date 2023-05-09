@@ -1,6 +1,6 @@
 import { For, Show, createResource } from "solid-js";
 import NavBar from "~/components/NavBar";
-import { Button, Card, DefaultMain, LargeHeader, NiceP, NodeManagerGuard, SafeArea, VStack } from "~/components/layout";
+import { Button, Card, DefaultMain, LargeHeader, NiceP, MutinyWalletGuard, SafeArea, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { CombinedActivity } from "~/components/Activity";
 import { A } from "solid-start";
@@ -43,7 +43,7 @@ const TAB = "flex-1 inline-block px-8 py-4 text-lg font-semibold rounded-lg ui-s
 
 export default function Activity() {
     return (
-        <NodeManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
@@ -73,6 +73,6 @@ export default function Activity() {
                 </DefaultMain>
                 <NavBar activeTab="activity" />
             </SafeArea>
-        </NodeManagerGuard>
+        </MutinyWalletGuard>
     )
 }

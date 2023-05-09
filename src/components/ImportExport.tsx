@@ -6,13 +6,13 @@ import { showToast } from "./Toaster";
 import { downloadTextFile } from "~/utils/download";
 import { createFileUploader } from "@solid-primitives/upload"
 import { ConfirmDialog } from "./Dialog";
-import { NodeManager } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 
 export function ImportExport() {
     const [state, _] = useMegaStore()
 
     async function handleSave() {
-        const json = await state.node_manager?.export_json()
+        const json = await state.mutiny_wallet?.export_json()
         downloadTextFile(json || "", "mutiny-state.json")
     }
 
@@ -32,7 +32,7 @@ export function ImportExport() {
                     // This should throw if there's a parse error, so we won't end up clearing
                     JSON.parse(text);
 
-                    NodeManager.import_json(text);
+                    MutinyWallet.import_json(text);
 
                     window.location.href = "/"
 

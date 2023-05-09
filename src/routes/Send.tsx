@@ -1,7 +1,7 @@
 import { Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
-import { Button, ButtonLink, Card, DefaultMain, HStack, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
+import { Button, ButtonLink, Card, DefaultMain, HStack, LargeHeader, MutinyWalletGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
@@ -14,8 +14,8 @@ import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import megacheck from "~/assets/icons/megacheck.png"
 import megaex from "~/assets/icons/megaex.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { useNavigate } from "solid-start";
 import { BackLink } from "~/components/layout/BackLink";
+import { useNavigate } from "solid-start";
 import { TagEditor } from "~/components/TagEditor";
 import { TagItem, createUniqueId, listTags } from "~/state/contacts";
 import { StringShower } from "~/components/ShareCard";
@@ -170,7 +170,7 @@ export default function Send() {
             if (source.memo) setDescription(source.memo);
 
             if (source.invoice) {
-                state.node_manager?.decode_invoice(source.invoice).then(invoice => {
+                state.mutiny_wallet?.decode_invoice(source.invoice).then(invoice => {
                     if (invoice?.amount_sats) setAmountSats(invoice.amount_sats);
                     setInvoice(invoice)
                     setSource("lightning")
@@ -193,7 +193,7 @@ export default function Send() {
 
     function parsePaste(text: string) {
         if (text) {
-            const network = state.node_manager?.get_network() || "signet";
+            const network = state.mutiny_wallet?.get_network() || "signet";
             const result = toParsedParams(text || "", network);
             if (!result.ok) {
                 showToast(result.error);
@@ -230,21 +230,21 @@ export default function Send() {
             const bolt11 = invoice()?.bolt11;
             const sentDetails: Partial<SentDetails> = {};
             if (source() === "lightning" && invoice() && bolt11) {
-                const nodes = await state.node_manager?.list_nodes();
+                const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = nodes[0] as string || ""
                 sentDetails.destination = bolt11;
                 // If the invoice has sats use that, otherwise we pass the user-defined amount
                 if (invoice()?.amount_sats) {
-                    await state.node_manager?.pay_invoice(firstNode, bolt11);
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11);
                     sentDetails.amount = invoice()?.amount_sats;
                 } else {
-                    await state.node_manager?.pay_invoice(firstNode, bolt11, amountSats());
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, amountSats());
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "lightning" && nodePubkey()) {
-                const nodes = await state.node_manager?.list_nodes();
+                const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = nodes[0] as string || ""
-                const payment = await state.node_manager?.keysend(firstNode, nodePubkey()!, amountSats());
+                const payment = await state.mutiny_wallet?.keysend(firstNode, nodePubkey()!, amountSats());
                 console.log(payment?.value)
 
                 // TODO: handle timeouts
@@ -254,8 +254,9 @@ export default function Send() {
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "onchain" && address()) {
+                // FIXME: actual labels
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const txid = await state.node_manager?.send_to_address(address()!, amountSats());
+                const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), []);
                 sentDetails.amount = amountSats();
                 sentDetails.destination = address();
                 // TODO: figure out if this is necessary, it takes forever
@@ -280,7 +281,7 @@ export default function Send() {
     })
 
     return (
-        <NodeManagerGuard>
+        <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
@@ -302,7 +303,7 @@ export default function Send() {
                                     <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh]" />
                                     <Amount amountSats={sentDetails()?.amount} showFiat />
                                     <Show when={sentDetails()?.txid}>
-                                        <a href={mempoolTxUrl(sentDetails()?.txid, state.node_manager?.get_network())} target="_blank" rel="noreferrer">
+                                        <a href={mempoolTxUrl(sentDetails()?.txid, state.mutiny_wallet?.get_network())} target="_blank" rel="noreferrer">
                                             Mempool Link
                                         </a>
                                     </Show>
@@ -335,6 +336,6 @@ export default function Send() {
                 </DefaultMain>
                 <NavBar activeTab="send" />
             </SafeArea >
-        </NodeManagerGuard >
+        </MutinyWalletGuard >
     )
 }

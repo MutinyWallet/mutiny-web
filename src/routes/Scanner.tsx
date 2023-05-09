@@ -83,7 +83,7 @@ export default function Scanner() {
     // When we have a nice result we can head over to the send screen
     createEffect(() => {
         if (scanResult()) {
-            const network = state.node_manager?.get_network() || "signet";
+            const network = state.mutiny_wallet?.get_network() || "signet";
             const result = toParsedParams(scanResult() || "", network);
             if (!result.ok) {
                 showToast(result.error);
