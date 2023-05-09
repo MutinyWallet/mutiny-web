@@ -1,5 +1,5 @@
 import { Show, Suspense } from "solid-js";
-import { ButtonLink, FancyCard } from "~/components/layout";
+import { ButtonLink, FancyCard, Indicator } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
 
@@ -8,12 +8,6 @@ function prettyPrintAmount(n?: number | bigint): string {
         return "0"
     }
     return n.toLocaleString()
-}
-
-function SyncingIndicator() {
-    return (
-        <div class="box-border animate-pulse px-2 py-1 -my-1 bg-white/70 rounded text-xs uppercase text-black">Syncing</div>
-    )
 }
 
 export default function BalanceBox() {
@@ -25,7 +19,7 @@ export default function BalanceBox() {
                 <Amount amountSats={state.balance?.lightning || 0} showFiat />
             </FancyCard>
 
-            <FancyCard title="On-Chain" tag={state.is_syncing && <SyncingIndicator />}>
+            <FancyCard title="On-Chain" tag={state.is_syncing && <Indicator>Syncing</Indicator>}>
                 <div onClick={actions.sync}>
                     <Amount amountSats={state.balance?.confirmed} showFiat />
                 </div>

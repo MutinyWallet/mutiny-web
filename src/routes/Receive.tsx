@@ -1,12 +1,10 @@
 import { MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { createEffect, createResource, createSignal, For, Match, onCleanup, onMount, Switch } from "solid-js";
+import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { AmountEditable } from "~/components/AmountEditable";
-import { Button, Card, LargeHeader, MutinyWalletGuard, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, Card, Indicator, LargeHeader, MutinyWalletGuard, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
-import { useCopy } from "~/utils/useCopy";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { Amount } from "~/components/Amount";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
@@ -17,6 +15,9 @@ import { showToast } from "~/components/Toaster";
 import { useNavigate } from "solid-start";
 import megacheck from "~/assets/icons/megacheck.png";
 import { TagItem, listTags } from "~/state/contacts";
+import { AmountCard } from "~/components/AmountCard";
+import { ShareCard } from "~/components/ShareCard";
+import { BackButton } from "~/components/layout/BackButton";
 
 type OnChainTx = {
     transaction: {
@@ -44,39 +45,9 @@ type OnChainTx = {
 
 const createUniqueId = () => Math.random().toString(36).substr(2, 9);
 
-const fakeContacts: TagItem[] = [
-    { id: createUniqueId(), name: "Unknown", kind: "text" },
-    // { id: createUniqueId(), name: "Alice", kind: "contact" },
-    // { id: createUniqueId(), name: "Bob", kind: "contact" },
-    // { id: createUniqueId(), name: "Carol", kind: "contact" },
-]
-
 const RECEIVE_FLAVORS = [{ value: "unified", label: "Unified", caption: "Sender decides" }, { value: "lightning", label: "Lightning", caption: "Fast and cool" }, { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }]
 
 type ReceiveFlavor = "unified" | "lightning" | "onchain"
-
-function ShareButton(props: { receiveString: string }) {
-    async function share(receiveString: string) {
-        // If the browser doesn't support share we can just copy the address
-        if (!navigator.share) {
-            console.error("Share not supported")
-        }
-        const shareData: ShareData = {
-            title: "Mutiny Wallet",
-            text: receiveString,
-        }
-        try {
-            await navigator.share(shareData)
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    return (
-        <Button onClick={(_) => share(props.receiveString)}>Share</Button>
-    )
-}
-
 type ReceiveState = "edit" | "show" | "paid"
 type PaidState = "lightning_paid" | "onchain_paid";
 
@@ -88,16 +59,11 @@ export default function Receive() {
     const [receiveState, setReceiveState] = createSignal<ReceiveState>("edit")
     const [bip21Raw, setBip21Raw] = createSignal<MutinyBip21RawMaterials>();
     const [unified, setUnified] = createSignal("")
+    const [shouldShowAmountEditor, setShouldShowAmountEditor] = createSignal(true)
 
     // Tagging stuff
     const [selectedValues, setSelectedValues] = createSignal<TagItem[]>([]);
     const [values, setValues] = createSignal<TagItem[]>([{ id: createUniqueId(), name: "Unknown", kind: "text" }]);
-
-    onMount(() => {
-        listTags().then((tags) => {
-            setValues(prev => [...prev, ...tags || []])
-        });
-    })
 
     // The data we get after a payment
     const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
@@ -105,6 +71,25 @@ export default function Receive() {
 
     // The flavor of the receive
     const [flavor, setFlavor] = createSignal<ReceiveFlavor>("unified");
+
+    const receiveString = createMemo(() => {
+        if (unified() && receiveState() === "show") {
+            if (flavor() === "unified") {
+                return unified();
+            } else if (flavor() === "lightning") {
+                return bip21Raw()?.invoice ?? "";
+            } else if (flavor() === "onchain") {
+                return bip21Raw()?.address ?? "";
+            }
+
+        }
+    })
+
+    onMount(() => {
+        listTags().then((tags) => {
+            setValues(prev => [...prev, ...tags || []])
+        });
+    })
 
     function clearAll() {
         setAmount("")
@@ -114,33 +99,6 @@ export default function Receive() {
         setPaymentTx(undefined)
         setPaymentInvoice(undefined)
         setSelectedValues([])
-    }
-
-    let amountInput!: HTMLInputElement;
-    let labelInput!: HTMLInputElement;
-
-    function editAmount(e: Event) {
-        e.preventDefault();
-        setReceiveState("edit")
-        amountInput.focus();
-    }
-
-    function editLabel(e: Event) {
-        e.preventDefault();
-        setReceiveState("edit")
-        labelInput.focus();
-    }
-
-    const [copy, copied] = useCopy({ copiedTimeout: 1000 });
-
-    function handleCopy() {
-        if (flavor() === "unified") {
-            copy(unified() ?? "")
-        } else if (flavor() === "lightning") {
-            copy(bip21Raw()?.invoice ?? "")
-        } else if (flavor() === "onchain") {
-            copy(bip21Raw()?.address ?? "")
-        }
     }
 
     async function getUnifiedQr(amount: string) {
@@ -171,6 +129,7 @@ export default function Receive() {
 
         setUnified(unifiedQr || "")
         setReceiveState("show")
+        setShouldShowAmountEditor(false)
     }
 
     async function checkIfPaid(bip21?: MutinyBip21RawMaterials): Promise<PaidState | undefined> {
@@ -211,63 +170,31 @@ export default function Receive() {
     return (
         <MutinyWalletGuard>
             <SafeArea>
-                <main class="max-w-[600px] flex flex-col gap-4 mx-auto p-4">
-                    <BackLink />
-                    <LargeHeader>Receive Bitcoin</LargeHeader>
+                <main class="max-w-[600px] flex flex-col flex-1 gap-4 mx-auto p-4  overflow-y-auto">
+                    <Show when={receiveState() === "show"} fallback={<BackLink />}>
+                        <BackButton onClick={() => setReceiveState("edit")} title="Edit" />
+                    </Show>
+                    <LargeHeader action={receiveState() === "show" && <Indicator>Checking</Indicator>}>Receive Bitcoin</LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
-                            <dl>
-                                <dd>
-                                    <AmountEditable initialAmountSats={amount() || "0"} setAmountSats={setAmount} />
-                                </dd>
-                                <dd>
-                                    <TagEditor title="Tag the origin" values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it coming from?" />
-                                </dd>
-                            </dl>
-                            <Button class="w-full" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Invoice</Button>
+                            <div class="flex flex-col flex-1 gap-8">
+                                <AmountCard initialOpen={shouldShowAmountEditor()} amountSats={amount() || "0"} setAmountSats={setAmount} isAmountEditable />
+
+                                <Card title="Tag the origin">
+                                    <TagEditor values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it coming from?" />
+                                </Card>
+
+                                <div class="flex-1" />
+                                <Button class="w-full flex-grow-0 mb-4" style="" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Invoice</Button>
+                            </div>
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>
-                            <StyledRadioGroup small value={flavor()} onValueChange={setFlavor} choices={RECEIVE_FLAVORS} />
+                            <StyledRadioGroup small value={flavor()} onValueChange={setFlavor} choices={RECEIVE_FLAVORS} accent="white" />
                             <div class="w-full bg-white rounded-xl">
-                                <Switch>
-                                    <Match when={flavor() === "unified"}>
-                                        <QRCodeSVG value={unified() ?? ""} class="w-full h-full p-8 max-h-[400px]" />
-                                    </Match>
-                                    <Match when={flavor() === "lightning"}>
-                                        <QRCodeSVG value={bip21Raw()?.invoice ?? ""} class="w-full h-full p-8 max-h-[400px]" />
-                                    </Match>
-                                    <Match when={flavor() === "onchain"}>
-                                        <QRCodeSVG value={bip21Raw()?.address ?? ""} class="w-full h-full p-8 max-h-[400px]" />
-                                    </Match>
-                                </Switch>
+                                <QRCodeSVG value={receiveString() ?? ""} class="w-full h-full p-8 max-h-[400px]" />
                             </div>
-                            <div class="flex gap-2 w-full">
-                                <Button onClick={handleCopy}>{copied() ? "Copied" : "Copy"}</Button>
-                                <ShareButton receiveString={unified() ?? ""} />
-                            </div>
-                            <Card>
-                                <SmallHeader>Amount</SmallHeader>
-                                <div class="flex justify-between">
-                                    <Amount amountSats={parseInt(amount()) || 0} showFiat={true} />
-                                    <button onClick={editAmount}>&#x270F;&#xFE0F;</button>
-                                </div>
-                                <SmallHeader>Tags</SmallHeader>
-                                <div class="flex justify-between">
-                                    <div class="flex flex-wrap">
-                                        <For each={selectedValues()}>
-                                            {(tag) => (
-                                                <div class=" bg-white/20 rounded px-1">
-                                                    {tag.name}
-                                                </div>)}
-                                        </For>
-                                    </div>
-                                    {/* <pre>{JSON.stringify(selectedValues(), null, 2)}</pre> */}
-                                    <button onClick={editLabel}>&#x270F;&#xFE0F;</button>
-                                </div>
-                            </Card>
-                            <Card title="Bip21">
-                                <code class="break-all">{unified()}</code>
-                            </Card>
+                            <p class="text-neutral-400 text-center">Show or share this code with the sender</p>
+                            <ShareCard text={receiveString() ?? ""} />
                         </Match>
                         <Match when={receiveState() === "paid" && paidState() === "lightning_paid"}>
                             <FullscreenModal

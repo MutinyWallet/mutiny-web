@@ -1,5 +1,5 @@
 import { Match, Switch, createSignal, createUniqueId } from 'solid-js';
-import { SmallHeader } from '~/components/layout';
+import { SmallHeader, TinyButton } from '~/components/layout';
 import { Dialog } from '@kobalte/core';
 import close from "~/assets/icons/close.svg";
 import { SubmitHandler } from '@modular-forms/solid';
@@ -39,7 +39,7 @@ export function ContactEditor(props: { createContact: (contact: ContactItem) => 
                     </button>
                 </Match>
                 <Match when={!props.list}>
-                    <button onClick={() => setIsOpen(true)} class="border border-l-white/50 border-r-white/50 border-t-white/75 border-b-white/25 bg-black px-1 py-[0.5] rounded cursor-pointer hover:outline-white hover:outline-1">+ Add Contact</button>
+                    <TinyButton onClick={() => setIsOpen(true)}>+ Add Contact</TinyButton>
                 </Match>
             </Switch>
             <Dialog.Portal>

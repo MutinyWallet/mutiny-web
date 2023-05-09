@@ -1,12 +1,11 @@
 import { Match, Show, Switch, createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { Amount } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
-import { Button, ButtonLink, DefaultMain, HStack, LargeHeader, MutinyWalletGuard, SafeArea, SmallAmount, SmallHeader, VStack } from "~/components/layout";
+import { Button, ButtonLink, Card, DefaultMain, HStack, LargeHeader, MutinyWalletGuard, SafeArea, SmallHeader, VStack } from "~/components/layout";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
 import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { AmountEditable } from "~/components/AmountEditable";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
@@ -19,35 +18,29 @@ import { BackLink } from "~/components/layout/BackLink";
 import { useNavigate } from "solid-start";
 import { TagEditor } from "~/components/TagEditor";
 import { TagItem, createUniqueId, listTags } from "~/state/contacts";
+import { StringShower } from "~/components/ShareCard";
+import { AmountCard } from "~/components/AmountCard";
 
 type SendSource = "lightning" | "onchain";
 
-const PAYMENT_METHODS = [{ value: "lightning", label: "Lightning", caption: "Fast and cool" }, { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }]
-
-const TEST_DEST = "bitcoin:tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe?amount=0.00001&label=heyo&lightning=lntbs10u1pjrwrdedq8dpjhjmcnp4qd60w268ve0jencwzhz048ruprkxefhj0va2uspgj4q42azdg89uupp5gngy2pqte5q5uvnwcxwl2t8fsdlla5s6xl8aar4xcsvxeus2w2pqsp5n5jp3pz3vpu92p3uswttxmw79a5lc566herwh3f2amwz2sp6f9tq9qyysgqcqpcxqrpwugv5m534ww5ukcf6sdw2m75f2ntjfh3gzeqay649256yvtecgnhjyugf74zakaf56sdh66ec9fqep2kvu6xv09gcwkv36rrkm38ylqsgpw3yfjl"
-const TEST_DEST_ADDRESS = "tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe"
+// const TEST_DEST = "bitcoin:tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe?amount=0.00001&label=heyo&lightning=lntbs10u1pjrwrdedq8dpjhjmcnp4qd60w268ve0jencwzhz048ruprkxefhj0va2uspgj4q42azdg89uupp5gngy2pqte5q5uvnwcxwl2t8fsdlla5s6xl8aar4xcsvxeus2w2pqsp5n5jp3pz3vpu92p3uswttxmw79a5lc566herwh3f2amwz2sp6f9tq9qyysgqcqpcxqrpwugv5m534ww5ukcf6sdw2m75f2ntjfh3gzeqay649256yvtecgnhjyugf74zakaf56sdh66ec9fqep2kvu6xv09gcwkv36rrkm38ylqsgpw3yfjl"
+// const TEST_DEST_ADDRESS = "tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe"
 
 // TODO: better success / fail type
 type SentDetails = { amount?: bigint, destination?: string, txid?: string, failure_reason?: string }
 
 function MethodChooser(props: { source: SendSource, setSource: (source: string) => void }) {
-    const [store, actions] = useMegaStore();
+    const [store, _actions] = useMegaStore();
 
-    const amount = createMemo(() => {
-        if (props.source === "lightning") {
-            return store.balance?.lightning
-        } else {
-            return store.balance?.confirmed
-        }
+    const methods = createMemo(() => {
+        return [
+            { value: "lightning", label: "Lightning", caption: store.balance?.lightning ? `${store.balance?.lightning.toLocaleString()} SATS` : "No balance" },
+            { value: "onchain", label: "On-chain", caption: store.balance?.confirmed ? `${store.balance?.confirmed.toLocaleString()} SATS` : "No balance" }
+        ]
+
     })
     return (
-        <VStack>
-            <SmallHeader>
-                Payment Method
-            </SmallHeader>
-            <StyledRadioGroup value={props.source} onValueChange={props.setSource} choices={PAYMENT_METHODS} />
-            <SmallHeader class="flex items-center gap-2">Current balance <SmallAmount amount={amount() || 0n} /></SmallHeader>
-        </VStack>
+        <StyledRadioGroup accent="white" value={props.source} onValueChange={props.setSource} choices={methods()} />
     )
 }
 
@@ -89,62 +82,18 @@ function DestinationShower(props: {
     clearAll: () => void,
 }) {
     return (
-        <VStack>
-            <SmallHeader>Destination</SmallHeader>
-            <div class="flex gap-2 items-center">
-                <Show when={props.address && props.source === "onchain"}>
-                    <code class="truncate text-sm break-all">{"Address: "} {props.address}
-                        <Show when={props.description}>
-                            <br />
-                            {"Description:"} {props.description}
-                        </Show>
-                    </code>
-                </Show>
-                <Show when={props.invoice && props.source === "lightning"}>
-                    <code class="truncate text-sm break-all">{"Invoice: "} {props.invoice?.bolt11}
-                        <Show when={props.description}>
-                            <br />
-                            {"Description:"} {props.description}
-                        </Show>
-                    </code>
-                </Show>
-                <Show when={props.nodePubkey && props.source === "lightning"}>
-                    <code class="truncate text-sm break-all">{"Node Pubkey: "} {props.nodePubkey}
+        <Switch>
+            <Match when={props.address && props.source === "onchain"}>
+                <StringShower text={props.address || ""} />
+            </Match>
+            <Match when={props.invoice && props.source === "lightning"}>
+                <StringShower text={props.invoice?.bolt11 || ""} />
+            </Match>
+            <Match when={props.nodePubkey && props.source === "lightning"}>
+                <StringShower text={props.nodePubkey || ""} />
+            </Match>
+        </Switch>
 
-                    </code>
-                </Show>
-                <Button class="flex-0" intent="glowy" layout="xs" onClick={props.clearAll}>Clear</Button>
-            </div>
-        </VStack>
-    )
-}
-
-function AmountThing(props: { invoice?: MutinyInvoice, amountSats: bigint, fakeFee: bigint, setAmountSats: (amount: bigint) => void }) {
-    return (
-        <VStack>
-            <SmallHeader>Amount</SmallHeader>
-
-            <div class="flex gap-2 items-center">
-                {/* if the amount came with the invoice we can't allow setting it */}
-                <Show when={!(props.invoice?.amount_sats)} fallback={<Amount amountSats={props.amountSats} showFiat />}>
-                    <AmountEditable initialAmountSats={props.amountSats.toString()} setAmountSats={props.setAmountSats} />
-                </Show>
-                <div class="bg-white/10 px-4 py-2 rounded-xl">
-                    <div class="flex gap-2 items-center">
-                        <h2 class="text-neutral-400 font-semibold uppercase">+ Fee</h2>
-                        <h3 class="text-xl font-light text-neutral-300">
-                            {props.fakeFee.toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
-                        </h3>
-                    </div>
-                    <div class="flex gap-2 items-center">
-                        <h2 class="font-semibold uppercase text-white">Total</h2>
-                        <h3 class="text-xl font-light text-white">
-                            {(props.amountSats.valueOf() + props.fakeFee.valueOf()).toLocaleString()}&nbsp;<span class='text-lg'>SATS</span>
-                        </h3>
-                    </div>
-                </div>
-            </div>
-        </VStack>
     )
 }
 
@@ -160,7 +109,7 @@ function SendTags() {
     })
 
     return (
-        <TagEditor title="Tag the receiver" values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it going to?" />
+        <TagEditor values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it going to?" />
     )
 }
 
@@ -170,9 +119,8 @@ export default function Send() {
     const navigate = useNavigate()
 
     // These can only be set by the user
-    const [fieldDestination, setFieldDestination] = createSignal(TEST_DEST);
+    const [fieldDestination, setFieldDestination] = createSignal("");
     const [destination, setDestination] = createSignal<ParsedParams>();
-    const [privateLabel, setPrivateLabel] = createSignal("");
 
     // These can be derived from the "destination" signal or set by the user
     const [amountSats, setAmountSats] = createSignal(0n);
@@ -190,7 +138,6 @@ export default function Send() {
 
     function clearAll() {
         setDestination(undefined);
-        setPrivateLabel("");
         setAmountSats(0n);
         setSource("lightning");
         setInvoice(undefined);
@@ -281,7 +228,7 @@ export default function Send() {
         try {
             setSending(true);
             const bolt11 = invoice()?.bolt11;
-            let sentDetails: Partial<SentDetails> = {};
+            const sentDetails: Partial<SentDetails> = {};
             if (source() === "lightning" && invoice() && bolt11) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = nodes[0] as string || ""
@@ -367,12 +314,16 @@ export default function Send() {
                     <VStack biggap>
                         <Switch>
                             <Match when={address() || invoice() || nodePubkey()}>
-                                <SendTags />
-                                <DestinationShower source={source()} description={description()} invoice={invoice()} address={address()} nodePubkey={nodePubkey()} clearAll={clearAll} />
                                 <Show when={address() && invoice()}>
                                     <MethodChooser source={source()} setSource={setSource} />
                                 </Show>
-                                <AmountThing amountSats={amountSats()} invoice={invoice()} fakeFee={fakeFee()} setAmountSats={setAmountSats} />
+                                <Card>
+                                    <VStack>
+                                        <DestinationShower source={source()} description={description()} invoice={invoice()} address={address()} nodePubkey={nodePubkey()} clearAll={clearAll} />
+                                        <SendTags />
+                                    </VStack>
+                                </Card>
+                                <AmountCard amountSats={amountSats().toString()} setAmountSats={setAmountSats} fee={fakeFee().toString()} isAmountEditable={!(invoice()?.amount_sats)} />
                             </Match>
                             <Match when={true}>
                                 <DestinationInput fieldDestination={fieldDestination()} setFieldDestination={setFieldDestination} handleDecode={handleDecode} handlePaste={handlePaste} />
