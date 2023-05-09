@@ -46,10 +46,13 @@ const SubtleText: ParentComponent = (props) => {
     return <h3 class='text-xs text-gray-500 uppercase'>{props.children}</h3>
 }
 
-function OnChainItem(props: { item: OnChainTx }) {
+function OnChainItem(props: { item: OnChainTx, labels: string[] }) {
+    const [store, actions] = useMegaStore();
     const isReceive = createMemo(() => props.item.received > 0);
 
     const [open, setOpen] = createSignal(false)
+
+
 
     return (
         <>
@@ -58,9 +61,10 @@ function OnChainItem(props: { item: OnChainTx }) {
                     Mempool Link
                 </a>
             </JsonModal>
+            {JSON.stringify(props.labels)}
             <ActivityItem
                 kind={"onchain"}
-                labels={[]}
+                labels={props.labels}
                 amount={isReceive() ? props.item.received : props.item.sent}
                 date={props.item.confirmation_time?.Confirmed?.time}
                 positive={isReceive()}
@@ -85,10 +89,19 @@ function OnChainItem(props: { item: OnChainTx }) {
     )
 }
 
-function InvoiceItem(props: { item: MutinyInvoice }) {
+function InvoiceItem(props: { item: MutinyInvoice, labels: string[] }) {
+    const [store, actions] = useMegaStore();
     const isSend = createMemo(() => props.item.is_send);
 
     const [open, setOpen] = createSignal(false)
+
+    const labels = createMemo(() => {
+        const labels = store.mutiny_wallet?.get_address_labels();
+        console.log(labels);
+        if (!labels) return ["abcdefg"];
+        return labels;
+        // return labels.filter((label) => label.address === props.item.txid)
+    })
 
     return (
         <>
@@ -145,92 +158,6 @@ function Utxo(props: { item: UtxoItem }) {
     )
 }
 
-export function Activity() {
-    const [state, _] = useMegaStore();
-
-    const getTransactions = async () => {
-        console.log("Getting onchain txs");
-        const txs = await state.mutiny_wallet?.list_onchain() as OnChainTx[];
-        return txs.reverse();
-    }
-
-    const getInvoices = async () => {
-        console.log("Getting invoices");
-        const invoices = await state.mutiny_wallet?.list_invoices() as MutinyInvoice[];
-        return invoices.filter((inv) => inv.paid).reverse();
-    }
-
-    const getUtXos = async () => {
-        console.log("Getting utxos");
-        const utxos = await state.mutiny_wallet?.list_utxos() as UtxoItem[];
-        return utxos;
-    }
-
-    const [transactions, { refetch: _refetchTransactions }] = createResource(getTransactions);
-    const [invoices, { refetch: _refetchInvoices }] = createResource(getInvoices);
-    const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos);
-
-    return (
-        <VStack>
-            <Suspense>
-                <Card title="On-chain">
-                    <Switch>
-                        <Match when={transactions.loading}>
-                            <LoadingSpinner wide />
-                        </Match>
-                        <Match when={transactions.state === "ready" && transactions().length === 0}>
-                            <code>No transactions (empty state)</code>
-                        </Match>
-                        <Match when={transactions.state === "ready" && transactions().length >= 0}>
-                            <For each={transactions()}>
-                                {(tx) =>
-                                    <OnChainItem item={tx} />
-                                }
-                            </For>
-                        </Match>
-                    </Switch>
-                </Card>
-                <Card title="Lightning">
-                    <Switch>
-                        <Match when={invoices.loading}>
-                            <LoadingSpinner wide />
-                        </Match>
-                        <Match when={invoices.state === "ready" && invoices().length === 0}>
-                            <code>No invoices (empty state)</code>
-                        </Match>
-                        <Match when={invoices.state === "ready" && invoices().length >= 0}>
-                            <For each={invoices()}>
-                                {(invoice) =>
-                                    <InvoiceItem item={invoice} />
-                                }
-                            </For>
-                        </Match>
-                    </Switch>
-                </Card>
-                <Card title="UTXOs">
-                    <Switch>
-                        <Match when={utxos.loading}>
-                            <LoadingSpinner wide />
-                        </Match>
-                        <Match when={utxos.state === "ready" && utxos().length === 0}>
-                            <code>No utxos (empty state)</code>
-                        </Match>
-                        <Match when={utxos.state === "ready" && utxos().length >= 0}>
-                            <For each={utxos()}>
-                                {(utxo) =>
-                                    <Utxo item={utxo} />
-                                }
-                            </For>
-                        </Match>
-                    </Switch>
-                    <ButtonLink href="/redshift" layout="small" class="flex items-center gap-2 self-center hover:text-m-red">Redshift <img src={wave} class="h-4" alt="redshift"></img></ButtonLink>
-                </Card>
-            </Suspense>
-        </VStack>
-    )
-
-}
-
 type ActivityItem = { type: "onchain" | "lightning", item: OnChainTx | MutinyInvoice, time: number }
 
 function sortByTime(a: ActivityItem, b: ActivityItem) {
@@ -267,6 +194,21 @@ export function CombinedActivity(props: { limit?: number }) {
 
     const [activity] = createResource(getAllActivity);
 
+    const addressLabels = createMemo(() => {
+        const labels = state.mutiny_wallet?.get_address_labels();
+        console.log(labels);
+        return labels || [];
+        // return labels.filter((label) => label.address === props.item.txid)
+    })
+
+    const invoiceLabels = createMemo(() => {
+        const labels = state.mutiny_wallet?.get_address_labels();
+        console.log(labels);
+        if (!labels) return ["abcdefg"];
+        return labels;
+        // return labels.filter((label) => label.address === props.item.txid)
+    })
+
     return (
         <Switch>
             <Match when={activity.loading}>
@@ -280,10 +222,12 @@ export function CombinedActivity(props: { limit?: number }) {
                     {(activityItem) =>
                         <Switch>
                             <Match when={activityItem.type === "onchain"}>
-                                <OnChainItem item={activityItem.item as OnChainTx} />
+                                {/* FIXME */}
+                                <OnChainItem item={activityItem.item as OnChainTx} labels={[]} />
                             </Match>
                             <Match when={activityItem.type === "lightning"}>
-                                <InvoiceItem item={activityItem.item as MutinyInvoice} />
+                                {/* FIXME */}
+                                <InvoiceItem item={activityItem.item as MutinyInvoice} labels={[]} />
                             </Match>
                         </Switch>
                     }

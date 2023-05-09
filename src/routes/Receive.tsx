@@ -51,6 +51,10 @@ type ReceiveFlavor = "unified" | "lightning" | "onchain"
 type ReceiveState = "edit" | "show" | "paid"
 type PaidState = "lightning_paid" | "onchain_paid";
 
+function tagItemsToLabels(items: TagItem[]) {
+    return items.map(item => item.kind === "contact" ? item.id : item.name)
+}
+
 export default function Receive() {
     const [state, _] = useMegaStore()
     const navigate = useNavigate();
@@ -103,9 +107,11 @@ export default function Receive() {
 
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
+        console.log(selectedValues());
+        console.log(tagItemsToLabels(selectedValues()))
         try {
             // FIXME: actual labels
-            const raw = await state.mutiny_wallet?.create_bip21(bigAmount, []);
+            const raw = await state.mutiny_wallet?.create_bip21(bigAmount, tagItemsToLabels(selectedValues()));
             // Save the raw info so we can watch the address and invoice
             setBip21Raw(raw);
 
