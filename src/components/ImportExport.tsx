@@ -12,7 +12,7 @@ export function ImportExport() {
     const [state, _] = useMegaStore()
 
     async function handleSave() {
-        let json = await state.node_manager?.export_json()
+        const json = await state.node_manager?.export_json()
         downloadTextFile(json || "", "mutiny-state.json")
     }
 

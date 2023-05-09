@@ -1,7 +1,7 @@
 import { MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { createEffect, createMemo, createResource, createSignal, For, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { Button, Card, Indicator, LargeHeader, NodeManagerGuard, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, Card, Indicator, LargeHeader, NodeManagerGuard, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
@@ -185,7 +185,7 @@ export default function Receive() {
                                 </Card>
 
                                 <div class="flex-1" />
-                                <Button class="w-full flex-grow-0 mb-4" style="" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Invoice</Button>
+                                <Button class="w-full flex-grow-0 mb-4" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Invoice</Button>
                             </div>
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>

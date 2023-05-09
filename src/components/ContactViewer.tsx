@@ -5,6 +5,7 @@ import close from "~/assets/icons/close.svg";
 import { SubmitHandler } from '@modular-forms/solid';
 import { ContactItem } from '~/state/contacts';
 import { ContactForm } from './ContactForm';
+import { showToast } from './Toaster';
 
 export function ContactViewer(props: { contact: ContactItem, gradient: string, saveContact: (contact: ContactItem) => void }) {
     const [isOpen, setIsOpen] = createSignal(false);
@@ -58,7 +59,7 @@ export function ContactViewer(props: { contact: ContactItem, gradient: string, s
 
                                     <div class="flex w-full gap-2">
                                         <Button layout="flex" intent="green" onClick={() => setIsEditing(true)}>Edit</Button>
-                                        <Button intent="blue" onClick={() => { }}>Pay</Button>
+                                        <Button intent="blue" onClick={() => { showToast({ title: "Unimplemented", description: "We don't do that yet" }) }}>Pay</Button>
                                     </div>
                                 </div>
                             </Match>

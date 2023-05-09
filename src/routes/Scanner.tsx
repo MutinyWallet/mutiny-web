@@ -1,5 +1,5 @@
 import Reader from "~/components/Reader";
-import { createEffect, createSignal, onMount, Show } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 import { useNavigate } from "solid-start";
 import { Button } from "~/components/layout";
 import init, { PaymentParams } from "@mutinywallet/waila-wasm";
@@ -76,12 +76,8 @@ export default function Scanner() {
         });
     }
 
-    let waila;
-
-    onMount(() => {
-        init().then((w) => {
-            waila = w;
-        });
+    onMount(async () => {
+        await init()
     })
 
     // When we have a nice result we can head over to the send screen
