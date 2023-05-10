@@ -7,9 +7,9 @@ const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
 const DIALOG_CONTENT = "w-[80vw] max-w-[400px] p-4 bg-gray/50 backdrop-blur-md shadow-xl rounded-xl border border-white/10"
 
 // TODO: implement this like toast so it's just one global confirm and I can call it with `confirm({ title: "Are you sure?", description: "This will delete your node" })`
-export const ConfirmDialog: ParentComponent<{ isOpen: boolean; loading: boolean; onCancel: () => void, onConfirm: () => void }> = (props) => {
+export const ConfirmDialog: ParentComponent<{ open: boolean; loading: boolean; onCancel: () => void, onConfirm: () => void }> = (props) => {
     return (
-        <Dialog.Root isOpen={props.isOpen} onOpenChange={props.onCancel}>
+        <Dialog.Root open={props.open} onOpenChange={props.onCancel}>
             <Dialog.Portal>
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>

@@ -26,7 +26,7 @@ export function ContactEditor(props: { createContact: (contact: ContactItem) => 
     const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
-        <Dialog.Root isOpen={isOpen()}>
+        <Dialog.Root open={isOpen()}>
             <Switch>
                 <Match when={props.list}>
                     <button onClick={() => setIsOpen(true)} class="flex flex-col items-center gap-2">

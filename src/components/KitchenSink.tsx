@@ -167,7 +167,7 @@ function ChannelItem(props: { channel: MutinyChannel, network?: string }) {
                     <Button intent="glowy" layout="xs" onClick={handleCloseChannel}>Close Channel</Button>
 
                 </VStack>
-                <ConfirmDialog isOpen={confirmOpen()} onConfirm={confirmCloseChannel} onCancel={() => setConfirmOpen(false)} loading={confirmLoading()}>
+                <ConfirmDialog open={confirmOpen()} onConfirm={confirmCloseChannel} onCancel={() => setConfirmOpen(false)} loading={confirmLoading()}>
                     <p>Are you sure you want to close this channel?</p>
                 </ConfirmDialog>
             </Collapsible.Content>

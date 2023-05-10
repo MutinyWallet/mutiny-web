@@ -53,7 +53,7 @@ export function DeleteEverything() {
     return (
         <>
             <Button onClick={confirmReset}>Delete Everything</Button>
-            <ConfirmDialog loading={confirmLoading()} isOpen={confirmOpen()} onConfirm={resetNode} onCancel={() => setConfirmOpen(false)}>
+            <ConfirmDialog loading={confirmLoading()} open={confirmOpen()} onConfirm={resetNode} onCancel={() => setConfirmOpen(false)}>
                 This will delete your node's state. This can't be undone!
             </ConfirmDialog>
         </>

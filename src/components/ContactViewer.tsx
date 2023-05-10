@@ -20,7 +20,7 @@ export function ContactViewer(props: { contact: ContactItem, gradient: string, s
     const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
-        <Dialog.Root isOpen={isOpen()}>
+        <Dialog.Root open={isOpen()}>
             <button onClick={() => setIsOpen(true)} class="flex flex-col items-center gap-2 w-16 flex-shrink-0 overflow-x-hidden">
                 <div class="flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase border-t border-b border-t-white/50 border-b-white/10"
                     style={{ background: props.gradient }}

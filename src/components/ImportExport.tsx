@@ -67,7 +67,7 @@ export function ImportExport() {
                     <Button onClick={uploadFile}>Upload Saved State</Button>
                 </VStack>
             </InnerCard>
-            <ConfirmDialog loading={confirmLoading()} isOpen={confirmOpen()} onConfirm={importJson} onCancel={() => setConfirmOpen(false)}>
+            <ConfirmDialog loading={confirmLoading()} open={confirmOpen()} onConfirm={importJson} onCancel={() => setConfirmOpen(false)}>
                 Do you want to replace your state with {files()[0].name}?
             </ConfirmDialog>
         </>

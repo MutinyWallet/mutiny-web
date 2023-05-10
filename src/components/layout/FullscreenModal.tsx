@@ -18,7 +18,7 @@ type FullscreenModalProps = {
 
 export function FullscreenModal(props: FullscreenModalProps) {
     return (
-        <Dialog.Root isOpen={props.open} onOpenChange={(isOpen) => props.setOpen(isOpen)}>
+        <Dialog.Root open={props.open} onOpenChange={(isOpen) => props.setOpen(isOpen)}>
             <Dialog.Portal>
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
