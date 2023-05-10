@@ -4,7 +4,7 @@ import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
 import { LoadingSpinner } from ".";
 
-const button = cva("p-3 rounded-xl  font-semibold disabled:opacity-50 disabled:grayscale transition", {
+const button = cva("p-3 rounded-xl font-semibold disabled:opacity-50 disabled:grayscale transition", {
     variants: {
         // TODO: button hover has to work different than buttonlinks (like disabled state)
         intent: {
@@ -32,7 +32,8 @@ const button = cva("p-3 rounded-xl  font-semibold disabled:opacity-50 disabled:g
 
 type StyleProps = VariantProps<typeof button>
 interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement>, StyleProps {
-    loading?: boolean
+    loading?: boolean,
+    disabled?: boolean,
 }
 
 export const Button: ParentComponent<ButtonProps> = props => {
@@ -42,6 +43,7 @@ export const Button: ParentComponent<ButtonProps> = props => {
     return (
         <button
             {...attrs}
+            disabled={props.disabled || props.loading}
             class={button({
                 class: local.class || "",
                 intent: local.intent,
