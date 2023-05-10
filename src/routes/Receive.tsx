@@ -52,7 +52,9 @@ type ReceiveState = "edit" | "show" | "paid"
 type PaidState = "lightning_paid" | "onchain_paid";
 
 function tagItemsToLabels(items: TagItem[]) {
-    return items.map(item => item.kind === "contact" ? item.id : item.name)
+    const labels = items.map(item => item.kind === "contact" ? item.id : item.name)
+    console.log("Labels", labels)
+    return labels;
 }
 
 export default function Receive() {

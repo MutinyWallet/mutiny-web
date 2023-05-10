@@ -11,8 +11,8 @@ dependencies:
     specifier: ^0.13.2
     version: 0.13.2(solid-js@1.7.5)
   '@mutinywallet/mutiny-wasm':
-    specifier: ^0.3.0
-    version: 0.3.0
+    specifier: ^0.3.1
+    version: 0.3.1
   '@mutinywallet/waila-wasm':
     specifier: ^0.1.5
     version: 0.1.5
@@ -52,8 +52,8 @@ dependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^18.16.6
-    version: 18.16.6
+    specifier: ^18.16.7
+    version: 18.16.7
   '@typescript-eslint/eslint-plugin':
     specifier: ^5.59.5
     version: 5.59.5(@typescript-eslint/parser@5.59.5)(eslint@8.40.0)(typescript@4.9.5)
@@ -95,7 +95,7 @@ devDependencies:
     version: 4.9.5
   vite:
     specifier: ^4.3.5
-    version: 4.3.5(@types/node@18.16.6)
+    version: 4.3.5(@types/node@18.16.7)
   vite-plugin-pwa:
     specifier: ^0.14.7
     version: 0.14.7(vite@4.3.5)(workbox-build@6.5.4)(workbox-window@6.5.4)
@@ -1625,8 +1625,8 @@ packages:
       solid-js: 1.7.5
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.3.0:
-    resolution: {integrity: sha512-K+u2u/XMX1269U8af3T/ZvS+SzzrQcVYrdMi420dWCa14gke0vPWbGp+01zN7SCqBL4jp929emHTUZ4YBEpkzQ==}
+  /@mutinywallet/mutiny-wasm@0.3.1:
+    resolution: {integrity: sha512-TSOU0ttNZuAmiP7ZymyW6bgWpUk/6F/++YOEDfymkcIKsEWhhITNGcAVFPHzZQP/dLU7leoR3puHauKjoDa8lQ==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.1.5:
@@ -1982,8 +1982,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/node@18.16.6:
-    resolution: {integrity: sha512-N7KINmeB8IN3vRR8dhgHEp+YpWvGFcpDoh5XZ8jB5a00AdFKCKEyyGTOPTddUf4JqU1ZKTVxkOxakDvchNVI2Q==}
+  /@types/node@18.16.7:
+    resolution: {integrity: sha512-MFg7ua/bRtnA1hYE3pVyWxGd/r7aMqjNOdHvlSsXV3n8iaeGKkOaPzpJh6/ovf4bEXWcojkeMJpTsq3mzXW4IQ==}
 
   /@types/offscreencanvas@2019.7.0:
     resolution: {integrity: sha512-PGcyveRIpL1XIqK8eBsmRBt76eFgtzuPiSTyKHZxnGemp2yzGzWpjYKAfK3wIMiU7eH+851yEpiuP8JZerTmWg==}
@@ -1992,7 +1992,7 @@ packages:
   /@types/resolve@1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 18.16.6
+      '@types/node': 18.16.7
     dev: true
 
   /@types/resolve@1.20.2:
@@ -2370,7 +2370,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001486
-      electron-to-chromium: 1.4.388
+      electron-to-chromium: 1.4.389
       node-releases: 2.0.10
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
 
@@ -2653,8 +2653,8 @@ packages:
       jake: 10.8.5
     dev: true
 
-  /electron-to-chromium@1.4.388:
-    resolution: {integrity: sha512-xZ0y4zjWZgp65okzwwt00f2rYibkFPHUv9qBz+Vzn8cB9UXIo9Zc6Dw81LJYhhNt0G/vR1OJEfStZ49NKl0YxQ==}
+  /electron-to-chromium@1.4.389:
+    resolution: {integrity: sha512-WDgWUOK8ROR7sDFyYmxCUOoDc50lPgYAHAHwnnD1iN3SKO/mpqftb9iIPiEkMKmqYdkrR0j3N/O+YB/U7lSxwg==}
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3803,7 +3803,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.16.6
+      '@types/node': 18.16.7
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -4613,7 +4613,7 @@ packages:
       solid-start: 0.2.26(@solidjs/meta@0.28.5)(@solidjs/router@0.8.2)(solid-js@1.7.5)(solid-start-node@0.2.26)(vite@4.3.5)
       terser: 5.17.3
       undici: 5.22.0
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
     transitivePeerDependencies:
       - supports-color
 
@@ -4683,7 +4683,7 @@ packages:
       solid-start-node: 0.2.26(solid-start@0.2.26)(undici@5.22.0)(vite@4.3.5)
       terser: 5.17.3
       undici: 5.22.0
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
       vite-plugin-inspect: 0.7.26(rollup@3.21.6)(vite@4.3.5)
       vite-plugin-solid: 2.7.0(solid-js@1.7.5)(vite@4.3.5)
       wait-on: 6.0.1(debug@4.3.4)
@@ -5092,7 +5092,7 @@ packages:
       fs-extra: 11.1.1
       picocolors: 1.0.0
       sirv: 2.0.3
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -5109,7 +5109,7 @@ packages:
       fast-glob: 3.2.12
       pretty-bytes: 6.1.0
       rollup: 3.21.6
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
       workbox-build: 6.5.4
       workbox-window: 6.5.4
     transitivePeerDependencies:
@@ -5129,7 +5129,7 @@ packages:
       merge-anything: 5.1.6
       solid-js: 1.7.5
       solid-refresh: 0.5.2(solid-js@1.7.5)
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
       vitefu: 0.2.4(vite@4.3.5)
     transitivePeerDependencies:
       - supports-color
@@ -5139,10 +5139,10 @@ packages:
     peerDependencies:
       vite: ^2 || ^3 || ^4
     dependencies:
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
     dev: true
 
-  /vite@4.3.5(@types/node@18.16.6):
+  /vite@4.3.5(@types/node@18.16.7):
     resolution: {integrity: sha512-0gEnL9wiRFxgz40o/i/eTBwm+NEbpUeTWhzKrZDSdKm6nplj+z4lKz8ANDgildxHm47Vg8EUia0aicKbawUVVA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -5167,7 +5167,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.16.6
+      '@types/node': 18.16.7
       esbuild: 0.17.18
       postcss: 8.4.23
       rollup: 3.21.6
@@ -5182,7 +5182,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 4.3.5(@types/node@18.16.6)
+      vite: 4.3.5(@types/node@18.16.7)
 
   /wait-on@6.0.1(debug@4.3.4):
     resolution: {integrity: sha512-zht+KASY3usTY5u2LgaNqn/Cd8MukxLGjdcZxT2ns5QzDmTFc4XoWBgC+C/na+sMRZTuVygQoMYwdcVjHnYIVw==}

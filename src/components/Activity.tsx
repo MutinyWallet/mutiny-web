@@ -28,7 +28,8 @@ export type OnChainTx = {
             height: number
             time: number
         }
-    }
+    },
+    labels: string[]
 }
 
 export type UtxoItem = {
@@ -52,8 +53,6 @@ function OnChainItem(props: { item: OnChainTx, labels: string[] }) {
 
     const [open, setOpen] = createSignal(false)
 
-
-
     return (
         <>
             <JsonModal open={open()} data={props.item} title="On-Chain Transaction" setOpen={setOpen}>
@@ -61,7 +60,7 @@ function OnChainItem(props: { item: OnChainTx, labels: string[] }) {
                     Mempool Link
                 </a>
             </JsonModal>
-            {JSON.stringify(props.labels)}
+            {/* {JSON.stringify(props.labels)} */}
             <ActivityItem
                 kind={"onchain"}
                 labels={props.labels}
@@ -95,18 +94,10 @@ function InvoiceItem(props: { item: MutinyInvoice, labels: string[] }) {
 
     const [open, setOpen] = createSignal(false)
 
-    const labels = createMemo(() => {
-        const labels = store.mutiny_wallet?.get_address_labels();
-        console.log(labels);
-        if (!labels) return ["abcdefg"];
-        return labels;
-        // return labels.filter((label) => label.address === props.item.txid)
-    })
-
     return (
         <>
             <JsonModal open={open()} data={props.item} title="Lightning Transaction" setOpen={setOpen} />
-            <ActivityItem kind={"lightning"} labels={[]} amount={props.item.amount_sats || 0n} date={props.item.last_updated} positive={!isSend()} onClick={() => setOpen(!open())} />
+            <ActivityItem kind={"lightning"} labels={props.labels} amount={props.item.amount_sats || 0n} date={props.item.last_updated} positive={!isSend()} onClick={() => setOpen(!open())} />
             {/* <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
                 <div class="flex items-center">
                     {isSend() ? <img src={send} alt="send arrow" /> : <img src={receive} alt="receive arrow" />}
@@ -194,20 +185,20 @@ export function CombinedActivity(props: { limit?: number }) {
 
     const [activity] = createResource(getAllActivity);
 
-    const addressLabels = createMemo(() => {
-        const labels = state.mutiny_wallet?.get_address_labels();
-        console.log(labels);
-        return labels || [];
-        // return labels.filter((label) => label.address === props.item.txid)
-    })
+    // const addressLabels = createMemo(() => {
+    //     const labels = state.mutiny_wallet?.get_address_labels();
+    //     console.log(labels);
+    //     return labels || [];
+    //     // return labels.filter((label) => label.address === props.item.txid)
+    // })
 
-    const invoiceLabels = createMemo(() => {
-        const labels = state.mutiny_wallet?.get_address_labels();
-        console.log(labels);
-        if (!labels) return ["abcdefg"];
-        return labels;
-        // return labels.filter((label) => label.address === props.item.txid)
-    })
+    // const invoiceLabels = createMemo(() => {
+    //     const labels = state.mutiny_wallet?.get_address_labels();
+    //     console.log(labels);
+    //     if (!labels) return ["abcdefg"];
+    //     return labels;
+    //     // return labels.filter((label) => label.address === props.item.txid)
+    // })
 
     return (
         <Switch>
@@ -223,11 +214,11 @@ export function CombinedActivity(props: { limit?: number }) {
                         <Switch>
                             <Match when={activityItem.type === "onchain"}>
                                 {/* FIXME */}
-                                <OnChainItem item={activityItem.item as OnChainTx} labels={[]} />
+                                <OnChainItem item={activityItem.item as OnChainTx} labels={activityItem.item.labels} />
                             </Match>
                             <Match when={activityItem.type === "lightning"}>
                                 {/* FIXME */}
-                                <InvoiceItem item={activityItem.item as MutinyInvoice} labels={[]} />
+                                <InvoiceItem item={activityItem.item as MutinyInvoice} labels={activityItem.item.labels} />
                             </Match>
                         </Switch>
                     }
