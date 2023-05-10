@@ -235,16 +235,19 @@ export default function Send() {
                 sentDetails.destination = bolt11;
                 // If the invoice has sats use that, otherwise we pass the user-defined amount
                 if (invoice()?.amount_sats) {
-                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11);
+                    // FIXME: labels
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, undefined, []);
                     sentDetails.amount = invoice()?.amount_sats;
                 } else {
-                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, amountSats());
+                    // FIXME: labels
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, amountSats(), []);
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "lightning" && nodePubkey()) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = nodes[0] as string || ""
-                const payment = await state.mutiny_wallet?.keysend(firstNode, nodePubkey()!, amountSats());
+                // FIXME: labels
+                const payment = await state.mutiny_wallet?.keysend(firstNode, nodePubkey()!, amountSats(), []);
                 console.log(payment?.value)
 
                 // TODO: handle timeouts
