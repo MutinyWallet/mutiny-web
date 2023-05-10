@@ -26,15 +26,14 @@ export function OnboardWarning() {
                     <div class="self-center">
                         <img src={restore} alt="backup" class="w-8 h-8" />
                     </div>
-                    <div class='flex items-center gap-4'>
+                    <div class='flex md:flex-row flex-col items-center gap-4'>
                         <div class="flex flex-col">
                             <SmallHeader>Welcome!</SmallHeader>
                             <p class="text-base font-light">
                                 If you've used Mutiny before you can restore from a backup. Otherwise you can skip this and enjoy your new wallet!
                             </p>
                         </div>
-                        <Button intent="green" layout="xs" onClick={() => { showToast({ title: "Unimplemented", description: "We don't do that yet" }) }}>Restore</Button>
-
+                        <Button intent="green" layout="xs" class="self-start md:self-auto" onClick={() => { showToast({ title: "Unimplemented", description: "We don't do that yet" }) }}>Restore</Button>
                     </div>
                     <button tabindex="-1" onClick={() => { actions.dismissRestorePrompt() }} class="self-center hover:bg-white/10 rounded-lg active:bg-m-blue w-8">
                         <img src={close} alt="Close" />
@@ -46,15 +45,14 @@ export function OnboardWarning() {
                     <div class="self-center">
                         <img src={save} alt="backup" class="w-8 h-8" />
                     </div>
-                    <div class='flex items-center gap-4'>
+                    <div class='flex md:flex-row flex-col items-center gap-4'>
                         <div class="flex flex-col">
                             <SmallHeader>Secure your funds</SmallHeader>
                             <p class="text-base font-light">
                                 You have money stored in this browser. Let's make sure you have a backup.
                             </p>
                         </div>
-                        <ButtonLink intent="blue" layout="xs" href="/backup">Backup</ButtonLink>
-
+                        <ButtonLink intent="blue" layout="xs" class="self-start md:self-auto" href="/backup">Backup</ButtonLink>
                     </div>
                     <button tabindex="-1" onClick={() => { setDismissedBackup(true) }} class="self-center hover:bg-white/10 rounded-lg active:bg-m-blue w-8">
                         <img src={close} alt="Close" />
