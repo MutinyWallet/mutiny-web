@@ -1,6 +1,6 @@
 import logo from '~/assets/icons/mutiny-logo.svg';
-import { DefaultMain, SafeArea, VStack, Card, FullscreenLoader } from "~/components/layout";
-import BalanceBox from "~/components/BalanceBox";
+import { DefaultMain, SafeArea, VStack, Card, LoadingSpinner } from "~/components/layout";
+import BalanceBox, { LoadingShimmer } from "~/components/BalanceBox";
 import NavBar from "~/components/NavBar";
 import ReloadPrompt from "~/components/Reload";
 import { A } from 'solid-start';
@@ -28,7 +28,7 @@ export default function App() {
                 <Card title="Activity">
                     <div class="p-1" />
                     <VStack>
-                        <Show when={!state.wallet_loading} fallback={<FullscreenLoader />}>
+                        <Show when={!state.wallet_loading} fallback={<LoadingShimmer />}>
                             <CombinedActivity limit={3} />
                         </Show>
                         {/* <ButtonLink href="/activity">View All</ButtonLink> */}

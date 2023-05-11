@@ -6,6 +6,7 @@ import { createStore } from "solid-js/store";
 import { MutinyWalletSettingStrings, setupMutinyWallet } from "~/logic/mutinyWalletSetup";
 import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ParsedParams } from "~/routes/Scanner";
+import { MutinyTagItem } from "~/utils/tags";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -33,6 +34,7 @@ export type MegaStore = [{
     sync(): Promise<void>;
     dismissRestorePrompt(): void;
     setHasBackedUp(): void;
+    listTags(): Promise<MutinyTagItem[]>;
 }];
 
 export const Provider: ParentComponent = (props) => {
@@ -119,6 +121,9 @@ export const Provider: ParentComponent = (props) => {
         dismissRestorePrompt() {
             localStorage.setItem("dismissed_restore_prompt", "true")
             setState({ dismissed_restore_prompt: true })
+        },
+        async listTags(): Promise<MutinyTagItem[]> {
+            return state.mutiny_wallet?.get_tag_items() as MutinyTagItem[]
         }
     };
 

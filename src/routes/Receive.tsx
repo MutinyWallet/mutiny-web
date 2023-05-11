@@ -14,10 +14,10 @@ import { StyledRadioGroup } from "~/components/layout/Radio";
 import { showToast } from "~/components/Toaster";
 import { useNavigate } from "solid-start";
 import megacheck from "~/assets/icons/megacheck.png";
-import { TagItem, listTags } from "~/state/contacts";
 import { AmountCard } from "~/components/AmountCard";
 import { ShareCard } from "~/components/ShareCard";
 import { BackButton } from "~/components/layout/BackButton";
+import { MutinyTagItem, UNKNOWN_TAG, sortByLastUsed, tagsToIds } from "~/utils/tags";
 
 type OnChainTx = {
     transaction: {
@@ -43,22 +43,14 @@ type OnChainTx = {
     }
 }
 
-const createUniqueId = () => Math.random().toString(36).substr(2, 9);
-
 const RECEIVE_FLAVORS = [{ value: "unified", label: "Unified", caption: "Sender decides" }, { value: "lightning", label: "Lightning", caption: "Fast and cool" }, { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }]
 
 type ReceiveFlavor = "unified" | "lightning" | "onchain"
 type ReceiveState = "edit" | "show" | "paid"
 type PaidState = "lightning_paid" | "onchain_paid";
 
-function tagItemsToLabels(items: TagItem[]) {
-    const labels = items.map(item => item.kind === "contact" ? item.id : item.name)
-    console.log("Labels", labels)
-    return labels;
-}
-
 export default function Receive() {
-    const [state, _] = useMegaStore()
+    const [state, actions] = useMegaStore()
     const navigate = useNavigate();
 
     const [amount, setAmount] = createSignal("")
@@ -68,8 +60,8 @@ export default function Receive() {
     const [shouldShowAmountEditor, setShouldShowAmountEditor] = createSignal(true)
 
     // Tagging stuff
-    const [selectedValues, setSelectedValues] = createSignal<TagItem[]>([]);
-    const [values, setValues] = createSignal<TagItem[]>([{ id: createUniqueId(), name: "Unknown", kind: "text" }]);
+    const [selectedValues, setSelectedValues] = createSignal<MutinyTagItem[]>([]);
+    const [values, setValues] = createSignal<MutinyTagItem[]>([UNKNOWN_TAG]);
 
     // The data we get after a payment
     const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
@@ -92,8 +84,8 @@ export default function Receive() {
     })
 
     onMount(() => {
-        listTags().then((tags) => {
-            setValues(prev => [...prev, ...tags || []])
+        actions.listTags().then((tags) => {
+            setValues(prev => [...prev, ...tags.sort(sortByLastUsed) || []])
         });
     })
 
@@ -109,11 +101,8 @@ export default function Receive() {
 
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
-        console.log(selectedValues());
-        console.log(tagItemsToLabels(selectedValues()))
         try {
-            // FIXME: actual labels
-            const raw = await state.mutiny_wallet?.create_bip21(bigAmount, tagItemsToLabels(selectedValues()));
+            const raw = await state.mutiny_wallet?.create_bip21(bigAmount, tagsToIds(selectedValues()));
             // Save the raw info so we can watch the address and invoice
             setBip21Raw(raw);
 

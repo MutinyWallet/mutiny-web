@@ -17,9 +17,9 @@ import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { BackLink } from "~/components/layout/BackLink";
 import { useNavigate } from "solid-start";
 import { TagEditor } from "~/components/TagEditor";
-import { TagItem, createUniqueId, listTags } from "~/state/contacts";
 import { StringShower } from "~/components/ShareCard";
 import { AmountCard } from "~/components/AmountCard";
+import { MutinyTagItem, UNKNOWN_TAG, sortByLastUsed, tagsToIds } from "~/utils/tags";
 
 type SendSource = "lightning" | "onchain";
 
@@ -97,23 +97,6 @@ function DestinationShower(props: {
     )
 }
 
-function SendTags() {
-    // Tagging stuff
-    const [selectedValues, setSelectedValues] = createSignal<TagItem[]>([]);
-    const [values, setValues] = createSignal<TagItem[]>([{ id: createUniqueId(), name: "Unknown", kind: "text" }]);
-
-    onMount(() => {
-        listTags().then((tags) => {
-            setValues(prev => [...prev, ...tags || []])
-        });
-    })
-
-    return (
-        <TagEditor values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it going to?" />
-    )
-}
-
-
 export default function Send() {
     const [state, actions] = useMegaStore();
     const navigate = useNavigate()
@@ -135,6 +118,10 @@ export default function Send() {
     // Is sending / sent
     const [sending, setSending] = createSignal(false);
     const [sentDetails, setSentDetails] = createSignal<SentDetails>();
+
+    // Tagging stuff
+    const [selectedValues, setSelectedValues] = createSignal<MutinyTagItem[]>([]);
+    const [values, setValues] = createSignal<MutinyTagItem[]>([UNKNOWN_TAG]);
 
     function clearAll() {
         setDestination(undefined);
@@ -158,6 +145,10 @@ export default function Send() {
             setDestination(state.scan_result);
             actions.setScanResult(undefined);
         }
+
+        actions.listTags().then((tags) => {
+            setValues(prev => [...prev, ...tags.sort(sortByLastUsed) || []])
+        });
     })
 
     // Rerun every time the destination changes
@@ -235,20 +226,16 @@ export default function Send() {
                 sentDetails.destination = bolt11;
                 // If the invoice has sats use that, otherwise we pass the user-defined amount
                 if (invoice()?.amount_sats) {
-                    // FIXME: labels
-                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, undefined, []);
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, undefined, tagsToIds(selectedValues()));
                     sentDetails.amount = invoice()?.amount_sats;
                 } else {
-                    // FIXME: labels
-                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, amountSats(), []);
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, amountSats(), tagsToIds(selectedValues()));
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "lightning" && nodePubkey()) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = nodes[0] as string || ""
-                // FIXME: labels
-                const payment = await state.mutiny_wallet?.keysend(firstNode, nodePubkey()!, amountSats(), []);
-                console.log(payment?.value)
+                const payment = await state.mutiny_wallet?.keysend(firstNode, nodePubkey()!, amountSats(), tagsToIds(selectedValues()));
 
                 // TODO: handle timeouts
                 if (!payment?.paid) {
@@ -257,9 +244,8 @@ export default function Send() {
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "onchain" && address()) {
-                // FIXME: actual labels
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), []);
+                const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), tagsToIds(selectedValues()));
                 sentDetails.amount = amountSats();
                 sentDetails.destination = address();
                 // TODO: figure out if this is necessary, it takes forever
@@ -323,7 +309,7 @@ export default function Send() {
                                 <Card>
                                     <VStack>
                                         <DestinationShower source={source()} description={description()} invoice={invoice()} address={address()} nodePubkey={nodePubkey()} clearAll={clearAll} />
-                                        <SendTags />
+                                        <TagEditor values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it going to?" />
                                     </VStack>
                                 </Card>
                                 <AmountCard amountSats={amountSats().toString()} setAmountSats={setAmountSats} fee={fakeFee().toString()} isAmountEditable={!(invoice()?.amount_sats)} />

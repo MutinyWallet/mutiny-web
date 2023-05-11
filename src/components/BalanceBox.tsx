@@ -11,7 +11,7 @@ function prettyPrintAmount(n?: number | bigint): string {
     return n.toLocaleString()
 }
 
-function LoadingShimmer() {
+export function LoadingShimmer() {
     return (<div class="flex flex-col gap-2 animate-pulse">
         <h1 class="text-4xl font-light">
             <div class="w-[12rem] rounded bg-neutral-700 h-[2.5rem]"></div>

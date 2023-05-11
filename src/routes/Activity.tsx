@@ -5,23 +5,40 @@ import { BackLink } from "~/components/layout/BackLink";
 import { CombinedActivity } from "~/components/Activity";
 import { A } from "solid-start";
 import settings from '~/assets/icons/settings.svg';
-import { ContactItem, addContact, editContact, listContacts } from "~/state/contacts";
 import { Tabs } from "@kobalte/core";
 import { gradientsPerContact } from "~/utils/gradientHash";
 import { ContactEditor } from "~/components/ContactEditor";
-import { ContactViewer } from "~/components/ContactViewer";
+import { ContactFormValues, ContactViewer } from "~/components/ContactViewer";
+import { useMegaStore } from "~/state/megaStore";
+import { Contact } from "@mutinywallet/mutiny-wasm";
+import { showToast } from "~/components/Toaster";
 
 function ContactRow() {
-    const [contacts, { refetch }] = createResource(listContacts)
+    const [state, actions] = useMegaStore();
+    const [contacts, { refetch }] = createResource(async () => {
+        const contacts = state.mutiny_wallet?.get_contacts();
+        console.log(contacts)
+
+        let c: Contact[] = []
+        if (contacts) {
+            for (let contact in contacts) {
+                c.push(contacts[contact])
+            }
+        }
+        return c || []
+    })
     const [gradients] = createResource(contacts, gradientsPerContact);
 
-    async function createContact(contact: ContactItem) {
-        await addContact(contact)
+    async function createContact(contact: ContactFormValues) {
+        const c = new Contact(contact.name, contact.npub ?? undefined, undefined, undefined);
+        await state.mutiny_wallet?.create_new_contact(c)
         refetch();
     }
 
-    async function saveContact(contact: ContactItem) {
-        await editContact(contact)
+    // 
+    async function saveContact(contact: ContactFormValues) {
+        showToast(new Error("Unimplemented"))
+        // await editContact(contact)
         refetch();
     }
 
@@ -31,7 +48,7 @@ function ContactRow() {
             <Show when={contacts() && gradients()}>
                 <For each={contacts()}>
                     {(contact) => (
-                        <ContactViewer contact={contact} gradient={gradients()?.get(contact.id)} saveContact={saveContact} />
+                        <ContactViewer contact={contact} gradient={gradients()?.get(contact.name)} saveContact={saveContact} />
                     )}
                 </For>
             </Show>
@@ -49,6 +66,7 @@ export default function Activity() {
                     <BackLink />
                     <LargeHeader action={<A class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue" href="/settings"><img src={settings} alt="Settings" /></A>}>Activity</LargeHeader>
                     <ContactRow />
+
                     <Tabs.Root defaultValue="mutiny">
                         <Tabs.List class="relative flex justify-around mt-4 mb-8 gap-1 bg-neutral-950 p-1 rounded-xl">
                             <Tabs.Trigger value="mutiny" class={TAB}>Mutiny</Tabs.Trigger>

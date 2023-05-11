@@ -1,9 +1,12 @@
 import { Select, createOptions } from "@thisbeyond/solid-select";
 import "~/styles/solid-select.css"
-import { For, createUniqueId } from "solid-js";
+import { For } from "solid-js";
 import { ContactEditor } from "./ContactEditor";
-import { ContactItem, TagItem, TextItem, addContact } from "~/state/contacts";
 import { TinyButton } from "./layout";
+import { ContactFormValues } from "./ContactViewer";
+import { MutinyTagItem } from "~/utils/tags";
+import { Contact } from "@mutinywallet/mutiny-wasm";
+import { useMegaStore } from "~/state/megaStore";
 
 // take two arrays, subtract the second from the first, then return the first
 function subtract<T>(a: T[], b: T[]) {
@@ -11,12 +14,20 @@ function subtract<T>(a: T[], b: T[]) {
     return a.filter(x => !set.has(x));
 }
 
-const createValue = (name: string): TextItem => {
-    return { id: createUniqueId(), name, kind: "text" };
+const createLabelValue = (label: string): Partial<MutinyTagItem> => {
+    return { id: label, name: label, kind: "Label" };
 };
 
-export function TagEditor(props: { values: TagItem[], setValues: (values: TagItem[]) => void, selectedValues: TagItem[], setSelectedValues: (values: TagItem[]) => void, placeholder: string }) {
-    const onChange = (selected: TagItem[]) => {
+export function TagEditor(props: {
+    values: MutinyTagItem[],
+    setValues: (values: MutinyTagItem[]) => void,
+    selectedValues: MutinyTagItem[],
+    setSelectedValues: (values: MutinyTagItem[]) => void,
+    placeholder: string
+}) {
+    const [state, actions] = useMegaStore();
+
+    const onChange = (selected: MutinyTagItem[]) => {
         props.setSelectedValues(selected);
 
         console.log(selected)
@@ -31,12 +42,22 @@ export function TagEditor(props: { values: TagItem[], setValues: (values: TagIte
         key: "name",
         disable: (value) => props.selectedValues.includes(value),
         filterable: true, // Default
-        createable: createValue,
+        createable: createLabelValue,
     });
 
-    const newContact = async (contact: ContactItem) => {
-        await addContact(contact)
-        onChange([...props.selectedValues, contact])
+    async function createContact(contact: ContactFormValues) {
+        // FIXME: undefineds
+        const c = new Contact(contact.name, undefined, undefined, undefined);
+        const newContactId = await state.mutiny_wallet?.create_new_contact(c);
+        const contactItem = await state.mutiny_wallet?.get_contact(newContactId ?? "");
+        const mutinyContactItem: MutinyTagItem = { id: contactItem?.id || "", name: contactItem?.name || "", kind: "Contact", last_used_time: 0n };
+        if (contactItem) {
+            // @ts-ignore
+            // FIXME: make typescript less mad about this
+            onChange([...props.selectedValues, mutinyContactItem])
+        } else {
+            console.error("Failed to create contact")
+        }
     }
 
     return (
@@ -52,13 +73,13 @@ export function TagEditor(props: { values: TagItem[], setValues: (values: TagIte
             <div class="flex gap-2 flex-wrap">
                 <For each={subtract(props.values, props.selectedValues).slice(0, 3)}>
                     {(tag) => (
-                        <TinyButton onClick={() => onChange([...props.selectedValues, tag])}
+                        <TinyButton tag={tag} onClick={() => onChange([...props.selectedValues, tag])}
                         >
                             {tag.name}
                         </TinyButton>
                     )}
                 </For>
-                <ContactEditor createContact={newContact} />
+                <ContactEditor createContact={createContact} />
             </div>
         </div >
     )

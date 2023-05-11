@@ -3,16 +3,23 @@ import { Button, Card, NiceP, SmallHeader } from '~/components/layout';
 import { Dialog } from '@kobalte/core';
 import close from "~/assets/icons/close.svg";
 import { SubmitHandler } from '@modular-forms/solid';
-import { ContactItem } from '~/state/contacts';
 import { ContactForm } from './ContactForm';
 import { showToast } from './Toaster';
+import { Contact } from '@mutinywallet/mutiny-wasm';
 
-export function ContactViewer(props: { contact: ContactItem, gradient: string, saveContact: (contact: ContactItem) => void }) {
+export type ContactFormValues = {
+    name: string,
+    npub?: string,
+}
+
+export function ContactViewer(props: { contact: Contact, gradient: string, saveContact: (contact: Contact) => void }) {
     const [isOpen, setIsOpen] = createSignal(false);
     const [isEditing, setIsEditing] = createSignal(false);
 
-    const handleSubmit: SubmitHandler<ContactItem> = (c: ContactItem) => {
-        props.saveContact({ ...props.contact, ...c })
+    const handleSubmit: SubmitHandler<ContactFormValues> = (c: ContactFormValues) => {
+        // FIXME: merge with existing contact if saving (need edit contact method)
+        const contact = new Contact(c.name, c.npub ?? undefined, undefined, undefined)
+        props.saveContact(contact)
         setIsEditing(false)
     }
 

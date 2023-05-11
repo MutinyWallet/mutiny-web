@@ -1,6 +1,6 @@
-import { ContactItem } from "~/state/contacts";
+import { Contact } from "@mutinywallet/mutiny-wasm";
 
-async function generateGradientFromHashedString(str: string) {
+export async function generateGradient(str: string) {
     const encoder = new TextEncoder();
     const data = encoder.encode(str);
     const digestBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -13,11 +13,12 @@ async function generateGradientFromHashedString(str: string) {
     return gradient;
 }
 
-export async function gradientsPerContact(contacts: ContactItem[]) {
+export async function gradientsPerContact(contacts: Contact[]) {
+    console.log(contacts);
     const gradients = new Map();
     for (const contact of contacts) {
-        const gradient = await generateGradientFromHashedString(contact.name);
-        gradients.set(contact.id, gradient);
+        const gradient = await generateGradient(contact.name);
+        gradients.set(contact.name, gradient);
     }
 
     return gradients;
