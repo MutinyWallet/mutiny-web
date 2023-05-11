@@ -35,13 +35,12 @@ export function StringShower(props: { text: string }) {
     return (
         <>
             <JsonModal open={open()} data={props.text} title="Details" setOpen={setOpen} />
-            <div class="flex gap-2">
+            <div class="w-full grid grid-cols-[minmax(0,_1fr)_auto]">
                 <pre class="truncate text-neutral-400">{props.text}</pre>
-                <button class="w-[16rem]" onClick={() => setOpen(true)}>
+                <button class="w-[2rem]" onClick={() => setOpen(true)}>
                     <img src={eyeIcon} alt="eye" />
                 </button>
             </div>
-
         </>
     )
 }
