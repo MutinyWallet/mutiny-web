@@ -12,6 +12,7 @@ const MegaStoreContext = createContext<MegaStore>();
 type UserStatus = undefined | "new_here" | "waitlisted" | "approved" | "paid"
 
 export type MegaStore = [{
+    already_approved?: boolean,
     waitlist_id?: string;
     mutiny_wallet?: MutinyWallet;
     deleting: boolean;
@@ -36,6 +37,7 @@ export type MegaStore = [{
 
 export const Provider: ParentComponent = (props) => {
     const [state, setState] = createStore({
+        already_approved: import.meta.env.VITE_SELFHOSTED === "true" || localStorage.getItem("already_approved") === "true",
         waitlist_id: localStorage.getItem("waitlist_id"),
         mutiny_wallet: undefined as MutinyWallet | undefined,
         deleting: false,
@@ -52,14 +54,22 @@ export const Provider: ParentComponent = (props) => {
 
     const actions = {
         async fetchUserStatus(): Promise<UserStatus> {
+            if (state.already_approved) {
+                console.log("welcome back!")
+                return "approved"
+            }
+
             if (!state.waitlist_id) {
                 return "new_here"
             }
+
             try {
                 const res = await fetch(`https://waitlist.mutiny-waitlist.workers.dev/waitlist/${state.waitlist_id}`)
                 const data = await res.json();
 
                 if (data.approval_date) {
+                    // Remember them so we don't have to check every time
+                    localStorage.setItem("already_approved", "true")
                     return "approved"
                 } else {
                     return "waitlisted"
@@ -123,15 +133,13 @@ export const Provider: ParentComponent = (props) => {
     onMount(() => {
         actions.fetchUserStatus().then(status => {
             setState({ user_status: status })
-        })
-    })
 
-    // Only load node manager when status is approved
-    createEffect(() => {
-        if (state.user_status === "approved" && !state.mutiny_wallet && !state.deleting) {
-            console.log("running setup node manager...")
-            actions.setupMutinyWallet().then(() => console.log("node manager setup done"))
-        }
+            // Only load node manager when status is approved
+            if (state.user_status === "approved" && !state.mutiny_wallet && !state.deleting) {
+                console.log("running setup node manager...")
+                actions.setupMutinyWallet().then(() => console.log("node manager setup done"))
+            }
+        })
     })
 
     // Be reactive to changes in waitlist_id
