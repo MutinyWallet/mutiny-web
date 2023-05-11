@@ -47,6 +47,7 @@ export function TagEditor(props: {
 
     async function createContact(contact: ContactFormValues) {
         // FIXME: undefineds
+        // FIXME: npub not valid? other undefineds
         const c = new Contact(contact.name, undefined, undefined, undefined);
         const newContactId = await state.mutiny_wallet?.create_new_contact(c);
         const contactItem = await state.mutiny_wallet?.get_contact(newContactId ?? "");

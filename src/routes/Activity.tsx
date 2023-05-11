@@ -30,7 +30,8 @@ function ContactRow() {
     const [gradients] = createResource(contacts, gradientsPerContact);
 
     async function createContact(contact: ContactFormValues) {
-        const c = new Contact(contact.name, contact.npub ?? undefined, undefined, undefined);
+        // FIXME: npub not valid? other undefineds
+        const c = new Contact(contact.name, undefined, undefined, undefined);
         await state.mutiny_wallet?.create_new_contact(c)
         refetch();
     }

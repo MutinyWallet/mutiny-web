@@ -46,7 +46,7 @@ const SubtleText: ParentComponent = (props) => {
 
 function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[] }) {
     const [store, actions] = useMegaStore();
-    const isReceive = createMemo(() => props.item.received > 0);
+    const isReceive = () => props.item.received > props.item.sent
 
     const [open, setOpen] = createSignal(false)
 

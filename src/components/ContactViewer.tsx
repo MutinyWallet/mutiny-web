@@ -18,7 +18,8 @@ export function ContactViewer(props: { contact: Contact, gradient: string, saveC
 
     const handleSubmit: SubmitHandler<ContactFormValues> = (c: ContactFormValues) => {
         // FIXME: merge with existing contact if saving (need edit contact method)
-        const contact = new Contact(c.name, c.npub ?? undefined, undefined, undefined)
+        // FIXME: npub not valid? other undefineds
+        const contact = new Contact(c.name, undefined, undefined, undefined)
         props.saveContact(contact)
         setIsEditing(false)
     }

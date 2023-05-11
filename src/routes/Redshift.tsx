@@ -341,7 +341,7 @@ export default function Redshift() {
                             <Match when={shiftStage() === "choose"}>
                                 <VStack>
                                     <NiceP>Where is this going?</NiceP>
-                                    <StyledRadioGroup red value={shiftType()} onValueChange={(newValue) => setShiftType(newValue as ShiftOption)} choices={SHIFT_OPTIONS} />
+                                    <StyledRadioGroup accent="red" value={shiftType()} onValueChange={(newValue) => setShiftType(newValue as ShiftOption)} choices={SHIFT_OPTIONS} />
                                 </VStack>
                                 <VStack>
                                     <NiceP>Choose your <span class="inline-block"><img class="h-4" src={wave} alt="sine wave" /></span> UTXO to begin</NiceP>

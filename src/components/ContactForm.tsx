@@ -16,11 +16,11 @@ export function ContactForm(props: { handleSubmit: SubmitHandler<ContactFormValu
                             <TextField  {...props} placeholder='Satoshi' value={field.value} error={field.error} label="Name" />
                         )}
                     </Field>
-                    <Field name="npub" validate={[]}>
+                    {/* <Field name="npub" validate={[]}>
                         {(field, props) => (
                             <TextField  {...props} placeholder='npub...' value={field.value} error={field.error} label="Nostr npub or NIP-05 (optional)" />
                         )}
-                    </Field>
+                    </Field> */}
                 </VStack>
             </div>
             <Button type="submit" intent="blue" class="w-full flex-none">
