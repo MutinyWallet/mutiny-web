@@ -1,7 +1,9 @@
+import { ActivityItem } from "~/components/ActivityItem";
 import { AmountCard } from "~/components/AmountCard";
 import NavBar from "~/components/NavBar";
+import { OnboardWarning } from "~/components/OnboardWarning";
 import { ShareCard } from "~/components/ShareCard";
-import { DefaultMain, LargeHeader, SafeArea, VStack } from "~/components/layout";
+import { Card, DefaultMain, LargeHeader, SafeArea, VStack } from "~/components/layout";
 
 const SAMPLE = "bitcoin:tb1prqm8xtlgme0vmw5s30lgf0a4f5g4mkgsqundwmpu6thrg8zr6uvq2qrhzq?amount=0.001&lightning=lntbs1m1pj9n9xjsp5xgdrmvprtm67p7nq4neparalexlhlmtxx87zx6xeqthsplu842zspp546d6zd2seyaxpapaxx62m88yz3xueqtjmn9v6wj8y56np8weqsxqdqqnp4qdn2hj8tfknpuvdg6tz9yrf3e27ltrx9y58c24jh89lnm43yjwfc5xqrpwjcqpj9qrsgq5sdgh0m3ur5mu5hrmmag4mx9yvy86f83pd0x9ww80kgck6tac3thuzkj0mrtltaxwnlfea95h2re7tj4qsnwzxlvrdmyq2h9mgapnycpppz6k6"
 export default function Admin() {
@@ -9,12 +11,16 @@ export default function Admin() {
         <SafeArea>
             <DefaultMain>
                 <LargeHeader>Storybook</LargeHeader>
+                <OnboardWarning />
                 <VStack>
                     <AmountCard amountSats={"100000"} fee={"69"} />
-                    <AmountCard amountSats={"100000"} />
-                    <AmountCard amountSats={"100000"} isAmountEditable />
-                    <AmountCard amountSats={"0"} isAmountEditable />
                     <ShareCard text={SAMPLE} />
+                    <Card title="Activity">
+                        <ActivityItem kind="lightning" labels={["benthecarman"]} amount={100000} date={1683664966} />
+                        <ActivityItem kind="onchain" labels={["tony"]} amount={42000000} positive date={1683664966} />
+                        <ActivityItem kind="onchain" labels={["a fake name thati is too long"]} amount={42000000} date={1683664966} />
+                        <ActivityItem kind="onchain" labels={["a fake name thati is too long"]} amount={42000000} date={1683664966} />
+                    </Card>
                 </VStack>
             </DefaultMain>
             <NavBar activeTab="none" />

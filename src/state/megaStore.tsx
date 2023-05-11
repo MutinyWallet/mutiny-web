@@ -6,6 +6,7 @@ import { createStore } from "solid-js/store";
 import { MutinyWalletSettingStrings, setupMutinyWallet } from "~/logic/mutinyWalletSetup";
 import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ParsedParams } from "~/routes/Scanner";
+import { MutinyTagItem } from "~/utils/tags";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -23,7 +24,8 @@ export type MegaStore = [{
     last_sync?: number;
     price: number
     has_backed_up: boolean,
-    dismissed_restore_prompt: boolean
+    dismissed_restore_prompt: boolean,
+    wallet_loading: boolean
 }, {
     fetchUserStatus(): Promise<UserStatus>;
     setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void>;
@@ -33,6 +35,7 @@ export type MegaStore = [{
     sync(): Promise<void>;
     dismissRestorePrompt(): void;
     setHasBackedUp(): void;
+    listTags(): Promise<MutinyTagItem[]>;
 }];
 
 export const Provider: ParentComponent = (props) => {
@@ -49,7 +52,8 @@ export const Provider: ParentComponent = (props) => {
         balance: undefined as MutinyBalance | undefined,
         last_sync: undefined as number | undefined,
         is_syncing: false,
-        dismissed_restore_prompt: localStorage.getItem("dismissed_restore_prompt") === "true"
+        dismissed_restore_prompt: localStorage.getItem("dismissed_restore_prompt") === "true",
+        wallet_loading: true
     });
 
     const actions = {
@@ -81,8 +85,9 @@ export const Provider: ParentComponent = (props) => {
         },
         async setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void> {
             try {
+                setState({ wallet_loading: true })
                 const mutinyWallet = await setupMutinyWallet(settings)
-                setState({ mutiny_wallet: mutinyWallet })
+                setState({ mutiny_wallet: mutinyWallet, wallet_loading: false })
             } catch (e) {
                 console.error(e)
             }
@@ -126,6 +131,9 @@ export const Provider: ParentComponent = (props) => {
         dismissRestorePrompt() {
             localStorage.setItem("dismissed_restore_prompt", "true")
             setState({ dismissed_restore_prompt: true })
+        },
+        async listTags(): Promise<MutinyTagItem[]> {
+            return state.mutiny_wallet?.get_tag_items() as MutinyTagItem[]
         }
     };
 

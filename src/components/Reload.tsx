@@ -25,7 +25,7 @@ const ReloadPrompt: Component = () => {
 
     return (
         <Show when={offlineReady() || needRefresh()}>
-            <Card title="PWA settings">
+            {/* <Card title="PWA settings">
                 <div>
                     <Show
                         fallback={<span>New content available, click on reload button to update.</span>}
@@ -38,7 +38,7 @@ const ReloadPrompt: Component = () => {
                     <Button onClick={() => updateServiceWorker(true)}>Reload</Button>
                 </Show>
                 <Button onClick={() => close()}>Close</Button>
-            </Card>
+            </Card> */}
         </Show>
     )
 }

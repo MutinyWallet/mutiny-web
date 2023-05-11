@@ -135,7 +135,7 @@ export const AmountEditable: ParentComponent<{ initialAmountSats: string, initia
     const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
-        <Dialog.Root isOpen={isOpen()}>
+        <Dialog.Root open={isOpen()}>
             <button onClick={() => setIsOpen(true)} class="px-4 py-2 rounded-xl border-2 border-m-blue flex gap-2 items-center">
                 {/* <Amount amountSats={Number(displayAmount())} showFiat /><span>&#x270F;&#xFE0F;</span> */}
                 <Show when={displayAmount() !== "0"} fallback={<div class="inline-block font-semibold">Set amount</div>}>

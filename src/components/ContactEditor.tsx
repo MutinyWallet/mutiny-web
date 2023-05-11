@@ -1,24 +1,17 @@
-import { Match, Switch, createSignal, createUniqueId } from 'solid-js';
+import { Match, Switch, createSignal } from 'solid-js';
 import { SmallHeader, TinyButton } from '~/components/layout';
 import { Dialog } from '@kobalte/core';
 import close from "~/assets/icons/close.svg";
 import { SubmitHandler } from '@modular-forms/solid';
-import { ContactItem } from '~/state/contacts';
 import { ContactForm } from './ContactForm';
+import { ContactFormValues } from './ContactViewer';
 
-const INITIAL: ContactItem = { id: createUniqueId(), kind: "contact", name: "", color: "gray" }
-
-export function ContactEditor(props: { createContact: (contact: ContactItem) => void, list?: boolean }) {
+export function ContactEditor(props: { createContact: (contact: ContactFormValues) => void, list?: boolean }) {
     const [isOpen, setIsOpen] = createSignal(false);
 
     // What we're all here for in the first place: returning a value
-    const handleSubmit: SubmitHandler<ContactItem> = (c: ContactItem) => {
-        // TODO: why do the id and color disappear?
-
-        const odd = { id: createUniqueId(), kind: "contact" }
-
-        props.createContact({ ...odd, ...c })
-
+    const handleSubmit: SubmitHandler<ContactFormValues> = (c: ContactFormValues) => {
+        props.createContact(c)
         setIsOpen(false);
     }
 
@@ -26,7 +19,7 @@ export function ContactEditor(props: { createContact: (contact: ContactItem) => 
     const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
-        <Dialog.Root isOpen={isOpen()}>
+        <Dialog.Root open={isOpen()}>
             <Switch>
                 <Match when={props.list}>
                     <button onClick={() => setIsOpen(true)} class="flex flex-col items-center gap-2">
@@ -50,7 +43,7 @@ export function ContactEditor(props: { createContact: (contact: ContactItem) => 
                                 <img src={close} alt="Close" />
                             </button>
                         </div>
-                        <ContactForm title="New contact" cta="Create contact" handleSubmit={handleSubmit} initialValues={INITIAL} />
+                        <ContactForm title="New contact" cta="Create contact" handleSubmit={handleSubmit} />
                     </Dialog.Content>
                 </div>
             </Dialog.Portal>

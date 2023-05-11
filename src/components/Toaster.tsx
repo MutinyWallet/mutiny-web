@@ -43,13 +43,10 @@ export function ToastItem(props: { toastId: number, title: string, description: 
                         </p>
                     </Toast.Description>
                 </div>
-                <Toast.CloseButton class="hover:bg-white/10 rounded-lg active:bg-m-blue w-[5rem] flex-0">
+                <Toast.CloseButton class="hover:bg-white/10 rounded-lg active:bg-m-blue flex-0">
                     <img src={close} alt="Close" />
                 </Toast.CloseButton>
             </div>
-            {/* <Toast.ProgressTrack class="toast__progress-track">
-                <Toast.ProgressFill class="toast__progress-fill" />
-            </Toast.ProgressTrack> */}
         </Toast.Root>
     )
 }

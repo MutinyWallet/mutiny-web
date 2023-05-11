@@ -1,8 +1,11 @@
-import { JSX, ParentComponent, Show, Suspense } from "solid-js"
+import { JSX, ParentComponent, Show, Suspense, createResource, createSignal } from "solid-js"
 import Linkify from "./Linkify"
 import { Button, ButtonLink } from "./Button"
-import { Separator } from "@kobalte/core"
+import { Checkbox as KCheckbox, Separator } from "@kobalte/core"
 import { useMegaStore } from "~/state/megaStore"
+import check from "~/assets/icons/check.svg"
+import { MutinyTagItem } from "~/utils/tags"
+import { generateGradient } from "~/utils/gradientHash"
 
 export {
     Button,
@@ -118,12 +121,23 @@ export const SmallAmount: ParentComponent<{ amount: number | bigint, sign?: stri
 }
 
 export const NiceP: ParentComponent = (props) => {
-    return (<p class="text-2xl font-light">{props.children}</p>)
+    return (<p class="text-xl font-light">{props.children}</p>)
 }
 
-export const TinyButton: ParentComponent<{ onClick: () => void }> = (props) => {
+export const TinyButton: ParentComponent<{ onClick: () => void, tag?: MutinyTagItem }> = (props) => {
+    // TODO: don't need to run this if it's not a contact
+    const [gradient] = createResource(props.tag?.name, async (name: string) => {
+        return generateGradient(name || "?")
+    })
+
+    const bg = () => (props.tag?.name && props.tag?.kind === "Contact") ? gradient() : "rgb(255 255 255 / 0.1)"
+
+    console.log("tiny tag", props.tag?.name, gradient())
+
     return (
-        <button class="py-1 px-2 rounded-lg bg-white/10" onClick={() => props.onClick()}>
+        <button class="py-1 px-2 rounded-lg bg-white/10" onClick={() => props.onClick()}
+            style={{ background: bg() }}
+        >
             {props.children}
         </button>
     )
@@ -132,5 +146,19 @@ export const TinyButton: ParentComponent<{ onClick: () => void }> = (props) => {
 export const Indicator: ParentComponent = (props) => {
     return (
         <div class="box-border animate-pulse px-2 py-1 -my-1 bg-white/70 rounded text-xs uppercase text-black">{props.children}</div>
+    )
+}
+
+export function Checkbox(props: { label: string, checked: boolean, onChange: (checked: boolean) => void }) {
+    return (
+        <KCheckbox.Root class="inline-flex items-center gap-2" checked={props.checked} onChange={props.onChange}>
+            <KCheckbox.Input class="" />
+            <KCheckbox.Control class="flex-0 w-8 h-8 rounded-lg border-2 border-white bg-neutral-800 ui-checked:bg-m-red">
+                <KCheckbox.Indicator>
+                    <img src={check} class="w-8 h-8" alt="check" />
+                </KCheckbox.Indicator>
+            </KCheckbox.Control>
+            <KCheckbox.Label class="flex-1 text-xl font-light">{props.label}</KCheckbox.Label>
+        </KCheckbox.Root>
     )
 }

@@ -13,7 +13,7 @@ export function JsonModal(props: { title: string, open: boolean, data?: unknown,
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     return (
-        <Dialog.Root isOpen={props.open} onOpenChange={(isOpen) => props.setOpen(isOpen)}>
+        <Dialog.Root open={props.open} onOpenChange={(isOpen) => props.setOpen(isOpen)}>
             <Dialog.Portal>
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>

@@ -7,7 +7,7 @@ export function Logs() {
 
     async function handleSave() {
         const logs = await state.mutiny_wallet?.get_logs()
-        downloadTextFile(logs.join() || "", "mutiny-logs.txt", "text/plain")
+        downloadTextFile(logs.join("") || "", "mutiny-logs.txt", "text/plain")
     }
 
     return (

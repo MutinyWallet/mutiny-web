@@ -7,7 +7,7 @@ type Choices = { value: string, label: string, caption: string }[]
 export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, accent?: "red" | "white" }) {
     return (
         // TODO: rewrite this with CVA, props are bad for tailwind
-        <RadioGroup.Root value={props.value} onValueChange={(e) => props.onValueChange(e)}
+        <RadioGroup.Root value={props.value} onChange={(e) => props.onValueChange(e)}
             class={"grid w-full gap-4"}
             classList={{ "grid-cols-2": props.choices.length === 2, "grid-cols-3": props.choices.length === 3, "gap-2": props.small }}
         >

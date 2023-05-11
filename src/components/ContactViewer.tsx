@@ -3,16 +3,24 @@ import { Button, Card, NiceP, SmallHeader } from '~/components/layout';
 import { Dialog } from '@kobalte/core';
 import close from "~/assets/icons/close.svg";
 import { SubmitHandler } from '@modular-forms/solid';
-import { ContactItem } from '~/state/contacts';
 import { ContactForm } from './ContactForm';
 import { showToast } from './Toaster';
+import { Contact } from '@mutinywallet/mutiny-wasm';
 
-export function ContactViewer(props: { contact: ContactItem, gradient: string, saveContact: (contact: ContactItem) => void }) {
+export type ContactFormValues = {
+    name: string,
+    npub?: string,
+}
+
+export function ContactViewer(props: { contact: Contact, gradient: string, saveContact: (contact: Contact) => void }) {
     const [isOpen, setIsOpen] = createSignal(false);
     const [isEditing, setIsEditing] = createSignal(false);
 
-    const handleSubmit: SubmitHandler<ContactItem> = (c: ContactItem) => {
-        props.saveContact({ ...props.contact, ...c })
+    const handleSubmit: SubmitHandler<ContactFormValues> = (c: ContactFormValues) => {
+        // FIXME: merge with existing contact if saving (need edit contact method)
+        // FIXME: npub not valid? other undefineds
+        const contact = new Contact(c.name, undefined, undefined, undefined)
+        props.saveContact(contact)
         setIsEditing(false)
     }
 
@@ -20,7 +28,7 @@ export function ContactViewer(props: { contact: ContactItem, gradient: string, s
     const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
-        <Dialog.Root isOpen={isOpen()}>
+        <Dialog.Root open={isOpen()}>
             <button onClick={() => setIsOpen(true)} class="flex flex-col items-center gap-2 w-16 flex-shrink-0 overflow-x-hidden">
                 <div class="flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase border-t border-b border-t-white/50 border-b-white/10"
                     style={{ background: props.gradient }}
