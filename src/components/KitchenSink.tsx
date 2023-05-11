@@ -110,7 +110,7 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
             <form class="flex flex-col gap-4" onSubmit={onSubmit} >
                 <TextField.Root
                     value={value()}
-                    onValueChange={setValue}
+                    onChange={setValue}
                     validationState={(value() == "" || value().startsWith("mutiny:")) ? "valid" : "invalid"}
                     class="flex flex-col gap-4"
                 >
@@ -259,7 +259,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                 <form class="flex flex-col gap-4" onSubmit={onSubmit} >
                     <TextField.Root
                         value={peerPubkey()}
-                        onValueChange={setPeerPubkey}
+                        onChange={setPeerPubkey}
                         class="flex flex-col gap-2"
                     >
                         <TextField.Label class="text-sm font-semibold uppercase" >Pubkey</TextField.Label>
@@ -267,7 +267,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                     </TextField.Root>
                     <TextField.Root
                         value={amount()}
-                        onValueChange={setAmount}
+                        onChange={setAmount}
                         class="flex flex-col gap-2"
                     >
                         <TextField.Label class="text-sm font-semibold uppercase" >Amount</TextField.Label>
@@ -313,7 +313,7 @@ function LnUrlAuth() {
             <form class="flex flex-col gap-4" onSubmit={onSubmit} >
                 <TextField.Root
                     value={value()}
-                    onValueChange={setValue}
+                    onChange={setValue}
                     validationState={(value() == "" || value().toLowerCase().startsWith("lnurl")) ? "valid" : "invalid"}
                     class="flex flex-col gap-4"
                 >
@@ -327,6 +327,32 @@ function LnUrlAuth() {
     )
 }
 
+function ListTags() {
+    const [_state, actions] = useMegaStore()
+
+    const [tags] = createResource(actions.listTags)
+
+    return (
+
+        <Collapsible.Root>
+            <Collapsible.Trigger class="w-full">
+                <h2 class="truncate text-start text-lg font-mono bg-neutral-200 text-black rounded px-4 py-2">
+                    {">"} Tags
+                </h2>
+            </Collapsible.Trigger>
+            <Collapsible.Content>
+                <VStack>
+                    <pre class="overflow-x-auto whitespace-pre-wrap break-all">
+                        {JSON.stringify(tags(), null, 2)}
+                    </pre>
+                </VStack>
+            </Collapsible.Content>
+        </Collapsible.Root>
+
+    )
+}
+
+
 
 
 export default function KitchenSink() {
@@ -339,6 +365,9 @@ export default function KitchenSink() {
             <ChannelsList />
             <Hr />
             <LnUrlAuth />
+            <Hr />
+            <ListTags />
+
             <Hr />
             <ImportExport />
         </Card>
