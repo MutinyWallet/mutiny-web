@@ -138,6 +138,13 @@ export const Provider: ParentComponent = (props) => {
             if (state.user_status === "approved" && !state.mutiny_wallet && !state.deleting) {
                 console.log("running setup node manager...")
                 actions.setupMutinyWallet().then(() => console.log("node manager setup done"))
+
+                // Setup an event listener to stop the mutiny wallet when the page unloads
+                window.onunload = async (e) => {
+                    console.log("stopping mutiny_wallet")
+                    await state.mutiny_wallet?.stop();
+                    console.log("mutiny_wallet stopped")
+                }
             }
         })
     })
