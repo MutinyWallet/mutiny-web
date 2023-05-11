@@ -5,22 +5,6 @@ import { showToast } from "~/components/Toaster";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 
-export function deleteDb(name: string) {
-    const req = indexedDB.deleteDatabase(name);
-    req.onsuccess = function () {
-        console.log("Deleted database successfully");
-        showToast({ title: "Deleted", description: `Deleted "${name}" database successfully` })
-    };
-    req.onerror = function () {
-        console.error("Couldn't delete database");
-        showToast(new Error("Couldn't delete database"))
-    };
-    req.onblocked = function () {
-        console.error("Couldn't delete database due to the operation being blocked");
-        showToast(new Error("Couldn't delete database due to the operation being blocked"))
-    };
-}
-
 export function DeleteEverything() {
     const [_state, actions] = useMegaStore();
 
