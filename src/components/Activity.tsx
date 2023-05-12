@@ -45,7 +45,6 @@ const SubtleText: ParentComponent = (props) => {
 }
 
 function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[] }) {
-    const [store, actions] = useMegaStore();
     const isReceive = () => props.item.received > props.item.sent
 
     const [open, setOpen] = createSignal(false)
@@ -61,7 +60,8 @@ function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[] }) {
             <ActivityItem
                 kind={"onchain"}
                 labels={props.labels}
-                amount={isReceive() ? props.item.received : props.item.sent}
+                // FIXME: is this something we can put into node logic?
+                amount={isReceive() ? props.item.received - props.item.sent : props.item.received}
                 date={props.item.confirmation_time?.Confirmed?.time}
                 positive={isReceive()}
                 onClick={() => setOpen(!open())}
@@ -71,7 +71,6 @@ function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[] }) {
 }
 
 function InvoiceItem(props: { item: MutinyInvoice, labels: MutinyTagItem[] }) {
-    const [store, actions] = useMegaStore();
     const isSend = createMemo(() => props.item.is_send);
 
     const [open, setOpen] = createSignal(false)
