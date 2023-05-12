@@ -1,5 +1,5 @@
 import { LoadingSpinner, NiceP, SmallAmount, SmallHeader } from './layout';
-import { For, Match, ParentComponent, Show, Switch, createMemo, createResource, createSignal } from 'solid-js';
+import { For, Match, ParentComponent, Show, Switch, createEffect, createMemo, createResource, createSignal } from 'solid-js';
 import { useMegaStore } from '~/state/megaStore';
 import { MutinyInvoice } from '@mutinywallet/mutiny-wasm';
 import { JsonModal } from '~/components/JsonModal';
@@ -156,7 +156,14 @@ export function CombinedActivity(props: { limit?: number }) {
         return activity;
     }
 
-    const [activity] = createResource(getAllActivity);
+    const [activity, { refetch }] = createResource(getAllActivity);
+
+    createEffect(() => {
+        // After every sync we should refetch the activity
+        if (!state.is_syncing) {
+            refetch();
+        }
+    })
 
     return (
         <Switch>
@@ -167,7 +174,7 @@ export function CombinedActivity(props: { limit?: number }) {
                 <NiceP>No activity to show</NiceP>
             </Match>
             <Match when={activity.state === "ready" && activity().length >= 0}>
-                <For each={activity()}>
+                <For each={activity.latest}>
                     {(activityItem) =>
                         <Switch>
                             <Match when={activityItem.type === "onchain"}>
