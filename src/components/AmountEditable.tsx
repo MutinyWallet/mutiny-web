@@ -6,6 +6,7 @@ import { Dialog } from '@kobalte/core';
 import close from "~/assets/icons/close.svg";
 import pencil from "~/assets/icons/pencil.svg";
 import { InlineAmount } from './AmountCard';
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from '~/styles/dialogs';
 
 const CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "DEL"];
 
@@ -130,9 +131,6 @@ export const AmountEditable: ParentComponent<{ initialAmountSats: string, initia
 
         setIsOpen(false);
     }
-
-    const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
-    const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
         <Dialog.Root open={isOpen()}>

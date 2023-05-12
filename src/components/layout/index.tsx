@@ -19,7 +19,7 @@ export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
 
 export const Card: ParentComponent<{ title?: string, titleElement?: JSX.Element }> = (props) => {
     return (
-        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950/50 overflow-x-hidden w-full'>
+        <div class='rounded-xl p-4 flex flex-col gap-2 bg-neutral-950/50 w-full'>
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.titleElement && props.titleElement}
             {props.children}
@@ -50,7 +50,7 @@ export const FancyCard: ParentComponent<{ title?: string, tag?: JSX.Element }> =
 
 export const SafeArea: ParentComponent = (props) => {
     return (
-        <div class="safe-top safe-left safe-right safe-bottom">
+        <div class="h-[100dvh] safe-left safe-right">
             {/* <div class="flex-1 disable-scrollbars overflow-y-scroll md:pl-[8rem] md:pr-[6rem]"> */}
             {props.children}
             {/* </div> */}
@@ -60,15 +60,17 @@ export const SafeArea: ParentComponent = (props) => {
 
 export const DefaultMain: ParentComponent = (props) => {
     return (
-        <main class="w-full max-w-[600px] flex flex-col gap-4 mx-auto p-4">
+        <main class="w-full max-w-[600px] flex flex-col gap-4 mx-auto p-4 h-full">
             {props.children}
+            {/* CSS is hard sometimes */}
+            <div class="py-4" />
         </main>
     )
 }
 
 export const FullscreenLoader = () => {
     return (
-        <div class="w-screen h-screen flex justify-center items-center">
+        <div class="w-full h-[100dvh] flex justify-center items-center">
             <LoadingSpinner />
         </div>
     );
@@ -131,8 +133,6 @@ export const TinyButton: ParentComponent<{ onClick: () => void, tag?: MutinyTagI
     })
 
     const bg = () => (props.tag?.name && props.tag?.kind === "Contact") ? gradient() : "rgb(255 255 255 / 0.1)"
-
-    console.log("tiny tag", props.tag?.name, gradient())
 
     return (
         <button class="py-1 px-2 rounded-lg bg-white/10" onClick={() => props.onClick()}

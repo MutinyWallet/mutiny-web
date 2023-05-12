@@ -14,7 +14,7 @@ import { Contact } from "@mutinywallet/mutiny-wasm";
 import { showToast } from "~/components/Toaster";
 
 function ContactRow() {
-    const [state, actions] = useMegaStore();
+    const [state, _actions] = useMegaStore();
     const [contacts, { refetch }] = createResource(async () => {
         const contacts = state.mutiny_wallet?.get_contacts();
         console.log(contacts)
@@ -44,14 +44,16 @@ function ContactRow() {
     }
 
     return (
-        <div class="w-full overflow-x-scroll flex gap-4 disable-scrollbars">
+        <div class="flex gap-4">
             <ContactEditor list createContact={createContact} />
-            <Show when={contacts() && gradients()}>
-                <For each={contacts()}>
-                    {(contact) => (
-                        <ContactViewer contact={contact} gradient={gradients()?.get(contact.name)} saveContact={saveContact} />
-                    )}
-                </For>
+            <Show when={contacts()}>
+                <div class="flex gap-4 flex-1 overflow-x-scroll disable-scrollbars">
+                    <For each={contacts()}>
+                        {(contact) => (
+                            <ContactViewer contact={contact} gradient={gradients()?.get(contact.name)} saveContact={saveContact} />
+                        )}
+                    </For>
+                </div>
             </Show>
         </div>
     )
@@ -67,7 +69,6 @@ export default function Activity() {
                     <BackLink />
                     <LargeHeader action={<A class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue" href="/settings"><img src={settings} alt="Settings" /></A>}>Activity</LargeHeader>
                     <ContactRow />
-
                     <Tabs.Root defaultValue="mutiny">
                         <Tabs.List class="relative flex justify-around mt-4 mb-8 gap-1 bg-neutral-950 p-1 rounded-xl">
                             <Tabs.Trigger value="mutiny" class={TAB}>Mutiny</Tabs.Trigger>

@@ -5,6 +5,7 @@ import close from "~/assets/icons/close.svg";
 import { SubmitHandler } from '@modular-forms/solid';
 import { ContactForm } from './ContactForm';
 import { ContactFormValues } from './ContactViewer';
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from '~/styles/dialogs';
 
 export function ContactEditor(props: { createContact: (contact: ContactFormValues) => void, list?: boolean }) {
     const [isOpen, setIsOpen] = createSignal(false);
@@ -14,9 +15,6 @@ export function ContactEditor(props: { createContact: (contact: ContactFormValue
         props.createContact(c)
         setIsOpen(false);
     }
-
-    const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
-    const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
         <Dialog.Root open={isOpen()}>

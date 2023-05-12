@@ -1,7 +1,7 @@
-import { MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { Contact, MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { Button, Card, Indicator, LargeHeader, MutinyWalletGuard, SafeArea } from "~/components/layout";
+import { Button, Card, DefaultMain, Indicator, LargeHeader, MutinyWalletGuard, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
@@ -17,7 +17,7 @@ import megacheck from "~/assets/icons/megacheck.png";
 import { AmountCard } from "~/components/AmountCard";
 import { ShareCard } from "~/components/ShareCard";
 import { BackButton } from "~/components/layout/BackButton";
-import { MutinyTagItem, UNKNOWN_TAG, sortByLastUsed, tagsToIds } from "~/utils/tags";
+import { MutinyTagItem } from "~/utils/tags";
 
 type OnChainTx = {
     transaction: {
@@ -61,7 +61,6 @@ export default function Receive() {
 
     // Tagging stuff
     const [selectedValues, setSelectedValues] = createSignal<MutinyTagItem[]>([]);
-    const [values, setValues] = createSignal<MutinyTagItem[]>([UNKNOWN_TAG]);
 
     // The data we get after a payment
     const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
@@ -83,12 +82,6 @@ export default function Receive() {
         }
     })
 
-    onMount(() => {
-        actions.listTags().then((tags) => {
-            setValues(prev => [...prev, ...tags.sort(sortByLastUsed) || []])
-        });
-    })
-
     function clearAll() {
         setAmount("")
         setReceiveState("edit")
@@ -99,10 +92,43 @@ export default function Receive() {
         setSelectedValues([])
     }
 
+    async function processContacts(contacts: Partial<MutinyTagItem>[]): Promise<string[]> {
+        console.log("Processing contacts", contacts)
+
+        if (contacts.length) {
+            const first = contacts![0];
+
+            if (!first.name) {
+                console.error("Something went wrong with contact creation, proceeding anyway")
+                return []
+            }
+
+            if (!first.id && first.name) {
+                console.error("Creating new contact", first.name)
+                const c = new Contact(first.name, undefined, undefined, undefined);
+                const newContactId = await state.mutiny_wallet?.create_new_contact(c);
+                if (newContactId) {
+                    return [newContactId];
+                }
+            }
+
+            if (first.id) {
+                console.error("Using existing contact", first.name, first.id)
+                return [first.id];
+            }
+
+        }
+
+        console.error("Something went wrong with contact creation, proceeding anyway")
+        return []
+
+    }
+
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
         try {
-            const raw = await state.mutiny_wallet?.create_bip21(bigAmount, tagsToIds(selectedValues()));
+            const tags = await processContacts(selectedValues());
+            const raw = await state.mutiny_wallet?.create_bip21(bigAmount, tags);
             // Save the raw info so we can watch the address and invoice
             setBip21Raw(raw);
 
@@ -167,7 +193,7 @@ export default function Receive() {
     return (
         <MutinyWalletGuard>
             <SafeArea>
-                <main class="max-w-[600px] flex flex-col flex-1 gap-4 mx-auto p-4  overflow-y-auto">
+                <DefaultMain>
                     <Show when={receiveState() === "show"} fallback={<BackLink />}>
                         <BackButton onClick={() => setReceiveState("edit")} title="Edit" />
                     </Show>
@@ -177,12 +203,12 @@ export default function Receive() {
                             <div class="flex flex-col flex-1 gap-8">
                                 <AmountCard initialOpen={shouldShowAmountEditor()} amountSats={amount() || "0"} setAmountSats={setAmount} isAmountEditable />
 
-                                <Card title="Tag the origin">
-                                    <TagEditor values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it coming from?" />
+                                <Card title="Private tags">
+                                    <TagEditor selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Add the sender for your records" />
                                 </Card>
 
                                 <div class="flex-1" />
-                                <Button class="w-full flex-grow-0 mb-4" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Request</Button>
+                                <Button class="w-full flex-grow-0" disabled={!amount()} intent="green" onClick={onSubmit}>Create Request</Button>
                             </div>
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>
@@ -223,7 +249,7 @@ export default function Receive() {
                             </FullscreenModal>
                         </Match>
                     </Switch>
-                </main>
+                </DefaultMain>
                 <NavBar activeTab="receive" />
             </SafeArea >
         </MutinyWalletGuard>
