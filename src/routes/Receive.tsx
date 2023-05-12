@@ -182,7 +182,7 @@ export default function Receive() {
                                 </Card>
 
                                 <div class="flex-1" />
-                                <Button class="w-full flex-grow-0 mb-4" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Invoice</Button>
+                                <Button class="w-full flex-grow-0 mb-4" disabled={!amount() || !selectedValues().length} intent="green" onClick={onSubmit}>Create Request</Button>
                             </div>
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>
