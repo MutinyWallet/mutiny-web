@@ -93,7 +93,7 @@ export default function WaitlistForm() {
                             validate={[required("We need some way to contact you"), email("That doesn't look like an email address to me")]}
                         >
                             {(field, props) => (
-                                <TextField  {...props} value={field.value} error={field.error} label="Email" placeholder="email@nokycemail.com" />
+                                <TextField  {...props} value={field.value} error={field.error} type="email" label="Email" placeholder="email@nokycemail.com" />
                             )}
                         </Field>
                     </Match>

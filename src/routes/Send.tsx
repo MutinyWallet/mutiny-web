@@ -20,6 +20,7 @@ import { TagEditor } from "~/components/TagEditor";
 import { StringShower } from "~/components/ShareCard";
 import { AmountCard } from "~/components/AmountCard";
 import { MutinyTagItem, UNKNOWN_TAG, sortByLastUsed, tagsToIds } from "~/utils/tags";
+import { BackButton } from "~/components/layout/BackButton";
 
 type SendSource = "lightning" | "onchain";
 
@@ -273,7 +274,9 @@ export default function Send() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink />
+                    <Show when={address() || invoice() || nodePubkey()} fallback={<BackLink />}>
+                        <BackButton onClick={() => clearAll()} title="Start Over" />
+                    </Show>
                     <LargeHeader>Send Bitcoin</LargeHeader>
                     <FullscreenModal
                         title={sentDetails()?.amount ? "Sent" : "Payment Failed"}
