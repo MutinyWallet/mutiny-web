@@ -1,4 +1,4 @@
-import { TagItem } from "@mutinywallet/mutiny-wasm"
+import { Contact, TagItem } from "@mutinywallet/mutiny-wasm"
 
 export type MutinyTagItem = {
     id: string,
@@ -12,7 +12,10 @@ export type MutinyTagItem = {
 
 export const UNKNOWN_TAG: MutinyTagItem = { id: "Unknown", kind: "Label", name: "Unknown", last_used_time: 0n }
 
-export function tagsToIds(tags: MutinyTagItem[]): string[] {
+export function tagsToIds(tags?: MutinyTagItem[]): string[] {
+    if (!tags) {
+        return []
+    }
     return tags.filter((tag) => tag.id !== "Unknown").map((tag) => tag.id)
 }
 

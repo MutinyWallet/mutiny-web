@@ -3,9 +3,7 @@ import { Dialog } from "@kobalte/core";
 import { JSX } from "solid-js";
 import { Button, LargeHeader } from "~/components/layout";
 import close from "~/assets/icons/close.svg";
-
-const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
-const DIALOG_CONTENT = "h-full flex flex-col justify-between p-4 backdrop-blur-md bg-neutral-900/50"
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 
 type FullscreenModalProps = {
     title: string,

@@ -6,6 +6,7 @@ import { SubmitHandler } from '@modular-forms/solid';
 import { ContactForm } from './ContactForm';
 import { showToast } from './Toaster';
 import { Contact } from '@mutinywallet/mutiny-wasm';
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from '~/styles/dialogs';
 
 export type ContactFormValues = {
     name: string,
@@ -23,9 +24,6 @@ export function ContactViewer(props: { contact: Contact, gradient: string, saveC
         props.saveContact(contact)
         setIsEditing(false)
     }
-
-    const DIALOG_POSITIONER = "fixed inset-0 safe-top safe-bottom z-50"
-    const DIALOG_CONTENT = "h-full safe-bottom flex flex-col justify-between p-4 backdrop-blur-xl bg-neutral-800/70"
 
     return (
         <Dialog.Root open={isOpen()}>

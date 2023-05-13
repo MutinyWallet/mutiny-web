@@ -5,7 +5,7 @@ import { Button, ButtonLink, Card, DefaultMain, HStack, LargeHeader, MutinyWalle
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
-import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
@@ -121,8 +121,7 @@ export default function Send() {
     const [sentDetails, setSentDetails] = createSignal<SentDetails>();
 
     // Tagging stuff
-    const [selectedValues, setSelectedValues] = createSignal<MutinyTagItem[]>([]);
-    const [values, setValues] = createSignal<MutinyTagItem[]>([UNKNOWN_TAG]);
+    const [selectedContacts, setSelectedContacts] = createSignal<Partial<MutinyTagItem>[]>([]);
 
     function clearAll() {
         setDestination(undefined);
@@ -146,10 +145,6 @@ export default function Send() {
             setDestination(state.scan_result);
             actions.setScanResult(undefined);
         }
-
-        actions.listTags().then((tags) => {
-            setValues(prev => [...prev, ...tags.sort(sortByLastUsed) || []])
-        });
     })
 
     // Rerun every time the destination changes
@@ -216,27 +211,62 @@ export default function Send() {
         });
     }
 
+    async function processContacts(contacts: Partial<MutinyTagItem>[]): Promise<string[]> {
+        console.log("Processing contacts", contacts)
+
+        if (contacts.length) {
+            const first = contacts![0];
+
+            if (!first.name) {
+                console.error("Something went wrong with contact creation, proceeding anyway")
+                return []
+            }
+
+            if (!first.id && first.name) {
+                console.error("Creating new contact", first.name)
+                const c = new Contact(first.name, undefined, undefined, undefined);
+                const newContactId = await state.mutiny_wallet?.create_new_contact(c);
+                if (newContactId) {
+                    return [newContactId];
+                }
+            }
+
+            if (first.id) {
+                console.error("Using existing contact", first.name, first.id)
+                return [first.id];
+            }
+
+        }
+
+        console.error("Something went wrong with contact creation, proceeding anyway")
+        return []
+
+    }
+
     async function handleSend() {
         try {
             setSending(true);
             const bolt11 = invoice()?.bolt11;
             const sentDetails: Partial<SentDetails> = {};
+
+            const tags = await processContacts(selectedContacts());
+
             if (source() === "lightning" && invoice() && bolt11) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = nodes[0] as string || ""
                 sentDetails.destination = bolt11;
                 // If the invoice has sats use that, otherwise we pass the user-defined amount
                 if (invoice()?.amount_sats) {
-                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, undefined, tagsToIds(selectedValues()));
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, undefined, tags);
                     sentDetails.amount = invoice()?.amount_sats;
                 } else {
-                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, amountSats(), tagsToIds(selectedValues()));
+                    await state.mutiny_wallet?.pay_invoice(firstNode, bolt11, amountSats(), tags);
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "lightning" && nodePubkey()) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = nodes[0] as string || ""
-                const payment = await state.mutiny_wallet?.keysend(firstNode, nodePubkey()!, amountSats(), tagsToIds(selectedValues()));
+                const payment = await state.mutiny_wallet?.keysend(firstNode, nodePubkey()!, amountSats(), tags);
 
                 // TODO: handle timeouts
                 if (!payment?.paid) {
@@ -246,7 +276,7 @@ export default function Send() {
                 }
             } else if (source() === "onchain" && address()) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), tagsToIds(selectedValues()));
+                const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), tags);
                 sentDetails.amount = amountSats();
                 sentDetails.destination = address();
                 // TODO: figure out if this is necessary, it takes forever
@@ -312,9 +342,11 @@ export default function Send() {
                                 <Card>
                                     <VStack>
                                         <DestinationShower source={source()} description={description()} invoice={invoice()} address={address()} nodePubkey={nodePubkey()} clearAll={clearAll} />
-                                        <TagEditor values={values()} setValues={setValues} selectedValues={selectedValues()} setSelectedValues={setSelectedValues} placeholder="Where's it going to?" />
+                                        <SmallHeader>Private tags</SmallHeader>
+                                        <TagEditor selectedValues={selectedContacts()} setSelectedValues={setSelectedContacts} placeholder="Add the receiver for your records" />
                                     </VStack>
                                 </Card>
+
                                 <AmountCard amountSats={amountSats().toString()} setAmountSats={setAmountSats} fee={fakeFee().toString()} isAmountEditable={!(invoice()?.amount_sats)} />
                             </Match>
                             <Match when={true}>
@@ -322,7 +354,7 @@ export default function Send() {
                             </Match>
                         </Switch>
                         <Show when={destination()}>
-                            <Button disabled={sendButtonDisabled()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
+                            <Button class="w-full flex-grow-0" disabled={sendButtonDisabled()} intent="blue" onClick={handleSend} loading={sending()}>{sending() ? "Sending..." : "Confirm Send"}</Button>
                         </Show>
                     </VStack>
                 </DefaultMain>
