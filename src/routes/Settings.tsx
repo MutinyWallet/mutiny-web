@@ -1,6 +1,7 @@
 import { ButtonLink, DefaultMain, LargeHeader, MutinyWalletGuard, SafeArea, VStack } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { Logs } from "~/components/Logs";
+import { Restart } from "~/components/Restart";
 import NavBar from "~/components/NavBar";
 import { SeedWords } from "~/components/SeedWords";
 import { SettingsStringsEditor } from "~/components/SettingsStringsEditor";
@@ -22,6 +23,7 @@ export default function Settings() {
                         </VStack>
                         <SettingsStringsEditor />
                         <Logs />
+                        <Restart />
                         <ButtonLink href="/admin">"I know what I'm doing"</ButtonLink>
                     </VStack>
                 </DefaultMain>
