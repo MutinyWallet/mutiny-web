@@ -9,6 +9,7 @@ import eify from "~/utils/eify";
 import { ConfirmDialog } from "~/components/Dialog";
 import { showToast } from "~/components/Toaster";
 import { ImportExport } from "~/components/ImportExport";
+import { Network } from "~/logic/mutinyWalletSetup";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (info?: unknown) => MutinyPeer[] | Promise<MutinyPeer[] | undefined> | null | undefined
@@ -127,7 +128,7 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
 
 type RefetchChannelsListType = (info?: unknown) => MutinyChannel[] | Promise<MutinyChannel[] | undefined> | null | undefined
 
-function ChannelItem(props: { channel: MutinyChannel, network?: string }) {
+function ChannelItem(props: { channel: MutinyChannel, network?: Network }) {
     const [state, _] = useMegaStore()
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
@@ -194,7 +195,7 @@ function ChannelsList() {
         });
     })
 
-    const network = state.mutiny_wallet?.get_network();
+    const network = state.mutiny_wallet?.get_network() as Network;
 
     return (
         <>
@@ -253,6 +254,8 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
         }
     };
 
+    const network = state.mutiny_wallet?.get_network() as Network;
+
     return (
         <>
             <InnerCard>
@@ -283,7 +286,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                     {JSON.stringify(newChannel()?.outpoint, null, 2)}
                 </pre>
                 <pre>{newChannel()?.outpoint}</pre>
-                <a class="text-sm font-light opacity-50 mt-2" href={mempoolTxUrl(newChannel()?.outpoint?.split(":")[0], "signet")} target="_blank" rel="noreferrer">
+                <a class="text-sm font-light opacity-50 mt-2" href={mempoolTxUrl(newChannel()?.outpoint?.split(":")[0], network)} target="_blank" rel="noreferrer">
                     Mempool Link
                 </a>
             </Show>

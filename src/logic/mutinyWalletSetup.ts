@@ -6,7 +6,7 @@ import initWaila from '@mutinywallet/waila-wasm'
 //     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 // }
 
-type Network = "bitcoin" | "testnet" | "regtest" | "signet";
+export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 export type MutinyWalletSettingStrings = {
     network?: Network, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
 }
