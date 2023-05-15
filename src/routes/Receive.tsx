@@ -18,6 +18,7 @@ import { AmountCard } from "~/components/AmountCard";
 import { ShareCard } from "~/components/ShareCard";
 import { BackButton } from "~/components/layout/BackButton";
 import { MutinyTagItem } from "~/utils/tags";
+import { Network } from "~/logic/mutinyWalletSetup";
 
 type OnChainTx = {
     transaction: {
@@ -181,6 +182,8 @@ export default function Receive() {
 
     const [paidState, { refetch }] = createResource(bip21Raw, checkIfPaid);
 
+    const network = state.mutiny_wallet?.get_network() as Network;
+
     createEffect(() => {
         const interval = setInterval(() => {
             if (receiveState() === "show") refetch();
@@ -242,7 +245,7 @@ export default function Receive() {
                                 <div class="flex flex-col items-center gap-8">
                                     <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh] aspect-square" />
                                     <Amount amountSats={paymentTx()?.received} showFiat />
-                                    <a href={mempoolTxUrl(paymentTx()?.txid, "signet")} target="_blank" rel="noreferrer">
+                                    <a href={mempoolTxUrl(paymentTx()?.txid, network)} target="_blank" rel="noreferrer">
                                         Mempool Link
                                     </a>
                                 </div>

@@ -1,5 +1,5 @@
 import { LoadingSpinner, NiceP, SmallAmount, SmallHeader } from './layout';
-import { For, Match, ParentComponent, Show, Switch, createEffect, createMemo, createResource, createSignal } from 'solid-js';
+import { For, Match, Show, Switch, createEffect, createMemo, createResource, createSignal } from 'solid-js';
 import { useMegaStore } from '~/state/megaStore';
 import { MutinyInvoice } from '@mutinywallet/mutiny-wasm';
 import { JsonModal } from '~/components/JsonModal';
@@ -8,6 +8,7 @@ import utxoIcon from '~/assets/icons/coin.svg';
 import { getRedshifted } from '~/utils/fakeLabels';
 import { ActivityItem } from './ActivityItem';
 import { MutinyTagItem } from '~/utils/tags';
+import { Network } from '~/logic/mutinyWalletSetup';
 
 export const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
 export const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
@@ -40,11 +41,7 @@ export type UtxoItem = {
     redshifted?: boolean,
 }
 
-const SubtleText: ParentComponent = (props) => {
-    return <h3 class='text-xs text-gray-500 uppercase'>{props.children}</h3>
-}
-
-function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[] }) {
+function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[], network: Network }) {
     const isReceive = () => props.item.received > props.item.sent
 
     const [open, setOpen] = createSignal(false)
@@ -52,7 +49,7 @@ function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[] }) {
     return (
         <>
             <JsonModal open={open()} data={props.item} title="On-Chain Transaction" setOpen={setOpen}>
-                <a href={mempoolTxUrl(props.item.txid, "signet")} target="_blank" rel="noreferrer">
+                <a href={mempoolTxUrl(props.item.txid, props.network)} target="_blank" rel="noreferrer">
                     Mempool Link
                 </a>
             </JsonModal>
@@ -158,6 +155,8 @@ export function CombinedActivity(props: { limit?: number }) {
 
     const [activity, { refetch }] = createResource(getAllActivity);
 
+    const network = state.mutiny_wallet?.get_network() as Network;
+
     createEffect(() => {
         // After every sync we should refetch the activity
         if (!state.is_syncing) {
@@ -178,11 +177,9 @@ export function CombinedActivity(props: { limit?: number }) {
                     {(activityItem) =>
                         <Switch>
                             <Match when={activityItem.type === "onchain"}>
-                                {/* FIXME */}
-                                <OnChainItem item={activityItem.item as OnChainTx} labels={activityItem.labels} />
+                                <OnChainItem item={activityItem.item as OnChainTx} labels={activityItem.labels} network={network} />
                             </Match>
                             <Match when={activityItem.type === "lightning"}>
-                                {/* FIXME */}
                                 <InvoiceItem item={activityItem.item as MutinyInvoice} labels={activityItem.labels} />
                             </Match>
                         </Switch>
