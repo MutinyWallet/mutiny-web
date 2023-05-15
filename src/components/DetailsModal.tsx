@@ -4,15 +4,16 @@ import { Hr, TinyButton, VStack } from "~/components/layout";
 import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { OnChainTx } from "./Activity";
 
-import eyeIcon from "~/assets/icons/eye.svg"
 import close from "~/assets/icons/close.svg";
 import bolt from "~/assets/icons/bolt-black.svg";
+import copyIcon from "~/assets/icons/copy.svg"
 
 import { ActivityAmount } from "./ActivityItem";
 import { CopyButton } from "./ShareCard";
 import { prettyPrintTime } from "~/utils/prettyPrintTime";
 import { useMegaStore } from "~/state/megaStore";
 import { tagToMutinyTag } from "~/utils/tags";
+import { useCopy } from "~/utils/useCopy";
 
 const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
 const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
@@ -64,11 +65,13 @@ const KeyValue: ParentComponent<{ key: string }> = (props) => {
 }
 
 function MiniStringShower(props: { text: string }) {
+    const [copy, _copied] = useCopy({ copiedTimeout: 1000 });
+
     return (
         <div class="w-full grid gap-1 grid-cols-[minmax(0,_1fr)_auto]">
             <pre class="truncate text-neutral-300">{props.text}</pre>
-            <button class="w-[1.5rem]" onClick={() => { }}>
-                <img src={eyeIcon} alt="eye" />
+            <button class="w-[1rem]" onClick={() => copy(props.text)}>
+                <img src={copyIcon} alt="copy" />
             </button>
         </div>
     )
@@ -131,7 +134,7 @@ export function DetailsModal(props: { title: string, open: boolean, data?: Mutin
                         <Dialog.Description class="flex flex-col gap-4">
                             <LightningDetails info={props.data as MutinyInvoice} />
                             <div class="flex justify-center">
-                                <CopyButton title="Copy Json" text={json()} />
+                                <CopyButton title="Copy" text={json()} />
                             </div>
                         </Dialog.Description>
                     </Dialog.Content>
