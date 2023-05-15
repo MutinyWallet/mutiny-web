@@ -1,13 +1,13 @@
 import { ParentComponent, createMemo, createResource } from "solid-js";
-import { InlineAmount } from "./AmountCard";
 import { satsToUsd } from "~/utils/conversions";
 import bolt from "~/assets/icons/bolt.svg"
 import chain from "~/assets/icons/chain.svg"
 import { timeAgo } from "~/utils/prettyPrintTime";
 import { MutinyTagItem } from "~/utils/tags";
 import { generateGradient } from "~/utils/gradientHash";
+import { useMegaStore } from "~/state/megaStore";
 
-export const ActivityAmount: ParentComponent<{ amount: string, price: number, positive?: boolean }> = (props) => {
+export const ActivityAmount: ParentComponent<{ amount: string, price: number, positive?: boolean, center?: boolean }> = (props) => {
     const amountInUsd = createMemo(() => {
         const parsed = Number(props.amount);
         if (isNaN(parsed)) {
@@ -27,7 +27,8 @@ export const ActivityAmount: ParentComponent<{ amount: string, price: number, po
     })
 
     return (
-        <div class="flex flex-col items-end">
+        <div class="flex flex-col"
+            classList={{ "items-end": !props.center, "items-center": props.center }}>
             <div class="text-base"
                 classList={{ "text-m-green": props.positive }}
             >{props.positive && "+ "}{prettyPrint()}&nbsp;<span class="text-sm">SATS</span>
@@ -74,6 +75,7 @@ function labelString(labels: MutinyTagItem[]) {
 
 export function ActivityItem(props: { kind: "lightning" | "onchain", labels: MutinyTagItem[], amount: number | bigint, date?: number | bigint, positive?: boolean, onClick?: () => void }) {
     const labels = () => sortLabels(props.labels)
+    const [state, _actions] = useMegaStore();
     return (
         <div
             onClick={() => props.onClick && props.onClick()}
@@ -93,7 +95,7 @@ export function ActivityItem(props: { kind: "lightning" | "onchain", labels: Mut
                 <time class="text-sm text-neutral-500">{timeAgo(props.date)}</time>
             </div>
             <div class="">
-                <ActivityAmount amount={props.amount.toString()} price={30000} positive={props.positive} />
+                <ActivityAmount amount={props.amount.toString()} price={state.price} positive={props.positive} />
             </div>
         </div>
     )

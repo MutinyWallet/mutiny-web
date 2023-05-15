@@ -8,7 +8,7 @@ import { JsonModal } from "./JsonModal";
 
 const STYLE = "px-4 py-2 rounded-xl border-2 border-white flex gap-2 items-center font-semibold"
 
-function ShareButton(props: { receiveString: string }) {
+export function ShareButton(props: { receiveString: string }) {
     async function share(receiveString: string) {
         // If the browser doesn't support share we can just copy the address
         if (!navigator.share) {
@@ -45,7 +45,7 @@ export function StringShower(props: { text: string }) {
     )
 }
 
-export function ShareCard(props: { text?: string }) {
+export function CopyButton(props: { text?: string, title?: string }) {
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     function handleCopy() {
@@ -53,12 +53,17 @@ export function ShareCard(props: { text?: string }) {
     }
 
     return (
+        <button class={STYLE} onClick={handleCopy}>{copied() ? "Copied" : props.title ?? "Copy"}<img src={copyIcon} alt="copy" /></button>
+    )
+}
+
+export function ShareCard(props: { text?: string }) {
+    return (
         <Card>
             <StringShower text={props.text ?? ""} />
             <VStack>
-
                 <div class="flex gap-4 justify-center">
-                    <button class={STYLE} onClick={handleCopy}>{copied() ? "Copied" : "Copy"}<img src={copyIcon} alt="copy" /></button>
+                    <CopyButton text={props.text ?? ""} />
                     <Show when={navigator.share}>
                         <ShareButton receiveString={props.text ?? ""} />
                     </Show>

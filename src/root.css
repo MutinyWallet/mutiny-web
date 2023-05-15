@@ -39,8 +39,3 @@ a {
 #video-container .scan-region-highlight-svg {
   display: none;
 }
-
-/* Missing you sveltekit */
-dd {
-  @apply mb-8 mt-2;
-}

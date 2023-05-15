@@ -9,6 +9,7 @@ import { getRedshifted } from '~/utils/fakeLabels';
 import { ActivityItem } from './ActivityItem';
 import { MutinyTagItem } from '~/utils/tags';
 import { Network } from '~/logic/mutinyWalletSetup';
+import { DetailsModal } from './DetailsModal';
 
 export const THREE_COLUMNS = 'grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0'
 export const CENTER_COLUMN = 'min-w-0 overflow-hidden max-w-full'
@@ -53,7 +54,6 @@ function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[], network:
                     Mempool Link
                 </a>
             </JsonModal>
-            {/* {JSON.stringify(props.labels)} */}
             <ActivityItem
                 kind={"onchain"}
                 labels={props.labels}
@@ -74,7 +74,7 @@ function InvoiceItem(props: { item: MutinyInvoice, labels: MutinyTagItem[] }) {
 
     return (
         <>
-            <JsonModal open={open()} data={props.item} title="Lightning Transaction" setOpen={setOpen} />
+            <DetailsModal open={open()} data={props.item} title="Lightning Transaction" setOpen={setOpen} />
             <ActivityItem kind={"lightning"} labels={props.labels} amount={props.item.amount_sats || 0n} date={props.item.last_updated} positive={!isSend()} onClick={() => setOpen(!open())} />
         </>
     )
