@@ -24,27 +24,36 @@ export function ImportExport() {
 
         try {
             const file: File = files()[0].file;
-            fileReader.readAsText(file, "UTF-8");
-            fileReader.onload = e => {
-                const text = e.target?.result?.toString();
 
-                if (text) {
-                    // This should throw if there's a parse error, so we won't end up clearing
-                    JSON.parse(text);
+            const text = await new Promise<string | null>((resolve, reject) => {
+                fileReader.onload = e => {
+                    const result = e.target?.result?.toString();
+                    if (result) {
+                        resolve(result);
+                    } else {
+                        reject(new Error("No text found in file"));
+                    }
+                };
+                fileReader.onerror = e => reject(new Error("File read error"));
+                fileReader.readAsText(file, "UTF-8");
+            });
 
-                    MutinyWallet.import_json(text);
+            // This should throw if there's a parse error, so we won't end up clearing
+            JSON.parse(text);
 
-                    window.location.href = "/"
-
-                } else {
-                    throw new Error("No text found in file")
-                }
+            MutinyWallet.import_json(text);
+            if (state.mutiny_wallet) {
+                await state.mutiny_wallet.stop();
             }
+
+            window.location.href = "/";
+
         } catch (e) {
             showToast(eify(e));
+        } finally {
+            setConfirmOpen(false);
+            setConfirmLoading(false);
         }
-        setConfirmOpen(false);
-        setConfirmLoading(false);
     }
 
     async function uploadFile() {
