@@ -1,6 +1,7 @@
 import { useMegaStore } from "~/state/megaStore";
 import { Card, Hr, SmallHeader, Button, InnerCard, VStack } from "~/components/layout";
 import PeerConnectModal from "~/components/PeerConnectModal";
+import NostrWalletConnectModal from "~/components/NostrWalletConnectModal";
 import { For, Show, Suspense, createEffect, createResource, createSignal, onCleanup } from "solid-js";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import { Collapsible, TextField } from "@kobalte/core";
@@ -362,6 +363,8 @@ export default function KitchenSink() {
     return (
         <Card title="Kitchen Sink">
             <PeerConnectModal />
+            <Hr />
+            <NostrWalletConnectModal />
             <Hr />
             <PeersList />
             <Hr />
