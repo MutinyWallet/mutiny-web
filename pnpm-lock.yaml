@@ -14,8 +14,8 @@ dependencies:
     specifier: 0.3.3
     version: 0.3.3
   '@mutinywallet/waila-wasm':
-    specifier: ^0.1.5
-    version: 0.1.5
+    specifier: ^0.2.0
+    version: 0.2.0
   '@solid-primitives/upload':
     specifier: ^0.0.111
     version: 0.0.111(solid-js@1.7.5)
@@ -1625,8 +1625,8 @@ packages:
     resolution: {integrity: sha512-1K7Ly4S7AA0GWffVDU7tN/a+cqiYFKXvtVtTzDK0u70uiwtgk3c897cFlB5JAmo1WKE6RmakmncQAZA9SVnRxg==}
     dev: false
 
-  /@mutinywallet/waila-wasm@0.1.5:
-    resolution: {integrity: sha512-kBy20W9D8urhx1GyZd8N4nq61p7PTQOQ0W+4zWCPbuLOBZ08AFQ6LBYmjHKFwOLZPIHgmsK3dcOXbhxZWS1lSw==}
+  /@mutinywallet/waila-wasm@0.2.0:
+    resolution: {integrity: sha512-ifDbyRlhOKQgHXMMRp6L/DAex72WGLMB+cdfPEij7X5RNgo4D8Qs9DK+uIiAAc/CkYWZ/whZMuhQIIrAd1apyw==}
     dev: false
 
   /@noble/hashes@1.2.0:
