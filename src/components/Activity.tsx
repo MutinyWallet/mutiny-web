@@ -135,7 +135,7 @@ export function CombinedActivity(props: { limit?: number }) {
 
         for (let i = 0; i < invoices.length; i++) {
             if (invoices[i].paid) {
-                activity.push({ type: "lightning", item: invoices[i], time: Number(invoices[i].expire), labels: [] })
+                activity.push({ type: "lightning", item: invoices[i], time: Number(invoices[i].last_updated), labels: [] })
             }
         }
 
