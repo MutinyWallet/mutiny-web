@@ -134,11 +134,15 @@ export default function Send() {
         setFieldDestination("");
     }
 
-    const fakeFee = createMemo(() => {
-        if (source() === "lightning") return 69n;
-        if (source() === "onchain") return 420n;
-        return 0n;
-    })
+    const feeEstimate = () => {
+        if (source() === "lightning") return undefined;
+
+        if (source() === "onchain" && amountSats() && amountSats() > 0n && address()) {
+            return state.mutiny_wallet?.estimate_tx_fee(address()!, amountSats(), undefined);
+        }
+
+        return undefined
+    }
 
     onMount(() => {
         if (state.scan_result) {
@@ -347,7 +351,7 @@ export default function Send() {
                                     </VStack>
                                 </Card>
 
-                                <AmountCard amountSats={amountSats().toString()} setAmountSats={setAmountSats} fee={fakeFee().toString()} isAmountEditable={!(invoice()?.amount_sats)} />
+                                <AmountCard amountSats={amountSats().toString()} setAmountSats={setAmountSats} fee={feeEstimate()?.toString()} isAmountEditable={!(invoice()?.amount_sats)} />
                             </Match>
                             <Match when={true}>
                                 <DestinationInput fieldDestination={fieldDestination()} setFieldDestination={setFieldDestination} handleDecode={handleDecode} handlePaste={handlePaste} />
