@@ -19,7 +19,7 @@ import { useNavigate } from "solid-start";
 import { TagEditor } from "~/components/TagEditor";
 import { StringShower } from "~/components/ShareCard";
 import { AmountCard } from "~/components/AmountCard";
-import { MutinyTagItem, UNKNOWN_TAG, sortByLastUsed, tagsToIds } from "~/utils/tags";
+import { MutinyTagItem } from "~/utils/tags";
 import { BackButton } from "~/components/layout/BackButton";
 
 type SendSource = "lightning" | "onchain";
@@ -30,18 +30,28 @@ type SendSource = "lightning" | "onchain";
 // TODO: better success / fail type
 type SentDetails = { amount?: bigint, destination?: string, txid?: string, failure_reason?: string }
 
-function MethodChooser(props: { source: SendSource, setSource: (source: string) => void }) {
+function MethodChooser(props: { source: SendSource, setSource: (source: string) => void, both?: boolean }) {
     const [store, _actions] = useMegaStore();
 
     const methods = createMemo(() => {
         return [
-            { value: "lightning", label: "Lightning", caption: store.balance?.lightning ? `${store.balance?.lightning.toLocaleString()} SATS` : "No balance" },
-            { value: "onchain", label: "On-chain", caption: store.balance?.confirmed ? `${store.balance?.confirmed.toLocaleString()} SATS` : "No balance" }
+            { value: "lightning", label: "Lightning Balance", caption: store.balance?.lightning ? `${store.balance?.lightning.toLocaleString()} SATS` : "No balance" },
+            { value: "onchain", label: "On-chain Balance", caption: store.balance?.confirmed ? `${store.balance?.confirmed.toLocaleString()} SATS` : "No balance" }
         ]
 
     })
     return (
-        <StyledRadioGroup accent="white" value={props.source} onValueChange={props.setSource} choices={methods()} />
+        <Switch>
+            <Match when={props.both}>
+                <StyledRadioGroup accent="white" value={props.source} onValueChange={props.setSource} choices={methods()} />
+            </Match>
+            <Match when={props.source === "lightning"}>
+                <StyledRadioGroup accent="white" value={props.source} onValueChange={props.setSource} choices={[methods()[0]]} />
+            </Match>
+            <Match when={props.source === "onchain"}>
+                <StyledRadioGroup accent="white" value={props.source} onValueChange={props.setSource} choices={[methods()[1]]} />
+            </Match>
+        </Switch>
     )
 }
 
@@ -80,6 +90,7 @@ function DestinationShower(props: {
     address?: string,
     invoice?: MutinyInvoice,
     nodePubkey?: string,
+    lnurl?: string,
     clearAll: () => void,
 }) {
     return (
@@ -92,6 +103,9 @@ function DestinationShower(props: {
             </Match>
             <Match when={props.nodePubkey && props.source === "lightning"}>
                 <StringShower text={props.nodePubkey || ""} />
+            </Match>
+            <Match when={props.lnurl && props.source === "lightning"}>
+                <StringShower text={props.lnurl || ""} />
             </Match>
         </Switch>
 
@@ -113,6 +127,7 @@ export default function Send() {
     // These can only be derived from the "destination" signal
     const [invoice, setInvoice] = createSignal<MutinyInvoice>();
     const [nodePubkey, setNodePubkey] = createSignal<string>();
+    const [lnurlp, setLnurlp] = createSignal<string>();
     const [address, setAddress] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
 
@@ -131,6 +146,7 @@ export default function Send() {
         setAddress(undefined);
         setDescription(undefined);
         setNodePubkey(undefined);
+        setLnurlp(undefined);
         setFieldDestination("");
     }
 
@@ -154,7 +170,6 @@ export default function Send() {
     // Rerun every time the destination changes
     createEffect(() => {
         const source = destination();
-        console.log(source)
         if (!source) return undefined;
         try {
             if (source.address) setAddress(source.address)
@@ -170,6 +185,14 @@ export default function Send() {
                 setAmountSats(source.amount_sats || 0n);
                 setNodePubkey(source.node_pubkey);
                 setSource("lightning")
+            } else if (source.lnurl) {
+                state.mutiny_wallet?.decode_lnurl(source.lnurl).then((lnurlParams) => {
+                    if (lnurlParams.tag === "payRequest") {
+                        setAmountSats(source.amount_sats || 0n);
+                        setLnurlp(source.lnurl);
+                        setSource("lightning")
+                    }
+                })
             } else {
                 setAmountSats(source.amount_sats || 0n);
                 setSource("onchain")
@@ -190,7 +213,7 @@ export default function Send() {
                 showToast(result.error);
                 return;
             } else {
-                if (result.value?.address || result.value?.invoice || result.value?.node_pubkey) {
+                if (result.value?.address || result.value?.invoice || result.value?.node_pubkey || result.value?.lnurl) {
                     setDestination(result.value);
                     // Important! we need to clear the scan result once we've used it
                     actions.setScanResult(undefined);
@@ -278,6 +301,16 @@ export default function Send() {
                 } else {
                     sentDetails.amount = amountSats();
                 }
+            } else if (source() === "lightning" && lnurlp()) {
+                const nodes = await state.mutiny_wallet?.list_nodes();
+                const firstNode = nodes[0] as string || ""
+                const payment = await state.mutiny_wallet?.lnurl_pay(firstNode, lnurlp()!, amountSats(), tags);
+
+                if (!payment?.paid) {
+                    throw new Error("Lnurl Pay failed")
+                } else {
+                    sentDetails.amount = amountSats();
+                }
             } else if (source() === "onchain" && address()) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), tags);
@@ -308,7 +341,7 @@ export default function Send() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <Show when={address() || invoice() || nodePubkey()} fallback={<BackLink />}>
+                    <Show when={address() || invoice() || nodePubkey() || lnurlp()} fallback={<BackLink />}>
                         <BackButton onClick={() => clearAll()} title="Start Over" />
                     </Show>
                     <LargeHeader>Send Bitcoin</LargeHeader>
@@ -339,18 +372,16 @@ export default function Send() {
                     </FullscreenModal>
                     <VStack biggap>
                         <Switch>
-                            <Match when={address() || invoice() || nodePubkey()}>
-                                <Show when={address() && invoice()}>
-                                    <MethodChooser source={source()} setSource={setSource} />
-                                </Show>
+                            <Match when={address() || invoice() || nodePubkey() || lnurlp()}>
+
+                                <MethodChooser source={source()} setSource={setSource} both={!!address() && !!invoice()} />
                                 <Card>
                                     <VStack>
-                                        <DestinationShower source={source()} description={description()} invoice={invoice()} address={address()} nodePubkey={nodePubkey()} clearAll={clearAll} />
+                                        <DestinationShower source={source()} description={description()} invoice={invoice()} address={address()} nodePubkey={nodePubkey()} lnurl={lnurlp()} clearAll={clearAll} />
                                         <SmallHeader>Private tags</SmallHeader>
                                         <TagEditor selectedValues={selectedContacts()} setSelectedValues={setSelectedContacts} placeholder="Add the receiver for your records" />
                                     </VStack>
                                 </Card>
-
                                 <AmountCard amountSats={amountSats().toString()} setAmountSats={setAmountSats} fee={feeEstimate()?.toString()} isAmountEditable={!(invoice()?.amount_sats)} />
                             </Match>
                             <Match when={true}>
