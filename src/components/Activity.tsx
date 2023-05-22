@@ -58,7 +58,7 @@ function OnChainItem(props: { item: OnChainTx, labels: MutinyTagItem[], network:
                 kind={"onchain"}
                 labels={props.labels}
                 // FIXME: is this something we can put into node logic?
-                amount={isReceive() ? props.item.received - props.item.sent : props.item.received}
+                amount={isReceive() ? props.item.received - props.item.sent : props.item.sent - props.item.received}
                 date={props.item.confirmation_time?.Confirmed?.time}
                 positive={isReceive()}
                 onClick={() => setOpen(!open())}
