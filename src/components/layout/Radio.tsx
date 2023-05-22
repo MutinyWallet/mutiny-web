@@ -24,7 +24,7 @@ export function StyledRadioGroup(props: { value: string, choices: Choices, onVal
                             </RadioGroup.ItemControl>
                             <RadioGroup.ItemLabel class="ui-checked:text-white text-neutral-400">
                                 <div class="block">
-                                    <div class={`text-${props.small ? "base" : "lg"} font-semibold`}>{choice.label}</div>
+                                    <div classList={{ "text-base": props.small, "text-lg": !props.small }} class={`font-semibold max-sm:text-sm`}>{choice.label}</div>
                                     <Show when={!props.small}>
                                         <div class="text-sm font-light">{choice.caption}</div>
                                     </Show>

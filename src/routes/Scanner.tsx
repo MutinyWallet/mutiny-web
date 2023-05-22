@@ -14,6 +14,7 @@ export type ParsedParams = {
     network?: string;
     memo?: string;
     node_pubkey?: string;
+    lnurl?: string;
 }
 
 export function toParsedParams(str: string, ourNetwork: string): Result<ParsedParams> {
@@ -25,23 +26,12 @@ export function toParsedParams(str: string, ourNetwork: string): Result<ParsedPa
         return { ok: false, error: new Error("Invalid payment request") }
     }
 
-    console.log("params:", params.node_pubkey)
-    console.log("params network:", params.network)
-    console.log("our network:", ourNetwork)
+    // If WAILA doesn't return a network we should default to our own
+    // If the networks is testnet and we're on signet we should use signet
+    const network = !params.network ? ourNetwork : params.network === "testnet" && ourNetwork === "signet" ? "signet" : params.network;
 
-
-
-    // TODO: "testnet" and "signet" are encoded the same I guess?
-    if (params.network === "testnet" || params.network === "signet") {
-        if (ourNetwork === "signet") {
-            // noop
-        }
-    } else if (params.network !== ourNetwork) {
-        if (params.node_pubkey) {
-            // noop
-        } else {
-            return { ok: false, error: new Error(`Destination is for ${params.network} but you're on ${ourNetwork}`) }
-        }
+    if (network !== ourNetwork) {
+        return { ok: false, error: new Error(`Destination is for ${params.network} but you're on ${ourNetwork}`) }
     }
 
     return {
@@ -49,9 +39,10 @@ export function toParsedParams(str: string, ourNetwork: string): Result<ParsedPa
             address: params.address,
             invoice: params.invoice,
             amount_sats: params.amount_sats,
-            network: params.network,
+            network,
             memo: params.memo,
             node_pubkey: params.node_pubkey,
+            lnurl: params.lnurl
         }
     }
 }
@@ -89,7 +80,7 @@ export default function Scanner() {
                 showToast(result.error);
                 return;
             } else {
-                if (result.value?.address || result.value?.invoice || result.value?.node_pubkey) {
+                if (result.value?.address || result.value?.invoice || result.value?.node_pubkey || result.value?.lnurl) {
                     actions.setScanResult(result.value);
                     navigate("/send")
                 }
