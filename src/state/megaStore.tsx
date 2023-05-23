@@ -26,6 +26,7 @@ export type MegaStore = [{
     has_backed_up: boolean,
     dismissed_restore_prompt: boolean,
     wallet_loading: boolean
+    nwc_enabled: boolean
 }, {
     fetchUserStatus(): Promise<UserStatus>;
     setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void>;
@@ -36,6 +37,7 @@ export type MegaStore = [{
     dismissRestorePrompt(): void;
     setHasBackedUp(): void;
     listTags(): Promise<MutinyTagItem[]>;
+    setNwc(enabled: boolean): void;
 }];
 
 export const Provider: ParentComponent = (props) => {
@@ -52,7 +54,8 @@ export const Provider: ParentComponent = (props) => {
         last_sync: undefined as number | undefined,
         is_syncing: false,
         dismissed_restore_prompt: localStorage.getItem("dismissed_restore_prompt") === "true",
-        wallet_loading: true
+        wallet_loading: true,
+        nwc_enabled: localStorage.getItem("nwc_enabled") === "true",
     });
 
     const actions = {
@@ -88,6 +91,12 @@ export const Provider: ParentComponent = (props) => {
                 const mutinyWallet = await setupMutinyWallet(settings)
                 // Get balance optimistically
                 const balance = await mutinyWallet.get_balance();
+                // start nwc if enabled
+                if (state.nwc_enabled) {
+                    const nodes = await mutinyWallet.list_nodes();
+                    const firstNode = nodes[0] as string || "";
+                    await mutinyWallet.start_nostr_wallet_connect(firstNode);
+                }
                 setState({ mutiny_wallet: mutinyWallet, wallet_loading: false, balance })
             } catch (e) {
                 console.error(e)
@@ -136,6 +145,10 @@ export const Provider: ParentComponent = (props) => {
         },
         async listTags(): Promise<MutinyTagItem[]> {
             return state.mutiny_wallet?.get_tag_items() as MutinyTagItem[]
+        },
+        setNwc(enabled: boolean) {
+            localStorage.setItem("nwc_enabled", enabled.toString())
+            setState({ nwc_enabled: enabled })
         }
     };
 

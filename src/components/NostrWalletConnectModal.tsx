@@ -6,11 +6,11 @@ import {createResource, Show} from "solid-js";
 
 const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
 const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
-const DIALOG_CONTENT = "w-[80vw] max-w-[400px] p-4 bg-gray/50 backdrop-blur-md shadow-xl rounded-xl border border-white/10"
+const DIALOG_CONTENT = "w-[80vw] max-w-[400px] max-h-[100dvh] overflow-y-auto disable-scrollbars p-4 bg-gray/50 backdrop-blur-md shadow-xl rounded-xl border border-white/10"
 const SMALL_HEADER = "text-sm font-semibold uppercase"
 
 export default function NostrWalletConnectModal() {
-    const [state, _] = useMegaStore()
+    const [state, actions] = useMegaStore()
 
     const getConnectionURI = () => {
         if (state.mutiny_wallet) {
@@ -22,6 +22,17 @@ export default function NostrWalletConnectModal() {
 
     const [connectionURI] = createResource(getConnectionURI);
 
+    const toggleNwc = async () => {
+        if (state.nwc_enabled) {
+            actions.setNwc(false)
+            window.location.reload()
+        } else {
+            actions.setNwc(true)
+            const nodes = await state.mutiny_wallet?.list_nodes();
+            const firstNode = nodes[0] as string || "";
+            await state.mutiny_wallet?.start_nostr_wallet_connect(firstNode);
+        }
+    }
 
     // TODO: a lot of this markup is probably reusable as a "Modal" component
     return (
@@ -48,6 +59,7 @@ export default function NostrWalletConnectModal() {
                                     <code class="break-all">{connectionURI() || ""}</code>
                                 </Card>
                             </Show>
+                            <Button onClick={toggleNwc}>{state.nwc_enabled ? "Disable" : "Enable"}</Button>
                         </Dialog.Description>
                     </Dialog.Content>
                 </div>
