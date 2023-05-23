@@ -49,13 +49,5 @@
   },
   "engines": {
     "node": ">=16.8"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": false,
-    "trailingComma": "es5",
-    "printWidth": 80,
-    "tabWidth": 2,
-    "useTabs": false
   }
 }

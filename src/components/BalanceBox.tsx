@@ -2,7 +2,8 @@ import { Show, Suspense } from "solid-js";
 import { Button, ButtonLink, FancyCard, Indicator } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
-import { useNavigate } from "solid-start";
+import { A, useNavigate } from "solid-start";
+import shuffle from "~/assets/icons/shuffle.svg"
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
@@ -22,6 +23,8 @@ export function LoadingShimmer() {
     </div>)
 }
 
+const STYLE = "px-2 py-1 rounded-xl border border-neutral-400 text-sm flex gap-2 items-center font-semibold"
+
 export default function BalanceBox(props: { loading?: boolean }) {
     const [state, actions] = useMegaStore();
 
@@ -39,8 +42,13 @@ export default function BalanceBox(props: { loading?: boolean }) {
 
             <FancyCard title="On-Chain" tag={state.is_syncing && <Indicator>Syncing</Indicator>}>
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
-                    <div onClick={actions.sync}>
+                    <div class="flex justify-between">
                         <Amount amountSats={state.balance?.confirmed} showFiat />
+                        <div class="self-end justify-self-end">
+                            <A href="/swap" class={STYLE}>
+                                <img src={shuffle} alt="swap" />
+                            </A>
+                        </div>
                     </div>
                 </Show>
                 <Suspense>

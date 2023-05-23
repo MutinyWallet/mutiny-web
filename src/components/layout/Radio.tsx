@@ -15,7 +15,7 @@ export function StyledRadioGroup(props: { value: string, choices: Choices, onVal
                 {choice =>
                     <RadioGroup.Item value={choice.value}
                         class={`ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2`}
-                        classList={{ "ui-checked:outline-m-red": props.accent === "red", "ui-checked:outline-white": props.accent === "white" }}
+                        classList={{ "ui-checked:outline-m-red": props.accent === "red", "ui-checked:outline-white": props.accent === "white", "ui-checked:outline-black/50 ui-checked:bg-white/10": props.choices.length === 1 }}
                     >
                         <div class={props.small ? "py-2 px-2" : "py-3 px-4"}>
                             <RadioGroup.ItemInput />
