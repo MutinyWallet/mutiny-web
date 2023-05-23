@@ -65,9 +65,12 @@ export function MethodChooser(props: {
       {
         value: "onchain",
         label: "On-chain Balance",
-        caption: store.balance?.confirmed
-          ? `${store.balance?.confirmed.toLocaleString()} SATS`
-          : "No balance"
+        caption:
+          store.balance?.confirmed || store.balance?.unconfirmed
+            ? `${(
+                (store.balance?.confirmed || 0n) + (store.balance?.unconfirmed || 0n)
+              ).toLocaleString()} SATS`
+            : "No balance"
       }
     ];
   });

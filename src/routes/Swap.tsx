@@ -156,7 +156,10 @@ export default function Swap() {
       return "It's just silly to make a channel smaller than 10,000 sats";
     }
 
-    if (amountSats() > (state.balance?.confirmed ?? 0n) || !feeEstimate()) {
+    if (
+      amountSats() > (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n) ||
+      !feeEstimate()
+    ) {
       return "You don't have enough funds to make this channel";
     }
 
