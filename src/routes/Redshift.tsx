@@ -1,12 +1,10 @@
 import {
-  Component,
   createEffect,
   createMemo,
   createResource,
   createSignal,
   For,
   Match,
-  onCleanup,
   onMount,
   ParentComponent,
   Show,
@@ -53,8 +51,8 @@ type ShiftStage = "choose" | "observe" | "success" | "failure"
 
 type OutPoint = string // Replace with the actual TypeScript type for OutPoint
 type RedshiftStatus = string // Replace with the actual TypeScript type for RedshiftStatus
-type RedshiftRecipient = any // Replace with the actual TypeScript type for RedshiftRecipient
-type PublicKey = any // Replace with the actual TypeScript type for PublicKey
+type RedshiftRecipient = unknown // Replace with the actual TypeScript type for RedshiftRecipient
+type PublicKey = unknown // Replace with the actual TypeScript type for PublicKey
 
 interface RedshiftResult {
   id: string
@@ -96,52 +94,50 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
     return (await state.mutiny_wallet?.list_utxos()) as UtxoItem[]
   }
 
-  function findUtxoByOutpoint(
-    outpoint?: string,
-    utxos: UtxoItem[] = []
-  ): UtxoItem | undefined {
-    if (!outpoint) return undefined
-    return utxos.find((utxo) => utxo.outpoint === outpoint)
-  }
+  // function findUtxoByOutpoint(
+  //   outpoint?: string,
+  //   utxos: UtxoItem[] = []
+  // ): UtxoItem | undefined {
+  //   if (!outpoint) return undefined
+  //   return utxos.find((utxo) => utxo.outpoint === outpoint)
+  // }
 
-  const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos)
+  const [_utxos, { refetch: _refetchUtxos }] = createResource(getUtXos)
 
-  const inputUtxo = createMemo(() => {
-    console.log(utxos())
-    const foundUtxo = findUtxoByOutpoint(props.redshift.input_utxo, utxos())
-    console.log("Found utxo:", foundUtxo)
-    return foundUtxo
-  })
+  // const inputUtxo = createMemo(() => {
+  //   console.log(utxos())
+  //   const foundUtxo = findUtxoByOutpoint(props.redshift.input_utxo, utxos())
+  //   console.log("Found utxo:", foundUtxo)
+  //   return foundUtxo
+  // })
 
-  async function checkRedshift(id: string) {
-    // const rs = redshiftItems[0] as RedshiftResult;
-    console.log("Checking redshift", id)
-    const redshift = await state.mutiny_wallet?.get_redshift(id)
-    console.log(redshift)
-    return redshift
-  }
+  const [redshiftResource, { refetch: _refetchRedshift }] = createResource(
 
-  const [redshiftResource, { refetch }] = createResource(
-    props.redshift.id,
-    checkRedshift
+    async () => {
+      console.log("Checking redshift", props.redshift.id)
+      const redshift = await state.mutiny_wallet?.get_redshift(props.redshift.id)
+      console.log(redshift)
+      return redshift
+    }
   )
   onMount(() => {
-    const interval = setInterval(() => {
-      if (redshiftResource()) refetch()
-      // if (sentAmount() === 200000) {
-      //     clearInterval(interval)
-      //     props.setShiftStage("success");
-      //     // setSentAmount((0))
+  //   const interval = setInterval(() => {
+  //     if (redshiftResource()) refetch()
+  //     // if (sentAmount() === 200000) {
+  //     //     clearInterval(interval)
+  //     //     props.setShiftStage("success");
+  //     //     // setSentAmount((0))
 
-      // } else {
-      //     setSentAmount((sentAmount() + 50000))
-      // }
-    }, 1000)
+  //     // } else {
+  //     //     setSentAmount((sentAmount() + 50000))
+  //     // }
+  //   }, 1000)
   })
 
-  const outputUtxo = createMemo(() => {
-    return findUtxoByOutpoint(redshiftResource()?.output_utxo, utxos())
-  })
+
+  // const outputUtxo = createMemo(() => {
+  //   return findUtxoByOutpoint(redshiftResource()?.output_utxo, utxos())
+  // })
 
   createEffect(() => {
     setRedshifted(true, redshiftResource()?.output_utxo)
@@ -170,23 +166,23 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
                             </Show>
                         </KV> */}
               <KV key="Starting amount">
-                <Amount amountSats={redshiftResource().amount_sats} />
+                <Amount amountSats={redshiftResource()!.amount_sats} />
               </KV>
               <KV key="Fees paid">
-                <Amount amountSats={redshiftResource().fees_paid} />
+                <Amount amountSats={redshiftResource()!.fees_paid} />
               </KV>
               <KV key="Change">
-                <Amount amountSats={redshiftResource().change_amt} />
+                <Amount amountSats={redshiftResource()!.change_amt} />
               </KV>
               <KV key="Outbound channel">
                 <VStack>
                   <pre class="whitespace-pre-wrap break-all">
-                    {redshiftResource().introduction_channel}
+                    {redshiftResource()!.introduction_channel}
                   </pre>
                   <a
                     class=""
                     href={mempoolTxUrl(
-                      redshiftResource().introduction_channel?.split(":")[0],
+                      redshiftResource()!.introduction_channel?.split(":")[0],
                       network
                     )}
                     target="_blank"
@@ -196,16 +192,16 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
                   </a>
                 </VStack>
               </KV>
-              <Show when={redshiftResource().output_channel}>
+              <Show when={redshiftResource()!.output_channel}>
                 <KV key="Return channel">
                   <VStack>
                     <pre class="whitespace-pre-wrap break-all">
-                      {redshiftResource().output_channel}
+                      {redshiftResource()!.output_channel}
                     </pre>
                     <a
                       class=""
                       href={mempoolTxUrl(
-                        redshiftResource().output_channel?.split(":")[0],
+                        redshiftResource()!.output_channel?.split(":")[0],
                         network
                       )}
                       target="_blank"
@@ -219,7 +215,6 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
             </VStack>
           </Card>
         </Show>
-        <SmallHeader></SmallHeader>
       </VStack>
     </VStack>
   )
@@ -238,7 +233,7 @@ export function Utxo(props: { item: UtxoItem; onClick?: () => void }) {
   const redshifted = createMemo(() => getRedshifted(props.item.outpoint))
   return (
     <>
-      <div class={THREE_COLUMNS} onClick={props.onClick}>
+      <div class={THREE_COLUMNS} onClick={() => props.onClick && props.onClick()}>
         <div class="flex items-center">
           <img src={utxoIcon} alt="coin" />
         </div>
@@ -275,11 +270,11 @@ const FAKE_STATES = [
 
 function ShiftObserver(props: {
   setShiftStage: (stage: ShiftStage) => void
-  redshiftId: String
+  redshiftId: string
 }) {
-  const [state, _actions] = useMegaStore()
+  const [_state, _actions] = useMegaStore()
 
-  const [fakeStage, setFakeStage] = createSignal(2)
+  const [fakeStage, _setFakeStage] = createSignal(2)
 
   const [sentAmount, setSentAmount] = createSignal(0)
 
@@ -295,17 +290,17 @@ function ShiftObserver(props: {
     }, 1000)
   })
 
-  async function checkRedshift(id: string) {
-    console.log("Checking redshift", id)
-    const redshift = await state.mutiny_wallet?.get_redshift(id)
-    console.log(redshift)
-    return redshift
-  }
+  // async function checkRedshift(id: string) {
+  //   console.log("Checking redshift", id)
+  //   const redshift = await state.mutiny_wallet?.get_redshift(id)
+  //   console.log(redshift)
+  //   return redshift
+  // }
 
-  const [redshiftResource, { refetch }] = createResource(
-    props.redshiftId,
-    checkRedshift
-  )
+  // const [redshiftResource, { refetch }] = createResource(
+  //   props.redshiftId,
+  //   checkRedshift
+  // )
 
   // onMount(() => {
   //     const interval = setInterval(() => {
@@ -377,7 +372,7 @@ export default function Redshift() {
   }
 
   const [utxos, { refetch: _refetchUtxos }] = createResource(getUtXos)
-  const [channels, { refetch: _refetchChannels }] = createResource(getChannels)
+  const [_channels, { refetch: _refetchChannels }] = createResource(getChannels)
 
   const redshiftedUtxos = createMemo(() => {
     return utxos()?.filter((utxo) => getRedshifted(utxo.outpoint))
@@ -515,7 +510,7 @@ export default function Redshift() {
                 <Match when={shiftStage() === "observe" && chosenUtxo()}>
                   <ShiftObserver
                     setShiftStage={setShiftStage}
-                    utxo={chosenUtxo()!}
+                    redshiftId="dummy-redshift"
                   />
                 </Match>
                 <Match when={shiftStage() === "success" && chosenUtxo()}>

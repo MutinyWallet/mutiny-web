@@ -12,7 +12,7 @@ import {
   LargeHeader,
   MutinyWalletGuard,
   SafeArea,
-  VStack
+  VStack,
 } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { TextField } from "~/components/layout/TextField";
@@ -25,7 +25,6 @@ import { InfoBox } from "~/components/InfoBox";
 import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import { useNavigate } from "solid-start";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { Network } from "~/logic/mutinyWalletSetup";
 
 const CHANNEL_FEE_ESTIMATE_ADDRESS =
   "bc1qf7546vg73ddsjznzq57z3e8jdn6gtw6au576j07kt6d9j7nz8mzsyn6lgf";
@@ -40,7 +39,7 @@ type ChannelOpenDetails = {
 };
 
 export default function Swap() {
-  const [state, actions] = useMegaStore();
+  const [state, _actions] = useMegaStore();
   const navigate = useNavigate();
 
   const [source, setSource] = createSignal<SendSource>("onchain");
@@ -165,8 +164,6 @@ export default function Swap() {
 
     return undefined;
   };
-
-  const network = state.mutiny_wallet?.get_network() as Network;
 
   return (
     <MutinyWalletGuard>

@@ -6,7 +6,7 @@ import eyeIcon from "~/assets/icons/eye.svg"
 import { Show, createSignal } from "solid-js";
 import { JsonModal } from "./JsonModal";
 
-const STYLE = "px-4 py-2 rounded-xl border-2 border-white flex gap-2 items-center font-semibold"
+const STYLE = "px-4 py-2 rounded-xl border-2 border-white flex gap-2 items-center font-semibold hover:text-m-blue transition-colors"
 
 export function ShareButton(props: { receiveString: string }) {
     async function share(receiveString: string) {
@@ -34,7 +34,7 @@ export function StringShower(props: { text: string }) {
     const [open, setOpen] = createSignal(false);
     return (
         <>
-            <JsonModal open={open()} data={props.text} title="Details" setOpen={setOpen} />
+            <JsonModal open={open()} plaintext={props.text} title="Details" setOpen={setOpen} />
             <div class="w-full grid grid-cols-[minmax(0,_1fr)_auto]">
                 <pre class="truncate text-neutral-400">{props.text}</pre>
                 <button class="w-[2rem]" onClick={() => setOpen(true)}>

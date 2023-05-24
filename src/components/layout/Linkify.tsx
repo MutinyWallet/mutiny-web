@@ -23,7 +23,7 @@ export default function Linkify(props: LinkifyProps): JSX.Element {
             links.push(beforeLink);
         }
 
-        links.push(<a href={href} target="_blank" rel="noopener noreferrer">{link}</a>);
+        links.push(<a href={href} class="break-all" target="_blank" rel="noopener noreferrer">{link}</a>);
     }
 
     const remainingText = text.slice(lastIndex);

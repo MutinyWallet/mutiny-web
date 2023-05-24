@@ -32,6 +32,7 @@ import { StringShower } from "~/components/ShareCard";
 import { AmountCard } from "~/components/AmountCard";
 import { MutinyTagItem } from "~/utils/tags";
 import { BackButton } from "~/components/layout/BackButton";
+import { Network } from "~/logic/mutinyWalletSetup";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -407,6 +408,8 @@ export default function Send() {
   const sendButtonDisabled = createMemo(() => {
     return !destination() || sending() || amountSats() === 0n;
   });
+  
+  const network = state.mutiny_wallet?.get_network() as Network
 
   return (
     <MutinyWalletGuard>
@@ -441,7 +444,7 @@ export default function Send() {
                   <Amount amountSats={sentDetails()?.amount} showFiat />
                   <Show when={sentDetails()?.txid}>
                     <a
-                      href={mempoolTxUrl(sentDetails()?.txid, state.mutiny_wallet?.get_network())}
+                      href={mempoolTxUrl(sentDetails()?.txid, network)}
                       target="_blank"
                       rel="noreferrer"
                     >

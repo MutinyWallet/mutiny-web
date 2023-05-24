@@ -154,6 +154,7 @@ export const Provider: ParentComponent = (props) => {
 
     // Fetch status from remote on load
     onMount(() => {
+        // eslint-disable-next-line
         actions.fetchUserStatus().then(status => {
             setState({ user_status: status })
 
@@ -163,7 +164,7 @@ export const Provider: ParentComponent = (props) => {
                 actions.setupMutinyWallet().then(() => console.log("node manager setup done"))
 
                 // Setup an event listener to stop the mutiny wallet when the page unloads
-                window.onunload = async (e) => {
+                window.onunload = async (_e) => {
                     console.log("stopping mutiny_wallet")
                     await state.mutiny_wallet?.stop();
                     console.log("mutiny_wallet stopped")

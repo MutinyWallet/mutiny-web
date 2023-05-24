@@ -2,26 +2,26 @@ import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
 // eslint-disable-next-line import/no-unresolved
 import { useRegisterSW } from 'virtual:pwa-register/solid'
-import { Button, Card } from '~/components/layout'
 
 const ReloadPrompt: Component = () => {
     const {
-        offlineReady: [offlineReady, setOfflineReady],
-        needRefresh: [needRefresh, setNeedRefresh],
-        updateServiceWorker,
+        offlineReady: [offlineReady, _setOfflineReady],
+        needRefresh: [needRefresh, _setNeedRefresh],
+        updateServiceWorker: _update,
     } = useRegisterSW({
-        onRegistered(r: ServiceWorkerRegistration) {
-            console.log('SW Registered: ' + r.scope)
+        immediate: true,
+        onRegisteredSW(swUrl, r) {
+            console.log('SW Registered: ' + r?.scope)
         },
         onRegisterError(error: Error) {
             console.log('SW registration error', error)
         },
     })
 
-    const close = () => {
-        setOfflineReady(false)
-        setNeedRefresh(false)
-    }
+    // const close = () => {
+    //     setOfflineReady(false)
+    //     setNeedRefresh(false)
+    // }
 
     return (
         <Show when={offlineReady() || needRefresh()}>

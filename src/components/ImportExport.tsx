@@ -34,14 +34,16 @@ export function ImportExport() {
                         reject(new Error("No text found in file"));
                     }
                 };
-                fileReader.onerror = e => reject(new Error("File read error"));
+                fileReader.onerror = _e => reject(new Error("File read error"));
                 fileReader.readAsText(file, "UTF-8");
             });
 
             // This should throw if there's a parse error, so we won't end up clearing
-            JSON.parse(text);
+            if (text) {
+                JSON.parse(text);
+                MutinyWallet.import_json(text);
+            }
 
-            MutinyWallet.import_json(text);
             if (state.mutiny_wallet) {
                 await state.mutiny_wallet.stop();
             }

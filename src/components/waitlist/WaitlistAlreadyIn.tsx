@@ -35,12 +35,12 @@ export function WaitlistAlreadyIn() {
     const [posts] = createResource("", postsFetcher);
 
     return (
-        <main class='flex flex-col gap-2 sm:gap-4 py-8 px-4 max-w-xl mx-auto items-start drop-shadow-blue-glow'>
+        <main class='flex flex-col gap-4 sm:gap-4 py-8 px-4 max-w-xl mx-auto items-start drop-shadow-blue-glow'>
             <a href="https://mutinywallet.com">
                 <img src={logo} class="h-10" alt="logo" />
             </a>
             <h1 class="text-4xl font-bold">You're on a list!</h1>
-            <h2 class="text-xl">
+            <h2 class="text-xl pr-4">
                 We'll message you when Mutiny Wallet is ready.
             </h2>
             <div class="px-4 sm:px-8 py-8 rounded-xl bg-half-black w-full">

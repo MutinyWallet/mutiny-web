@@ -18,7 +18,7 @@ function SingleDigitButton(props: { character: string, onClick: (c: string) => v
         <Show when={props.fiat || !(props.character === ".")} fallback={<div />}>
             <button
                 disabled={props.character === "."}
-                class="disabled:opacity-50 p-2 rounded-lg hover:bg-white/10 active:bg-m-blue text-white text-4xl font-semi font-mono"
+                class="disabled:opacity-50 p-2 rounded-lg md:hover:bg-white/10 active:bg-m-blue text-white text-4xl font-semi font-mono"
                 onClick={() => props.onClick(props.character)}
             >
                 {props.character}
@@ -148,7 +148,7 @@ export const AmountEditable: ParentComponent<{ initialAmountSats: string, initia
                     <Dialog.Content class={DIALOG_CONTENT} onEscapeKeyDown={() => setIsOpen(false)}>
                         {/* TODO: figure out how to submit on enter */}
                         <div class="w-full flex justify-end">
-                            <button tabindex="-1" onClick={() => setIsOpen(false)} class="hover:bg-white/10 rounded-lg active:bg-m-blue">
+                            <button onClick={() => setIsOpen(false)} class="hover:bg-white/10 rounded-lg active:bg-m-blue w-8 h-8">
                                 <img src={close} alt="Close" />
                             </button>
                         </div>

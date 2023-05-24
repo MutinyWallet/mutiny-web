@@ -1,4 +1,4 @@
-import { JSX, ParentComponent, Show, Suspense, createResource, createSignal } from "solid-js"
+import { JSX, ParentComponent, Show, Suspense, createResource } from "solid-js"
 import Linkify from "./Linkify"
 import { Button, ButtonLink } from "./Button"
 import { Checkbox as KCheckbox, Separator } from "@kobalte/core"
@@ -6,6 +6,7 @@ import { useMegaStore } from "~/state/megaStore"
 import check from "~/assets/icons/check.svg"
 import { MutinyTagItem } from "~/utils/tags"
 import { generateGradient } from "~/utils/gradientHash"
+import close from "~/assets/icons/close.svg"
 
 export {
     Button,
@@ -128,8 +129,8 @@ export const NiceP: ParentComponent = (props) => {
 
 export const TinyButton: ParentComponent<{ onClick: () => void, tag?: MutinyTagItem }> = (props) => {
     // TODO: don't need to run this if it's not a contact
-    const [gradient] = createResource(props.tag?.name, async (name: string) => {
-        return generateGradient(name || "?")
+    const [gradient] = createResource(async () => {
+        return generateGradient(props.tag?.name || "?")
     })
 
     const bg = () => (props.tag?.name && props.tag?.kind === "Contact") ? gradient() : "rgb(255 255 255 / 0.1)"
@@ -161,4 +162,12 @@ export function Checkbox(props: { label: string, checked: boolean, onChange: (ch
             <KCheckbox.Label class="flex-1 text-xl font-light">{props.label}</KCheckbox.Label>
         </KCheckbox.Root>
     )
+}
+
+export function ModalCloseButton() {
+    return (<button
+    class="self-center justify-self-center hover:bg-white/10 rounded-lg active:bg-m-blue"
+>
+  <img src={close} alt="Close" class="w-8 h-8" />
+</button>)
 }

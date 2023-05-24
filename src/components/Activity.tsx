@@ -1,8 +1,7 @@
-import { LoadingSpinner, NiceP, SmallAmount, SmallHeader } from "./layout"
+import { LoadingSpinner, NiceP } from "./layout"
 import {
   For,
   Match,
-  Show,
   Switch,
   createEffect,
   createMemo,
@@ -11,9 +10,6 @@ import {
 } from "solid-js"
 import { useMegaStore } from "~/state/megaStore"
 import { MutinyInvoice } from "@mutinywallet/mutiny-wasm"
-import { JsonModal } from "~/components/JsonModal"
-import utxoIcon from "~/assets/icons/coin.svg"
-import { getRedshifted } from "~/utils/fakeLabels"
 import { ActivityItem } from "./ActivityItem"
 import { MutinyTagItem } from "~/utils/tags"
 import { Network } from "~/logic/mutinyWalletSetup"
@@ -76,7 +72,7 @@ function OnChainItem(props: {
         }
         date={props.item.confirmation_time?.Confirmed?.time}
         positive={isReceive()}
-        onClick={() => setOpen(!open())}
+        onClick={() => setOpen(o => !o)}
       />
     </>
   )
@@ -96,48 +92,8 @@ function InvoiceItem(props: { item: MutinyInvoice; labels: MutinyTagItem[] }) {
         amount={props.item.amount_sats || 0n}
         date={props.item.last_updated}
         positive={!isSend()}
-        onClick={() => setOpen(!open())}
+        onClick={() => setOpen(o => !o)}
       />
-    </>
-  )
-}
-
-function Utxo(props: { item: UtxoItem }) {
-  const spent = createMemo(() => props.item.is_spent)
-
-  const [open, setOpen] = createSignal(false)
-
-  const redshifted = createMemo(() => getRedshifted(props.item.outpoint))
-
-  return (
-    <>
-      <JsonModal
-        open={open()}
-        data={props.item}
-        title="Unspent Transaction Output"
-        setOpen={setOpen}
-      />
-      <div class={THREE_COLUMNS} onClick={() => setOpen(!open())}>
-        <div class="flex items-center">
-          <img src={utxoIcon} alt="coin" />
-        </div>
-        <div class={CENTER_COLUMN}>
-          <div class="flex gap-2">
-            <Show
-              when={redshifted()}
-              fallback={<h2 class={MISSING_LABEL}>Unknown</h2>}
-            >
-              <h2 class={REDSHIFT_LABEL}>Redshift</h2>
-            </Show>
-          </div>
-          <SmallAmount amount={props.item.txout.value} />
-        </div>
-        <div class={RIGHT_COLUMN}>
-          <SmallHeader class={spent() ? "text-m-red" : "text-m-green"}>
-            {/* {spent() ? "SPENT" : "UNSPENT"} */}
-          </SmallHeader>
-        </div>
-      </div>
     </>
   )
 }
