@@ -21,7 +21,6 @@ import { StyledRadioGroup } from "~/components/layout/Radio";
 import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
-import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import megacheck from "~/assets/icons/megacheck.png";
 import megaex from "~/assets/icons/megaex.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
@@ -33,6 +32,9 @@ import { AmountCard } from "~/components/AmountCard";
 import { MutinyTagItem } from "~/utils/tags";
 import { BackButton } from "~/components/layout/BackButton";
 import { Network } from "~/logic/mutinyWalletSetup";
+import { SuccessModal } from "~/components/successfail/SuccessModal";
+import { ExternalLink } from "~/components/layout/ExternalLink";
+import { InfoBox } from "~/components/InfoBox";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -55,23 +57,20 @@ export function MethodChooser(props: {
   const [store, _actions] = useMegaStore();
 
   const methods = createMemo(() => {
+    const lnBalance = store.balance?.lightning || 0n;
+    const onchainBalance = (store.balance?.confirmed || 0n) + (store.balance?.unconfirmed || 0n);
     return [
       {
         value: "lightning",
         label: "Lightning Balance",
-        caption: store.balance?.lightning
-          ? `${store.balance?.lightning.toLocaleString()} SATS`
-          : "No balance"
+        caption: lnBalance > 0n ? `${lnBalance.toLocaleString()} SATS` : "No balance",
+        disabled: lnBalance === 0n
       },
       {
         value: "onchain",
         label: "On-chain Balance",
-        caption:
-          store.balance?.confirmed || store.balance?.unconfirmed
-            ? `${(
-                (store.balance?.confirmed || 0n) + (store.balance?.unconfirmed || 0n)
-              ).toLocaleString()} SATS`
-            : "No balance"
+        caption: onchainBalance > 0n ? `${onchainBalance.toLocaleString()} SATS` : "No balance",
+        disabled: onchainBalance === 0n
       }
     ];
   });
@@ -121,7 +120,7 @@ function DestinationInput(props: {
         class="p-2 rounded-lg bg-white/10 placeholder-neutral-400"
       />
       <Button disabled={!props.fieldDestination} intent="blue" onClick={props.handleDecode}>
-        Decode
+        Continue
       </Button>
       <HStack>
         <Button onClick={props.handlePaste}>
@@ -194,6 +193,9 @@ export default function Send() {
   // Tagging stuff
   const [selectedContacts, setSelectedContacts] = createSignal<Partial<MutinyTagItem>[]>([]);
 
+  // Errors
+  const [error, setError] = createSignal<string>();
+
   function clearAll() {
     setDestination(undefined);
     setAmountSats(0n);
@@ -206,11 +208,26 @@ export default function Send() {
     setFieldDestination("");
   }
 
+  const insufficientFunds = () => {
+    if (source() === "onchain") {
+      return (state.balance?.confirmed ?? 0n) + (state.balance?.unconfirmed ?? 0n) < amountSats();
+    }
+    if (source() === "lightning") {
+      setError("We do not have enough balance to pay the given amount.");
+      return (state.balance?.lightning ?? 0n) < amountSats();
+    }
+  };
+
   const feeEstimate = () => {
     if (source() === "lightning") return undefined;
 
     if (source() === "onchain" && amountSats() && amountSats() > 0n && address()) {
-      return state.mutiny_wallet?.estimate_tx_fee(address()!, amountSats(), undefined);
+      setError(undefined);
+      try {
+        return state.mutiny_wallet?.estimate_tx_fee(address()!, amountSats(), undefined);
+      } catch (e) {
+        setError(eify(e).message);
+      }
     }
 
     return undefined;
@@ -258,6 +275,13 @@ export default function Send() {
     } catch (e) {
       console.error("error", e);
       clearAll();
+    }
+  });
+
+  // Rerun every time the source changes
+  createEffect(() => {
+    if (source() === "lightning") {
+      setError(undefined);
     }
   });
 
@@ -388,8 +412,6 @@ export default function Send() {
         const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), tags);
         sentDetails.amount = amountSats();
         sentDetails.destination = address();
-        // TODO: figure out if this is necessary, it takes forever
-        await actions.sync();
         sentDetails.txid = txid;
       }
       setSentDetails(sentDetails as SentDetails);
@@ -406,10 +428,10 @@ export default function Send() {
   }
 
   const sendButtonDisabled = createMemo(() => {
-    return !destination() || sending() || amountSats() === 0n;
+    return !destination() || sending() || amountSats() === 0n || insufficientFunds() || !!error();
   });
-  
-  const network = state.mutiny_wallet?.get_network() as Network
+
+  const network = state.mutiny_wallet?.get_network() as Network;
 
   return (
     <MutinyWalletGuard>
@@ -419,7 +441,7 @@ export default function Send() {
             <BackButton onClick={() => clearAll()} title="Start Over" />
           </Show>
           <LargeHeader>Send Bitcoin</LargeHeader>
-          <FullscreenModal
+          <SuccessModal
             title={sentDetails()?.amount ? "Sent" : "Payment Failed"}
             confirmText={sentDetails()?.amount ? "Nice" : "Too Bad"}
             open={!!sentDetails()}
@@ -431,30 +453,24 @@ export default function Send() {
               navigate("/");
             }}
           >
-            <div class="flex flex-col items-center gap-8 h-full">
-              <Switch>
-                <Match when={sentDetails()?.failure_reason}>
-                  <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[50vh]" />
-                  <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
-                    {sentDetails()?.failure_reason}
-                  </p>
-                </Match>
-                <Match when={true}>
-                  <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh]" />
-                  <Amount amountSats={sentDetails()?.amount} showFiat />
-                  <Show when={sentDetails()?.txid}>
-                    <a
-                      href={mempoolTxUrl(sentDetails()?.txid, network)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Mempool Link
-                    </a>
-                  </Show>
-                </Match>
-              </Switch>
-            </div>
-          </FullscreenModal>
+            <Switch>
+              <Match when={sentDetails()?.failure_reason}>
+                <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[50vh]" />
+                <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
+                  {sentDetails()?.failure_reason}
+                </p>
+              </Match>
+              <Match when={true}>
+                <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh]" />
+                <Amount amountSats={sentDetails()?.amount} showFiat centered />
+                <Show when={sentDetails()?.txid}>
+                  <ExternalLink href={mempoolTxUrl(sentDetails()?.txid, network)}>
+                    View Transaction
+                  </ExternalLink>
+                </Show>
+              </Match>
+            </Switch>
+          </SuccessModal>
           <VStack biggap>
             <Switch>
               <Match when={address() || invoice() || nodePubkey() || lnurlp()}>
@@ -463,7 +479,7 @@ export default function Send() {
                   setSource={setSource}
                   both={!!address() && !!invoice()}
                 />
-                <Card>
+                <Card title="Destination">
                   <VStack>
                     <DestinationShower
                       source={source()}
@@ -482,6 +498,11 @@ export default function Send() {
                     />
                   </VStack>
                 </Card>
+                <Show when={error()}>
+                  <InfoBox accent="red">
+                    <p>{error()}</p>
+                  </InfoBox>
+                </Show>
                 <AmountCard
                   amountSats={amountSats().toString()}
                   setAmountSats={setAmountSats}
