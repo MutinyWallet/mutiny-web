@@ -44,6 +44,11 @@ export function TagEditor(props: {
         }
     };
 
+    // FIXME: eslint is mad about reactivity
+    const onTagTap = (tag: MutinyTagItem) => {
+        props.setSelectedValues([...props.selectedValues!, tag]);
+    };
+
     return (
         <div class="flex flex-col gap-2 flex-shrink flex-1" >
             <Select
@@ -57,7 +62,8 @@ export function TagEditor(props: {
                 <Show when={availableTags() && availableTags()!.length > 0}>
                     <For each={availableTags()!.slice(0, 3)}>
                         {(tag) => (
-                            <TinyButton tag={tag} onClick={() => props.setSelectedValues([...props.selectedValues!, tag])}>
+                            // eslint-disable-next-line solid/reactivity
+                            <TinyButton tag={tag} onClick={() => onTagTap(tag)}>
                                 {tag.name}
                             </TinyButton>
                         )}

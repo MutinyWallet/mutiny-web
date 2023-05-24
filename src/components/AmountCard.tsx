@@ -57,10 +57,6 @@ function add(a: string, b?: string) {
   return Number(a || 0) + Number(b || 0);
 }
 
-function subtract(a: string, b?: string) {
-  return Number(a || 0) - Number(b || 0);
-}
-
 export function AmountCard(props: {
   amountSats: string;
   fee?: string;

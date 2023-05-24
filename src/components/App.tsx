@@ -1,5 +1,5 @@
 import logo from '~/assets/icons/mutiny-logo.svg';
-import { DefaultMain, SafeArea, VStack, Card, LoadingSpinner } from "~/components/layout";
+import { DefaultMain, SafeArea, VStack, Card } from "~/components/layout";
 import BalanceBox, { LoadingShimmer } from "~/components/BalanceBox";
 import NavBar from "~/components/NavBar";
 import ReloadPrompt from "~/components/Reload";
@@ -18,7 +18,7 @@ export default function App() {
             <DefaultMain>
                 <header class="w-full flex justify-between items-center mt-4 mb-2">
                     <img src={logo} class="h-10" alt="logo" />
-                    <A class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue" href="/activity"><img src={userClock} alt="Activity" /></A>
+                    <A class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue" href="/activity"><img src={userClock} alt="Activity" class="h-8 w-8" /></A>
                 </header>
                 <Show when={!state.wallet_loading}>
                     <OnboardWarning />

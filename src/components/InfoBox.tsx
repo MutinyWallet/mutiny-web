@@ -1,5 +1,4 @@
 import { ParentComponent } from "solid-js";
-import { ButtonLink, SmallHeader } from "~/components/layout"
 import info from "~/assets/icons/info.svg"
 
 export const InfoBox: ParentComponent<{ accent: "red" | "blue" | "green" | "white" }> = (props) => {

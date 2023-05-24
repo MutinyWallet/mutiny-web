@@ -1,4 +1,4 @@
-import { Contact, TagItem } from "@mutinywallet/mutiny-wasm"
+import { TagItem } from "@mutinywallet/mutiny-wasm"
 
 export type MutinyTagItem = {
     id: string,
@@ -20,8 +20,7 @@ export function tagsToIds(tags?: MutinyTagItem[]): string[] {
 }
 
 export function tagToMutinyTag(tag: TagItem): MutinyTagItem {
-    // @ts-ignore
-    // FIXME: make typescript less mad about this
+    // @ts-expect-error: FIXME: make typescript less mad about this
     return tag as MutinyTagItem
 }
 

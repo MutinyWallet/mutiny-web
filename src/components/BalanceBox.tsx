@@ -1,5 +1,5 @@
 import { Show, Suspense } from "solid-js";
-import { Button, ButtonLink, FancyCard, Indicator } from "~/components/layout";
+import { Button, FancyCard, Indicator } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
 import { A, useNavigate } from "solid-start";
@@ -15,10 +15,10 @@ function prettyPrintAmount(n?: number | bigint): string {
 export function LoadingShimmer() {
     return (<div class="flex flex-col gap-2 animate-pulse">
         <h1 class="text-4xl font-light">
-            <div class="w-[12rem] rounded bg-neutral-700 h-[2.5rem]"></div>
+            <div class="w-[12rem] rounded bg-neutral-700 h-[2.5rem]" />
         </h1>
         <h2 class="text-xl font-light text-white/70" >
-            <div class="w-[8rem] rounded bg-neutral-700 h-[1.75rem]"></div>
+            <div class="w-[8rem] rounded bg-neutral-700 h-[1.75rem]" />
         </h2>
     </div>)
 }
@@ -26,7 +26,7 @@ export function LoadingShimmer() {
 const STYLE = "px-2 py-1 rounded-xl border border-neutral-400 text-sm flex gap-2 items-center font-semibold"
 
 export default function BalanceBox(props: { loading?: boolean }) {
-    const [state, actions] = useMegaStore();
+    const [state, _actions] = useMegaStore();
 
     const emptyBalance = () => (state.balance?.confirmed || 0n) === 0n && (state.balance?.lightning || 0n) === 0n
 
@@ -46,7 +46,7 @@ export default function BalanceBox(props: { loading?: boolean }) {
                         <Amount amountSats={state.balance?.confirmed} showFiat />
                         <div class="self-end justify-self-end">
                             <A href="/swap" class={STYLE}>
-                                <img src={shuffle} alt="swap" />
+                                <img src={shuffle} alt="swap" class="h-8 w-8" />
                             </A>
                         </div>
                     </div>

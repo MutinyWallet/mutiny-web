@@ -19,9 +19,10 @@ function ContactRow() {
         const contacts = state.mutiny_wallet?.get_contacts();
         console.log(contacts)
 
-        let c: Contact[] = []
+        // FIXME: this is just types shenanigans I believe
+        const c: Contact[] = []
         if (contacts) {
-            for (let contact in contacts) {
+            for (const contact in contacts) {
                 c.push(contacts[contact])
             }
         }
@@ -37,7 +38,7 @@ function ContactRow() {
     }
 
     // 
-    async function saveContact(contact: ContactFormValues) {
+    async function saveContact(_contact: ContactFormValues) {
         showToast(new Error("Unimplemented"))
         // await editContact(contact)
         refetch();

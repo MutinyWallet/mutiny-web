@@ -7,13 +7,15 @@ export default function Scanner(props: { onResult: (result: string) => void }) {
     // TODO: not sure it's appropriate to use a signal for this but it works!
     const [scanner, setScanner] = createSignal<QrScanner | null>(null);
 
+    const handleResult = (result: { data: string }) => {
+        props.onResult(result.data);
+    }
+
     onMount(() => {
         if (container) {
             const newScanner = new QrScanner(
                 container,
-                (result: { data: string }) => {
-                    props.onResult(result.data);
-                },
+                handleResult,
                 {
                     returnDetailedScanResult: true,
                 }

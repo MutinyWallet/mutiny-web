@@ -8,11 +8,10 @@ import {
   Switch,
   createMemo,
 } from "solid-js"
-import { Hr, TinyButton, VStack } from "~/components/layout"
+import { Hr, ModalCloseButton, TinyButton, VStack } from "~/components/layout"
 import { MutinyInvoice } from "@mutinywallet/mutiny-wasm"
 import { OnChainTx } from "./Activity"
 
-import close from "~/assets/icons/close.svg"
 import bolt from "~/assets/icons/bolt-black.svg"
 import chain from "~/assets/icons/chain-black.svg"
 import copyIcon from "~/assets/icons/copy.svg"
@@ -27,9 +26,9 @@ import mempoolTxUrl from "~/utils/mempoolTxUrl"
 import { Network } from "~/logic/mutinyWalletSetup"
 import { AmountSmall } from "./Amount"
 
-const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
-const DIALOG_CONTENT =
+export const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+export const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center"
+export const DIALOG_CONTENT =
   "max-w-[500px] w-[90vw] max-h-[100dvh] overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/80 backdrop-blur-md shadow-xl rounded-xl border border-white/10"
 
 function LightningHeader(props: { info: MutinyInvoice }) {
@@ -37,7 +36,7 @@ function LightningHeader(props: { info: MutinyInvoice }) {
 
   const tags = createMemo(() => {
     if (props.info.labels.length) {
-      let contact = state.mutiny_wallet?.get_contact(props.info.labels[0])
+      const contact = state.mutiny_wallet?.get_contact(props.info.labels[0])
       if (contact) {
         return [tagToMutinyTag(contact)]
       } else {
@@ -64,7 +63,9 @@ function LightningHeader(props: { info: MutinyInvoice }) {
       />
       <For each={tags()}>
         {(tag) => (
-          <TinyButton tag={tag} onClick={() => {}}>
+          <TinyButton tag={tag} onClick={() => {
+            // noop
+          }}>
             {tag.name}
           </TinyButton>
         )}
@@ -78,7 +79,7 @@ function OnchainHeader(props: { info: OnChainTx }) {
 
   const tags = createMemo(() => {
     if (props.info.labels.length) {
-      let contact = state.mutiny_wallet?.get_contact(props.info.labels[0])
+      const contact = state.mutiny_wallet?.get_contact(props.info.labels[0])
       if (contact) {
         return [tagToMutinyTag(contact)]
       } else {
@@ -117,7 +118,9 @@ function OnchainHeader(props: { info: OnChainTx }) {
       />
       <For each={tags()}>
         {(tag) => (
-          <TinyButton tag={tag} onClick={() => {}}>
+          <TinyButton tag={tag} onClick={() => {
+            // noop
+          }}>
             {tag.name}
           </TinyButton>
         )}
@@ -250,7 +253,7 @@ export function DetailsModal(props: {
   return (
     <Dialog.Root
       open={props.open}
-      onOpenChange={(isOpen) => props.setOpen(isOpen)}
+      onOpenChange={props.setOpen}
     >
       <Dialog.Portal>
         <Dialog.Overlay class={OVERLAY} />
@@ -259,12 +262,7 @@ export function DetailsModal(props: {
             <div class="flex justify-between mb-2">
               <div />
               <Dialog.CloseButton>
-                <button
-                  tabindex="-1"
-                  class="self-center hover:bg-white/10 rounded-lg active:bg-m-blue "
-                >
-                  <img src={close} alt="Close" class="w-8 h-8" />
-                </button>
+                <ModalCloseButton />
               </Dialog.CloseButton>
             </div>
             <Dialog.Title>

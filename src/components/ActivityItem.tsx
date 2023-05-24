@@ -41,8 +41,8 @@ export const ActivityAmount: ParentComponent<{ amount: string, price: number, po
 function LabelCircle(props: { name?: string, contact: boolean }) {
 
     // TODO: don't need to run this if it's not a contact
-    const [gradient] = createResource(props.name, async (name: string) => {
-        return generateGradient(name || "?")
+    const [gradient] = createResource(async () => {
+        return generateGradient(props.name || "?")
     })
 
     const text = () => (props.contact && props.name && props.name.length) ? props.name[0] : (props.name && props.name.length) ? "≡" : "?"

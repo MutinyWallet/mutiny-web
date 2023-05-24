@@ -1,5 +1,5 @@
 import { Title } from "solid-start";
-import { Button, ButtonLink, DefaultMain, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
+import { Button, DefaultMain, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
 
 export default function ErrorDisplay(props: { error: Error }) {
     return (

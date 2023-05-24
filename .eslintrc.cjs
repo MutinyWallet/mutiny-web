@@ -32,6 +32,7 @@ module.exports = {
         "solid/reactivity": "warn",
         "solid/no-destructure": "warn",
         "solid/jsx-no-undef": "error",
+        "@typescript-eslint/no-non-null-assertion": "off",
     },
     "settings": {
         "import/parsers": {

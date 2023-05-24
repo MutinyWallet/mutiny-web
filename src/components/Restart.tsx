@@ -1,12 +1,11 @@
 import { Button, Card, NiceP, VStack } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
-import { downloadTextFile } from "~/utils/download";
 
 export function Restart() {
     const [state, _] = useMegaStore()
 
     async function handleStop() {
-        const result = await state.mutiny_wallet?.stop()
+        await state.mutiny_wallet?.stop()
     }
 
     return (

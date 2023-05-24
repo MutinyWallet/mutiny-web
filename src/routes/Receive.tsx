@@ -1,5 +1,5 @@
 import { Contact, MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 import { Button, Card, DefaultMain, Indicator, LargeHeader, MutinyWalletGuard, SafeArea } from "~/components/layout";
 import NavBar from "~/components/NavBar";
@@ -51,7 +51,7 @@ type ReceiveState = "edit" | "show" | "paid"
 type PaidState = "lightning_paid" | "onchain_paid";
 
 export default function Receive() {
-    const [state, actions] = useMegaStore()
+    const [state, _actions] = useMegaStore()
     const navigate = useNavigate();
 
     const [amount, setAmount] = createSignal("")

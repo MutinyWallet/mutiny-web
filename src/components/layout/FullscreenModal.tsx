@@ -15,8 +15,13 @@ type FullscreenModalProps = {
 }
 
 export function FullscreenModal(props: FullscreenModalProps) {
+
+    const onNice = () => {
+        props.onConfirm ? props.onConfirm() : props.setOpen(false)
+    }
+
     return (
-        <Dialog.Root open={props.open} onOpenChange={(isOpen) => props.setOpen(isOpen)}>
+        <Dialog.Root open={props.open} onOpenChange={props.setOpen}>
             <Dialog.Portal>
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
@@ -34,7 +39,7 @@ export function FullscreenModal(props: FullscreenModalProps) {
                             {props.children}
                         </Dialog.Description>
                         <div class="w-full flex">
-                            <Button onClick={(_) => props.onConfirm ? props.onConfirm() : props.setOpen(false)}>{props.confirmText ?? "Nice"}</Button>
+                            <Button onClick={onNice}>{props.confirmText ?? "Nice"}</Button>
                         </div>
                     </Dialog.Content>
                 </div>
