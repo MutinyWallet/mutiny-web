@@ -307,7 +307,11 @@ function LnUrlAuth() {
         e.preventDefault();
 
         const lnurl = value().trim();
-        await state.mutiny_wallet?.lnurl_auth(0, lnurl)
+        try {
+            await state.mutiny_wallet?.lnurl_auth(0, lnurl)
+        } catch (e) {
+            console.error(e)
+        }
 
         setValue("");
     };
