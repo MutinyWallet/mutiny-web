@@ -1,6 +1,6 @@
 {
   "name": "mws",
-  "version": "0.3.1",
+  "version": "0.3.5",
   "license": "MIT",
   "scripts": {
     "dev": "solid-start dev",
@@ -11,7 +11,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "@types/node": "^18.16.14",
+    "@types/node": "^18.16.15",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
     "autoprefixer": "^10.4.14",
@@ -25,7 +25,7 @@
     "solid-start-node": "^0.2.26",
     "tailwindcss": "^3.3.2",
     "typescript": "^4.9.5",
-    "vite": "^4.3.8",
+    "vite": "^4.3.9",
     "vite-plugin-pwa": "^0.14.7",
     "vite-plugin-wasm": "^3.2.2",
     "workbox-window": "^6.5.4"
@@ -34,14 +34,14 @@
     "@kobalte/core": "^0.9.6",
     "@kobalte/tailwindcss": "^0.5.0",
     "@modular-forms/solid": "^0.13.2",
-    "@mutinywallet/mutiny-wasm": "0.3.4",
+    "@mutinywallet/mutiny-wasm": "0.3.5",
     "@mutinywallet/waila-wasm": "^0.2.0",
     "@solid-primitives/upload": "^0.0.111",
     "@solidjs/meta": "^0.28.5",
     "@solidjs/router": "^0.8.2",
     "@thisbeyond/solid-select": "^0.14.0",
     "class-variance-authority": "^0.4.0",
-    "nostr-tools": "^1.10.1",
+    "nostr-tools": "^1.11.1",
     "qr-scanner": "^1.4.2",
     "solid-js": "^1.7.5",
     "solid-qr-code": "^0.0.8",
