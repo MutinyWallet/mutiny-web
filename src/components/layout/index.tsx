@@ -37,17 +37,24 @@ export const InnerCard: ParentComponent<{ title?: string }> = (props) => {
     )
 }
 
-export const FancyCard: ParentComponent<{ title?: string, tag?: JSX.Element }> = (props) => {
-    return (
-        <div class='border border-black/50 rounded-xl border-b-4 p-4 flex flex-col gap-2 bg-neutral-800/50 shadow-fancy-card'>
-            <div class="w-full flex justify-between items-center">
-                {props.title && <SmallHeader>{props.title}</SmallHeader>}
-                {props.tag && props.tag}
-            </div>
-            {props.children}
+export const FancyCard: ParentComponent<{
+  title?: string;
+  subtitle?: string;
+  tag?: JSX.Element;
+}> = (props) => {
+  return (
+    <div class="border border-black/50 rounded-xl border-b-4 p-4 flex flex-col gap-2 bg-neutral-800/50 shadow-fancy-card">
+      <div class="w-full flex justify-between items-center">
+        <div class="flex gap-2">
+          {props.title && <SmallHeader>{props.title}</SmallHeader>}
+          {props.subtitle && <SmallHeader class="text-neutral-500">{props.subtitle}</SmallHeader>}
         </div>
-    )
-}
+        {props.tag && props.tag}
+      </div>
+      {props.children}
+    </div>
+  );
+};
 
 export const SafeArea: ParentComponent = (props) => {
     return (
