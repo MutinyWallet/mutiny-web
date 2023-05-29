@@ -1,12 +1,28 @@
 import { Contact, MutinyBip21RawMaterials, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { createEffect, createMemo, createResource, createSignal, Match, onCleanup, Show, Switch } from "solid-js";
-import { QRCodeSVG } from "solid-qr-code";
-import { Button, Card, DefaultMain, Indicator, LargeHeader, MutinyWalletGuard, SafeArea } from "~/components/layout";
+import {
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
+  Match,
+  onCleanup,
+  Show,
+  Switch
+} from "solid-js";
+import {
+  Button,
+  Card,
+  DefaultMain,
+  Indicator,
+  LargeHeader,
+  MutinyWalletGuard,
+  SafeArea
+} from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { Amount } from "~/components/Amount";
+import { Amount, AmountSmall } from "~/components/Amount";
 import { BackLink } from "~/components/layout/BackLink";
 import { TagEditor } from "~/components/TagEditor";
 import { StyledRadioGroup } from "~/components/layout/Radio";
@@ -20,6 +36,8 @@ import { Network } from "~/logic/mutinyWalletSetup";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { MegaCheck } from "~/components/successfail/MegaCheck";
 import { ExternalLink } from "~/components/layout/ExternalLink";
+import { CopyableQR } from "~/components/CopyableQR";
+import { InfoBox } from "~/components/InfoBox";
 
 type OnChainTx = {
   transaction: {
@@ -55,6 +73,28 @@ type ReceiveFlavor = "unified" | "lightning" | "onchain";
 type ReceiveState = "edit" | "show" | "paid";
 type PaidState = "lightning_paid" | "onchain_paid";
 
+function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
+  return (
+    // TODO: probably won't always be fixed a 1?
+    <Show when={props.fee > 1n}>
+      <Switch>
+        <Match when={props.flavor === "unified"}>
+          <InfoBox accent="green">
+            A lightning setup fee of <AmountSmall amountSats={props.fee} /> will be charged if paid
+            over lightning.
+          </InfoBox>
+        </Match>
+        <Match when={props.flavor === "lightning"}>
+          <InfoBox accent="green">
+            A lightning setup fee of <AmountSmall amountSats={props.fee} /> will be charged for this
+            receive.
+          </InfoBox>
+        </Match>
+      </Switch>
+    </Show>
+  );
+}
+
 export default function Receive() {
   const [state, _actions] = useMegaStore();
   const navigate = useNavigate();
@@ -64,6 +104,8 @@ export default function Receive() {
   const [bip21Raw, setBip21Raw] = createSignal<MutinyBip21RawMaterials>();
   const [unified, setUnified] = createSignal("");
   const [shouldShowAmountEditor, setShouldShowAmountEditor] = createSignal(true);
+
+  const [lspFee, setLspFee] = createSignal(0n);
 
   // Tagging stuff
   const [selectedValues, setSelectedValues] = createSignal<MutinyTagItem[]>([]);
@@ -159,11 +201,16 @@ export default function Receive() {
 
   async function checkIfPaid(bip21?: MutinyBip21RawMaterials): Promise<PaidState | undefined> {
     if (bip21) {
-      console.log("checking if paid...");
+      console.debug("checking if paid...");
       const lightning = bip21.invoice;
       const address = bip21.address;
 
       const invoice = await state.mutiny_wallet?.get_invoice(lightning);
+
+      // If the invoice has a fees amount that's probably the LSP fee
+      if (invoice?.fees_paid) {
+        setLspFee(invoice.fees_paid);
+      }
 
       if (invoice && invoice.paid) {
         setReceiveState("paid");
@@ -234,17 +281,16 @@ export default function Receive() {
               </div>
             </Match>
             <Match when={unified() && receiveState() === "show"}>
+              <FeeWarning fee={lspFee()} flavor={flavor()} />
+              <CopyableQR value={receiveString() ?? ""} />
+              <p class="text-neutral-400 text-center">Show or share this code with the sender</p>
               <StyledRadioGroup
                 small
                 value={flavor()}
                 onValueChange={setFlavor}
                 choices={RECEIVE_FLAVORS}
                 accent="white"
-              />
-              <div class="w-full bg-white rounded-xl">
-                <QRCodeSVG value={receiveString() ?? ""} class="w-full h-full p-8 max-h-[400px]" />
-              </div>
-              <p class="text-neutral-400 text-center">Show or share this code with the sender</p>
+              />{" "}
               <ShareCard text={receiveString() ?? ""} />
             </Match>
             <Match when={receiveState() === "paid" && paidState() === "lightning_paid"}>
