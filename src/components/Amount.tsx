@@ -10,17 +10,17 @@ function prettyPrintAmount(n?: number | bigint): string {
 }
 
 export function Amount(props: {
-  amountSats: bigint | number | undefined
-  showFiat?: boolean
-  loading?: boolean
+  amountSats: bigint | number | undefined;
+  showFiat?: boolean;
+  loading?: boolean;
+  centered?: boolean;
 }) {
-  const [state, _] = useMegaStore()
+  const [state, _] = useMegaStore();
 
-  const amountInUsd = () =>
-    satsToUsd(state.price, Number(props.amountSats) || 0, true)
+  const amountInUsd = () => satsToUsd(state.price, Number(props.amountSats) || 0, true);
 
   return (
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2" classList={{ "items-center": props.centered }}>
       <h1 class="text-4xl font-light">
         {props.loading ? "..." : prettyPrintAmount(props.amountSats)}&nbsp;
         <span class="text-xl">SATS</span>
@@ -32,7 +32,7 @@ export function Amount(props: {
         </h2>
       </Show>
     </div>
-  )
+  );
 }
 
 export function AmountSmall(props: {

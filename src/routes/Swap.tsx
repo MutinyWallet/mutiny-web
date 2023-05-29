@@ -7,12 +7,11 @@ import { showToast } from "~/components/Toaster";
 import {
   Button,
   Card,
-  Checkbox,
   DefaultMain,
   LargeHeader,
   MutinyWalletGuard,
   SafeArea,
-  VStack,
+  VStack
 } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { TextField } from "~/components/layout/TextField";
@@ -22,9 +21,11 @@ import eify from "~/utils/eify";
 import megaex from "~/assets/icons/megaex.png";
 import megacheck from "~/assets/icons/megacheck.png";
 import { InfoBox } from "~/components/InfoBox";
-import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import { useNavigate } from "solid-start";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { SuccessModal } from "~/components/successfail/SuccessModal";
+import { ExternalLink } from "~/components/layout/ExternalLink";
+import { Network } from "~/logic/mutinyWalletSetup";
 
 const CHANNEL_FEE_ESTIMATE_ADDRESS =
   "bc1qf7546vg73ddsjznzq57z3e8jdn6gtw6au576j07kt6d9j7nz8mzsyn6lgf";
@@ -44,7 +45,6 @@ export default function Swap() {
 
   const [source, setSource] = createSignal<SendSource>("onchain");
   const [amountSats, setAmountSats] = createSignal(0n);
-  const [useLsp, setUseLsp] = createSignal(true);
   const [isConnecting, setIsConnecting] = createSignal(false);
 
   const [selectedPeer, setSelectedPeer] = createSignal<string>("");
@@ -121,7 +121,7 @@ export default function Swap() {
         const nodes = await state.mutiny_wallet?.list_nodes();
         const firstNode = (nodes[0] as string) || "";
 
-        if (useLsp()) {
+        if (hasLsp()) {
           const new_channel = await state.mutiny_wallet?.open_channel(
             firstNode,
             undefined,
@@ -147,7 +147,7 @@ export default function Swap() {
 
   const canSwap = () => {
     const balance = (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
-    return (!!selectedPeer() || !!useLsp()) && amountSats() >= 10000n && amountSats() <= balance;
+    return (!!selectedPeer() || !!hasLsp()) && amountSats() >= 10000n && amountSats() <= balance;
   };
 
   const amountWarning = () => {
@@ -165,14 +165,16 @@ export default function Swap() {
     return undefined;
   };
 
+  const network = state.mutiny_wallet?.get_network() as Network;
+
   return (
     <MutinyWalletGuard>
       <SafeArea>
         <DefaultMain>
           <BackLink />
           <LargeHeader>Swap to Lightning</LargeHeader>
-          <FullscreenModal
-            title={channelOpenResult()?.channel ? "Channel Opened" : "Channel Open Failed"}
+          <SuccessModal
+            title={channelOpenResult()?.channel ? "Swap Success" : "Swap Failed"}
             confirmText={channelOpenResult()?.channel ? "Nice" : "Too Bad"}
             open={!!channelOpenResult()}
             setOpen={(open: boolean) => {
@@ -183,50 +185,38 @@ export default function Swap() {
               navigate("/");
             }}
           >
-            <div class="flex flex-col items-center gap-8 pb-8">
-              <Switch>
-                <Match when={channelOpenResult()?.failure_reason}>
-                  <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[30vh] flex-shrink" />
+            <Switch>
+              <Match when={channelOpenResult()?.failure_reason}>
+                <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[30vh] flex-shrink" />
 
-                  <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
-                    {channelOpenResult()?.failure_reason?.message}
-                  </p>
-                </Match>
-                <Match when={true}>
-                  <img
-                    src={megacheck}
-                    alt="success"
-                    class="w-1/2 mx-auto max-w-[30vh] flex-shrink"
-                  />
-                  <AmountCard
-                    amountSats={channelOpenResult()?.channel?.balance?.toString() || ""}
-                    reserve={channelOpenResult()?.channel?.reserve?.toString() || ""}
-                  />
-                  <Show when={channelOpenResult()?.channel?.outpoint}>
-                    <a
-                      class=""
-                      href={mempoolTxUrl(
-                        channelOpenResult()?.channel?.outpoint?.split(":")[0],
-                        "signet"
-                      )}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Mempool Link
-                    </a>
-                  </Show>
-                  {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}
-                </Match>
-              </Switch>
-            </div>
-          </FullscreenModal>
+                <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
+                  {channelOpenResult()?.failure_reason?.message}
+                </p>
+              </Match>
+              <Match when={true}>
+                <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[30vh] flex-shrink" />
+                <AmountCard
+                  amountSats={channelOpenResult()?.channel?.balance?.toString() || ""}
+                  reserve={channelOpenResult()?.channel?.reserve?.toString() || ""}
+                />
+                <Show when={channelOpenResult()?.channel?.outpoint}>
+                  <ExternalLink
+                    href={mempoolTxUrl(
+                      channelOpenResult()?.channel?.outpoint?.split(":")[0],
+                      network
+                    )}
+                  >
+                    View Transaction
+                  </ExternalLink>
+                </Show>
+                {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}
+              </Match>
+            </Switch>
+          </SuccessModal>
           <VStack biggap>
             <MethodChooser source={source()} setSource={setSource} both={false} />
             <VStack>
-              <Show when={hasLsp()}>
-                <Checkbox checked={useLsp()} onChange={setUseLsp} label="Use LSP" />
-              </Show>
-              <Show when={!useLsp()}>
+              <Show when={!hasLsp()}>
                 <Card>
                   <VStack>
                     <div class="w-full flex flex-col gap-2">

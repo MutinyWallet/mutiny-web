@@ -21,7 +21,6 @@ import { StyledRadioGroup } from "~/components/layout/Radio";
 import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
-import { FullscreenModal } from "~/components/layout/FullscreenModal";
 import megacheck from "~/assets/icons/megacheck.png";
 import megaex from "~/assets/icons/megaex.png";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
@@ -33,6 +32,8 @@ import { AmountCard } from "~/components/AmountCard";
 import { MutinyTagItem } from "~/utils/tags";
 import { BackButton } from "~/components/layout/BackButton";
 import { Network } from "~/logic/mutinyWalletSetup";
+import { SuccessModal } from "~/components/successfail/SuccessModal";
+import { ExternalLink } from "~/components/layout/ExternalLink";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -121,7 +122,7 @@ function DestinationInput(props: {
         class="p-2 rounded-lg bg-white/10 placeholder-neutral-400"
       />
       <Button disabled={!props.fieldDestination} intent="blue" onClick={props.handleDecode}>
-        Decode
+        Continue
       </Button>
       <HStack>
         <Button onClick={props.handlePaste}>
@@ -408,8 +409,8 @@ export default function Send() {
   const sendButtonDisabled = createMemo(() => {
     return !destination() || sending() || amountSats() === 0n;
   });
-  
-  const network = state.mutiny_wallet?.get_network() as Network
+
+  const network = state.mutiny_wallet?.get_network() as Network;
 
   return (
     <MutinyWalletGuard>
@@ -419,7 +420,7 @@ export default function Send() {
             <BackButton onClick={() => clearAll()} title="Start Over" />
           </Show>
           <LargeHeader>Send Bitcoin</LargeHeader>
-          <FullscreenModal
+          <SuccessModal
             title={sentDetails()?.amount ? "Sent" : "Payment Failed"}
             confirmText={sentDetails()?.amount ? "Nice" : "Too Bad"}
             open={!!sentDetails()}
@@ -431,30 +432,24 @@ export default function Send() {
               navigate("/");
             }}
           >
-            <div class="flex flex-col items-center gap-8 h-full">
-              <Switch>
-                <Match when={sentDetails()?.failure_reason}>
-                  <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[50vh]" />
-                  <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
-                    {sentDetails()?.failure_reason}
-                  </p>
-                </Match>
-                <Match when={true}>
-                  <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh]" />
-                  <Amount amountSats={sentDetails()?.amount} showFiat />
-                  <Show when={sentDetails()?.txid}>
-                    <a
-                      href={mempoolTxUrl(sentDetails()?.txid, network)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Mempool Link
-                    </a>
-                  </Show>
-                </Match>
-              </Switch>
-            </div>
-          </FullscreenModal>
+            <Switch>
+              <Match when={sentDetails()?.failure_reason}>
+                <img src={megaex} alt="fail" class="w-1/2 mx-auto max-w-[50vh]" />
+                <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
+                  {sentDetails()?.failure_reason}
+                </p>
+              </Match>
+              <Match when={true}>
+                <img src={megacheck} alt="success" class="w-1/2 mx-auto max-w-[50vh]" />
+                <Amount amountSats={sentDetails()?.amount} showFiat centered />
+                <Show when={sentDetails()?.txid}>
+                  <ExternalLink href={mempoolTxUrl(sentDetails()?.txid, network)}>
+                    View Transaction
+                  </ExternalLink>
+                </Show>
+              </Match>
+            </Switch>
+          </SuccessModal>
           <VStack biggap>
             <Switch>
               <Match when={address() || invoice() || nodePubkey() || lnurlp()}>
@@ -463,7 +458,7 @@ export default function Send() {
                   setSource={setSource}
                   both={!!address() && !!invoice()}
                 />
-                <Card>
+                <Card title="Destination">
                   <VStack>
                     <DestinationShower
                       source={source()}

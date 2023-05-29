@@ -174,7 +174,9 @@ export function CombinedActivity(props: { limit?: number }) {
         <LoadingSpinner wide />
       </Match>
       <Match when={activity.state === "ready" && activity().length === 0}>
-        <NiceP>No activity to show</NiceP>
+        <div class="w-full text-center">
+          <NiceP>Receive some sats get started</NiceP>
+        </div>
       </Match>
       <Match when={activity.state === "ready" && activity().length >= 0}>
         <For each={activity.latest}>
@@ -198,5 +200,5 @@ export function CombinedActivity(props: { limit?: number }) {
         </For>
       </Match>
     </Switch>
-  )
+  );
 }
