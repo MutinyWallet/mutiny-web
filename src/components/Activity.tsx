@@ -175,7 +175,7 @@ export function CombinedActivity(props: { limit?: number }) {
       </Match>
       <Match when={activity.state === "ready" && activity().length === 0}>
         <div class="w-full text-center">
-          <NiceP>Receive some sats get started</NiceP>
+          <NiceP>Receive some sats to get started</NiceP>
         </div>
       </Match>
       <Match when={activity.state === "ready" && activity().length >= 0}>
