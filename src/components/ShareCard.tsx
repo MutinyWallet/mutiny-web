@@ -30,19 +30,28 @@ export function ShareButton(props: { receiveString: string }) {
     )
 }
 
+function TruncateMiddle(props: { text: string }) {
+  return (
+    <div class="flex text-neutral-400 font-mono">
+      <span class="truncate">{props.text}</span>
+      <span class="pr-2">{props.text.length > 8 ? props.text.slice(-8) : ""}</span>
+    </div>
+  );
+}
+
 export function StringShower(props: { text: string }) {
-    const [open, setOpen] = createSignal(false);
-    return (
-        <>
-            <JsonModal open={open()} plaintext={props.text} title="Details" setOpen={setOpen} />
-            <div class="w-full grid grid-cols-[minmax(0,_1fr)_auto]">
-                <pre class="truncate text-neutral-400">{props.text}</pre>
-                <button class="w-[2rem]" onClick={() => setOpen(true)}>
-                    <img src={eyeIcon} alt="eye" />
-                </button>
-            </div>
-        </>
-    )
+  const [open, setOpen] = createSignal(false);
+  return (
+    <>
+      <JsonModal open={open()} plaintext={props.text} title="Details" setOpen={setOpen} />
+      <div class="w-full grid grid-cols-[minmax(0,_1fr)_auto]">
+        <TruncateMiddle text={props.text} />
+        <button class="w-[2rem]" onClick={() => setOpen(true)}>
+          <img src={eyeIcon} alt="eye" />
+        </button>
+      </div>
+    </>
+  );
 }
 
 export function CopyButton(props: { text?: string, title?: string }) {
