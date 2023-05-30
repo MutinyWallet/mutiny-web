@@ -98,12 +98,20 @@ function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
 function FeeExplanation(props: { fee: bigint }) {
   return (
     // TODO: probably won't always be a fixed 2500?
-    <Show when={props.fee > 1000n}>
-      <InfoBox accent="green">
-        A lightning setup fee of <AmountSmall amountSats={props.fee} /> was charged for this
-        receive.
-      </InfoBox>
-    </Show>
+    <Switch>
+      <Match when={props.fee > 1000n}>
+        <InfoBox accent="green">
+          A lightning setup fee of <AmountSmall amountSats={props.fee} /> was charged for this
+          receive.
+        </InfoBox>
+      </Match>
+      <Match when={props.fee > 0n}>
+        <InfoBox accent="green">
+          A lightning service fee of <AmountSmall amountSats={props.fee} /> was charged for this
+          receive.
+        </InfoBox>
+      </Match>
+    </Switch>
   );
 }
 

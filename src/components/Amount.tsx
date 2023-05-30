@@ -41,7 +41,9 @@ export function AmountSmall(props: {
   return (
     <span class="font-light">
       {prettyPrintAmount(props.amountSats)}&nbsp;
-      <span class="text-sm">SATS</span>
+      <span class="text-sm">
+        {props.amountSats === 1 || props.amountSats === 1n ? "SAT" : "SATS"}
+      </span>
     </span>
-  )
+  );
 }
