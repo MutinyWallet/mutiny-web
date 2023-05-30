@@ -1,4 +1,4 @@
-import { For, ParentComponent, Show, createMemo, createSignal } from "solid-js";
+import { For, ParentComponent, Show, createMemo, createResource, createSignal } from "solid-js";
 import { Button } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
@@ -46,9 +46,33 @@ export const AmountEditable: ParentComponent<{
 
   const [displayAmount, setDisplayAmount] = createSignal(props.initialAmountSats || "0");
 
-  const shouldWarn = createMemo(() => {
-    return (store.balance?.lightning || 0n) < 10000n;
+  const [inboundCapacity] = createResource(async () => {
+    const channels = await store.mutiny_wallet?.list_channels();
+    let inbound = 0;
+
+    for (const channel of channels) {
+      inbound += channel.size - (channel.balance + channel.reserve);
+    }
+
+    return inbound;
   });
+
+  const warningText = () => {
+    if ((store.balance?.lightning || 0n) === 0n) {
+      return "Your first lightning receive needs to be 10,000 sats or greater.";
+    }
+
+    const parsed = Number(displayAmount());
+    if (isNaN(parsed)) {
+      return undefined;
+    }
+
+    if (parsed > (inboundCapacity() || 0)) {
+      return "A lightning setup fee will be charged if paid over lightning.";
+    }
+
+    return undefined;
+  };
 
   let inputRef!: HTMLInputElement;
 
@@ -202,10 +226,8 @@ export const AmountEditable: ParentComponent<{
                   &#8776; {amountInUsd()} <span class="text-sm">USD</span>
                 </h2>
               </div>
-              <Show when={shouldWarn()}>
-                <InfoBox accent="green">
-                  Your first lightning receive needs to be 10,000 sats or greater.
-                </InfoBox>
+              <Show when={warningText()}>
+                <InfoBox accent="green">{warningText()}</InfoBox>
               </Show>
               <div class="flex justify-center gap-4 my-2">
                 <For each={FIXED_AMOUNTS}>

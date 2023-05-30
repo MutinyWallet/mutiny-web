@@ -75,8 +75,8 @@ type PaidState = "lightning_paid" | "onchain_paid";
 
 function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
   return (
-    // TODO: probably won't always be fixed a 1?
-    <Show when={props.fee > 1n}>
+    // TODO: probably won't always be fixed 2500?
+    <Show when={props.fee > 1000n}>
       <Switch>
         <Match when={props.flavor === "unified"}>
           <InfoBox accent="green">
@@ -91,6 +91,18 @@ function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
           </InfoBox>
         </Match>
       </Switch>
+    </Show>
+  );
+}
+
+function FeeExplanation(props: { fee: bigint }) {
+  return (
+    // TODO: probably won't always be a fixed 2500?
+    <Show when={props.fee > 1000n}>
+      <InfoBox accent="green">
+        A lightning setup fee of <AmountSmall amountSats={props.fee} /> was charged for this
+        receive.
+      </InfoBox>
     </Show>
   );
 }
@@ -283,7 +295,19 @@ export default function Receive() {
             <Match when={unified() && receiveState() === "show"}>
               <FeeWarning fee={lspFee()} flavor={flavor()} />
               <CopyableQR value={receiveString() ?? ""} />
-              <p class="text-neutral-400 text-center">Show or share this code with the sender</p>
+              <p class="text-neutral-400 text-center">
+                <Switch>
+                  <Match when={flavor() === "lightning"}>
+                    Show or share this invoice with the sender.
+                  </Match>
+                  <Match when={flavor() === "onchain"}>
+                    Show or share this address with the sender.
+                  </Match>
+                  <Match when={flavor() === "unified"}>
+                    Show or share this code with the sender. Sender decides method of payment.
+                  </Match>
+                </Switch>
+              </p>
               <StyledRadioGroup
                 small
                 value={flavor()}
@@ -306,6 +330,7 @@ export default function Receive() {
                 }}
               >
                 <MegaCheck />
+                <FeeExplanation fee={lspFee()} />
                 <Amount amountSats={paymentInvoice()?.amount_sats} showFiat centered />
               </SuccessModal>
             </Match>
