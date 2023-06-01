@@ -116,11 +116,9 @@ export const Provider: ParentComponent = (props) => {
             setState({ waitlist_id })
         },
         async sync(): Promise<void> {
-            console.time("BDK Sync Time")
             try {
                 if (state.mutiny_wallet && !state.is_syncing) {
                     setState({ is_syncing: true })
-                    await state.mutiny_wallet?.sync()
                     const newBalance = await state.mutiny_wallet?.get_balance();
                     const price = await state.mutiny_wallet?.get_bitcoin_price();
                     setState({ balance: newBalance, last_sync: Date.now(), price: price || 0 })
@@ -130,7 +128,6 @@ export const Provider: ParentComponent = (props) => {
             } finally {
                 setState({ is_syncing: false })
             }
-            console.timeEnd("BDK Sync Time")
         },
         setScanResult(scan_result: ParsedParams) {
             setState({ scan_result })
@@ -181,7 +178,7 @@ export const Provider: ParentComponent = (props) => {
     createEffect(() => {
         const interval = setInterval(async () => {
             await actions.sync();
-        }, 60 * 1000); // Poll every minute
+        }, 3 * 1000); // Poll every 3 seconds
 
         onCleanup(() => {
             clearInterval(interval);
