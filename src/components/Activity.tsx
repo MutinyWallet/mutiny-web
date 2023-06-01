@@ -79,7 +79,7 @@ function OnChainItem(props: {
 }
 
 function InvoiceItem(props: { item: MutinyInvoice; labels: MutinyTagItem[] }) {
-  const isSend = createMemo(() => props.item.is_send)
+  const isSend = createMemo(() => !props.item.inbound);
 
   const [open, setOpen] = createSignal(false)
 

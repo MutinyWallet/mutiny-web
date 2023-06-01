@@ -53,25 +53,28 @@ function LightningHeader(props: { info: MutinyInvoice }) {
         <img src={bolt} alt="lightning bolt" class="w-8 h-8" />
       </div>
       <h1 class="uppercase font-semibold">
-        {props.info.is_send ? "Lightning send" : "Lightning receive"}
+        {props.info.inbound ? "Lightning receive" : "Lightning send"}
       </h1>
       <ActivityAmount
         center
         amount={props.info.amount_sats?.toString() ?? "0"}
         price={state.price}
-        positive={!props.info.is_send}
+        positive={props.info.inbound}
       />
       <For each={tags()}>
         {(tag) => (
-          <TinyButton tag={tag} onClick={() => {
-            // noop
-          }}>
+          <TinyButton
+            tag={tag}
+            onClick={() => {
+              // noop
+            }}
+          >
             {tag.name}
           </TinyButton>
         )}
       </For>
     </div>
-  )
+  );
 }
 
 function OnchainHeader(props: { info: OnChainTx }) {

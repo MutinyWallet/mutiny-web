@@ -147,10 +147,22 @@ export default function Swap() {
 
   const canSwap = () => {
     const balance = (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
-    return (!!selectedPeer() || !!hasLsp()) && amountSats() >= 10000n && amountSats() <= balance;
+    const network = state.mutiny_wallet?.get_network() as Network;
+
+    if (network === "bitcoin") {
+      return (!!selectedPeer() || !!hasLsp()) && amountSats() >= 50000n && amountSats() <= balance;
+    } else {
+      return (!!selectedPeer() || !!hasLsp()) && amountSats() >= 10000n && amountSats() <= balance;
+    }
   };
 
   const amountWarning = () => {
+    const network = state.mutiny_wallet?.get_network() as Network;
+
+    if (network === "bitcoin" && amountSats() < 50000n) {
+      return "It's just silly to make a channel smaller than 50,000 sats";
+    }
+          
     if (amountSats() < 10000n) {
       return "It's just silly to make a channel smaller than 10,000 sats";
     }
