@@ -1,9 +1,8 @@
 import { LoadingSpinner, NiceP } from "./layout"
-import { For, Match, Show, Switch, createEffect, createResource, createSignal } from "solid-js";
+import { For, Match, Show, Switch, createSignal } from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
-import { MutinyInvoice, ActivityItem as MutinyActivity } from "@mutinywallet/mutiny-wasm";
+import { ActivityItem as MutinyActivity } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
-import { MutinyTagItem } from "~/utils/tags";
 import { DetailsIdModal } from "./DetailsModal";
 
 export const THREE_COLUMNS =
@@ -61,33 +60,8 @@ function UnifiedActivityItem(props: {
   );
 }
 
-type ActivityItem = {
-  type: "onchain" | "lightning";
-  item: OnChainTx | MutinyInvoice;
-  time: number;
-  labels: MutinyTagItem[];
-};
-
 export function CombinedActivity(props: { limit?: number }) {
   const [state, _actions] = useMegaStore();
-
-  const [activity, { refetch }] = createResource(async () => {
-    console.log("Getting all activity");
-    const allActivity = await state.mutiny_wallet?.get_activity();
-    // return allActivity.reverse().filter((a: MutinyActivity) => a.kind as unknown as HackActivityType === "Lightning" && !a.paid);
-    if (props.limit && allActivity.length > props.limit) {
-      return allActivity.slice(0, props.limit);
-    } else {
-      return allActivity;
-    }
-  });
-
-  createEffect(() => {
-    // After every sync we should refetch the activity
-    if (!state.is_syncing) {
-      refetch();
-    }
-  });
 
   const [detailsOpen, setDetailsOpen] = createSignal(false);
   const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
@@ -112,16 +86,25 @@ export function CombinedActivity(props: { limit?: number }) {
         />
       </Show>
       <Switch>
-        <Match when={activity.loading}>
-          <LoadingSpinner wide />
+        <Match when={state.wallet_loading || !state.activity_has_loaded}>
+          <div class="p-4">
+            <LoadingSpinner wide />
+          </div>
         </Match>
-        <Match when={activity.state === "ready" && activity().length === 0}>
+        <Match when={state.activity.length === 0}>
           <div class="w-full text-center">
             <NiceP>Receive some sats to get started</NiceP>
           </div>
         </Match>
-        <Match when={activity.state === "ready" && activity().length >= 0}>
-          <For each={activity.latest}>
+        <Match when={props.limit && state.activity.length > props.limit}>
+          <For each={state.activity.slice(0, props.limit)}>
+            {(activityItem) => (
+              <UnifiedActivityItem item={activityItem} onClick={openDetailsModal} />
+            )}
+          </For>
+        </Match>
+        <Match when={state.activity.length >= 0}>
+          <For each={state.activity}>
             {(activityItem) => (
               <UnifiedActivityItem item={activityItem} onClick={openDetailsModal} />
             )}

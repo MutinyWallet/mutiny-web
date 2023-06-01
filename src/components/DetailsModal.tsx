@@ -197,6 +197,7 @@ function OnchainDetails(props: { info: OnChainTx }) {
 
   return (
     <VStack>
+      {/* <pre>{JSON.stringify(props.info, null, 2)}</pre> */}
       <ul class="flex flex-col gap-4">
         <KeyValue key="Status">
           <span class="text-neutral-300">{confirmationTime() ? "Confirmed" : "Unconfirmed"}</span>
@@ -208,11 +209,13 @@ function OnchainDetails(props: { info: OnChainTx }) {
             </span>
           </KeyValue>
         </Show>
-        <KeyValue key="Fee">
-          <span class="text-neutral-300">
-            <AmountSmall amountSats={props.info.fee} />
-          </span>
-        </KeyValue>
+        <Show when={props.info.fee && props.info.fee > 0}>
+          <KeyValue key="Fee">
+            <span class="text-neutral-300">
+              <AmountSmall amountSats={props.info.fee} />
+            </span>
+          </KeyValue>
+        </Show>
         <KeyValue key="Txid">
           <MiniStringShower text={props.info.txid ?? ""} />
         </KeyValue>
