@@ -176,13 +176,13 @@ export const Provider: ParentComponent = (props) => {
     });
 
     createEffect(() => {
-        const interval = setInterval(async () => {
-            await actions.sync();
-        }, 3 * 1000); // Poll every 3 seconds
+      const interval = setInterval(async () => {
+        await actions.sync();
+      }, 30 * 1000); // Poll every 30 seconds
 
-        onCleanup(() => {
-            clearInterval(interval);
-        });
+      onCleanup(() => {
+        clearInterval(interval);
+      });
     })
 
     const store = [state, actions] as MegaStore;

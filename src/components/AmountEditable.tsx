@@ -8,6 +8,7 @@ import pencil from "~/assets/icons/pencil.svg";
 import { InlineAmount } from "./AmountCard";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { InfoBox } from "./InfoBox";
+import { Network } from "~/logic/mutinyWalletSetup";
 
 const CHARACTERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "DEL"];
 
@@ -59,7 +60,12 @@ export const AmountEditable: ParentComponent<{
 
   const warningText = () => {
     if ((store.balance?.lightning || 0n) === 0n) {
-      return "Your first lightning receive needs to be 10,000 sats or greater.";
+      const network = state.mutiny_wallet?.get_network() as Network;
+      if (network === "bitcoin") {
+        return "Your first lightning receive needs to be 50,000 sats or greater.";
+      } else {
+        return "Your first lightning receive needs to be 10,000 sats or greater.";
+      }
     }
 
     const parsed = Number(displayAmount());

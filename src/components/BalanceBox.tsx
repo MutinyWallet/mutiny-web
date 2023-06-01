@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { Button, FancyCard, Indicator } from "~/components/layout";
+import { Button, FancyCard } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
 import { A, useNavigate } from "solid-start";
