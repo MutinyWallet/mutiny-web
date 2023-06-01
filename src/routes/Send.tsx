@@ -389,8 +389,6 @@ export default function Send() {
         const txid = await state.mutiny_wallet?.send_to_address(address()!, amountSats(), tags);
         sentDetails.amount = amountSats();
         sentDetails.destination = address();
-        // TODO: figure out if this is necessary, it takes forever
-        await actions.sync();
         sentDetails.txid = txid;
       }
       setSentDetails(sentDetails as SentDetails);
