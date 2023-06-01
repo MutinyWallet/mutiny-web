@@ -44,7 +44,6 @@ export default function BalanceBox(props: { loading?: boolean }) {
       <FancyCard
         title="On-Chain"
         subtitle={state.balance?.unconfirmed ? "Unconfirmed" : undefined}
-        tag={state.is_syncing && <Indicator>Syncing</Indicator>}
       >
         <Show when={!props.loading} fallback={<LoadingShimmer />}>
           <div class="flex justify-between">
