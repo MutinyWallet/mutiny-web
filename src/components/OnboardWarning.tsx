@@ -11,7 +11,7 @@ export function OnboardWarning() {
   const [dismissedBackup, setDismissedBackup] = createSignal(false);
 
   function hasMoney() {
-    return state.balance?.confirmed || state.balance?.lightning || state.balance?.unconfirmed;
+    return state.balance?.confirmed || state.balance?.lightning || state.balance?.unconfirmed || state.balance?.force_close;
   }
 
   return (

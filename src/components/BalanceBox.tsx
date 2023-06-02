@@ -27,11 +27,12 @@ export default function BalanceBox(props: { loading?: boolean }) {
   const emptyBalance = () =>
     (state.balance?.confirmed || 0n) === 0n &&
     (state.balance?.lightning || 0n) === 0n &&
+    (state.balance?.force_close || 0n) === 0n &&
     (state.balance?.unconfirmed || 0n) === 0n;
 
   const navigate = useNavigate();
 
-  const totalOnchain = () => (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
+  const totalOnchain = () => (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n) + (state.balance?.force_close || 0n);
 
   return (
     <>
@@ -43,7 +44,7 @@ export default function BalanceBox(props: { loading?: boolean }) {
 
       <FancyCard
         title="On-Chain"
-        subtitle={state.balance?.unconfirmed ? "Unconfirmed" : undefined}
+        subtitle={((Number(state.balance?.unconfirmed) || 0) + (Number(state.balance?.force_close) || 0)) ? "Unconfirmed" : undefined}
       >
         <Show when={!props.loading} fallback={<LoadingShimmer />}>
           <div class="flex justify-between">
