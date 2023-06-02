@@ -124,7 +124,14 @@ export function ActivityItem(props: {
             <span class="text-base font-semibold text-neutral-500">Unknown</span>
           </Match>
         </Switch>
-        <time class="text-sm text-neutral-500">{timeAgo(props.date)}</time>
+        <Switch>
+          <Match when={props.date && props.date > 2147483647}>
+            <time class="text-sm text-neutral-500">Pending</time>
+          </Match>
+          <Match when={true}>
+            <time class="text-sm text-neutral-500">{timeAgo(props.date)}</time>
+          </Match>
+        </Switch>
       </div>
       <div class="">
         <ActivityAmount
