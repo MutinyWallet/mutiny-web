@@ -161,7 +161,6 @@ export const AmountEditable: ParentComponent<{
     const isFiatMode = mode() === "fiat";
     const inputSanitizer = isFiatMode ? fiatInputSanitizer : satsInputSanitizer;
     const localValue = isFiatMode ? localFiat : localSats;
-    const inputRef = isFiatMode ? fiatInputRef : satsInputRef;
 
     let sane;
 
@@ -184,7 +183,7 @@ export const AmountEditable: ParentComponent<{
     }
 
     // After a button press make sure we re-focus the input
-    inputRef.focus();
+    focus();
   }
 
   function setFixedAmount(amount: string) {
@@ -220,16 +219,23 @@ export const AmountEditable: ParentComponent<{
 
   function toggle() {
     setMode((m) => (m === "sats" ? "fiat" : "sats"));
-    if (mode() === "sats") {
-      satsInputRef.focus();
-    } else {
-      fiatInputRef.focus();
-    }
+    focus();
   }
 
   onMount(() => {
-    satsInputRef.focus();
+    focus();
   });
+
+  function focus() {
+    // Make sure we actually have the inputs mounted before we try to focus them
+    if (isOpen() && satsInputRef && fiatInputRef) {
+      if (mode() === "sats") {
+        satsInputRef.focus();
+      } else {
+        fiatInputRef.focus();
+      }
+    }
+  }
 
   return (
     <Dialog.Root open={isOpen()}>
@@ -297,12 +303,9 @@ export const AmountEditable: ParentComponent<{
                 <For each={mode() === "fiat" ? FIXED_AMOUNTS_USD : FIXED_AMOUNTS_SATS}>
                   {(amount) => (
                     <button
-                      onClick={() => { setFixedAmount(amount.amount)
-                        if (mode() === "fiat") {
-                          fiatInputRef.focus();
-                        } else {
-                          satsInputRef.focus();
-                        }
+                      onClick={() => {
+                        setFixedAmount(amount.amount);
+                        focus();
                       }}
                       class="py-2 px-4 rounded-lg bg-white/10"
                     >
