@@ -26,3 +26,7 @@ dist-ssr
 # PWA dev stuff
 dev-dist
 .solid
+/test-results/
+/tests-examples/
+/playwright-report/
+/playwright/.cache/
