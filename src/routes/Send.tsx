@@ -34,6 +34,7 @@ import { BackButton } from "~/components/layout/BackButton";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { ExternalLink } from "~/components/layout/ExternalLink";
+import { InfoBox } from "~/components/InfoBox";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -56,23 +57,20 @@ export function MethodChooser(props: {
   const [store, _actions] = useMegaStore();
 
   const methods = createMemo(() => {
+    const lnBalance = store.balance?.lightning || 0n;
+    const onchainBalance = (store.balance?.confirmed || 0n) + (store.balance?.unconfirmed || 0n);
     return [
       {
         value: "lightning",
         label: "Lightning Balance",
-        caption: store.balance?.lightning
-          ? `${store.balance?.lightning.toLocaleString()} SATS`
-          : "No balance"
+        caption: lnBalance > 0n ? `${lnBalance.toLocaleString()} SATS` : "No balance",
+        disabled: lnBalance === 0n
       },
       {
         value: "onchain",
         label: "On-chain Balance",
-        caption:
-          store.balance?.confirmed || store.balance?.unconfirmed
-            ? `${(
-                (store.balance?.confirmed || 0n) + (store.balance?.unconfirmed || 0n)
-              ).toLocaleString()} SATS`
-            : "No balance"
+        caption: onchainBalance > 0n ? `${onchainBalance.toLocaleString()} SATS` : "No balance",
+        disabled: onchainBalance === 0n
       }
     ];
   });
@@ -195,6 +193,9 @@ export default function Send() {
   // Tagging stuff
   const [selectedContacts, setSelectedContacts] = createSignal<Partial<MutinyTagItem>[]>([]);
 
+  // Errors
+  const [error, setError] = createSignal<string>();
+
   function clearAll() {
     setDestination(undefined);
     setAmountSats(0n);
@@ -211,7 +212,12 @@ export default function Send() {
     if (source() === "lightning") return undefined;
 
     if (source() === "onchain" && amountSats() && amountSats() > 0n && address()) {
-      return state.mutiny_wallet?.estimate_tx_fee(address()!, amountSats(), undefined);
+      setError(undefined);
+      try {
+        return state.mutiny_wallet?.estimate_tx_fee(address()!, amountSats(), undefined);
+      } catch (e) {
+        setError(eify(e).message);
+      }
     }
 
     return undefined;
@@ -259,6 +265,13 @@ export default function Send() {
     } catch (e) {
       console.error("error", e);
       clearAll();
+    }
+  });
+
+  // Rerun every time the source changes
+  createEffect(() => {
+    if (source() === "lightning") {
+      setError(undefined);
     }
   });
 
@@ -405,7 +418,7 @@ export default function Send() {
   }
 
   const sendButtonDisabled = createMemo(() => {
-    return !destination() || sending() || amountSats() === 0n;
+    return !destination() || sending() || amountSats() === 0n || !!error();
   });
 
   const network = state.mutiny_wallet?.get_network() as Network;
@@ -475,6 +488,11 @@ export default function Send() {
                     />
                   </VStack>
                 </Card>
+                <Show when={error()}>
+                  <InfoBox accent="red">
+                    <p>{error()}</p>
+                  </InfoBox>
+                </Show>
                 <AmountCard
                   amountSats={amountSats().toString()}
                   setAmountSats={setAmountSats}
