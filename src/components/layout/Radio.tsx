@@ -1,7 +1,7 @@
 import { RadioGroup } from "@kobalte/core";
 import { For, Show } from "solid-js";
 
-type Choices = { value: string, label: string, caption: string }[]
+type Choices = { value: string; label: string; caption: string; disabled?: boolean }[];
 
 // TODO: how could would it be if we could just pass the estimated fees in here?
 export function StyledRadioGroup(props: { value: string, choices: Choices, onValueChange: (value: string) => void, small?: boolean, accent?: "red" | "white" }) {
@@ -24,8 +24,10 @@ export function StyledRadioGroup(props: { value: string, choices: Choices, onVal
               class={`ui-checked:bg-neutral-950 bg-white/10 rounded outline outline-black/50 ui-checked:outline-m-blue ui-checked:outline-2`}
               classList={{
                 "ui-checked:outline-m-red": props.accent === "red",
-                "ui-checked:outline-white": props.accent === "white"
+                "ui-checked:outline-white": props.accent === "white",
+                "ui-disabled:opacity-50": choice.disabled
               }}
+              disabled={choice.disabled}
             >
               <div class={props.small ? "py-2 px-2" : "py-3 px-4"}>
                 <RadioGroup.ItemInput />
