@@ -266,7 +266,7 @@ export default function Receive() {
       <SafeArea>
         <DefaultMain>
           <Show when={receiveState() === "show"} fallback={<BackLink />}>
-            <BackButton onClick={() => setReceiveState("edit")} title="Edit" />
+            <BackButton onClick={() => setReceiveState("edit")} title="Edit" showOnDesktop />
           </Show>
           <LargeHeader action={receiveState() === "show" && <Indicator>Checking</Indicator>}>
             Receive Bitcoin
