@@ -45,23 +45,23 @@ export const Button: ParentComponent<ButtonProps> = props => {
     const [local, attrs] = splitProps(props, ['children', 'intent', 'layout', 'class'])
 
     return (
-        <button
-            {...attrs}
-            disabled={props.disabled || props.loading}
-            class={button({
-                class: local.class || "",
-                intent: local.intent,
-                layout: local.layout,
-            })}
-        >
-            <Show when={props.loading} fallback={slot()} >
-                <div class="flex justify-center">
-                    {/* TODO: constrain this to the exact height of the button */}
-                    <LoadingSpinner />
-                </div>
-            </Show>
-        </button >
-    )
+      <button
+        {...attrs}
+        disabled={props.disabled || props.loading}
+        class={button({
+          class: local.class || "",
+          intent: local.intent,
+          layout: local.layout
+        })}
+      >
+        <Show when={props.loading} fallback={slot()}>
+          <div class="flex justify-center">
+            {/* TODO: constrain this to the exact height of the button */}
+            <LoadingSpinner wide />
+          </div>
+        </Show>
+      </button>
+    );
 }
 
 interface ButtonLinkProps extends JSX.ButtonHTMLAttributes<HTMLAnchorElement>, StyleProps {

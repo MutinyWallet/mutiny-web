@@ -78,21 +78,19 @@ export const DefaultMain: ParentComponent = (props) => {
 
 export const FullscreenLoader = () => {
     return (
-        <div class="w-full h-[100dvh] flex justify-center items-center">
-            <LoadingSpinner />
-        </div>
+      <div class="w-full h-[100dvh] flex justify-center items-center">
+        <LoadingSpinner wide />
+      </div>
     );
 }
 
 export const MutinyWalletGuard: ParentComponent = (props) => {
     const [state, _] = useMegaStore();
     return (
-        <Suspense fallback={<FullscreenLoader />}>
-            <Show when={state.mutiny_wallet}>
-                {props.children}
-            </Show>
-        </Suspense>
-    )
+      <Suspense fallback={<FullscreenLoader />}>
+        <Show when={state.mutiny_wallet && !state.wallet_loading}>{props.children}</Show>
+      </Suspense>
+    );
 }
 
 export const LoadingSpinner = (props: { big?: boolean, wide?: boolean }) => {
