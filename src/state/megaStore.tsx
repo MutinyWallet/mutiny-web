@@ -33,7 +33,6 @@ export type MegaStore = [
     wallet_loading: boolean;
     nwc_enabled: boolean;
     activity: MutinyActivity[];
-    activity_has_loaded: boolean;
   },
   {
     fetchUserStatus(): Promise<UserStatus>;
@@ -46,6 +45,7 @@ export type MegaStore = [
     setHasBackedUp(): void;
     listTags(): Promise<MutinyTagItem[]>;
     setNwc(enabled: boolean): void;
+    syncActivity(): Promise<void>;
   }
 ];
 
@@ -67,8 +67,7 @@ export const Provider: ParentComponent = (props) => {
     dismissed_restore_prompt: localStorage.getItem("dismissed_restore_prompt") === "true",
     wallet_loading: true,
     nwc_enabled: localStorage.getItem("nwc_enabled") === "true",
-    activity: [] as MutinyActivity[],
-    activity_has_loaded: false
+    activity: [] as MutinyActivity[]
   });
 
   const actions = {
@@ -135,19 +134,24 @@ export const Provider: ParentComponent = (props) => {
           setState({ is_syncing: true });
           const newBalance = await state.mutiny_wallet?.get_balance();
           const price = await state.mutiny_wallet?.get_bitcoin_price();
-          const activity = await state.mutiny_wallet?.get_activity();
           setState({
             balance: newBalance,
             last_sync: Date.now(),
             price: price || 0
           });
-          setState("activity", reconcile(activity, { merge: true }));
-          setState({ activity_has_loaded: true });
         }
       } catch (e) {
         console.error(e);
       } finally {
         setState({ is_syncing: false });
+      }
+    },
+    async syncActivity(): Promise<void> {
+      try {
+        const activity = await state.mutiny_wallet?.get_activity();
+        setState("activity", reconcile(activity, { merge: true }));
+      } catch (e) {
+        console.error(e);
       }
     },
     setScanResult(scan_result: ParsedParams) {

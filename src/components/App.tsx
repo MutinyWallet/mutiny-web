@@ -36,12 +36,14 @@ export default function App() {
               </Show>
               {/* <ButtonLink href="/activity">View All</ButtonLink> */}
             </VStack>
-            <A
-              href="/activity"
-              class="text-m-red active:text-m-red/80 text-xl font-semibold no-underline self-center"
-            >
-              View All
-            </A>
+            <Show when={state.activity && state.activity.length > 0}>
+              <A
+                href="/activity"
+                class="text-m-red active:text-m-red/80 text-xl font-semibold no-underline self-center"
+              >
+                View All
+              </A>
+            </Show>
           </Card>
           <p class="self-center text-neutral-500 mt-4">
             Bugs? Feedback?{" "}

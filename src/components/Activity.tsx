@@ -1,5 +1,5 @@
-import { LoadingSpinner, NiceP } from "./layout"
-import { For, Match, Show, Switch, createSignal } from "solid-js";
+import { NiceP } from "./layout";
+import { For, Match, Show, Switch, createEffect, createSignal } from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
 import { ActivityItem as MutinyActivity } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
@@ -61,7 +61,7 @@ function UnifiedActivityItem(props: {
 }
 
 export function CombinedActivity(props: { limit?: number }) {
-  const [state, _actions] = useMegaStore();
+  const [state, actions] = useMegaStore();
 
   const [detailsOpen, setDetailsOpen] = createSignal(false);
   const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
@@ -75,6 +75,12 @@ export function CombinedActivity(props: { limit?: number }) {
     setDetailsOpen(true);
   }
 
+  createEffect(() => {
+    if (!state.wallet_loading && !state.is_syncing) {
+      actions.syncActivity();
+    }
+  });
+
   return (
     <>
       <Show when={detailsId() && detailsKind()}>
@@ -86,13 +92,8 @@ export function CombinedActivity(props: { limit?: number }) {
         />
       </Show>
       <Switch>
-        <Match when={state.wallet_loading || !state.activity_has_loaded}>
-          <div class="p-4">
-            <LoadingSpinner wide />
-          </div>
-        </Match>
         <Match when={state.activity.length === 0}>
-          <div class="w-full text-center">
+          <div class="w-full text-center pb-4">
             <NiceP>Receive some sats to get started</NiceP>
           </div>
         </Match>
