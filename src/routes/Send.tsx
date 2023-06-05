@@ -232,6 +232,24 @@ export default function Send() {
         setFieldDestination("");
     }
 
+    const insufficientFunds = () => {
+        if (source() === "onchain") {
+            return (
+                (state.balance?.confirmed ?? 0n) +
+                    (state.balance?.unconfirmed ?? 0n) <
+                amountSats()
+            );
+        }
+        if (source() === "lightning") {
+            return (
+                (state.balance?.lightning ?? 0n) < amountSats() &&
+                setError(
+                    "We do not have enough balance to pay the given amount."
+                )
+            );
+        }
+    };
+
     const feeEstimate = () => {
         if (source() === "lightning") return undefined;
 
@@ -483,7 +501,13 @@ export default function Send() {
     }
 
     const sendButtonDisabled = createMemo(() => {
-        return !destination() || sending() || amountSats() === 0n || !!error();
+        return (
+            !destination() ||
+            sending() ||
+            amountSats() === 0n ||
+            insufficientFunds() ||
+            !!error()
+        );
     });
 
     const network = state.mutiny_wallet?.get_network() as Network;
