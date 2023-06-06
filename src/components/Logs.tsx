@@ -3,11 +3,11 @@ import { useMegaStore } from "~/state/megaStore";
 import { downloadTextFile } from "~/utils/download";
 
 export function Logs() {
-    const [state, _] = useMegaStore()
+    const [state, _] = useMegaStore();
 
     async function handleSave() {
-        const logs = await state.mutiny_wallet?.get_logs()
-        downloadTextFile(logs.join("") || "", "mutiny-logs.txt", "text/plain")
+        const logs = await state.mutiny_wallet?.get_logs();
+        downloadTextFile(logs.join("") || "", "mutiny-logs.txt", "text/plain");
     }
 
     return (
@@ -17,6 +17,5 @@ export function Logs() {
                 <Button onClick={handleSave}>Download Logs</Button>
             </VStack>
         </Card>
-
-    )
+    );
 }

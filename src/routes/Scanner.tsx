@@ -15,27 +15,40 @@ export type ParsedParams = {
     memo?: string;
     node_pubkey?: string;
     lnurl?: string;
-}
+};
 
-export function toParsedParams(str: string, ourNetwork: string): Result<ParsedParams> {
+export function toParsedParams(
+    str: string,
+    ourNetwork: string
+): Result<ParsedParams> {
     let params;
     try {
-        params = new PaymentParams(str || "")
+        params = new PaymentParams(str || "");
     } catch (e) {
-        console.error(e)
-        return { ok: false, error: new Error("Invalid payment request") }
+        console.error(e);
+        return { ok: false, error: new Error("Invalid payment request") };
     }
 
     // If WAILA doesn't return a network we should default to our own
     // If the networks is testnet and we're on signet we should use signet
-    const network = !params.network ? ourNetwork : params.network === "testnet" && ourNetwork === "signet" ? "signet" : params.network;
+    const network = !params.network
+        ? ourNetwork
+        : params.network === "testnet" && ourNetwork === "signet"
+        ? "signet"
+        : params.network;
 
     if (network !== ourNetwork) {
-        return { ok: false, error: new Error(`Destination is for ${params.network} but you're on ${ourNetwork}`) }
+        return {
+            ok: false,
+            error: new Error(
+                `Destination is for ${params.network} but you're on ${ourNetwork}`
+            )
+        };
     }
 
     return {
-        ok: true, value: {
+        ok: true,
+        value: {
             address: params.address,
             invoice: params.invoice,
             amount_sats: params.amount_sats,
@@ -44,7 +57,7 @@ export function toParsedParams(str: string, ourNetwork: string): Result<ParsedPa
             node_pubkey: params.node_pubkey,
             lnurl: params.lnurl
         }
-    }
+    };
 }
 
 export default function Scanner() {
@@ -62,14 +75,14 @@ export default function Scanner() {
     }
 
     function handlePaste() {
-        navigator.clipboard.readText().then(text => {
+        navigator.clipboard.readText().then((text) => {
             setScanResult(text);
         });
     }
 
     onMount(async () => {
-        await init()
-    })
+        await init();
+    });
 
     // When we have a nice result we can head over to the send screen
     createEffect(() => {
@@ -80,20 +93,27 @@ export default function Scanner() {
                 showToast(result.error);
                 return;
             } else {
-                if (result.value?.address || result.value?.invoice || result.value?.node_pubkey || result.value?.lnurl) {
+                if (
+                    result.value?.address ||
+                    result.value?.invoice ||
+                    result.value?.node_pubkey ||
+                    result.value?.lnurl
+                ) {
                     actions.setScanResult(result.value);
-                    navigate("/send")
+                    navigate("/send");
                 }
             }
         }
-    })
+    });
 
     return (
         <div class="safe-top safe-left safe-right safe-bottom h-full">
             <Reader onResult={onResult} />
             <div class="w-full flex flex-col items-center fixed bottom-[2rem] gap-8 px-8">
                 <div class="w-full max-w-[800px] flex flex-col gap-2">
-                    <Button intent="blue" onClick={handlePaste}>Paste Something</Button>
+                    <Button intent="blue" onClick={handlePaste}>
+                        Paste Something
+                    </Button>
                     <Button onClick={exit}>Cancel</Button>
                 </div>
             </div>

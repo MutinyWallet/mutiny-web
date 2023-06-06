@@ -1,4 +1,3 @@
-
 import App from "~/components/App";
 import { Switch, Match } from "solid-js";
 import { WaitlistAlreadyIn } from "~/components/waitlist/WaitlistAlreadyIn";
@@ -7,22 +6,22 @@ import { useMegaStore } from "~/state/megaStore";
 import { FullscreenLoader } from "~/components/layout";
 
 export default function Home() {
-  const [state, _] = useMegaStore();
+    const [state, _] = useMegaStore();
 
-  return (
-    <>
-      <Switch fallback={<FullscreenLoader />} >
-        {/* TODO: can you put a suspense around a match? */}
-        <Match when={state.user_status === "approved"}>
-          <App />
-        </Match>
-        <Match when={state.user_status === "waitlisted"}>
-          <WaitlistAlreadyIn />
-        </Match>
-        <Match when={state.user_status === "new_here"}>
-          <WaitlistForm />
-        </Match>
-      </Switch>
-    </>
-  );
+    return (
+        <>
+            <Switch fallback={<FullscreenLoader />}>
+                {/* TODO: can you put a suspense around a match? */}
+                <Match when={state.user_status === "approved"}>
+                    <App />
+                </Match>
+                <Match when={state.user_status === "waitlisted"}>
+                    <WaitlistAlreadyIn />
+                </Match>
+                <Match when={state.user_status === "new_here"}>
+                    <WaitlistForm />
+                </Match>
+            </Switch>
+        </>
+    );
 }

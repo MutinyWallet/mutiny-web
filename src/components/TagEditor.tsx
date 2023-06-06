@@ -1,5 +1,5 @@
 import { Select, createOptions } from "@thisbeyond/solid-select";
-import "~/styles/solid-select.css"
+import "~/styles/solid-select.css";
 import { For, Show, createMemo, createSignal, onMount } from "solid-js";
 import { TinyButton } from "./layout";
 import { MutinyTagItem, sortByLastUsed } from "~/utils/tags";
@@ -10,36 +10,43 @@ const createLabelValue = (label: string): Partial<MutinyTagItem> => {
 };
 
 export function TagEditor(props: {
-    selectedValues: Partial<MutinyTagItem>[],
-    setSelectedValues: (value: Partial<MutinyTagItem>[]) => void,
-    placeholder: string
+    selectedValues: Partial<MutinyTagItem>[];
+    setSelectedValues: (value: Partial<MutinyTagItem>[]) => void;
+    placeholder: string;
 }) {
     const [_state, actions] = useMegaStore();
     const [availableTags, setAvailableTags] = createSignal<MutinyTagItem[]>([]);
 
     onMount(async () => {
-        const tags = await actions.listTags()
+        const tags = await actions.listTags();
         if (tags) {
-            setAvailableTags(tags.filter((tag) => tag.kind === "Contact").sort(sortByLastUsed))
+            setAvailableTags(
+                tags
+                    .filter((tag) => tag.kind === "Contact")
+                    .sort(sortByLastUsed)
+            );
         }
-    })
+    });
 
     const selectProps = createMemo(() => {
         return createOptions(availableTags() || [], {
             key: "name",
             filterable: true, // Default
-            createable: createLabelValue,
+            createable: createLabelValue
         });
-
-    })
+    });
 
     const onChange = (selected: MutinyTagItem[]) => {
         props.setSelectedValues(selected);
 
-        console.log(selected)
+        console.log(selected);
 
         const lastValue = selected[selected.length - 1];
-        if (lastValue && availableTags() && !availableTags()!.includes(lastValue)) {
+        if (
+            lastValue &&
+            availableTags() &&
+            !availableTags()!.includes(lastValue)
+        ) {
             setAvailableTags([...availableTags(), lastValue]);
         }
     };
@@ -50,7 +57,7 @@ export function TagEditor(props: {
     };
 
     return (
-        <div class="flex flex-col gap-2 flex-shrink flex-1" >
+        <div class="flex flex-col gap-2 flex-shrink flex-1">
             <Select
                 multiple
                 initialValue={props.selectedValues}
@@ -70,6 +77,6 @@ export function TagEditor(props: {
                     </For>
                 </Show>
             </div>
-        </div >
-    )
+        </div>
+    );
 }

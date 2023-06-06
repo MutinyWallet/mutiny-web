@@ -1,5 +1,11 @@
 import { Title } from "solid-start";
-import { Button, DefaultMain, LargeHeader, SafeArea, SmallHeader } from "~/components/layout";
+import {
+    Button,
+    DefaultMain,
+    LargeHeader,
+    SafeArea,
+    SmallHeader
+} from "~/components/layout";
 
 export default function ErrorDisplay(props: { error: Error }) {
     return (
@@ -9,11 +15,16 @@ export default function ErrorDisplay(props: { error: Error }) {
                 <LargeHeader>Error</LargeHeader>
                 <SmallHeader>This never should've happened</SmallHeader>
                 <p class="bg-white/10 rounded-xl p-4 font-mono">
-                    <span class="font-bold">
-                        {props.error.name}</span>: {props.error.message}
+                    <span class="font-bold">{props.error.name}</span>:{" "}
+                    {props.error.message}
                 </p>
                 <div class="h-full" />
-                <Button onClick={() => window.location.href = "/"} intent="red">Dangit</Button>
+                <Button
+                    onClick={() => (window.location.href = "/")}
+                    intent="red"
+                >
+                    Dangit
+                </Button>
             </DefaultMain>
         </SafeArea>
     );

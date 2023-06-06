@@ -1,11 +1,24 @@
 import { Dialog } from "@kobalte/core";
 import { JSX, createMemo } from "solid-js";
 import { ModalCloseButton, SmallHeader } from "~/components/layout";
-import { DIALOG_CONTENT, DIALOG_POSITIONER, OVERLAY } from "~/components/DetailsModal";
+import {
+    DIALOG_CONTENT,
+    DIALOG_POSITIONER,
+    OVERLAY
+} from "~/components/DetailsModal";
 import { CopyButton } from "./ShareCard";
 
-export function JsonModal(props: { title: string, open: boolean, plaintext?: string, data?: unknown, setOpen: (open: boolean) => void, children?: JSX.Element }) {
-    const json = createMemo(() => props.plaintext ? props.plaintext : JSON.stringify(props.data, null, 2));
+export function JsonModal(props: {
+    title: string;
+    open: boolean;
+    plaintext?: string;
+    data?: unknown;
+    setOpen: (open: boolean) => void;
+    children?: JSX.Element;
+}) {
+    const json = createMemo(() =>
+        props.plaintext ? props.plaintext : JSON.stringify(props.data, null, 2)
+    );
 
     return (
         <Dialog.Root open={props.open} onOpenChange={props.setOpen}>
@@ -15,9 +28,7 @@ export function JsonModal(props: { title: string, open: boolean, plaintext?: str
                     <Dialog.Content class={DIALOG_CONTENT}>
                         <div class="flex justify-between mb-2 items-center">
                             <Dialog.Title>
-                                <SmallHeader>
-                                    {props.title}
-                                </SmallHeader>
+                                <SmallHeader>{props.title}</SmallHeader>
                             </Dialog.Title>
                             <Dialog.CloseButton>
                                 <ModalCloseButton />
@@ -35,6 +46,6 @@ export function JsonModal(props: { title: string, open: boolean, plaintext?: str
                     </Dialog.Content>
                 </div>
             </Dialog.Portal>
-        </Dialog.Root >
-    )
+        </Dialog.Root>
+    );
 }

@@ -1,13 +1,13 @@
 export function prettyPrintTime(ts: number) {
     const options: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric'
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric"
     };
 
-    return new Date(ts * 1000).toLocaleString('en-US', options);
+    return new Date(ts * 1000).toLocaleString("en-US", options);
 }
 
 export function timeAgo(ts?: number | bigint): string {
@@ -23,15 +23,15 @@ export function timeAgo(ts?: number | bigint): string {
     if (elapsedSeconds < 60) {
         return "Just now";
     } else if (elapsedMinutes < 60) {
-        return `${elapsedMinutes} minute${elapsedMinutes > 1 ? 's' : ''} ago`;
+        return `${elapsedMinutes} minute${elapsedMinutes > 1 ? "s" : ""} ago`;
     } else if (elapsedHours < 24) {
-        return `${elapsedHours} hour${elapsedHours > 1 ? 's' : ''} ago`;
+        return `${elapsedHours} hour${elapsedHours > 1 ? "s" : ""} ago`;
     } else if (elapsedDays < 7) {
-        return `${elapsedDays} day${elapsedDays > 1 ? 's' : ''} ago`;
+        return `${elapsedDays} day${elapsedDays > 1 ? "s" : ""} ago`;
     } else {
         const date = new Date(timestamp);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
         const year = date.getFullYear();
         return `${month}/${day}/${year}`;
     }

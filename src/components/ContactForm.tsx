@@ -3,17 +3,36 @@ import { Button, LargeHeader, VStack } from "~/components/layout";
 import { TextField } from "~/components/layout/TextField";
 import { ContactFormValues } from "./ContactViewer";
 
-export function ContactForm(props: { handleSubmit: SubmitHandler<ContactFormValues>, initialValues?: ContactFormValues, title: string, cta: string }) {
-    const [_contactForm, { Form, Field }] = createForm<ContactFormValues>({ initialValues: props.initialValues });
+export function ContactForm(props: {
+    handleSubmit: SubmitHandler<ContactFormValues>;
+    initialValues?: ContactFormValues;
+    title: string;
+    cta: string;
+}) {
+    const [_contactForm, { Form, Field }] = createForm<ContactFormValues>({
+        initialValues: props.initialValues
+    });
 
     return (
-        <Form onSubmit={props.handleSubmit} class="flex flex-col flex-1 justify-around gap-4 max-w-[400px] mx-auto w-full">
+        <Form
+            onSubmit={props.handleSubmit}
+            class="flex flex-col flex-1 justify-around gap-4 max-w-[400px] mx-auto w-full"
+        >
             <div>
                 <LargeHeader>{props.title}</LargeHeader>
                 <VStack>
-                    <Field name="name" validate={[required("We at least need a name")]}>
+                    <Field
+                        name="name"
+                        validate={[required("We at least need a name")]}
+                    >
                         {(field, props) => (
-                            <TextField  {...props} placeholder='Satoshi' value={field.value} error={field.error} label="Name" />
+                            <TextField
+                                {...props}
+                                placeholder="Satoshi"
+                                value={field.value}
+                                error={field.error}
+                                label="Name"
+                            />
                         )}
                     </Field>
                     {/* <Field name="npub" validate={[]}>
@@ -27,5 +46,5 @@ export function ContactForm(props: { handleSubmit: SubmitHandler<ContactFormValu
                 {props.cta}
             </Button>
         </Form>
-    )
+    );
 }

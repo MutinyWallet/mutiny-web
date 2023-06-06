@@ -3,7 +3,7 @@ import { Contact } from "@mutinywallet/mutiny-wasm";
 export async function generateGradient(str: string) {
     const encoder = new TextEncoder();
     const data = encoder.encode(str);
-    const digestBuffer = await crypto.subtle.digest('SHA-256', data);
+    const digestBuffer = await crypto.subtle.digest("SHA-256", data);
     const digestArray = new Uint8Array(digestBuffer);
     const h1 = digestArray[0] % 360;
     const h2 = (h1 + 180) % 360;

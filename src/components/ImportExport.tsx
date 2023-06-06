@@ -4,16 +4,16 @@ import { createSignal } from "solid-js";
 import eify from "~/utils/eify";
 import { showToast } from "./Toaster";
 import { downloadTextFile } from "~/utils/download";
-import { createFileUploader } from "@solid-primitives/upload"
+import { createFileUploader } from "@solid-primitives/upload";
 import { ConfirmDialog } from "./Dialog";
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 
 export function ImportExport() {
-    const [state, _] = useMegaStore()
+    const [state, _] = useMegaStore();
 
     async function handleSave() {
-        const json = await state.mutiny_wallet?.export_json()
-        downloadTextFile(json || "", "mutiny-state.json")
+        const json = await state.mutiny_wallet?.export_json();
+        downloadTextFile(json || "", "mutiny-state.json");
     }
 
     const { files, selectFiles } = createFileUploader();
@@ -26,7 +26,7 @@ export function ImportExport() {
             const file: File = files()[0].file;
 
             const text = await new Promise<string | null>((resolve, reject) => {
-                fileReader.onload = e => {
+                fileReader.onload = (e) => {
                     const result = e.target?.result?.toString();
                     if (result) {
                         resolve(result);
@@ -34,7 +34,8 @@ export function ImportExport() {
                         reject(new Error("No text found in file"));
                     }
                 };
-                fileReader.onerror = _e => reject(new Error("File read error"));
+                fileReader.onerror = (_e) =>
+                    reject(new Error("File read error"));
                 fileReader.readAsText(file, "UTF-8");
             });
 
@@ -49,7 +50,6 @@ export function ImportExport() {
             }
 
             window.location.href = "/";
-
         } catch (e) {
             showToast(eify(e));
         } finally {
@@ -59,12 +59,12 @@ export function ImportExport() {
     }
 
     async function uploadFile() {
-        selectFiles(async files => {
+        selectFiles(async (files) => {
             if (files.length) {
                 setConfirmOpen(true);
                 return;
             }
-        })
+        });
     }
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
@@ -78,9 +78,14 @@ export function ImportExport() {
                     <Button onClick={uploadFile}>Upload Saved State</Button>
                 </VStack>
             </InnerCard>
-            <ConfirmDialog loading={confirmLoading()} open={confirmOpen()} onConfirm={importJson} onCancel={() => setConfirmOpen(false)}>
+            <ConfirmDialog
+                loading={confirmLoading()}
+                open={confirmOpen()}
+                onConfirm={importJson}
+                onCancel={() => setConfirmOpen(false)}
+            >
                 Do you want to replace your state with {files()[0].name}?
             </ConfirmDialog>
         </>
-    )
+    );
 }
