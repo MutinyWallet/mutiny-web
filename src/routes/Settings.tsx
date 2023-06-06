@@ -1,4 +1,11 @@
-import { ButtonLink, DefaultMain, LargeHeader, MutinyWalletGuard, SafeArea, VStack } from "~/components/layout";
+import {
+    ButtonLink,
+    DefaultMain,
+    LargeHeader,
+    MutinyWalletGuard,
+    SafeArea,
+    VStack
+} from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { Logs } from "~/components/Logs";
 import { Restart } from "~/components/Restart";
@@ -18,17 +25,23 @@ export default function Settings() {
                     <LargeHeader>Settings</LargeHeader>
                     <VStack biggap>
                         <VStack>
-                            <p class="text-2xl font-light">Write down these words or you'll die!</p>
-                            <SeedWords words={store.mutiny_wallet?.show_seed() || ""} />
+                            <p class="text-2xl font-light">
+                                Write down these words or you'll die!
+                            </p>
+                            <SeedWords
+                                words={store.mutiny_wallet?.show_seed() || ""}
+                            />
                         </VStack>
                         <SettingsStringsEditor />
                         <Logs />
                         <Restart />
-                        <ButtonLink href="/admin">"I know what I'm doing"</ButtonLink>
+                        <ButtonLink href="/admin">
+                            "I know what I'm doing"
+                        </ButtonLink>
                     </VStack>
                 </DefaultMain>
                 <NavBar activeTab="settings" />
             </SafeArea>
         </MutinyWalletGuard>
-    )
+    );
 }

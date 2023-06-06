@@ -15,19 +15,18 @@ export function DeleteEverything() {
     const [confirmOpen, setConfirmOpen] = createSignal(false);
     const [confirmLoading, setConfirmLoading] = createSignal(false);
 
-
     async function resetNode() {
         try {
             setConfirmLoading(true);
             await actions.deleteMutinyWallet();
-            showToast({ title: "Deleted", description: `Deleted all data` })
+            showToast({ title: "Deleted", description: `Deleted all data` });
 
             setTimeout(() => {
                 window.location.href = "/";
             }, 1000);
         } catch (e) {
-            console.error(e)
-            showToast(eify(e))
+            console.error(e);
+            showToast(eify(e));
         } finally {
             setConfirmOpen(false);
             setConfirmLoading(false);
@@ -37,9 +36,14 @@ export function DeleteEverything() {
     return (
         <>
             <Button onClick={confirmReset}>Delete Everything</Button>
-            <ConfirmDialog loading={confirmLoading()} open={confirmOpen()} onConfirm={resetNode} onCancel={() => setConfirmOpen(false)}>
+            <ConfirmDialog
+                loading={confirmLoading()}
+                open={confirmOpen()}
+                onConfirm={resetNode}
+                onCancel={() => setConfirmOpen(false)}
+            >
                 This will delete your node's state. This can't be undone!
             </ConfirmDialog>
         </>
-    )
+    );
 }

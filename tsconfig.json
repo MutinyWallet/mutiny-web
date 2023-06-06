@@ -1,18 +1,23 @@
 {
-  "include": ["global.d.ts", "src/**/*"],
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "jsxImportSource": "solid-js",
-    "jsx": "preserve",
-    "strict": true,
-    "types": ["solid-start/env"],
-    "baseUrl": "./",
-    "paths": {
-      "~/*": ["./src/*"]
+    "include": [
+        "global.d.ts",
+        "src/**/*",
+        "tailwind.config.cjs",
+        ".eslintrc.cjs"
+    ],
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "jsxImportSource": "solid-js",
+        "jsx": "preserve",
+        "strict": true,
+        "types": ["solid-start/env"],
+        "baseUrl": "./",
+        "paths": {
+            "~/*": ["./src/*"]
+        }
     }
-  }
 }

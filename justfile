@@ -8,3 +8,9 @@ local:
 
 remote:
     pnpm unlink "@mutinywallet/mutiny-wasm" && pnpm install
+
+test:
+    pnpm exec playwright test
+    
+test-ui:
+    pnpm exec playwright test --ui

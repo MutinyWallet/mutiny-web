@@ -1,22 +1,22 @@
-import type { Component } from 'solid-js'
-import { Show } from 'solid-js'
+import type { Component } from "solid-js";
+import { Show } from "solid-js";
 // eslint-disable-next-line import/no-unresolved
-import { useRegisterSW } from 'virtual:pwa-register/solid'
+import { useRegisterSW } from "virtual:pwa-register/solid";
 
 const ReloadPrompt: Component = () => {
     const {
         offlineReady: [offlineReady, _setOfflineReady],
         needRefresh: [needRefresh, _setNeedRefresh],
-        updateServiceWorker: _update,
+        updateServiceWorker: _update
     } = useRegisterSW({
         immediate: true,
         onRegisteredSW(swUrl, r) {
-            console.log('SW Registered: ' + r?.scope)
+            console.log("SW Registered: " + r?.scope);
         },
         onRegisterError(error: Error) {
-            console.log('SW registration error', error)
-        },
-    })
+            console.log("SW registration error", error);
+        }
+    });
 
     // const close = () => {
     //     setOfflineReady(false)
@@ -40,7 +40,7 @@ const ReloadPrompt: Component = () => {
                 <Button onClick={() => close()}>Close</Button>
             </Card> */}
         </Show>
-    )
-}
+    );
+};
 
-export default ReloadPrompt
+export default ReloadPrompt;

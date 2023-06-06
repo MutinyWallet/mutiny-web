@@ -1,4 +1,4 @@
-import { JSX } from 'solid-js';
+import { JSX } from "solid-js";
 
 interface LinkifyProps {
     initialText: string;
@@ -15,7 +15,7 @@ export default function Linkify(props: LinkifyProps): JSX.Element {
 
     while ((match = pattern.exec(text)) !== null) {
         const link = match[1];
-        const href = link.startsWith('http') ? link : `https://${link}`;
+        const href = link.startsWith("http") ? link : `https://${link}`;
         const beforeLink = text.slice(lastIndex, match.index);
         lastIndex = pattern.lastIndex;
 
@@ -23,7 +23,16 @@ export default function Linkify(props: LinkifyProps): JSX.Element {
             links.push(beforeLink);
         }
 
-        links.push(<a href={href} class="break-all" target="_blank" rel="noopener noreferrer">{link}</a>);
+        links.push(
+            <a
+                href={href}
+                class="break-all"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {link}
+            </a>
+        );
     }
 
     const remainingText = text.slice(lastIndex);

@@ -1,34 +1,44 @@
-import { Match, Switch, createSignal } from 'solid-js';
-import { Button, Card, NiceP, SmallHeader } from '~/components/layout';
-import { Dialog } from '@kobalte/core';
+import { Match, Switch, createSignal } from "solid-js";
+import { Button, Card, NiceP, SmallHeader } from "~/components/layout";
+import { Dialog } from "@kobalte/core";
 import close from "~/assets/icons/close.svg";
-import { SubmitHandler } from '@modular-forms/solid';
-import { ContactForm } from './ContactForm';
-import { showToast } from './Toaster';
-import { Contact } from '@mutinywallet/mutiny-wasm';
-import { DIALOG_CONTENT, DIALOG_POSITIONER } from '~/styles/dialogs';
+import { SubmitHandler } from "@modular-forms/solid";
+import { ContactForm } from "./ContactForm";
+import { showToast } from "./Toaster";
+import { Contact } from "@mutinywallet/mutiny-wasm";
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 
 export type ContactFormValues = {
-    name: string,
-    npub?: string,
-}
+    name: string;
+    npub?: string;
+};
 
-export function ContactViewer(props: { contact: Contact, gradient: string, saveContact: (contact: Contact) => void }) {
+export function ContactViewer(props: {
+    contact: Contact;
+    gradient: string;
+    saveContact: (contact: Contact) => void;
+}) {
     const [isOpen, setIsOpen] = createSignal(false);
     const [isEditing, setIsEditing] = createSignal(false);
 
-    const handleSubmit: SubmitHandler<ContactFormValues> = (c: ContactFormValues) => {
+    const handleSubmit: SubmitHandler<ContactFormValues> = (
+        c: ContactFormValues
+    ) => {
         // FIXME: merge with existing contact if saving (need edit contact method)
         // FIXME: npub not valid? other undefineds
-        const contact = new Contact(c.name, undefined, undefined, undefined)
-        props.saveContact(contact)
-        setIsEditing(false)
-    }
+        const contact = new Contact(c.name, undefined, undefined, undefined);
+        props.saveContact(contact);
+        setIsEditing(false);
+    };
 
     return (
         <Dialog.Root open={isOpen()}>
-            <button onClick={() => setIsOpen(true)} class="flex flex-col items-center gap-2 w-16 flex-shrink-0 overflow-x-hidden">
-                <div class="flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+            <button
+                onClick={() => setIsOpen(true)}
+                class="flex flex-col items-center gap-2 w-16 flex-shrink-0 overflow-x-hidden"
+            >
+                <div
+                    class="flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase border-t border-b border-t-white/50 border-b-white/10"
                     style={{ background: props.gradient }}
                 >
                     {props.contact.name[0]}
@@ -39,33 +49,72 @@ export function ContactViewer(props: { contact: Contact, gradient: string, saveC
             </button>
             <Dialog.Portal>
                 <div class={DIALOG_POSITIONER}>
-                    <Dialog.Content class={DIALOG_CONTENT} onEscapeKeyDown={() => setIsOpen(false)}>
+                    <Dialog.Content
+                        class={DIALOG_CONTENT}
+                        onEscapeKeyDown={() => setIsOpen(false)}
+                    >
                         <div class="w-full flex justify-end">
-                            <button tabindex="-1" onClick={() => setIsOpen(false)} class="hover:bg-white/10 rounded-lg active:bg-m-blue">
+                            <button
+                                tabindex="-1"
+                                onClick={() => setIsOpen(false)}
+                                class="hover:bg-white/10 rounded-lg active:bg-m-blue"
+                            >
                                 <img src={close} alt="Close" />
                             </button>
                         </div>
                         <Switch>
                             <Match when={isEditing()}>
-                                <ContactForm title="Edit contact" cta="Save contact" handleSubmit={handleSubmit} initialValues={props.contact} />
+                                <ContactForm
+                                    title="Edit contact"
+                                    cta="Save contact"
+                                    handleSubmit={handleSubmit}
+                                    initialValues={props.contact}
+                                />
                             </Match>
                             <Match when={!isEditing()}>
                                 <div class="flex flex-col flex-1 justify-around items-center gap-4 max-w-[400px] mx-auto w-full">
                                     <div class="flex flex-col items-center w-full">
-                                        <div class="flex-none h-32 w-32 rounded-full flex items-center justify-center text-8xl uppercase border-t border-b border-t-white/50 border-b-white/10"
-                                            style={{ background: props.gradient }}
+                                        <div
+                                            class="flex-none h-32 w-32 rounded-full flex items-center justify-center text-8xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+                                            style={{
+                                                background: props.gradient
+                                            }}
                                         >
                                             {props.contact.name[0]}
                                         </div>
-                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">{props.contact.name}</h1>
+                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                            {props.contact.name}
+                                        </h1>
                                         <Card title="Payment history">
-                                            <NiceP>No payments yet with <span class="font-semibold">{props.contact.name}</span></NiceP>
+                                            <NiceP>
+                                                No payments yet with{" "}
+                                                <span class="font-semibold">
+                                                    {props.contact.name}
+                                                </span>
+                                            </NiceP>
                                         </Card>
                                     </div>
 
                                     <div class="flex w-full gap-2">
-                                        <Button layout="flex" intent="green" onClick={() => setIsEditing(true)}>Edit</Button>
-                                        <Button intent="blue" onClick={() => { showToast({ title: "Unimplemented", description: "We don't do that yet" }) }}>Pay</Button>
+                                        <Button
+                                            layout="flex"
+                                            intent="green"
+                                            onClick={() => setIsEditing(true)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            intent="blue"
+                                            onClick={() => {
+                                                showToast({
+                                                    title: "Unimplemented",
+                                                    description:
+                                                        "We don't do that yet"
+                                                });
+                                            }}
+                                        >
+                                            Pay
+                                        </Button>
                                     </div>
                                 </div>
                             </Match>
@@ -73,6 +122,6 @@ export function ContactViewer(props: { contact: Contact, gradient: string, saveC
                     </Dialog.Content>
                 </div>
             </Dialog.Portal>
-        </Dialog.Root >
+        </Dialog.Root>
     );
 }
