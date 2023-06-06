@@ -18,7 +18,19 @@ export default function App() {
         <SafeArea>
             <DefaultMain>
                 <header class="w-full flex justify-between items-center mt-4 mb-2">
-                    <img src={logo} class="h-10" alt="logo" />
+                    <div class="flex flex-col justify-center gap-2">
+                        <img src={logo} class="h-10" alt="logo" />
+                        <Show
+                            when={
+                                !state.wallet_loading &&
+                                state.mutiny_wallet?.get_network() !== "bitcoin"
+                            }
+                        >
+                            <div class="box-border px-2 py-1 -my-1 bg-white/70 rounded text-xs uppercase text-black w-fit">
+                                {state.mutiny_wallet?.get_network()}
+                            </div>
+                        </Show>
+                    </div>
                     <A
                         class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue"
                         href="/activity"
