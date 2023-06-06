@@ -21,6 +21,8 @@ import {
 } from "@mutinywallet/mutiny-wasm";
 import { ParsedParams } from "~/routes/Scanner";
 import { MutinyTagItem } from "~/utils/tags";
+import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
+import eify from "~/utils/eify";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -43,6 +45,7 @@ export type MegaStore = [
         wallet_loading: boolean;
         nwc_enabled: boolean;
         activity: MutinyActivity[];
+        setup_error?: Error;
     },
     {
         fetchUserStatus(): Promise<UserStatus>;
@@ -56,6 +59,7 @@ export type MegaStore = [
         listTags(): Promise<MutinyTagItem[]>;
         setNwc(enabled: boolean): void;
         syncActivity(): Promise<void>;
+        checkBrowserCompat(): Promise<boolean>;
     }
 ];
 
@@ -78,7 +82,8 @@ export const Provider: ParentComponent = (props) => {
             localStorage.getItem("dismissed_restore_prompt") === "true",
         wallet_loading: true,
         nwc_enabled: localStorage.getItem("nwc_enabled") === "true",
-        activity: [] as MutinyActivity[]
+        activity: [] as MutinyActivity[],
+        setup_error: undefined as Error | undefined
     });
 
     const actions = {
@@ -189,6 +194,14 @@ export const Provider: ParentComponent = (props) => {
         setNwc(enabled: boolean) {
             localStorage.setItem("nwc_enabled", enabled.toString());
             setState({ nwc_enabled: enabled });
+        },
+        async checkBrowserCompat(): Promise<boolean> {
+            try {
+                return await checkBrowserCompatibility();
+            } catch (e) {
+                setState({ setup_error: eify(e) });
+                return false;
+            }
         }
     };
 
@@ -204,17 +217,26 @@ export const Provider: ParentComponent = (props) => {
                 !state.mutiny_wallet &&
                 !state.deleting
             ) {
-                console.log("running setup node manager...");
-                actions
-                    .setupMutinyWallet()
-                    .then(() => console.log("node manager setup done"));
+                console.log("checking for browser compatibility...");
+                actions.checkBrowserCompat().then((browserIsGood) => {
+                    if (browserIsGood) {
+                        console.log("running setup node manager...");
+                        actions
+                            .setupMutinyWallet()
+                            .then(() => console.log("node manager setup done"))
+                            .catch((e) => {
+                                console.error(e);
+                                setState({ setup_error: eify(e) });
+                            });
 
-                // Setup an event listener to stop the mutiny wallet when the page unloads
-                window.onunload = async (_e) => {
-                    console.log("stopping mutiny_wallet");
-                    await state.mutiny_wallet?.stop();
-                    console.log("mutiny_wallet stopped");
-                };
+                        // Setup an event listener to stop the mutiny wallet when the page unloads
+                        window.onunload = async (_e) => {
+                            console.log("stopping mutiny_wallet");
+                            await state.mutiny_wallet?.stop();
+                            console.log("mutiny_wallet stopped");
+                        };
+                    }
+                });
             }
         });
     });
