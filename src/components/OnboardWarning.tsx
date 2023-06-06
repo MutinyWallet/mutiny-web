@@ -8,7 +8,9 @@ import restore from "~/assets/icons/upload.svg";
 
 export function OnboardWarning() {
     const [state, actions] = useMegaStore();
-    const [dismissedBackup, setDismissedBackup] = createSignal(false);
+    const [dismissedBackup, setDismissedBackup] = createSignal(
+        sessionStorage.getItem("dismissed_backup") ?? false
+    );
 
     function hasMoney() {
         return (
@@ -91,6 +93,7 @@ export function OnboardWarning() {
                         tabindex="-1"
                         onClick={() => {
                             setDismissedBackup(true);
+                            sessionStorage.setItem("dismissed_backup", "true");
                         }}
                         class="self-center hover:bg-white/10 rounded-lg active:bg-m-blue w-8"
                     >
