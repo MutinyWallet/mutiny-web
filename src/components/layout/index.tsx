@@ -146,9 +146,19 @@ export const LargeHeader: ParentComponent<{ action?: JSX.Element }> = (
     );
 };
 
-export const VStack: ParentComponent<{ biggap?: boolean }> = (props) => {
+export const VStack: ParentComponent<{
+    biggap?: boolean;
+    smallgap?: boolean;
+}> = (props) => {
     return (
-        <div class={`flex flex-col gap-${props.biggap ? "8" : "4"}`}>
+        <div
+            class="flex flex-col"
+            classList={{
+                "gap-2": props.smallgap,
+                "gap-8": props.biggap,
+                "gap-4": !props.biggap && !props.smallgap
+            }}
+        >
             {props.children}
         </div>
     );
@@ -176,6 +186,10 @@ export const SmallAmount: ParentComponent<{
 
 export const NiceP: ParentComponent = (props) => {
     return <p class="text-xl font-light">{props.children}</p>;
+};
+
+export const TinyText: ParentComponent = (props) => {
+    return <p class="text-neutral-400 text-sm">{props.children}</p>;
 };
 
 export const TinyButton: ParentComponent<{

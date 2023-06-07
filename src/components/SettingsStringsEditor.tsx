@@ -4,14 +4,15 @@ import {
     MutinyWalletSettingStrings,
     getExistingSettings
 } from "~/logic/mutinyWalletSetup";
-import { Button, Card, SmallHeader } from "~/components/layout";
+import { Button, Card, NiceP } from "~/components/layout";
 import { showToast } from "./Toaster";
 import eify from "~/utils/eify";
 import { useMegaStore } from "~/state/megaStore";
+import { ExternalLink } from "./layout/ExternalLink";
 
 export function SettingsStringsEditor() {
     const existingSettings = getExistingSettings();
-    const [_settingsForm, { Form, Field }] =
+    const [settingsForm, { Form, Field }] =
         createForm<MutinyWalletSettingStrings>({
             initialValues: existingSettings
         });
@@ -19,8 +20,7 @@ export function SettingsStringsEditor() {
 
     async function handleSubmit(values: MutinyWalletSettingStrings) {
         try {
-            const existing = getExistingSettings();
-            const newSettings = { ...existing, ...values };
+            const newSettings = { ...existingSettings, ...values };
             await actions.setupMutinyWallet(newSettings);
             window.location.reload();
         } catch (e) {
@@ -31,16 +31,15 @@ export function SettingsStringsEditor() {
     }
 
     return (
-        <Card>
+        <Card title="Servers">
             <Form onSubmit={handleSubmit} class="flex flex-col gap-4">
-                <h2 class="text-2xl font-light">
+                <NiceP>
                     Don't trust us! Use your own servers to back Mutiny.
-                </h2>
-                <div class="flex flex-col gap-2">
-                    <SmallHeader>Network</SmallHeader>
-                    <pre>{existingSettings.network}</pre>
-                </div>
-
+                </NiceP>
+                <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Self-hosting">
+                    Learn more about self-hosting
+                </ExternalLink>
+                <div />
                 <Field
                     name="proxy"
                     validate={[url("Should be a url starting with wss://")]}
@@ -51,6 +50,7 @@ export function SettingsStringsEditor() {
                             value={field.value}
                             error={field.error}
                             label="Websockets Proxy"
+                            caption="How your lightning node communicates with the rest of the network."
                         />
                     )}
                 </Field>
@@ -64,6 +64,7 @@ export function SettingsStringsEditor() {
                             value={field.value}
                             error={field.error}
                             label="Esplora"
+                            caption="Block data for on-chain information."
                         />
                     )}
                 </Field>
@@ -77,6 +78,7 @@ export function SettingsStringsEditor() {
                             value={field.value}
                             error={field.error}
                             label="RGS"
+                            caption="Rapid Gossip Sync. Network data about the lightning network used for routing."
                         />
                     )}
                 </Field>
@@ -90,10 +92,18 @@ export function SettingsStringsEditor() {
                             value={field.value}
                             error={field.error}
                             label="LSP"
+                            caption="Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy."
                         />
                     )}
                 </Field>
-                <Button type="submit">Save</Button>
+                <div />
+                <Button
+                    type="submit"
+                    disabled={!settingsForm.dirty}
+                    intent="blue"
+                >
+                    Save
+                </Button>
             </Form>
         </Card>
     );

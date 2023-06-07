@@ -1,18 +1,19 @@
 import {
     ButtonLink,
+    Card,
     DefaultMain,
     LargeHeader,
     MutinyWalletGuard,
+    NiceP,
     SafeArea,
     VStack
 } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
-import { Logs } from "~/components/Logs";
-import { Restart } from "~/components/Restart";
 import NavBar from "~/components/NavBar";
 import { SeedWords } from "~/components/SeedWords";
 import { SettingsStringsEditor } from "~/components/SettingsStringsEditor";
 import { useMegaStore } from "~/state/megaStore";
+import { LiquidityMonitor } from "~/components/LiquidityMonitor";
 
 export default function Settings() {
     const [store, _actions] = useMegaStore();
@@ -24,20 +25,35 @@ export default function Settings() {
                     <BackLink />
                     <LargeHeader>Settings</LargeHeader>
                     <VStack biggap>
-                        <VStack>
-                            <p class="text-2xl font-light">
-                                Write down these words or you'll die!
-                            </p>
-                            <SeedWords
-                                words={store.mutiny_wallet?.show_seed() || ""}
-                            />
-                        </VStack>
+                        <LiquidityMonitor />
+                        <Card title="Backup your seed words">
+                            <VStack>
+                                <NiceP>
+                                    These 12 words allow you to recover your
+                                    on-chain funds in case you lose your device
+                                    or clear your browser storage.
+                                </NiceP>
+                                <SeedWords
+                                    words={
+                                        store.mutiny_wallet?.show_seed() || ""
+                                    }
+                                />
+                            </VStack>
+                        </Card>
                         <SettingsStringsEditor />
-                        <Logs />
-                        <Restart />
-                        <ButtonLink href="/admin">
-                            "I know what I'm doing"
-                        </ButtonLink>
+                        <Card title="If you know what you're doing">
+                            <VStack>
+                                <NiceP>
+                                    We have some not-very-pretty debug tools we
+                                    use to test the wallet. Use wisely!
+                                </NiceP>
+                                <div class="flex justify-center">
+                                    <ButtonLink href="/admin" layout="xs">
+                                        Secret Debug Tools
+                                    </ButtonLink>
+                                </div>
+                            </VStack>
+                        </Card>
                     </VStack>
                 </DefaultMain>
                 <NavBar activeTab="settings" />

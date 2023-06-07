@@ -1,6 +1,6 @@
 import { QRCodeSVG } from "solid-qr-code";
 import { As, Dialog } from "@kobalte/core";
-import { Button, Card } from "~/components/layout";
+import { Button, Card, InnerCard, NiceP } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { createResource, Show } from "solid-js";
 
@@ -37,43 +37,47 @@ export default function NostrWalletConnectModal() {
 
     // TODO: a lot of this markup is probably reusable as a "Modal" component
     return (
-        <Dialog.Root>
-            <Dialog.Trigger asChild>
-                <As component={Button}>Show Nostr Wallet Connect URI</As>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-                <Dialog.Overlay class={OVERLAY} />
-                <div class={DIALOG_POSITIONER}>
-                    <Dialog.Content class={DIALOG_CONTENT}>
-                        <div class="flex justify-between mb-2">
-                            <Dialog.Title class={SMALL_HEADER}>
-                                Nostr Wallet Connect
-                            </Dialog.Title>
-                            <Dialog.CloseButton class="dialog__close-button">
-                                <code>X</code>
-                            </Dialog.CloseButton>
-                        </div>
-                        <Dialog.Description class="flex flex-col gap-4">
-                            <Show when={connectionURI()}>
-                                <div class="w-full bg-white rounded-xl">
-                                    <QRCodeSVG
-                                        value={connectionURI() || ""}
-                                        class="w-full h-full p-8 max-h-[400px]"
-                                    />
-                                </div>
-                                <Card>
-                                    <code class="break-all">
-                                        {connectionURI() || ""}
-                                    </code>
-                                </Card>
-                            </Show>
-                            <Button onClick={toggleNwc}>
-                                {state.nwc_enabled ? "Disable" : "Enable"}
-                            </Button>
-                        </Dialog.Description>
-                    </Dialog.Content>
-                </div>
-            </Dialog.Portal>
-        </Dialog.Root>
+        <InnerCard title="Nostr Wallet Connect">
+            <NiceP>Test out some nostr stuff.</NiceP>
+            <div />
+            <Dialog.Root>
+                <Dialog.Trigger asChild>
+                    <As component={Button}>Show Nostr Wallet Connect URI</As>
+                </Dialog.Trigger>
+                <Dialog.Portal>
+                    <Dialog.Overlay class={OVERLAY} />
+                    <div class={DIALOG_POSITIONER}>
+                        <Dialog.Content class={DIALOG_CONTENT}>
+                            <div class="flex justify-between mb-2">
+                                <Dialog.Title class={SMALL_HEADER}>
+                                    Nostr Wallet Connect
+                                </Dialog.Title>
+                                <Dialog.CloseButton class="dialog__close-button">
+                                    <code>X</code>
+                                </Dialog.CloseButton>
+                            </div>
+                            <Dialog.Description class="flex flex-col gap-4">
+                                <Show when={connectionURI()}>
+                                    <div class="w-full bg-white rounded-xl">
+                                        <QRCodeSVG
+                                            value={connectionURI() || ""}
+                                            class="w-full h-full p-8 max-h-[400px]"
+                                        />
+                                    </div>
+                                    <Card>
+                                        <code class="break-all">
+                                            {connectionURI() || ""}
+                                        </code>
+                                    </Card>
+                                </Show>
+                                <Button onClick={toggleNwc}>
+                                    {state.nwc_enabled ? "Disable" : "Enable"}
+                                </Button>
+                            </Dialog.Description>
+                        </Dialog.Content>
+                    </div>
+                </Dialog.Portal>
+            </Dialog.Root>
+        </InnerCard>
     );
 }

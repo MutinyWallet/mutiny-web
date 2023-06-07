@@ -505,7 +505,7 @@ export default function Send() {
             !destination() ||
             sending() ||
             amountSats() === 0n ||
-            insufficientFunds() ||
+            !!insufficientFunds() ||
             !!error()
         );
     });

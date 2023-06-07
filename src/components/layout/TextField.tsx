@@ -1,11 +1,13 @@
 import { TextField as KTextField } from "@kobalte/core";
 import { type JSX, Show, splitProps } from "solid-js";
+import { TinyText } from ".";
 
 type TextFieldProps = {
     name: string;
     type?: "text" | "email" | "tel" | "password" | "url" | "date";
     label?: string;
     placeholder?: string;
+    caption?: string;
     value: string | undefined;
     error: string;
     required?: boolean;
@@ -36,7 +38,7 @@ export function TextField(props: TextFieldProps) {
             name={props.name}
             value={props.value}
             validationState={props.error ? "invalid" : "valid"}
-            isRequired={props.required}
+            required={props.required}
         >
             <Show when={props.label}>
                 <KTextField.Label class="text-sm uppercase font-semibold">
@@ -60,6 +62,9 @@ export function TextField(props: TextFieldProps) {
                 />
             </Show>
             <KTextField.ErrorMessage>{props.error}</KTextField.ErrorMessage>
+            <Show when={props.caption}>
+                <TinyText>{props.caption}</TinyText>
+            </Show>
         </KTextField.Root>
     );
 }

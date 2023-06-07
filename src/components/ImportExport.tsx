@@ -1,5 +1,5 @@
 import { useMegaStore } from "~/state/megaStore";
-import { Button, InnerCard, VStack } from "~/components/layout";
+import { Button, InnerCard, NiceP, VStack } from "~/components/layout";
 import { createSignal } from "solid-js";
 import eify from "~/utils/eify";
 import { showToast } from "./Toaster";
@@ -72,10 +72,23 @@ export function ImportExport() {
 
     return (
         <>
-            <InnerCard>
+            <InnerCard title="Export wallet state">
+                <NiceP>
+                    You can export your entire Mutiny Wallet state to a file and
+                    import it into a new browser. It usually works!
+                </NiceP>
+                <NiceP>
+                    <strong class="font-semibold">Important caveats:</strong>{" "}
+                    after exporting don't do any operations in the original
+                    browser. If you do, you'll need to export again. After a
+                    successful import, a best practice is to clear the state of
+                    the original browser just to make sure you don't create
+                    conflicts.
+                </NiceP>
+                <div />
                 <VStack>
                     <Button onClick={handleSave}>Save State As File</Button>
-                    <Button onClick={uploadFile}>Upload Saved State</Button>
+                    <Button onClick={uploadFile}>Import State From File</Button>
                 </VStack>
             </InnerCard>
             <ConfirmDialog

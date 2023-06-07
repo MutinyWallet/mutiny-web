@@ -1,23 +1,7 @@
 import { useMegaStore } from "~/state/megaStore";
-import {
-    Card,
-    Hr,
-    SmallHeader,
-    Button,
-    InnerCard,
-    VStack
-} from "~/components/layout";
-import PeerConnectModal from "~/components/PeerConnectModal";
+import { Hr, Button, InnerCard, VStack } from "~/components/layout";
 import NostrWalletConnectModal from "~/components/NostrWalletConnectModal";
-import {
-    For,
-    Show,
-    Suspense,
-    createEffect,
-    createResource,
-    createSignal,
-    onCleanup
-} from "solid-js";
+import { For, Show, Suspense, createResource, createSignal } from "solid-js";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import { Collapsible, TextField } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
@@ -27,6 +11,9 @@ import { showToast } from "~/components/Toaster";
 import { ImportExport } from "~/components/ImportExport";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { ExternalLink } from "./layout/ExternalLink";
+import { Logs } from "./Logs";
+import { Restart } from "./Restart";
+import { MiniStringShower } from "./DetailsModal";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (
@@ -90,30 +77,24 @@ function PeersList() {
 
     const [peers, { refetch }] = createResource(getPeers);
 
-    createEffect(() => {
-        // refetch peers every 5 seconds
-        const interval = setTimeout(() => {
-            refetch();
-        }, 5000);
-        onCleanup(() => {
-            clearInterval(interval);
-        });
-    });
-
     return (
         <>
-            <SmallHeader>Peers</SmallHeader>
-            {/* By wrapping this in a suspense I don't cause the page to jump to the top */}
-            <Suspense>
-                <VStack>
-                    <For each={peers()} fallback={<code>No peers</code>}>
-                        {(peer) => <PeerItem peer={peer} />}
-                    </For>
-                </VStack>
-            </Suspense>
-            <Button layout="small" onClick={refetch}>
-                Refresh Peers
-            </Button>
+            <InnerCard title="Peers">
+                {/* By wrapping this in a suspense I don't cause the page to jump to the top */}
+                <Suspense>
+                    <VStack>
+                        <For
+                            each={peers.latest}
+                            fallback={<code>No peers</code>}
+                        >
+                            {(peer) => <PeerItem peer={peer} />}
+                        </For>
+                    </VStack>
+                </Suspense>
+                <Button layout="small" onClick={refetch}>
+                    Refresh Peers
+                </Button>
+            </InnerCard>
             <ConnectPeer refetchPeers={refetch} />
         </>
     );
@@ -155,10 +136,10 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
                     </TextField.Label>
                     <TextField.Input
                         class="w-full p-2 rounded-lg text-black"
-                        placeholder="mutiny:028241..."
+                        placeholder="028241..."
                     />
                     <TextField.ErrorMessage class="text-red-500">
-                        Expecting something like mutiny:abc123...
+                        Expecting a value...
                     </TextField.ErrorMessage>
                 </TextField.Root>
                 <Button layout="small" type="submit">
@@ -249,39 +230,30 @@ function ChannelsList() {
 
     const [channels, { refetch }] = createResource(getChannels);
 
-    createEffect(() => {
-        // refetch channels every 5 seconds
-        const interval = setTimeout(() => {
-            refetch();
-        }, 5000);
-        onCleanup(() => {
-            clearInterval(interval);
-        });
-    });
-
     const network = state.mutiny_wallet?.get_network() as Network;
 
     return (
         <>
-            <SmallHeader>Channels</SmallHeader>
-            {/* By wrapping this in a suspense I don't cause the page to jump to the top */}
-            <Suspense>
-                <For each={channels()} fallback={<code>No channels</code>}>
-                    {(channel) => (
-                        <ChannelItem channel={channel} network={network} />
-                    )}
-                </For>
-            </Suspense>
-            <Button
-                type="button"
-                layout="small"
-                onClick={(e) => {
-                    e.preventDefault();
-                    refetch();
-                }}
-            >
-                Refresh Channels
-            </Button>
+            <InnerCard title="Channels">
+                {/* By wrapping this in a suspense I don't cause the page to jump to the top */}
+                <Suspense>
+                    <For each={channels()} fallback={<code>No channels</code>}>
+                        {(channel) => (
+                            <ChannelItem channel={channel} network={network} />
+                        )}
+                    </For>
+                </Suspense>
+                <Button
+                    type="button"
+                    layout="small"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        refetch();
+                    }}
+                >
+                    Refresh Channels
+                </Button>
+            </InnerCard>
             <OpenChannel refetchChannels={refetch} />
         </>
     );
@@ -429,33 +401,33 @@ function LnUrlAuth() {
     );
 }
 
-function ListTags() {
-    const [_state, actions] = useMegaStore();
+function ListNodes() {
+    const [state, _] = useMegaStore();
 
-    const [tags] = createResource(actions.listTags);
+    const getNodeIds = async () => {
+        const nodes = await state.mutiny_wallet?.list_nodes();
+        return nodes as string[];
+    };
+
+    const [nodeIds] = createResource(getNodeIds);
 
     return (
-        <Collapsible.Root>
-            <Collapsible.Trigger class="w-full">
-                <h2 class="truncate text-start text-lg font-mono bg-neutral-200 text-black rounded px-4 py-2">
-                    {">"} Tags
-                </h2>
-            </Collapsible.Trigger>
-            <Collapsible.Content>
-                <VStack>
-                    <pre class="overflow-x-auto whitespace-pre-wrap break-all">
-                        {JSON.stringify(tags(), null, 2)}
-                    </pre>
-                </VStack>
-            </Collapsible.Content>
-        </Collapsible.Root>
+        <InnerCard title="Nodes">
+            <Suspense>
+                <For each={nodeIds()} fallback={<code>No nodes</code>}>
+                    {(nodeId) => <MiniStringShower text={nodeId} />}
+                </For>
+            </Suspense>
+        </InnerCard>
     );
 }
 
 export default function KitchenSink() {
     return (
-        <Card title="Kitchen Sink">
-            <PeerConnectModal />
+        <>
+            <Logs />
+            <Hr />
+            <ListNodes />
             <Hr />
             <NostrWalletConnectModal />
             <Hr />
@@ -465,10 +437,10 @@ export default function KitchenSink() {
             <Hr />
             <LnUrlAuth />
             <Hr />
-            <ListTags />
-
+            <Restart />
             <Hr />
             <ImportExport />
-        </Card>
+            <Hr />
+        </>
     );
 }

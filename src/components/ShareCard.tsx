@@ -34,9 +34,9 @@ export function ShareButton(props: { receiveString: string }) {
     );
 }
 
-function TruncateMiddle(props: { text: string }) {
+export function TruncateMiddle(props: { text: string }) {
     return (
-        <div class="flex text-neutral-400 font-mono">
+        <div class="flex text-neutral-300 font-mono">
             <span class="truncate">{props.text}</span>
             <span class="pr-2">
                 {props.text.length > 8 ? props.text.slice(-8) : ""}
