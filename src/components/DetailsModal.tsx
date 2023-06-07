@@ -19,7 +19,7 @@ import chain from "~/assets/icons/chain-black.svg";
 import copyIcon from "~/assets/icons/copy.svg";
 
 import { ActivityAmount, HackActivityType } from "./ActivityItem";
-import { CopyButton } from "./ShareCard";
+import { CopyButton, TruncateMiddle } from "./ShareCard";
 import { prettyPrintTime } from "~/utils/prettyPrintTime";
 import { useMegaStore } from "~/state/megaStore";
 import { tagToMutinyTag } from "~/utils/tags";
@@ -153,13 +153,18 @@ const KeyValue: ParentComponent<{ key: string }> = (props) => {
     );
 };
 
-function MiniStringShower(props: { text: string }) {
-    const [copy, _copied] = useCopy({ copiedTimeout: 1000 });
+export function MiniStringShower(props: { text: string }) {
+    const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     return (
         <div class="w-full grid gap-1 grid-cols-[minmax(0,_1fr)_auto]">
-            <pre class="truncate text-neutral-300 font-light">{props.text}</pre>
-            <button class="w-[1rem]" onClick={() => copy(props.text)}>
+            <TruncateMiddle text={props.text} />
+            {/* <pre class="truncate text-neutral-300 font-light">{props.text}</pre> */}
+            <button
+                class="w-[1.5rem] p-1"
+                classList={{ "bg-m-green rounded": copied() }}
+                onClick={() => copy(props.text)}
+            >
                 <img src={copyIcon} alt="copy" class="w-4 h-4" />
             </button>
         </div>

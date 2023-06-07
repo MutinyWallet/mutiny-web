@@ -1,4 +1,4 @@
-import { Button, Card, NiceP, VStack } from "~/components/layout";
+import { Button, InnerCard, NiceP, VStack } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { downloadTextFile } from "~/utils/download";
 
@@ -11,11 +11,13 @@ export function Logs() {
     }
 
     return (
-        <Card>
+        <InnerCard title="Download debug logs">
             <VStack>
                 <NiceP>Something screwy going on? Check out the logs!</NiceP>
-                <Button onClick={handleSave}>Download Logs</Button>
+                <Button intent="green" onClick={handleSave}>
+                    Download Logs
+                </Button>
             </VStack>
-        </Card>
+        </InnerCard>
     );
 }
