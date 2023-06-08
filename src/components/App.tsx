@@ -51,7 +51,7 @@ export default function App() {
                         </A>
                     </Show>
                 </Card>
-                <p class="self-center text-neutral-500 mt-4">
+                <p class="self-center text-neutral-500 mt-4 font-normal">
                     Bugs? Feedback?{" "}
                     <span class="text-neutral-400">
                         <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">

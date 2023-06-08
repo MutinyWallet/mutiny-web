@@ -16,6 +16,7 @@ import { InlineAmount } from "./AmountCard";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { InfoBox } from "./InfoBox";
 import { Network } from "~/logic/mutinyWalletSetup";
+import { FeesModal } from "./MoreInfoModal";
 
 const CHARACTERS = [
     "1",
@@ -172,9 +173,9 @@ export const AmountEditable: ParentComponent<{
         if ((state.balance?.lightning || 0n) === 0n) {
             const network = state.mutiny_wallet?.get_network() as Network;
             if (network === "bitcoin") {
-                return "Your first lightning receive needs to be 50,000 sats or greater.";
+                return "Your first lightning receive needs to be 50,000 sats or greater. A setup fee will be deducted from the requested amount.";
             } else {
-                return "Your first lightning receive needs to be 10,000 sats or greater.";
+                return "Your first lightning receive needs to be 10,000 sats or greater. A setup fee will be deducted from the requested amount.";
             }
         }
 
@@ -357,8 +358,8 @@ export const AmountEditable: ParentComponent<{
                                 />
                             </div>
                             <Show when={warningText()}>
-                                <InfoBox accent="green">
-                                    {warningText()}
+                                <InfoBox accent="blue">
+                                    {warningText()} <FeesModal />
                                 </InfoBox>
                             </Show>
                             <div class="flex justify-center gap-4 my-2">

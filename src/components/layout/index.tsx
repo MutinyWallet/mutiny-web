@@ -185,7 +185,7 @@ export const SmallAmount: ParentComponent<{
 };
 
 export const NiceP: ParentComponent = (props) => {
-    return <p class="text-xl font-light">{props.children}</p>;
+    return <p class="text-xl font-light text-neutral-200">{props.children}</p>;
 };
 
 export const TinyText: ParentComponent = (props) => {
