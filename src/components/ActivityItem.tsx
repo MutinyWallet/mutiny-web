@@ -9,7 +9,10 @@ import { satsToUsd } from "~/utils/conversions";
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
 import shuffle from "~/assets/icons/shuffle.svg";
+import on from "~/assets/icons/upload-channel.svg";
+import off from "~/assets/icons/download-channel.svg";
 import { timeAgo } from "~/utils/prettyPrintTime";
+
 import { generateGradient } from "~/utils/gradientHash";
 import { useMegaStore } from "~/state/megaStore";
 import { Contact } from "@mutinywallet/mutiny-wasm";
@@ -65,10 +68,14 @@ function LabelCircle(props: {
     name?: string;
     contact: boolean;
     label: boolean;
+    channel?: HackActivityType;
 }) {
-    // TODO: don't need to run this if it's not a contact
     const [gradient] = createResource(async () => {
-        return generateGradient(props.name || "?");
+        if (props.name && props.contact) {
+            return generateGradient(props.name || "?");
+        } else {
+            return undefined;
+        }
     });
 
     const text = () =>
@@ -77,19 +84,31 @@ function LabelCircle(props: {
             : props.label
             ? "≡"
             : "?";
-    const bg = () => (props.name && props.contact ? gradient() : "gray");
+    const bg = () => (props.name && props.contact ? gradient() : "");
 
     return (
         <div
-            class="flex-none h-[3rem] w-[3rem] rounded-full flex items-center justify-center text-3xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+            class="flex-none h-[3rem] w-[3rem] rounded-full bg-neutral-700 flex items-center justify-center text-3xl uppercase border-t border-b border-t-white/50 border-b-white/10"
             style={{ background: bg() }}
         >
-            {text()}
+            <Switch>
+                <Match when={props.channel === "ChannelOpen"}>
+                    <img src={on} alt="channel open" />
+                </Match>
+                <Match when={props.channel === "ChannelClose"}>
+                    <img src={off} alt="channel close" />
+                </Match>
+                <Match when={true}>{text()}</Match>
+            </Switch>
         </div>
     );
 }
 
-export type HackActivityType = "Lightning" | "OnChain" | "ChannelOpen";
+export type HackActivityType =
+    | "Lightning"
+    | "OnChain"
+    | "ChannelOpen"
+    | "ChannelClose";
 
 export function ActivityItem(props: {
     // This is actually the ActivityType enum but wasm is hard
@@ -121,7 +140,12 @@ export function ActivityItem(props: {
                         <Match when={props.kind === "OnChain"}>
                             <img class="w-[1rem]" src={chain} alt="onchain" />
                         </Match>
-                        <Match when={props.kind === "ChannelOpen"}>
+                        <Match
+                            when={
+                                props.kind === "ChannelOpen" ||
+                                props.kind === "ChannelClose"
+                            }
+                        >
                             <img class="w-[1rem]" src={shuffle} alt="swap" />
                         </Match>
                     </Switch>
@@ -131,11 +155,22 @@ export function ActivityItem(props: {
                         name={firstContact()?.name}
                         contact={props.contacts?.length > 0}
                         label={props.labels?.length > 0}
+                        channel={props.kind}
                     />
                 </div>
             </div>
             <div class="flex flex-col">
                 <Switch>
+                    <Match when={props.kind === "ChannelClose"}>
+                        <span class="text-base font-semibold text-neutral-500">
+                            Channel Close
+                        </span>
+                    </Match>
+                    <Match when={props.kind === "ChannelOpen"}>
+                        <span class="text-base font-semibold text-neutral-500">
+                            Channel Open
+                        </span>{" "}
+                    </Match>
                     <Match when={firstContact()?.name}>
                         <span class="text-base font-semibold truncate">
                             {firstContact()?.name}
@@ -146,9 +181,15 @@ export function ActivityItem(props: {
                             {props.labels[0]}
                         </span>
                     </Match>
-                    <Match when={true}>
+                    <Match when={props.positive}>
                         <span class="text-base font-semibold text-neutral-500">
-                            Unknown
+                            Unknown sender
+                        </span>
+                    </Match>
+
+                    <Match when={!props.positive}>
+                        <span class="text-base font-semibold text-neutral-500">
+                            Unknown receiver
                         </span>
                     </Match>
                 </Switch>
@@ -164,11 +205,18 @@ export function ActivityItem(props: {
                 </Switch>
             </div>
             <div class="">
-                <ActivityAmount
-                    amount={props.amount.toString()}
-                    price={state.price}
-                    positive={props.positive}
-                />
+                <Switch>
+                    <Match when={props.kind === "ChannelClose"}>
+                        <div />
+                    </Match>
+                    <Match when={true}>
+                        <ActivityAmount
+                            amount={props.amount.toString()}
+                            price={state.price}
+                            positive={props.positive}
+                        />
+                    </Match>{" "}
+                </Switch>
             </div>
         </div>
     );

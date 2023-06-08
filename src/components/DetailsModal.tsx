@@ -11,22 +11,29 @@ import {
     createResource
 } from "solid-js";
 import { Hr, ModalCloseButton, TinyButton, VStack } from "~/components/layout";
-import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import {
+    ChannelClosure,
+    MutinyChannel,
+    MutinyInvoice
+} from "@mutinywallet/mutiny-wasm";
 import { OnChainTx } from "./Activity";
 
 import bolt from "~/assets/icons/bolt-black.svg";
 import chain from "~/assets/icons/chain-black.svg";
 import copyIcon from "~/assets/icons/copy.svg";
+import shuffle from "~/assets/icons/shuffle-black.svg";
 
 import { ActivityAmount, HackActivityType } from "./ActivityItem";
 import { CopyButton, TruncateMiddle } from "./ShareCard";
 import { prettyPrintTime } from "~/utils/prettyPrintTime";
 import { useMegaStore } from "~/state/megaStore";
-import { tagToMutinyTag } from "~/utils/tags";
+import { MutinyTagItem, tagToMutinyTag } from "~/utils/tags";
 import { useCopy } from "~/utils/useCopy";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { AmountSmall } from "./Amount";
+import { ExternalLink } from "./layout/ExternalLink";
+import { InfoBox } from "./InfoBox";
 
 export const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm";
 export const DIALOG_POSITIONER =
@@ -34,23 +41,11 @@ export const DIALOG_POSITIONER =
 export const DIALOG_CONTENT =
     "max-w-[500px] w-[90vw] max-h-[100dvh] overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/80 backdrop-blur-md shadow-xl rounded-xl border border-white/10";
 
-function LightningHeader(props: { info: MutinyInvoice }) {
+function LightningHeader(props: {
+    info: MutinyInvoice;
+    tags: MutinyTagItem[];
+}) {
     const [state, _actions] = useMegaStore();
-
-    const tags = createMemo(() => {
-        if (props.info.labels.length) {
-            const contact = state.mutiny_wallet?.get_contact(
-                props.info.labels[0]
-            );
-            if (contact) {
-                return [tagToMutinyTag(contact)];
-            } else {
-                return [];
-            }
-        } else {
-            return [];
-        }
-    });
 
     return (
         <div class="flex flex-col items-center gap-4">
@@ -66,7 +61,7 @@ function LightningHeader(props: { info: MutinyInvoice }) {
                 price={state.price}
                 positive={props.info.inbound}
             />
-            <For each={tags()}>
+            <For each={props.tags}>
                 {(tag) => (
                     <TinyButton
                         tag={tag}
@@ -82,23 +77,12 @@ function LightningHeader(props: { info: MutinyInvoice }) {
     );
 }
 
-function OnchainHeader(props: { info: OnChainTx }) {
+function OnchainHeader(props: {
+    info: OnChainTx;
+    tags: MutinyTagItem[];
+    kind?: HackActivityType;
+}) {
     const [state, _actions] = useMegaStore();
-
-    const tags = createMemo(() => {
-        if (props.info.labels.length) {
-            const contact = state.mutiny_wallet?.get_contact(
-                props.info.labels[0]
-            );
-            if (contact) {
-                return [tagToMutinyTag(contact)];
-            } else {
-                return [];
-            }
-        } else {
-            return [];
-        }
-    });
 
     const isSend = () => {
         return props.info.sent > props.info.received;
@@ -115,18 +99,38 @@ function OnchainHeader(props: { info: OnChainTx }) {
     return (
         <div class="flex flex-col items-center gap-4">
             <div class="p-4 bg-neutral-100 rounded-full">
-                <img src={chain} alt="blockchain" class="w-8 h-8" />
+                <Switch>
+                    <Match
+                        when={
+                            props.kind === "ChannelOpen" ||
+                            props.kind === "ChannelClose"
+                        }
+                    >
+                        <img src={shuffle} alt="swap" class="w-8 h-8" />
+                    </Match>
+                    <Match when={true}>
+                        <img src={chain} alt="blockchain" class="w-8 h-8" />
+                    </Match>
+                </Switch>
             </div>
             <h1 class="uppercase font-semibold">
-                {isSend() ? "On-chain send" : "On-chain receive"}
+                {props.kind === "ChannelOpen"
+                    ? "Channel Open"
+                    : props.kind === "ChannelClose"
+                    ? "Channel Close"
+                    : isSend()
+                    ? "On-chain send"
+                    : "On-chain receive"}
             </h1>
-            <ActivityAmount
-                center
-                amount={amount() ?? "0"}
-                price={state.price}
-                positive={!isSend()}
-            />
-            <For each={tags()}>
+            <Show when={props.kind !== "ChannelClose"}>
+                <ActivityAmount
+                    center
+                    amount={amount() ?? "0"}
+                    price={state.price}
+                    positive={!isSend()}
+                />
+            </Show>
+            <For each={props.tags}>
                 {(tag) => (
                     <TinyButton
                         tag={tag}
@@ -211,7 +215,7 @@ function LightningDetails(props: { info: MutinyInvoice }) {
     );
 }
 
-function OnchainDetails(props: { info: OnChainTx }) {
+function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
     const [state, _actions] = useMegaStore();
 
     const confirmationTime = () => {
@@ -220,9 +224,30 @@ function OnchainDetails(props: { info: OnChainTx }) {
 
     const network = state.mutiny_wallet?.get_network() as Network;
 
+    // Can return nothing if the channel is already closed
+    const [channelInfo] = createResource(async () => {
+        if (props.kind === "ChannelOpen") {
+            try {
+                const channels =
+                    await (state.mutiny_wallet?.list_channels() as Promise<
+                        MutinyChannel[]
+                    >);
+                const channel = channels.find((channel) =>
+                    channel.outpoint?.startsWith(props.info.txid)
+                );
+                console.log(channel);
+                return channel;
+            } catch (e) {
+                console.error(e);
+            }
+        } else {
+            return undefined;
+        }
+    });
+
     return (
         <VStack>
-            {/* <pre>{JSON.stringify(props.info, null, 2)}</pre> */}
+            {/* <pre>{JSON.stringify(channelInfo() || "", null, 2)}</pre> */}
             <ul class="flex flex-col gap-4">
                 <KeyValue key="Status">
                     <span class="text-neutral-300">
@@ -248,15 +273,70 @@ function OnchainDetails(props: { info: OnChainTx }) {
                 <KeyValue key="Txid">
                     <MiniStringShower text={props.info.txid ?? ""} />
                 </KeyValue>
+                <Switch>
+                    <Match when={props.kind === "ChannelOpen" && channelInfo()}>
+                        <KeyValue key="Balance">
+                            <span class="text-neutral-300">
+                                <AmountSmall
+                                    amountSats={channelInfo()?.balance}
+                                />
+                            </span>
+                        </KeyValue>
+                        <KeyValue key="Reserve">
+                            <span class="text-neutral-300">
+                                <AmountSmall
+                                    amountSats={channelInfo()?.reserve}
+                                />
+                            </span>
+                        </KeyValue>
+                        <KeyValue key="Peer">
+                            <span class="text-neutral-300">
+                                <MiniStringShower
+                                    text={channelInfo()?.peer ?? ""}
+                                />
+                            </span>
+                        </KeyValue>
+                    </Match>
+                    <Match when={props.kind === "ChannelOpen"}>
+                        <InfoBox accent="blue">
+                            No channel details found, which means this channel
+                            has likely been closed.
+                        </InfoBox>
+                    </Match>
+                </Switch>
             </ul>
-            <a
-                class="uppercase font-light text-center"
-                href={mempoolTxUrl(props.info.txid, network)}
-                target="_blank"
-                rel="noreferrer"
-            >
-                Mempool.space
-            </a>
+            <div class="text-center">
+                <ExternalLink href={mempoolTxUrl(props.info.txid, network)}>
+                    View Transaction
+                </ExternalLink>
+            </div>
+        </VStack>
+    );
+}
+
+function ChannelCloseDetails(props: { info: ChannelClosure }) {
+    return (
+        <VStack>
+            {/* <pre>{JSON.stringify(props.info.value, null, 2)}</pre> */}
+            <ul class="flex flex-col gap-4">
+                <KeyValue key="Channel ID">
+                    <MiniStringShower text={props.info.channel_id ?? ""} />
+                </KeyValue>
+                <Show when={props.info.timestamp}>
+                    <KeyValue key="When">
+                        <span class="text-neutral-300">
+                            {props.info.timestamp
+                                ? prettyPrintTime(Number(props.info.timestamp))
+                                : "Pending"}
+                        </span>
+                    </KeyValue>
+                </Show>
+                <KeyValue key="Reason">
+                    <p class="text-neutral-300 text-right">
+                        {props.info.reason ?? ""}
+                    </p>
+                </KeyValue>
+            </ul>
         </VStack>
     );
 }
@@ -280,10 +360,31 @@ export function DetailsIdModal(props: {
                 id()
             );
             return invoice;
+        } else if (kind() === "ChannelClose") {
+            console.log("reading channel close: ", id());
+            const closeItem = await state.mutiny_wallet?.get_channel_closure(
+                id()
+            );
+
+            return closeItem;
         } else {
             console.log("reading tx: ", id());
             const tx = await state.mutiny_wallet?.get_transaction(id());
+
             return tx;
+        }
+    });
+
+    const tags = createMemo(() => {
+        if (data() && data().labels && data().labels.length > 0) {
+            const contact = state.mutiny_wallet?.get_contact(data().labels[0]);
+            if (contact) {
+                return [tagToMutinyTag(contact)];
+            } else {
+                return [];
+            }
+        } else {
+            return [];
         }
     });
 
@@ -294,10 +395,6 @@ export function DetailsIdModal(props: {
     });
 
     const json = createMemo(() => JSON.stringify(data() || "", null, 2));
-
-    const isInvoice = () => {
-        return props.kind === "Lightning";
-    };
 
     return (
         <Dialog.Root open={props.open} onOpenChange={props.setOpen}>
@@ -314,14 +411,23 @@ export function DetailsIdModal(props: {
                             </div>
                             <Dialog.Title>
                                 <Switch>
-                                    <Match when={isInvoice()}>
+                                    <Match when={props.kind === "Lightning"}>
                                         <LightningHeader
                                             info={data() as MutinyInvoice}
+                                            tags={tags()}
                                         />
                                     </Match>
-                                    <Match when={true}>
+                                    <Match
+                                        when={
+                                            props.kind === "OnChain" ||
+                                            props.kind === "ChannelOpen" ||
+                                            props.kind === "ChannelClose"
+                                        }
+                                    >
                                         <OnchainHeader
                                             info={data() as OnChainTx}
+                                            tags={tags()}
+                                            kind={props.kind}
                                         />
                                     </Match>
                                 </Switch>
@@ -329,20 +435,36 @@ export function DetailsIdModal(props: {
                             <Hr />
                             <Dialog.Description class="flex flex-col gap-4">
                                 <Switch>
-                                    <Match when={isInvoice()}>
+                                    <Match when={props.kind === "Lightning"}>
                                         <LightningDetails
                                             info={data() as MutinyInvoice}
                                         />
                                     </Match>
-                                    <Match when={true}>
+                                    <Match
+                                        when={
+                                            props.kind === "OnChain" ||
+                                            props.kind === "ChannelOpen"
+                                        }
+                                    >
                                         <OnchainDetails
                                             info={data() as OnChainTx}
+                                            kind={props.kind}
+                                        />
+                                    </Match>
+                                    <Match when={props.kind === "ChannelClose"}>
+                                        <ChannelCloseDetails
+                                            info={data() as ChannelClosure}
                                         />
                                     </Match>
                                 </Switch>
-                                <div class="flex justify-center">
-                                    <CopyButton title="Copy" text={json()} />
-                                </div>
+                                <Show when={props.kind !== "ChannelClose"}>
+                                    <div class="flex justify-center">
+                                        <CopyButton
+                                            title="Copy"
+                                            text={json()}
+                                        />
+                                    </div>
+                                </Show>
                             </Dialog.Description>
                         </Suspense>
                     </Dialog.Content>

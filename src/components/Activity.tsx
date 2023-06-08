@@ -1,5 +1,13 @@
 import { NiceP } from "./layout";
-import { For, Match, Show, Switch, createEffect, createSignal } from "solid-js";
+import {
+    For,
+    Match,
+    Show,
+    Switch,
+    createEffect,
+    createSignal,
+    onMount
+} from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
 import { ActivityItem as MutinyActivity } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
@@ -43,6 +51,10 @@ function UnifiedActivityItem(props: {
     item: MutinyActivity;
     onClick: (id: string, kind: HackActivityType) => void;
 }) {
+    onMount(() => {
+        console.log(props.item);
+    });
+
     const click = () => {
         props.onClick(
             props.item.id,
