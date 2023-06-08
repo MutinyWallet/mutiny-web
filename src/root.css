@@ -24,6 +24,14 @@ a {
     @apply underline decoration-light-text hover:decoration-white;
 }
 
+p {
+    @apply font-light;
+}
+
+p:not(:last-child) {
+    @apply mb-2;
+}
+
 #video-container {
     position: relative;
     width: max-content;

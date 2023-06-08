@@ -42,6 +42,7 @@ import { MegaCheck } from "~/components/successfail/MegaCheck";
 import { ExternalLink } from "~/components/layout/ExternalLink";
 import { CopyableQR } from "~/components/CopyableQR";
 import { InfoBox } from "~/components/InfoBox";
+import { FeesModal } from "~/components/MoreInfoModal";
 
 type OnChainTx = {
     transaction: {
@@ -83,17 +84,17 @@ function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
         <Show when={props.fee > 1000n}>
             <Switch>
                 <Match when={props.flavor === "unified"}>
-                    <InfoBox accent="green">
+                    <InfoBox accent="blue">
                         A lightning setup fee of{" "}
                         <AmountSmall amountSats={props.fee} /> will be charged
-                        if paid over lightning.
+                        if paid over lightning. <FeesModal />
                     </InfoBox>
                 </Match>
                 <Match when={props.flavor === "lightning"}>
-                    <InfoBox accent="green">
+                    <InfoBox accent="blue">
                         A lightning setup fee of{" "}
                         <AmountSmall amountSats={props.fee} /> will be charged
-                        for this receive.
+                        for this receive. <FeesModal />
                     </InfoBox>
                 </Match>
             </Switch>
@@ -106,17 +107,17 @@ function FeeExplanation(props: { fee: bigint }) {
         // TODO: probably won't always be a fixed 2500?
         <Switch>
             <Match when={props.fee > 1000n}>
-                <InfoBox accent="green">
+                <InfoBox accent="blue">
                     A lightning setup fee of{" "}
                     <AmountSmall amountSats={props.fee} /> was charged for this
-                    receive.
+                    receive. <FeesModal />
                 </InfoBox>
             </Match>
             <Match when={props.fee > 0n}>
-                <InfoBox accent="green">
+                <InfoBox accent="blue">
                     A lightning service fee of{" "}
                     <AmountSmall amountSats={props.fee} /> was charged for this
-                    receive.
+                    receive. <FeesModal />
                 </InfoBox>
             </Match>
         </Switch>
