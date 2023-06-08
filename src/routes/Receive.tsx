@@ -174,20 +174,14 @@ export default function Receive() {
     async function processContacts(
         contacts: Partial<MutinyTagItem>[]
     ): Promise<string[]> {
-        console.log("Processing contacts", contacts);
-
         if (contacts.length) {
             const first = contacts![0];
 
             if (!first.name) {
-                console.error(
-                    "Something went wrong with contact creation, proceeding anyway"
-                );
                 return [];
             }
 
             if (!first.id && first.name) {
-                console.error("Creating new contact", first.name);
                 const c = new Contact(
                     first.name,
                     undefined,
@@ -202,14 +196,10 @@ export default function Receive() {
             }
 
             if (first.id) {
-                console.error("Using existing contact", first.name, first.id);
                 return [first.id];
             }
         }
 
-        console.error(
-            "Something went wrong with contact creation, proceeding anyway"
-        );
         return [];
     }
 
