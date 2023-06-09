@@ -72,6 +72,7 @@ export function AmountCard(props: {
     initialOpen?: boolean;
     isAmountEditable?: boolean;
     setAmountSats?: (amount: bigint) => void;
+    skipWarnings?: boolean;
 }) {
     return (
         <Card>
@@ -96,6 +97,7 @@ export function AmountCard(props: {
                                                 ? props.setAmountSats
                                                 : noop
                                         }
+                                        skipWarnings={props.skipWarnings}
                                     />
                                 </Show>
                             </KeyValue>
@@ -163,6 +165,7 @@ export function AmountCard(props: {
                                                 ? props.setAmountSats
                                                 : noop
                                         }
+                                        skipWarnings={props.skipWarnings}
                                     />
                                 </Show>
                             </KeyValue>

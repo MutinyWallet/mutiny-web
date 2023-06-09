@@ -137,6 +137,7 @@ export const AmountEditable: ParentComponent<{
     initialAmountSats: string;
     initialOpen: boolean;
     setAmountSats: (s: bigint) => void;
+    skipWarnings?: boolean;
 }> = (props) => {
     const [isOpen, setIsOpen] = createSignal(props.initialOpen);
     const [state, _actions] = useMegaStore();
@@ -357,7 +358,7 @@ export const AmountEditable: ParentComponent<{
                                     fiat={mode() !== "fiat"}
                                 />
                             </div>
-                            <Show when={warningText()}>
+                            <Show when={warningText() && !props.skipWarnings}>
                                 <InfoBox accent="blue">
                                     {warningText()} <FeesModal />
                                 </InfoBox>
