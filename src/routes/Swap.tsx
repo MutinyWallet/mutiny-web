@@ -365,6 +365,7 @@ export default function Swap() {
                             setAmountSats={setAmountSats}
                             fee={feeEstimate()?.toString()}
                             isAmountEditable={true}
+                            skipWarnings={true}
                         />
                         <Show when={amountWarning() && amountSats() > 0n}>
                             <InfoBox accent={"red"}>{amountWarning()}</InfoBox>
