@@ -1,4 +1,4 @@
-import { Match, Switch, createSignal } from "solid-js";
+import { Match, Switch, createSignal, onMount } from "solid-js";
 import { Button } from "~/components/layout";
 import { StyledRadioGroup } from "../layout/Radio";
 import { TextField } from "../layout/TextField";
@@ -36,6 +36,16 @@ export default function WaitlistForm() {
     });
 
     const [loading, setLoading] = createSignal(false);
+
+    // Allow invite parameter to bypass waitlist
+    onMount(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const invite = urlParams.get('invite');
+        if (invite === 'true') {
+            localStorage.setItem('already_approved', 'true');
+            window.location.href = "/";
+        }
+    });
 
     const newHandleSubmit: SubmitHandler<WaitlistForm> = async (
         f: WaitlistForm
