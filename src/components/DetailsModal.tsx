@@ -235,7 +235,6 @@ function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
                 const channel = channels.find((channel) =>
                     channel.outpoint?.startsWith(props.info.txid)
                 );
-                console.log(channel);
                 return channel;
             } catch (e) {
                 console.error(e);
@@ -355,20 +354,20 @@ export function DetailsIdModal(props: {
     // TODO: is there a cleaner way to do refetch when id changes?
     const [data, { refetch }] = createResource(async () => {
         if (kind() === "Lightning") {
-            console.log("reading invoice: ", id());
+            console.debug("reading invoice: ", id());
             const invoice = await state.mutiny_wallet?.get_invoice_by_hash(
                 id()
             );
             return invoice;
         } else if (kind() === "ChannelClose") {
-            console.log("reading channel close: ", id());
+            console.debug("reading channel close: ", id());
             const closeItem = await state.mutiny_wallet?.get_channel_closure(
                 id()
             );
 
             return closeItem;
         } else {
-            console.log("reading tx: ", id());
+            console.debug("reading tx: ", id());
             const tx = await state.mutiny_wallet?.get_transaction(id());
 
             return tx;

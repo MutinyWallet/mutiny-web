@@ -183,13 +183,13 @@ export function ActivityItem(props: {
                     </Match>
                     <Match when={props.positive}>
                         <span class="text-base font-semibold text-neutral-500">
-                            Unknown sender
+                            Unknown
                         </span>
                     </Match>
 
                     <Match when={!props.positive}>
                         <span class="text-base font-semibold text-neutral-500">
-                            Unknown receiver
+                            Unknown
                         </span>
                     </Match>
                 </Switch>
