@@ -51,10 +51,6 @@ function UnifiedActivityItem(props: {
     item: MutinyActivity;
     onClick: (id: string, kind: HackActivityType) => void;
 }) {
-    onMount(() => {
-        console.log(props.item);
-    });
-
     const click = () => {
         props.onClick(
             props.item.id,
@@ -86,6 +82,12 @@ export function CombinedActivity(props: { limit?: number }) {
 
     function openDetailsModal(id: string, kind: HackActivityType) {
         console.log("Opening details modal: ", id, kind);
+
+        // Some old channels don't have a channel id in the activity list
+        if (!id) {
+            console.warn("No id provided to openDetailsModal");
+            return;
+        }
 
         setDetailsId(id);
         setDetailsKind(kind);
