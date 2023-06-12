@@ -23,6 +23,7 @@ import { ParsedParams } from "~/routes/Scanner";
 import { MutinyTagItem } from "~/utils/tags";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import eify from "~/utils/eify";
+import { timeout } from "~/utils/timeout";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -47,6 +48,7 @@ export type MegaStore = [
         activity: MutinyActivity[];
         setup_error?: Error;
         is_pwa: boolean;
+        existing_tab_detected: boolean;
     },
     {
         fetchUserStatus(): Promise<UserStatus>;
@@ -85,7 +87,8 @@ export const Provider: ParentComponent = (props) => {
         nwc_enabled: localStorage.getItem("nwc_enabled") === "true",
         activity: [] as MutinyActivity[],
         setup_error: undefined as Error | undefined,
-        is_pwa: window.matchMedia("(display-mode: standalone)").matches
+        is_pwa: window.matchMedia("(display-mode: standalone)").matches,
+        existing_tab_detected: false
     });
 
     const actions = {
@@ -236,21 +239,35 @@ export const Provider: ParentComponent = (props) => {
                 console.log("checking for browser compatibility...");
                 actions.checkBrowserCompat().then((browserIsGood) => {
                     if (browserIsGood) {
-                        console.log("running setup node manager...");
-                        actions
-                            .setupMutinyWallet()
-                            .then(() => console.log("node manager setup done"))
-                            .catch((e) => {
-                                console.error(e);
-                                setState({ setup_error: eify(e) });
-                            });
+                        console.log("checking if any other tabs are open");
+                        // 500ms should hopefully be enough time for any tabs to reply
+                        timeout(500).then(() => {
+                            if (state.existing_tab_detected) {
+                                setState({
+                                    setup_error: new Error(
+                                        "Existing tab detected, aborting setup"
+                                    )
+                                });
+                            } else {
+                                console.log("running setup node manager...");
+                                actions
+                                    .setupMutinyWallet()
+                                    .then(() =>
+                                        console.log("node manager setup done")
+                                    )
+                                    .catch((e) => {
+                                        console.error(e);
+                                        setState({ setup_error: eify(e) });
+                                    });
 
-                        // Setup an event listener to stop the mutiny wallet when the page unloads
-                        window.onunload = async (_e) => {
-                            console.log("stopping mutiny_wallet");
-                            await state.mutiny_wallet?.stop();
-                            console.log("mutiny_wallet stopped");
-                        };
+                                // Setup an event listener to stop the mutiny wallet when the page unloads
+                                window.onunload = async (_e) => {
+                                    console.log("stopping mutiny_wallet");
+                                    await state.mutiny_wallet?.stop();
+                                    console.log("mutiny_wallet stopped");
+                                };
+                            }
+                        });
                     }
                 });
             }
@@ -271,6 +288,31 @@ export const Provider: ParentComponent = (props) => {
 
         onCleanup(() => {
             clearInterval(interval);
+        });
+    });
+
+    onMount(() => {
+        const channel = new BroadcastChannel("tab-detector");
+
+        // First we let everyone know we exist
+        channel.postMessage({ type: "NEW_TAB" });
+
+        channel.onmessage = (e) => {
+            // If any tabs reply, we know there's an existing tab so abort setup
+            if (e.data.type === "EXISTING_TAB") {
+                console.debug("there's an existing tab");
+                setState({ existing_tab_detected: true });
+            }
+
+            // If we get notified of a new tab, we let it know we exist
+            if (e.data.type === "NEW_TAB") {
+                console.debug("a new tab just came online");
+                channel.postMessage({ type: "EXISTING_TAB" });
+            }
+        };
+
+        onCleanup(() => {
+            channel.close();
         });
     });
 
