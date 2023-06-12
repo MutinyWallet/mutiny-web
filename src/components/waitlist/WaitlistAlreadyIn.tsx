@@ -1,4 +1,4 @@
-import { createResource, Show, onMount } from "solid-js";
+import { createResource, Show } from "solid-js";
 
 const relayUrls = [
     "wss://nostr.zebedee.cloud",
@@ -32,16 +32,6 @@ const postsFetcher = async () => {
 
 export function WaitlistAlreadyIn() {
     const [posts] = createResource("", postsFetcher);
-
-    // Allow invite parameter to bypass waitlist
-    onMount(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const invite = urlParams.get('invite');
-        if (invite === 'true') {
-            localStorage.setItem('already_approved', 'true');
-            window.location.href = "/";
-        }
-    });
 
     return (
         <main class="flex flex-col gap-4 sm:gap-4 py-8 px-4 max-w-xl mx-auto items-start drop-shadow-blue-glow">

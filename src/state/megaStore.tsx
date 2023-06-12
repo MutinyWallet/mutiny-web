@@ -46,6 +46,7 @@ export type MegaStore = [
         nwc_enabled: boolean;
         activity: MutinyActivity[];
         setup_error?: Error;
+        is_pwa: boolean;
     },
     {
         fetchUserStatus(): Promise<UserStatus>;
@@ -83,13 +84,28 @@ export const Provider: ParentComponent = (props) => {
         wallet_loading: true,
         nwc_enabled: localStorage.getItem("nwc_enabled") === "true",
         activity: [] as MutinyActivity[],
-        setup_error: undefined as Error | undefined
+        setup_error: undefined as Error | undefined,
+        is_pwa: window.matchMedia("(display-mode: standalone)").matches
     });
 
     const actions = {
         async fetchUserStatus(): Promise<UserStatus> {
             if (state.already_approved) {
                 console.log("welcome back!");
+                return "approved";
+            }
+
+            // Using a PWA
+            if (state.is_pwa) {
+                localStorage.setItem("already_approved", "true");
+                return "approved";
+            }
+
+            // Got an invite link
+            const urlParams = new URLSearchParams(window.location.search);
+            const invite = urlParams.get("invite");
+            if (invite === "true") {
+                localStorage.setItem("already_approved", "true");
                 return "approved";
             }
 
