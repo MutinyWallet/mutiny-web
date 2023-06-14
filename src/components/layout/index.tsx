@@ -113,8 +113,7 @@ export const LoadingSpinner = (props: { big?: boolean; wide?: boolean }) => {
             }}
         >
             <svg
-                aria-hidden="true"
-                class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-m-red place-self-center"
+                class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-m-red place-self-center"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +127,6 @@ export const LoadingSpinner = (props: { big?: boolean; wide?: boolean }) => {
                     fill="currentFill"
                 />
             </svg>
-            <span class="sr-only">Loading...</span>
         </div>
     );
 };

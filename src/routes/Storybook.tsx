@@ -3,6 +3,7 @@ import NavBar from "~/components/NavBar";
 import { OnboardWarning } from "~/components/OnboardWarning";
 import { ShareCard } from "~/components/ShareCard";
 import {
+    Button,
     DefaultMain,
     LargeHeader,
     SafeArea,
@@ -20,6 +21,9 @@ export default function Admin() {
                 <VStack>
                     <AmountCard amountSats={"100000"} fee={"69"} />
                     <ShareCard text={SAMPLE} />
+                    <Button loading intent="blue">
+                        Button
+                    </Button>
                 </VStack>
             </DefaultMain>
             <NavBar activeTab="none" />
