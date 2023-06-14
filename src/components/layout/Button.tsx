@@ -5,7 +5,7 @@ import { A } from "solid-start";
 import { LoadingSpinner } from ".";
 
 const button = cva(
-    "p-3 rounded-xl font-semibold disabled:opacity-20 disabled:grayscale transition",
+    "p-3 rounded-xl font-semibold transition disabled:bg-neutral-400/10 disabled:text-white/20 disabled:shadow-inner-button-disabled",
     {
         variants: {
             // TODO: button hover has to work different than buttonlinks (like disabled state)
