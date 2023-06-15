@@ -5,6 +5,7 @@ import {
     Match,
     Show,
     Switch,
+    createMemo,
     createResource,
     createSignal
 } from "solid-js";
@@ -54,27 +55,12 @@ export default function Swap() {
     const [amountSats, setAmountSats] = createSignal(0n);
     const [isConnecting, setIsConnecting] = createSignal(false);
 
+    const [loading, setLoading] = createSignal(false);
+
     const [selectedPeer, setSelectedPeer] = createSignal<string>("");
 
     const [channelOpenResult, setChannelOpenResult] =
         createSignal<ChannelOpenDetails>();
-
-    const feeEstimate = () => {
-        if (amountSats()) {
-            try {
-                return state.mutiny_wallet?.estimate_tx_fee(
-                    CHANNEL_FEE_ESTIMATE_ADDRESS,
-                    amountSats(),
-                    undefined
-                );
-            } catch (e) {
-                console.error(e);
-                // showToast(eify(new Error("Unsufficient funds")))
-                return undefined;
-            }
-        }
-        return undefined;
-    };
 
     const hasLsp = () => {
         return (
@@ -136,21 +122,28 @@ export default function Swap() {
     const handleSwap = async () => {
         if (canSwap()) {
             try {
+                setLoading(true);
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = (nodes[0] as string) || "";
 
-                if (hasLsp()) {
-                    const new_channel = await state.mutiny_wallet?.open_channel(
-                        firstNode,
-                        undefined,
-                        amountSats()
-                    );
+                let peer = undefined;
+
+                if (!hasLsp()) {
+                    peer = selectedPeer();
+                }
+
+                if (isMax()) {
+                    const new_channel =
+                        await state.mutiny_wallet?.sweep_all_to_channel(
+                            firstNode,
+                            peer
+                        );
 
                     setChannelOpenResult({ channel: new_channel });
                 } else {
                     const new_channel = await state.mutiny_wallet?.open_channel(
                         firstNode,
-                        selectedPeer(),
+                        peer,
                         amountSats()
                     );
 
@@ -159,6 +152,8 @@ export default function Swap() {
             } catch (e) {
                 setChannelOpenResult({ failure_reason: eify(e) });
                 // showToast(eify(e))
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -185,6 +180,11 @@ export default function Swap() {
     };
 
     const amountWarning = () => {
+        // Balance can go down during swap so...
+        if (loading() || !!channelOpenResult()) {
+            return undefined;
+        }
+
         const network = state.mutiny_wallet?.get_network() as Network;
 
         if (network === "bitcoin" && amountSats() < 50000n) {
@@ -206,6 +206,44 @@ export default function Swap() {
 
         return undefined;
     };
+
+    const maxOnchain = createMemo(() => {
+        return (
+            (state.balance?.confirmed ?? 0n) +
+            (state.balance?.unconfirmed ?? 0n)
+        );
+    });
+
+    const isMax = createMemo(() => {
+        return amountSats() === maxOnchain();
+    });
+
+    const feeEstimate = createMemo(() => {
+        // Balance can go down during swap so...
+        if (loading() || !!channelOpenResult()) {
+            return undefined;
+        }
+
+        // If max we want to use the sweep fee estimator
+        if (amountSats() === maxOnchain()) {
+            return state.mutiny_wallet?.estimate_sweep_channel_open_fee();
+        }
+
+        if (amountSats()) {
+            try {
+                return state.mutiny_wallet?.estimate_tx_fee(
+                    CHANNEL_FEE_ESTIMATE_ADDRESS,
+                    amountSats(),
+                    undefined
+                );
+            } catch (e) {
+                console.error(e);
+                // showToast(eify(new Error("Unsufficient funds")))
+                return undefined;
+            }
+        }
+        return undefined;
+    });
 
     const network = state.mutiny_wallet?.get_network() as Network;
 
@@ -366,6 +404,7 @@ export default function Swap() {
                             fee={feeEstimate()?.toString()}
                             isAmountEditable={true}
                             skipWarnings={true}
+                            maxAmountSats={maxOnchain()}
                         />
                         <Show when={amountWarning() && amountSats() > 0n}>
                             <InfoBox accent={"red"}>{amountWarning()}</InfoBox>
@@ -377,7 +416,7 @@ export default function Swap() {
                         disabled={!canSwap()}
                         intent="blue"
                         onClick={handleSwap}
-                        loading={false}
+                        loading={loading()}
                     >
                         {"Confirm Swap"}
                     </Button>

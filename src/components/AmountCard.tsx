@@ -77,7 +77,6 @@ export function AmountCard(props: {
 }) {
     // Normally we want to add the fee to the amount, but for max amount we just show the max
     const totalOrTotalLessFee = () => {
-        console.log(props.amountSats, props.fee, props.maxAmountSats);
         if (
             props.fee &&
             props.maxAmountSats &&
