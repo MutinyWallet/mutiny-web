@@ -221,9 +221,8 @@ export default function Receive() {
 
             return `bitcoin:${raw?.address}?${params}`;
         } catch (e) {
-            showToast(
-                new Error("Couldn't create invoice. Are you asking for enough?")
-            );
+            
+            showToast(new Error("Failed to create invoice. Please try again."));
             console.error(e);
         }
     }
