@@ -138,6 +138,8 @@ export const AmountEditable: ParentComponent<{
     initialOpen: boolean;
     setAmountSats: (s: bigint) => void;
     skipWarnings?: boolean;
+    maxAmountSats?: bigint;
+    fee?: string;
 }> = (props) => {
     const [isOpen, setIsOpen] = createSignal(props.initialOpen);
     const [state, _actions] = useMegaStore();
@@ -280,6 +282,22 @@ export const AmountEditable: ParentComponent<{
         }
     }
 
+    // If the user is trying to send the max amount we want to show max minus fee
+    // Otherwise we just the actual amount they've entered
+    const maxOrLocalSats = () => {
+        if (
+            props.maxAmountSats &&
+            props.fee &&
+            props.maxAmountSats === BigInt(localSats())
+        ) {
+            return (
+                Number(props.maxAmountSats) - Number(props.fee)
+            ).toLocaleString();
+        } else {
+            return localSats();
+        }
+    };
+
     return (
         <Dialog.Root open={isOpen()}>
             <button
@@ -292,7 +310,7 @@ export const AmountEditable: ParentComponent<{
                         <div class="inline-block font-semibold">Set amount</div>
                     }
                 >
-                    <InlineAmount amount={localSats()} />
+                    <InlineAmount amount={maxOrLocalSats()} />
                 </Show>
                 <img src={pencil} alt="Edit" />
                 {/* {props.children} */}
@@ -383,6 +401,19 @@ export const AmountEditable: ParentComponent<{
                                         </button>
                                     )}
                                 </For>
+                                <Show when={props.maxAmountSats}>
+                                    <button
+                                        onClick={() => {
+                                            setFixedAmount(
+                                                props.maxAmountSats!.toString()
+                                            );
+                                            focus();
+                                        }}
+                                        class="py-2 px-4 rounded-lg bg-white/10"
+                                    >
+                                        MAX
+                                    </button>
+                                </Show>
                             </div>
                             <div class="grid grid-cols-3 w-full flex-none">
                                 <For each={CHARACTERS}>

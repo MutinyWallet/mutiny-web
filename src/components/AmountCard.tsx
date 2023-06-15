@@ -73,7 +73,21 @@ export function AmountCard(props: {
     isAmountEditable?: boolean;
     setAmountSats?: (amount: bigint) => void;
     skipWarnings?: boolean;
+    maxAmountSats?: bigint;
 }) {
+    // Normally we want to add the fee to the amount, but for max amount we just show the max
+    const totalOrTotalLessFee = () => {
+        console.log(props.amountSats, props.fee, props.maxAmountSats);
+        if (
+            props.fee &&
+            props.maxAmountSats &&
+            props.amountSats === props.maxAmountSats?.toString()
+        ) {
+            return props.maxAmountSats.toLocaleString();
+        } else {
+            return add(props.amountSats, props.fee).toString();
+        }
+    };
     return (
         <Card>
             <VStack>
@@ -98,6 +112,8 @@ export function AmountCard(props: {
                                                 : noop
                                         }
                                         skipWarnings={props.skipWarnings}
+                                        maxAmountSats={props.maxAmountSats}
+                                        fee={props.fee}
                                     />
                                 </Show>
                             </KeyValue>
@@ -108,12 +124,7 @@ export function AmountCard(props: {
                         <hr class="border-white/20" />
                         <div class="flex flex-col gap-1">
                             <KeyValue key="Total">
-                                <InlineAmount
-                                    amount={add(
-                                        props.amountSats,
-                                        props.fee
-                                    ).toString()}
-                                />
+                                <InlineAmount amount={totalOrTotalLessFee()} />
                             </KeyValue>
                             <USDShower
                                 amountSats={props.amountSats}
@@ -166,6 +177,8 @@ export function AmountCard(props: {
                                                 : noop
                                         }
                                         skipWarnings={props.skipWarnings}
+                                        maxAmountSats={props.maxAmountSats}
+                                        fee={props.fee}
                                     />
                                 </Show>
                             </KeyValue>
