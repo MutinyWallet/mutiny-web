@@ -232,17 +232,26 @@ export default function Send() {
         setFieldDestination("");
     }
 
+    const maxOnchain = createMemo(() => {
+        return (
+            (state.balance?.confirmed ?? 0n) +
+            (state.balance?.unconfirmed ?? 0n)
+        );
+    });
+
+    const isMax = () => {
+        if (source() === "onchain") {
+            return amountSats() === maxOnchain();
+        }
+    };
+
     const insufficientFunds = () => {
         if (source() === "onchain") {
-            return (
-                (state.balance?.confirmed ?? 0n) +
-                    (state.balance?.unconfirmed ?? 0n) <
-                amountSats()
-            );
+            return maxOnchain() < amountSats();
         }
         if (source() === "lightning") {
             return (
-                (state.balance?.lightning ?? 0n) < amountSats() &&
+                (state.balance?.lightning ?? 0n) <= amountSats() &&
                 setError(
                     "We do not have enough balance to pay the given amount."
                 )
@@ -251,7 +260,10 @@ export default function Send() {
     };
 
     const feeEstimate = () => {
-        if (source() === "lightning") return undefined;
+        if (source() === "lightning") {
+            setError(undefined);
+            return undefined;
+        }
 
         if (
             source() === "onchain" &&
@@ -260,7 +272,15 @@ export default function Send() {
             address()
         ) {
             setError(undefined);
+
             try {
+                // If max we want to use the sweep fee estimator
+                if (isMax()) {
+                    return state.mutiny_wallet?.estimate_sweep_tx_fee(
+                        address()!
+                    );
+                }
+
                 return state.mutiny_wallet?.estimate_tx_fee(
                     address()!,
                     amountSats(),
@@ -465,15 +485,28 @@ export default function Send() {
                     sentDetails.amount = amountSats();
                 }
             } else if (source() === "onchain" && address()) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const txid = await state.mutiny_wallet?.send_to_address(
-                    address()!,
-                    amountSats(),
-                    tags
-                );
-                sentDetails.amount = amountSats();
-                sentDetails.destination = address();
-                sentDetails.txid = txid;
+                if (isMax()) {
+                    // If we're trying to send the max amount, use the sweep method instead of regular send
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const txid = await state.mutiny_wallet?.sweep_wallet(
+                        address()!,
+                        tags
+                    );
+
+                    sentDetails.amount = amountSats();
+                    sentDetails.destination = address();
+                    sentDetails.txid = txid;
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const txid = await state.mutiny_wallet?.send_to_address(
+                        address()!,
+                        amountSats(),
+                        tags
+                    );
+                    sentDetails.amount = amountSats();
+                    sentDetails.destination = address();
+                    sentDetails.txid = txid;
+                }
             }
             setSentDetails(sentDetails as SentDetails);
             clearAll();
@@ -499,6 +532,10 @@ export default function Send() {
     });
 
     const network = state.mutiny_wallet?.get_network() as Network;
+
+    const maxAmountSats = createMemo(() => {
+        return source() === "onchain" ? maxOnchain() : undefined;
+    });
 
     return (
         <MutinyWalletGuard>
@@ -611,6 +648,8 @@ export default function Send() {
                                     setAmountSats={setAmountSats}
                                     fee={feeEstimate()?.toString()}
                                     isAmountEditable={!invoice()?.amount_sats}
+                                    maxAmountSats={maxAmountSats()}
+                                    skipWarnings={true}
                                 />
                             </Match>
                             <Match when={true}>
