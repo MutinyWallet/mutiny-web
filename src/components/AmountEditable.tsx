@@ -17,6 +17,7 @@ import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { InfoBox } from "./InfoBox";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { FeesModal } from "./MoreInfoModal";
+import { useNavigate } from "@solidjs/router";
 
 const CHARACTERS = [
     "1",
@@ -138,9 +139,11 @@ export const AmountEditable: ParentComponent<{
     initialOpen: boolean;
     setAmountSats: (s: bigint) => void;
     skipWarnings?: boolean;
+    exitRoute?: string;
     maxAmountSats?: bigint;
     fee?: string;
 }> = (props) => {
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = createSignal(props.initialOpen);
     const [state, _actions] = useMegaStore();
     const [mode, setMode] = createSignal<"fiat" | "sats">("sats");
@@ -325,12 +328,44 @@ export const AmountEditable: ParentComponent<{
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content
                         class={DIALOG_CONTENT}
-                        onEscapeKeyDown={() => setIsOpen(false)}
+                        onEscapeKeyDown={() => {
+                            props.setAmountSats(
+                                BigInt(props.initialAmountSats)
+                            );
+                            setIsOpen(false);
+                            setLocalSats(props.initialAmountSats);
+                            setLocalFiat(
+                                satsToUsd(
+                                    state.price,
+                                    parseInt(props.initialAmountSats || "0") ||
+                                        0,
+                                    false
+                                )
+                            );
+                            props.exitRoute && navigate(props.exitRoute);
+                        }}
                     >
                         {/* TODO: figure out how to submit on enter */}
                         <div class="w-full flex justify-end">
                             <button
-                                onClick={() => setIsOpen(false)}
+                                onClick={() => {
+                                    props.setAmountSats(
+                                        BigInt(props.initialAmountSats)
+                                    );
+                                    setIsOpen(false);
+                                    setLocalSats(props.initialAmountSats);
+                                    setLocalFiat(
+                                        satsToUsd(
+                                            state.price,
+                                            parseInt(
+                                                props.initialAmountSats || "0"
+                                            ) || 0,
+                                            false
+                                        )
+                                    );
+                                    props.exitRoute &&
+                                        navigate(props.exitRoute);
+                                }}
                                 class="hover:bg-white/10 rounded-lg active:bg-m-blue w-8 h-8"
                             >
                                 <img src={close} alt="Close" />

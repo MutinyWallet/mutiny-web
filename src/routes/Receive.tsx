@@ -323,6 +323,7 @@ export default function Receive() {
                                     amountSats={amount() || "0"}
                                     setAmountSats={setAmount}
                                     isAmountEditable
+                                    exitRoute={amount() ? "/receive" : "/"}
                                 />
 
                                 <Card title="Private tags">

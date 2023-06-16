@@ -73,6 +73,7 @@ export function AmountCard(props: {
     isAmountEditable?: boolean;
     setAmountSats?: (amount: bigint) => void;
     skipWarnings?: boolean;
+    exitRoute?: string;
     maxAmountSats?: bigint;
 }) {
     // Normally we want to add the fee to the amount, but for max amount we just show the max
@@ -111,6 +112,7 @@ export function AmountCard(props: {
                                                 : noop
                                         }
                                         skipWarnings={props.skipWarnings}
+                                        exitRoute={props.exitRoute}
                                         maxAmountSats={props.maxAmountSats}
                                         fee={props.fee}
                                     />
@@ -176,6 +178,7 @@ export function AmountCard(props: {
                                                 : noop
                                         }
                                         skipWarnings={props.skipWarnings}
+                                        exitRoute={props.exitRoute}
                                         maxAmountSats={props.maxAmountSats}
                                         fee={props.fee}
                                     />
