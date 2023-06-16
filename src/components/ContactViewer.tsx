@@ -51,12 +51,18 @@ export function ContactViewer(props: {
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content
                         class={DIALOG_CONTENT}
-                        onEscapeKeyDown={() => setIsOpen(false)}
+                        onEscapeKeyDown={() => {
+                            setIsOpen(false);
+                            setIsEditing(false);
+                        }}
                     >
                         <div class="w-full flex justify-end">
                             <button
                                 tabindex="-1"
-                                onClick={() => setIsOpen(false)}
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    setIsEditing(false);
+                                }}
                                 class="hover:bg-white/10 rounded-lg active:bg-m-blue"
                             >
                                 <img src={close} alt="Close" />
