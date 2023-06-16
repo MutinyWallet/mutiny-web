@@ -1,5 +1,5 @@
-import {Button, InnerCard, NiceP, VStack} from "~/components/layout";
-import {useMegaStore} from "~/state/megaStore";
+import { Button, InnerCard, NiceP, VStack } from "~/components/layout";
+import { useMegaStore } from "~/state/megaStore";
 
 export function ResyncOnchain() {
     const [state, _] = useMegaStore();
@@ -16,7 +16,8 @@ export function ResyncOnchain() {
         <InnerCard>
             <VStack>
                 <NiceP>
-                    On-chain balance seems incorrect? Try re-syncing the on-chain wallet.
+                    On-chain balance seems incorrect? Try re-syncing the
+                    on-chain wallet.
                 </NiceP>
                 <Button intent="red" onClick={reset}>
                     Resync wallet
