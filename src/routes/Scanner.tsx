@@ -74,10 +74,13 @@ export default function Scanner() {
         history.back();
     }
 
-    function handlePaste() {
-        navigator.clipboard.readText().then((text) => {
+    async function handlePaste() {
+        try {
+            const text = await navigator.clipboard.readText();
             setScanResult(text);
-        });
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     onMount(async () => {
