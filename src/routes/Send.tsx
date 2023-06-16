@@ -358,19 +358,17 @@ export default function Send() {
         parsePaste(text);
     }
 
-    function handlePaste() {
+    async function handlePaste() {
         if (!navigator.clipboard.readText)
             return showToast(new Error("Clipboard not supported"));
 
-        navigator.clipboard
-            .readText()
-            .then((text) => {
-                setFieldDestination(text);
-                parsePaste(text);
-            })
-            .catch((e) => {
-                showToast(new Error("Failed to read clipboard: " + e.message));
-            });
+        try {
+            const text = await navigator.clipboard.readText();
+            setFieldDestination(text);
+            parsePaste(text);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     async function processContacts(

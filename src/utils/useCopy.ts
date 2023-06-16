@@ -10,7 +10,7 @@ export const useCopy = ({ copiedTimeout = 2000 }: UseCopyProps = {}): [
     copied: Accessor<boolean>
 ] => {
     const [copied, setCopied] = createSignal(false);
-    let timeout: NodeJS.Timeout;
+    let timeout: number;
     const copy: CopyFn = async (text) => {
         await navigator.clipboard.writeText(text);
         setCopied(true);
