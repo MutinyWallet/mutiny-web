@@ -2,12 +2,12 @@ import { createForm, url } from "@modular-forms/solid";
 import { TextField } from "~/components/layout/TextField";
 import {
     MutinyWalletSettingStrings,
-    getExistingSettings
+    getExistingSettings,
+    setAndGetMutinySettings
 } from "~/logic/mutinyWalletSetup";
 import { Button, Card, NiceP } from "~/components/layout";
 import { showToast } from "./Toaster";
 import eify from "~/utils/eify";
-import { useMegaStore } from "~/state/megaStore";
 import { ExternalLink } from "./layout/ExternalLink";
 
 export function SettingsStringsEditor() {
@@ -16,12 +16,11 @@ export function SettingsStringsEditor() {
         createForm<MutinyWalletSettingStrings>({
             initialValues: existingSettings
         });
-    const [_store, actions] = useMegaStore();
 
     async function handleSubmit(values: MutinyWalletSettingStrings) {
         try {
             const newSettings = { ...existingSettings, ...values };
-            await actions.setupMutinyWallet(newSettings);
+            await setAndGetMutinySettings(newSettings);
             window.location.reload();
         } catch (e) {
             console.error(e);
