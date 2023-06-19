@@ -224,6 +224,10 @@ export const Provider: ParentComponent = (props) => {
         }
     };
 
+    onCleanup(() => {
+        console.warn('Parent Component is being unmounted!!!');
+    });
+
     // Fetch status from remote on load
     onMount(() => {
         // eslint-disable-next-line
