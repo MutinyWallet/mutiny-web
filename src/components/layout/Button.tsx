@@ -16,13 +16,15 @@ const button = cva(
                 glowy: "bg-black/10 shadow-xl text-white border border-m-blue hover:m-blue-dark hover:text-m-blue",
                 blue: "bg-m-blue text-white shadow-inner-button hover:bg-m-blue-dark text-shadow-button",
                 red: "bg-m-red text-white shadow-inner-button hover:bg-m-red-dark text-shadow-button",
-                green: "bg-m-green text-white shadow-inner-button hover:bg-m-green-dark text-shadow-button"
+                green: "bg-m-green text-white shadow-inner-button hover:bg-m-green-dark text-shadow-button",
+                text: ""
             },
             layout: {
                 flex: "flex-1 text-xl",
                 pad: "px-8 text-xl",
                 small: "px-4 py-2 w-auto text-lg",
-                xs: "px-4 py-2 w-auto rounded-lg text-base"
+                xs: "px-4 py-2 w-auto rounded-lg text-base",
+                full: "w-full text-xl"
             }
         },
         defaultVariants: {

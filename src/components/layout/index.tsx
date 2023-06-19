@@ -320,10 +320,15 @@ export function Checkbox(props: {
     label: string;
     checked: boolean;
     onChange: (checked: boolean) => void;
+    caption?: string;
 }) {
     return (
         <KCheckbox.Root
-            class="inline-flex items-center gap-2"
+            class="inline-flex gap-2"
+            classList={{
+                "items-center": !props.caption,
+                "items-start": !!props.caption
+            }}
             checked={props.checked}
             onChange={props.onChange}
         >
@@ -333,8 +338,11 @@ export function Checkbox(props: {
                     <img src={check} class="w-8 h-8" alt="check" />
                 </KCheckbox.Indicator>
             </KCheckbox.Control>
-            <KCheckbox.Label class="flex-1 text-xl font-light">
+            <KCheckbox.Label class="flex-1 text-xl font-light flex flex-col gap-1">
                 {props.label}
+                <Show when={props.caption}>
+                    <TinyText>{props.caption}</TinyText>
+                </Show>
             </KCheckbox.Label>
         </KCheckbox.Root>
     );

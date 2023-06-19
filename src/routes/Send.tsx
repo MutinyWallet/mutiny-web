@@ -47,6 +47,7 @@ import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { FeesModal } from "~/components/MoreInfoModal";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import { FeedbackLink } from "./Feedback";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -716,6 +717,7 @@ export default function Send() {
                                 {sending() ? "Sending..." : "Confirm Send"}
                             </Button>
                         </Show>
+                        <FeedbackLink />
                     </VStack>
                 </DefaultMain>
                 <NavBar activeTab="send" />

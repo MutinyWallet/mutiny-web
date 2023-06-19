@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@capacitor/android':
     specifier: ^5.2.1
@@ -17,8 +21,8 @@ dependencies:
     specifier: ^0.5.0
     version: 0.5.0(tailwindcss@3.3.2)
   '@modular-forms/solid':
-    specifier: ^0.13.2
-    version: 0.13.2(solid-js@1.7.7)
+    specifier: ^0.18.0
+    version: 0.18.0(solid-js@1.7.7)
   '@mutinywallet/barcode-scanner':
     specifier: 5.0.0-beta.3
     version: 5.0.0-beta.3(@capacitor/core@5.2.1)
@@ -2093,8 +2097,8 @@ packages:
       solid-js: 1.7.7
     dev: false
 
-  /@modular-forms/solid@0.13.2(solid-js@1.7.7):
-    resolution: {integrity: sha512-wiwJUxbwDp8F2FI0hTYoydNumVRZruIiyjV+w91++zA0QofASuMWe3fs4lETHpaiQK/jJsGXhys7BFqXUf9SDg==}
+  /@modular-forms/solid@0.18.0(solid-js@1.7.7):
+    resolution: {integrity: sha512-0+MuHb8wIE5GPazZZqqaDop85w8w/DUBOxreYFx4o2/4jzVTlV1z/913EqPssxMYKJCG0rQSEVERKmJX3af3zw==}
     peerDependencies:
       solid-js: ^1.3.1
     dependencies:
@@ -8023,7 +8027,3 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
