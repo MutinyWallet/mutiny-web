@@ -10,6 +10,7 @@ import userClock from "~/assets/icons/user-clock.svg";
 import { useMegaStore } from "~/state/megaStore";
 import { Show } from "solid-js";
 import { ExternalLink } from "./layout/ExternalLink";
+import { BetaWarningModal } from "~/components/BetaWarningModal";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
@@ -60,6 +61,7 @@ export default function App() {
                     </span>
                 </p>
             </DefaultMain>
+            <BetaWarningModal />
             <NavBar activeTab="home" />
         </SafeArea>
     );
