@@ -11,19 +11,15 @@ import { Match, Switch } from "solid-js";
 import { ImportExport } from "./ImportExport";
 import { Logs } from "./Logs";
 import { DeleteEverything } from "./DeleteEverything";
+import { FeedbackLink } from "~/routes/Feedback";
 
 function ErrorFooter() {
     return (
         <>
             <div class="h-full" />
-            <p class="self-center text-neutral-500 mt-4">
-                Bugs? Feedback?{" "}
-                <span class="text-neutral-400">
-                    <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
-                        Create an issue
-                    </ExternalLink>
-                </span>
-            </p>
+            <div class="self-center mt-4">
+                <FeedbackLink setupError={true} />
+            </div>
         </>
     );
 }

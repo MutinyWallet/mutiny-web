@@ -7,19 +7,17 @@ import { OnboardWarning } from "~/components/OnboardWarning";
 import { CombinedActivity } from "./Activity";
 import { useMegaStore } from "~/state/megaStore";
 import { Match, Show, Suspense, Switch } from "solid-js";
-import { ExternalLink } from "./layout/ExternalLink";
 import { BetaWarningModal } from "~/components/BetaWarningModal";
 import settings from "~/assets/icons/settings.svg";
 import pixelLogo from "~/assets/mutiny-pixel-logo.png";
 import plusLogo from "~/assets/mutiny-plus-logo.png";
 import { PendingNwc } from "./PendingNwc";
-import { useI18n } from "~/i18n/context";
 import { DecryptDialog } from "./DecryptDialog";
 import { LoadingIndicator } from "./LoadingIndicator";
+import { FeedbackLink } from "~/routes/Feedback";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
-    const i18n = useI18n();
 
     return (
         <SafeArea>
@@ -86,14 +84,9 @@ export default function App() {
                         </Suspense>
                     </VStack>
                 </Card>
-                <p class="self-center text-neutral-500 mt-4 font-normal">
-                    Bugs? Feedback?{" "}
-                    <span class="text-neutral-400">
-                        <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
-                            {i18n.t("create_an_issue")}
-                        </ExternalLink>
-                    </span>
-                </p>
+                <div class="self-center mt-4">
+                    <FeedbackLink />
+                </div>
             </DefaultMain>
             <DecryptDialog />
             <BetaWarningModal />
