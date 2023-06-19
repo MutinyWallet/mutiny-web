@@ -153,9 +153,8 @@ export default function Swap() {
                 }
             } catch (e) {
                 setChannelOpenResult({ failure_reason: eify(e) });
-                // showToast(eify(e))
             } finally {
-		setDone(true);
+                setDone(true);
                 setLoading(false);
             }
         }
@@ -228,11 +227,16 @@ export default function Swap() {
         }
 
         // If max we want to use the sweep fee estimator
-        if (amountSats() === maxOnchain()) {
-            return state.mutiny_wallet?.estimate_sweep_channel_open_fee();
+        if (amountSats() >= 0n && amountSats() === maxOnchain()) {
+            try {
+                return state.mutiny_wallet?.estimate_sweep_channel_open_fee();
+            } catch (e) {
+                console.error(e);
+                return undefined;
+            }
         }
 
-        if (amountSats()) {
+        if (amountSats() >= 0n) {
             try {
                 return state.mutiny_wallet?.estimate_tx_fee(
                     CHANNEL_FEE_ESTIMATE_ADDRESS,
@@ -241,7 +245,6 @@ export default function Swap() {
                 );
             } catch (e) {
                 console.error(e);
-                // showToast(eify(new Error("Unsufficient funds")))
                 return undefined;
             }
         }
