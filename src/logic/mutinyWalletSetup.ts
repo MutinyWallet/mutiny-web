@@ -1,9 +1,7 @@
+/* @refresh reload */
+
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import initWaila from "@mutinywallet/waila-wasm";
-
-// export type MutinyWalletSettingStrings = {
-//     network?: string, proxy?: string, esplora?: string, rgs?: string, lsp?: string,
-// }
 
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 export type MutinyWalletSettingStrings = {
@@ -92,11 +90,23 @@ export async function checkForWasm() {
 export async function setupMutinyWallet(
     settings?: MutinyWalletSettingStrings
 ): Promise<MutinyWallet> {
+    // Ultimate defense against getting multiple instances of the wallet running.
+    // If we detect that the wallet has already been initialized in this session, we'll reload the page.
+    // A successful stop of the wallet in onCleanup will clear this flag
+    if (sessionStorage.getItem("MUTINY_WALLET_INITIALIZED")) {
+        console.error(
+            `Mutiny Wallet already initialized at ${sessionStorage.getItem(
+                "MUTINY_WALLET_INITIALIZED"
+            )}. Reloading page.`
+        );
+        sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
+        window.location.reload();
+    }
+
     await initMutinyWallet();
     // Might as well init waila while we're at it
     await initWaila();
 
-    console.time("Setup");
     console.log("Starting setup...");
     const { network, proxy, esplora, rgs, lsp } = await setAndGetMutinySettings(
         settings
@@ -124,6 +134,8 @@ export async function setupMutinyWallet(
     if (!nodes.length) {
         await mutinyWallet?.new_node();
     }
+
+    sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
 
     return mutinyWallet;
 }
