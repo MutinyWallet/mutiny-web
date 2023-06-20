@@ -3,6 +3,7 @@ import { ParentComponent, createSignal } from "solid-js";
 import { DIALOG_CONTENT, DIALOG_POSITIONER, OVERLAY } from "./DetailsModal";
 import { ModalCloseButton, SmallHeader } from "./layout";
 import { ExternalLink } from "./layout/ExternalLink";
+import { getExistingSettings } from "~/logic/mutinyWalletSetup";
 
 export function BetaWarningModal() {
     return (
@@ -40,7 +41,8 @@ export const WarningModal: ParentComponent<{
     title: string;
 }> = (props) => {
     const [open, setOpen] = createSignal(
-        localStorage.getItem("betaWarned") !== "true"
+        localStorage.getItem("betaWarned") !== "true" &&
+        getExistingSettings().network === "bitcoin"
     );
 
     function close() {
