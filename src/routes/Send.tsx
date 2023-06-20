@@ -43,6 +43,7 @@ import { Network } from "~/logic/mutinyWalletSetup";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { ExternalLink } from "~/components/layout/ExternalLink";
 import { InfoBox } from "~/components/InfoBox";
+import { useI18n } from "~/i18n/context";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -193,6 +194,7 @@ function DestinationShower(props: {
 export default function Send() {
     const [state, actions] = useMegaStore();
     const navigate = useNavigate();
+    const i18n = useI18n();
 
     // These can only be set by the user
     const [fieldDestination, setFieldDestination] = createSignal("");
@@ -558,7 +560,7 @@ export default function Send() {
                             title="Start Over"
                         />
                     </Show>
-                    <LargeHeader>Send Bitcoin</LargeHeader>
+                    <LargeHeader>{i18n.t("send_bitcoin")}</LargeHeader>
                     <SuccessModal
                         title={
                             sentDetails()?.amount ? "Sent" : "Payment Failed"
@@ -602,7 +604,7 @@ export default function Send() {
                                             network
                                         )}
                                     >
-                                        View Transaction
+                                        {i18n.t("view_transaction")}
                                     </ExternalLink>
                                 </Show>
                             </Match>
@@ -634,7 +636,7 @@ export default function Send() {
                                             lnurl={lnurlp()}
                                             clearAll={clearAll}
                                         />
-                                        <SmallHeader>Private tags</SmallHeader>
+                                        <SmallHeader>{i18n.t("private_tags")}</SmallHeader>
                                         <TagEditor
                                             selectedValues={selectedContacts()}
                                             setSelectedValues={

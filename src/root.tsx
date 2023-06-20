@@ -16,6 +16,7 @@ import "./root.css";
 import { Provider as MegaStoreProvider } from "~/state/megaStore";
 import { Toaster } from "~/components/Toaster";
 import ErrorDisplay from "./components/ErrorDisplay";
+import { I18nProvider } from "./components/I18nProvider";
 
 export default function Root() {
     return (
@@ -76,12 +77,14 @@ export default function Root() {
             <Body>
                 <Suspense>
                     <ErrorBoundary fallback={(e) => <ErrorDisplay error={e} />}>
-                        <MegaStoreProvider>
-                            <Routes>
-                                <FileRoutes />
-                            </Routes>
-                            <Toaster />
-                        </MegaStoreProvider>
+                        <I18nProvider>
+                            <MegaStoreProvider>
+                                <Routes>
+                                    <FileRoutes />
+                                </Routes>
+                                <Toaster />
+                            </MegaStoreProvider>
+                        </I18nProvider>
                     </ErrorBoundary>
                 </Suspense>
                 <Scripts />
