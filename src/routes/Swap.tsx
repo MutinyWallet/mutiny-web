@@ -227,7 +227,7 @@ export default function Swap() {
         }
 
         // If max we want to use the sweep fee estimator
-        if (amountSats() >= 0n && amountSats() === maxOnchain()) {
+        if (amountSats() > 0n && amountSats() === maxOnchain()) {
             try {
                 return state.mutiny_wallet?.estimate_sweep_channel_open_fee();
             } catch (e) {
@@ -236,7 +236,7 @@ export default function Swap() {
             }
         }
 
-        if (amountSats() >= 0n) {
+        if (amountSats() > 0n) {
             try {
                 return state.mutiny_wallet?.estimate_tx_fee(
                     CHANNEL_FEE_ESTIMATE_ADDRESS,
