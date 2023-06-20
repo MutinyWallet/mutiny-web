@@ -188,10 +188,14 @@ export default function Receive() {
                     undefined,
                     undefined
                 );
-                const newContactId =
-                    await state.mutiny_wallet?.create_new_contact(c);
-                if (newContactId) {
-                    return [newContactId];
+                try {
+                    const newContactId =
+                        await state.mutiny_wallet?.create_new_contact(c);
+                    if (newContactId) {
+                        return [newContactId];
+                    }
+                } catch (e) {
+                    console.error(e);
                 }
             }
 
@@ -221,7 +225,6 @@ export default function Receive() {
 
             return `bitcoin:${raw?.address}?${params}`;
         } catch (e) {
-            
             showToast(new Error("Failed to create invoice. Please try again."));
             console.error(e);
         }
@@ -245,27 +248,33 @@ export default function Receive() {
             const lightning = bip21.invoice;
             const address = bip21.address;
 
-            const invoice = await state.mutiny_wallet?.get_invoice(lightning);
+            try {
+                const invoice = await state.mutiny_wallet?.get_invoice(
+                    lightning
+                );
 
-            // If the invoice has a fees amount that's probably the LSP fee
-            if (invoice?.fees_paid) {
-                setLspFee(invoice.fees_paid);
-            }
+                // If the invoice has a fees amount that's probably the LSP fee
+                if (invoice?.fees_paid) {
+                    setLspFee(invoice.fees_paid);
+                }
 
-            if (invoice && invoice.paid) {
-                setReceiveState("paid");
-                setPaymentInvoice(invoice);
-                return "lightning_paid";
-            }
+                if (invoice && invoice.paid) {
+                    setReceiveState("paid");
+                    setPaymentInvoice(invoice);
+                    return "lightning_paid";
+                }
 
-            const tx = (await state.mutiny_wallet?.check_address(address)) as
-                | OnChainTx
-                | undefined;
+                const tx = (await state.mutiny_wallet?.check_address(
+                    address
+                )) as OnChainTx | undefined;
 
-            if (tx) {
-                setReceiveState("paid");
-                setPaymentTx(tx);
-                return "onchain_paid";
+                if (tx) {
+                    setReceiveState("paid");
+                    setPaymentTx(tx);
+                    return "onchain_paid";
+                }
+            } catch (e) {
+                console.error(e);
             }
         }
     }

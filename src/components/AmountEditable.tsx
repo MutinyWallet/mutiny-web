@@ -162,14 +162,19 @@ export const AmountEditable: ParentComponent<{
     let fiatInputRef!: HTMLInputElement;
 
     const [inboundCapacity] = createResource(async () => {
-        const channels = await state.mutiny_wallet?.list_channels();
-        let inbound = 0;
+        try {
+            const channels = await state.mutiny_wallet?.list_channels();
+            let inbound = 0;
 
-        for (const channel of channels) {
-            inbound += channel.size - (channel.balance + channel.reserve);
+            for (const channel of channels) {
+                inbound += channel.size - (channel.balance + channel.reserve);
+            }
+
+            return inbound;
+        } catch (e) {
+            console.error(e);
+            return 0;
         }
-
-        return inbound;
     });
 
     const warningText = () => {

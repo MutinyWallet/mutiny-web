@@ -26,23 +26,32 @@ import { LoadingShimmer } from "~/components/BalanceBox";
 function ContactRow() {
     const [state, _actions] = useMegaStore();
     const [contacts, { refetch }] = createResource(async () => {
-        const contacts = state.mutiny_wallet?.get_contacts();
+        try {
+            const contacts = state.mutiny_wallet?.get_contacts();
 
-        // FIXME: this is just types shenanigans I believe
-        const c: Contact[] = [];
-        if (contacts) {
-            for (const contact in contacts) {
-                c.push(contacts[contact]);
+            // FIXME: this is just types shenanigans I believe
+            const c: Contact[] = [];
+            if (contacts) {
+                for (const contact in contacts) {
+                    c.push(contacts[contact]);
+                }
             }
+            return c || [];
+        } catch (e) {
+            console.error(e);
+            return [];
         }
-        return c || [];
     });
     const [gradients] = createResource(contacts, gradientsPerContact);
 
     async function createContact(contact: ContactFormValues) {
         // FIXME: npub not valid? other undefineds
         const c = new Contact(contact.name, undefined, undefined, undefined);
-        await state.mutiny_wallet?.create_new_contact(c);
+        try {
+            await state.mutiny_wallet?.create_new_contact(c);
+        } catch (e) {
+            console.error(e);
+        }
         refetch();
     }
 

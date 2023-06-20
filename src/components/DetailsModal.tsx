@@ -353,33 +353,44 @@ export function DetailsIdModal(props: {
 
     // TODO: is there a cleaner way to do refetch when id changes?
     const [data, { refetch }] = createResource(async () => {
-        if (kind() === "Lightning") {
-            console.debug("reading invoice: ", id());
-            const invoice = await state.mutiny_wallet?.get_invoice_by_hash(
-                id()
-            );
-            return invoice;
-        } else if (kind() === "ChannelClose") {
-            console.debug("reading channel close: ", id());
-            const closeItem = await state.mutiny_wallet?.get_channel_closure(
-                id()
-            );
+        try {
+            if (kind() === "Lightning") {
+                console.debug("reading invoice: ", id());
+                const invoice = await state.mutiny_wallet?.get_invoice_by_hash(
+                    id()
+                );
+                return invoice;
+            } else if (kind() === "ChannelClose") {
+                console.debug("reading channel close: ", id());
+                const closeItem =
+                    await state.mutiny_wallet?.get_channel_closure(id());
 
-            return closeItem;
-        } else {
-            console.debug("reading tx: ", id());
-            const tx = await state.mutiny_wallet?.get_transaction(id());
+                return closeItem;
+            } else {
+                console.debug("reading tx: ", id());
+                const tx = await state.mutiny_wallet?.get_transaction(id());
 
-            return tx;
+                return tx;
+            }
+        } catch (e) {
+            console.error(e);
+            return undefined;
         }
     });
 
     const tags = createMemo(() => {
         if (data() && data().labels && data().labels.length > 0) {
-            const contact = state.mutiny_wallet?.get_contact(data().labels[0]);
-            if (contact) {
-                return [tagToMutinyTag(contact)];
-            } else {
+            try {
+                const contact = state.mutiny_wallet?.get_contact(
+                    data().labels[0]
+                );
+                if (contact) {
+                    return [tagToMutinyTag(contact)];
+                } else {
+                    return [];
+                }
+            } catch (e) {
+                console.error(e);
                 return [];
             }
         } else {

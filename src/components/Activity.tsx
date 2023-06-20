@@ -1,13 +1,5 @@
 import { NiceP } from "./layout";
-import {
-    For,
-    Match,
-    Show,
-    Switch,
-    createEffect,
-    createSignal,
-    onMount
-} from "solid-js";
+import { For, Match, Show, Switch, createEffect, createSignal } from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
 import { ActivityItem as MutinyActivity } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
