@@ -56,12 +56,20 @@ export default function Swap() {
     const [isConnecting, setIsConnecting] = createSignal(false);
 
     const [loading, setLoading] = createSignal(false);
-    const [done, setDone] = createSignal(false);
 
     const [selectedPeer, setSelectedPeer] = createSignal<string>("");
 
     const [channelOpenResult, setChannelOpenResult] =
         createSignal<ChannelOpenDetails>();
+
+    function resetState() {
+        setSource("onchain");
+        setAmountSats(0n);
+        setIsConnecting(false);
+        setLoading(false);
+        setSelectedPeer("");
+        setChannelOpenResult(undefined);
+    }
 
     const hasLsp = () => {
         return (
@@ -124,7 +132,6 @@ export default function Swap() {
         if (canSwap()) {
             try {
                 setLoading(true);
-                setDone(false);
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = (nodes[0] as string) || "";
 
@@ -154,7 +161,6 @@ export default function Swap() {
             } catch (e) {
                 setChannelOpenResult({ failure_reason: eify(e) });
             } finally {
-                setDone(true);
                 setLoading(false);
             }
         }
@@ -182,8 +188,7 @@ export default function Swap() {
     };
 
     const amountWarning = () => {
-        // Balance can go down during swap so...
-        if (loading() || !!channelOpenResult()) {
+        if (amountSats() === 0n || !!channelOpenResult()) {
             return undefined;
         }
 
@@ -209,25 +214,25 @@ export default function Swap() {
         return undefined;
     };
 
-    const maxOnchain = createMemo(() => {
+    function calculateMaxOnchain() {
         return (
             (state.balance?.confirmed ?? 0n) +
             (state.balance?.unconfirmed ?? 0n)
         );
+    }
+
+    const maxOnchain = createMemo(() => {
+        return calculateMaxOnchain();
     });
 
     const isMax = createMemo(() => {
-        return amountSats() === maxOnchain();
+        return amountSats() === calculateMaxOnchain();
     });
 
     const feeEstimate = createMemo(() => {
-        // Balance can go down during swap so...
-        if (loading() || !!channelOpenResult() || done()) {
-            return undefined;
-        }
-
+        const max = calculateMaxOnchain();
         // If max we want to use the sweep fee estimator
-        if (amountSats() > 0n && amountSats() === maxOnchain()) {
+        if (amountSats() > 0n && amountSats() === max) {
             try {
                 return state.mutiny_wallet?.estimate_sweep_channel_open_fee();
             } catch (e) {
@@ -270,10 +275,10 @@ export default function Swap() {
                         }
                         open={!!channelOpenResult()}
                         setOpen={(open: boolean) => {
-                            if (!open) setChannelOpenResult(undefined);
+                            if (!open) resetState();
                         }}
                         onConfirm={() => {
-                            setChannelOpenResult(undefined);
+                            resetState();
                             navigate("/");
                         }}
                     >
