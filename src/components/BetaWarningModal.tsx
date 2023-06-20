@@ -42,7 +42,7 @@ export const WarningModal: ParentComponent<{
 }> = (props) => {
     const [open, setOpen] = createSignal(
         localStorage.getItem("betaWarned") !== "true" &&
-        getExistingSettings().network === "bitcoin"
+            getExistingSettings().network === "bitcoin"
     );
 
     function close() {

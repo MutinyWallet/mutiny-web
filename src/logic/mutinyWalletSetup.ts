@@ -120,7 +120,7 @@ export async function setupMutinyWallet(
 
     const mutinyWallet = await new MutinyWallet(
         "",
-        undefined,
+        undefined, // set your mnemonic here to test
         proxy,
         network,
         esplora,

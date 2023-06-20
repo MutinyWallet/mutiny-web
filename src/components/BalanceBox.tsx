@@ -60,7 +60,7 @@ export default function BalanceBox(props: { loading?: boolean }) {
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
                     <div class="flex justify-between">
                         <Amount amountSats={totalOnchain()} showFiat />
-                        <Show when={totalOnchain() != 0n }>
+                        <Show when={totalOnchain() != 0n}>
                             <div class="self-end justify-self-end">
                                 <A href="/swap" class={STYLE}>
                                     <img

@@ -402,6 +402,57 @@ function LnUrlAuth() {
     );
 }
 
+function StaticChannelBackups() {
+    const [state, _] = useMegaStore();
+
+    const [value, setValue] = createSignal("");
+
+    const onSubmit = async (e: SubmitEvent) => {
+        e.preventDefault();
+
+        const scb = value().trim();
+        await state.mutiny_wallet?.recover_from_static_channel_backup(scb);
+
+        alert("Static Channel Backup Recovered!");
+
+        setValue("");
+    };
+
+    async function createSCB() {
+        try {
+            const scb =
+                await state.mutiny_wallet?.create_static_channel_backup();
+            setValue(scb || "");
+            console.log(scb);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    return (
+        <InnerCard>
+            <form class="flex flex-col gap-4" onSubmit={onSubmit}>
+                <TextField.Root
+                    value={value()}
+                    onChange={setValue}
+                    class="flex flex-col gap-4"
+                >
+                    <TextField.Label class="text-sm font-semibold uppercase">
+                        Static Channel Backup
+                    </TextField.Label>
+                    <TextField.Input class="w-full p-2 rounded-lg text-black" />
+                </TextField.Root>
+                <Button layout="small" type="submit">
+                    Recover Static Channel Backup
+                </Button>
+            </form>
+            <Button intent="green" onClick={createSCB}>
+                Create Static Channel Backup
+            </Button>
+        </InnerCard>
+    );
+}
+
 function ListNodes() {
     const [state, _] = useMegaStore();
 
@@ -439,6 +490,8 @@ export default function KitchenSink() {
             <LnUrlAuth />
             <Hr />
             <ResyncOnchain />
+            <Hr />
+            <StaticChannelBackups />
             <Hr />
             <Restart />
             <Hr />
