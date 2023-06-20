@@ -30,7 +30,7 @@ export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
 };
 
 export const Card: ParentComponent<{
-    title?: string;
+    title?: string | null;
     titleElement?: JSX.Element;
 }> = (props) => {
     return (

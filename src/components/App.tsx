@@ -12,9 +12,11 @@ import { BetaWarningModal } from "~/components/BetaWarningModal";
 import settings from "~/assets/icons/settings.svg";
 import pixelLogo from "~/assets/mutiny-pixel-logo.png";
 import { PendingNwc } from "./PendingNwc";
+import { useI18n } from "~/i18n/context";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
+    const i18n = useI18n();
 
     return (
         <SafeArea>
@@ -68,7 +70,7 @@ export default function App() {
                             href="/activity"
                             class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
                         >
-                            View All
+                            {i18n.t("view_all")}
                         </A>
                     </Show>
                 </Card>
@@ -76,7 +78,7 @@ export default function App() {
                     Bugs? Feedback?{" "}
                     <span class="text-neutral-400">
                         <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
-                            Create an issue
+                            {i18n.t("create_an_issue")}
                         </ExternalLink>
                     </span>
                 </p>

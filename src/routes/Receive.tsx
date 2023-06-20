@@ -44,6 +44,7 @@ import { InfoBox } from "~/components/InfoBox";
 import { FeesModal } from "~/components/MoreInfoModal";
 import { IntegratedQr } from "~/components/IntegratedQR";
 import side2side from "~/assets/icons/side-to-side.svg";
+import { useI18n } from "~/i18n/context";
 
 type OnChainTx = {
     transaction: {
@@ -143,6 +144,7 @@ function FeeExplanation(props: { fee: bigint }) {
 export default function Receive() {
     const [state, _actions] = useMegaStore();
     const navigate = useNavigate();
+    const i18n = useI18n();
 
     const [amount, setAmount] = createSignal("");
     const [receiveState, setReceiveState] = createSignal<ReceiveState>("edit");
@@ -331,7 +333,7 @@ export default function Receive() {
                             )
                         }
                     >
-                        Receive Bitcoin
+                        {i18n.t("receive_bitcoin")}
                     </LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
@@ -344,11 +346,11 @@ export default function Receive() {
                                     exitRoute={amount() ? "/receive" : "/"}
                                 />
 
-                                <Card title="Private tags">
+                                <Card title={i18n.t("private_tags")}>
                                     <TagEditor
                                         selectedValues={selectedValues()}
                                         setSelectedValues={setSelectedValues}
-                                        placeholder="Add the sender for your records"
+                                        placeholder={i18n.t("receive_add_the_sender")}
                                     />
                                 </Card>
 
@@ -359,7 +361,7 @@ export default function Receive() {
                                     intent="green"
                                     onClick={onSubmit}
                                 >
-                                    Continue
+                                    {i18n.t("continue")}
                                 </Button>
                             </div>
                         </Match>
@@ -371,7 +373,7 @@ export default function Receive() {
                                 kind={flavor()}
                             />
                             <p class="text-neutral-400 text-center">
-                                Keep Mutiny open to receive the payment.
+                                {i18n.t("keep_mutiny_open")}
                             </p>
                             <button
                                 class="font-bold text-m-grey-400 flex gap-2 p-2 items-center mx-auto"

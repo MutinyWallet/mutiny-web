@@ -1,6 +1,7 @@
 import { NiceP } from "./layout";
 import { For, Match, Show, Switch, createEffect, createSignal } from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
+import { useI18n } from "~/i18n/context";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
 import { DetailsIdModal } from "./DetailsModal";
@@ -77,6 +78,7 @@ function UnifiedActivityItem(props: {
 
 export function CombinedActivity(props: { limit?: number }) {
     const [state, actions] = useMegaStore();
+    const i18n = useI18n();
 
     const [detailsOpen, setDetailsOpen] = createSignal(false);
     const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
@@ -115,7 +117,7 @@ export function CombinedActivity(props: { limit?: number }) {
             <Switch>
                 <Match when={state.activity.length === 0}>
                     <div class="w-full text-center pb-4">
-                        <NiceP>Receive some sats to get started</NiceP>
+                        <NiceP>{i18n.t("receive_some_sats_to_get_started")}</NiceP>
                     </div>
                 </Match>
                 <Match

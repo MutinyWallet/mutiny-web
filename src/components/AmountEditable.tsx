@@ -20,6 +20,7 @@ import { InfoBox } from "./InfoBox";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { FeesModal } from "./MoreInfoModal";
 import { useNavigate } from "@solidjs/router";
+import { useI18n } from "~/i18n/context";
 
 const CHARACTERS = [
     "1",
@@ -193,6 +194,7 @@ export const AmountEditable: ParentComponent<{
     maxAmountSats?: bigint;
     fee?: string;
 }> = (props) => {
+    const i18n = useI18n();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = createSignal(props.initialOpen);
     const [state, _actions] = useMegaStore();
@@ -236,7 +238,7 @@ export const AmountEditable: ParentComponent<{
             if (network === "bitcoin") {
                 return "Your first lightning receive needs to be 50,000 sats or greater. A setup fee will be deducted from the requested amount.";
             } else {
-                return "Your first lightning receive needs to be 10,000 sats or greater. A setup fee will be deducted from the requested amount.";
+                return i18n.t("amount_editable_first_payment_10k_or_greater");
             }
         }
 
@@ -399,7 +401,7 @@ export const AmountEditable: ParentComponent<{
                 <Show
                     when={localSats() !== "0"}
                     fallback={
-                        <div class="inline-block font-semibold">Set amount</div>
+                        <div class="inline-block font-semibold">{i18n.t("set_amount")}</div>
                     }
                 >
                     <InlineAmount amount={maxOrLocalSats()} />
@@ -526,7 +528,7 @@ export const AmountEditable: ParentComponent<{
                                 class="w-full flex-none"
                                 onClick={handleSubmit}
                             >
-                                Set Amount
+                                {i18n.t("set_amount")}
                             </Button>
                         </div>
                     </Dialog.Content>
