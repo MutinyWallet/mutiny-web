@@ -7,12 +7,16 @@ export function Restart() {
     const [hasStopped, setHasStopped] = createSignal(false);
 
     async function toggle() {
-        if (hasStopped()) {
-            await state.mutiny_wallet?.start();
-            setHasStopped(false);
-        } else {
-            await state.mutiny_wallet?.stop();
-            setHasStopped(true);
+        try {
+            if (hasStopped()) {
+                await state.mutiny_wallet?.start();
+                setHasStopped(false);
+            } else {
+                await state.mutiny_wallet?.stop();
+                setHasStopped(true);
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
 

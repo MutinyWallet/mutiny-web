@@ -208,7 +208,12 @@ export const Provider: ParentComponent = (props) => {
             setState({ dismissed_restore_prompt: true });
         },
         async listTags(): Promise<MutinyTagItem[]> {
-            return state.mutiny_wallet?.get_tag_items() as MutinyTagItem[];
+            try {
+                return state.mutiny_wallet?.get_tag_items() as MutinyTagItem[];
+            } catch (e) {
+                console.error(e);
+                return [];
+            }
         },
         setNwc(enabled: boolean) {
             localStorage.setItem("nwc_enabled", enabled.toString());

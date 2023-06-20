@@ -36,17 +36,22 @@ export function LiquidityMonitor() {
     const [state, _actions] = useMegaStore();
 
     const [channelInfo] = createResource(async () => {
-        const channels = await state.mutiny_wallet?.list_channels();
-        let inbound = 0n;
+        try {
+            const channels = await state.mutiny_wallet?.list_channels();
+            let inbound = 0n;
 
-        for (const channel of channels) {
-            inbound =
-                inbound +
-                BigInt(channel.size) -
-                BigInt(channel.balance + channel.reserve);
+            for (const channel of channels) {
+                inbound =
+                    inbound +
+                    BigInt(channel.size) -
+                    BigInt(channel.balance + channel.reserve);
+            }
+
+            return { inbound, channelCount: channels?.length };
+        } catch (e) {
+            console.error(e);
+            return { inbound: 0, channelCount: 0 };
         }
-
-        return { inbound, channelCount: channels?.length };
     });
 
     return (

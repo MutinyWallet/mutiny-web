@@ -6,8 +6,16 @@ export function Logs() {
     const [state, _] = useMegaStore();
 
     async function handleSave() {
-        const logs = await state.mutiny_wallet?.get_logs();
-        downloadTextFile(logs.join("") || "", "mutiny-logs.txt", "text/plain");
+        try {
+            const logs = await state.mutiny_wallet?.get_logs();
+            downloadTextFile(
+                logs.join("") || "",
+                "mutiny-logs.txt",
+                "text/plain"
+            );
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     return (

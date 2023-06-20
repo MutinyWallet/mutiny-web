@@ -408,10 +408,14 @@ export default function Send() {
                     undefined,
                     undefined
                 );
-                const newContactId =
-                    await state.mutiny_wallet?.create_new_contact(c);
-                if (newContactId) {
-                    return [newContactId];
+                try {
+                    const newContactId =
+                        await state.mutiny_wallet?.create_new_contact(c);
+                    if (newContactId) {
+                        return [newContactId];
+                    }
+                } catch (e) {
+                    console.error(e);
                 }
             }
 
