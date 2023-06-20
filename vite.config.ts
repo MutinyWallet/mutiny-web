@@ -7,9 +7,13 @@ import * as path from 'path'
 
 const pwaOptions: Partial<VitePWAOptions> = {
     base: "/",
-    registerType: "autoUpdate",
+    registerType: "prompt",
     devOptions: {
         enabled: false
+    },
+    workbox: {
+        navigateFallback: "/index.html",
+        globPatterns: ["**/*.{js,css,html,ico,png,svg}"]
     },
     includeAssets: ["favicon.ico", "robots.txt"],
     manifest: {

@@ -58,7 +58,7 @@ function SettingsLinkList(props: {
 }
 
 export default function Settings() {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions] = useMegaStore();
 
     return (
         <SafeArea>
@@ -122,20 +122,11 @@ export default function Settings() {
                         ]}
                     />
                     <SettingsLinkList
-                        header="Debug Tools"
+                        header="About"
                         links={[
                             {
-                                href: "/settings/emergencykit",
-                                text: "Emergency Kit",
-                                caption:
-                                    "Diagnose and solve problems with your wallet."
-                            },
-                            {
-                                href: "/settings/admin",
-                                text: "Admin Page",
-                                caption:
-                                    "Our internal debug tools. Use wisely!",
-                                accent: "red"
+                                href: "/settings/about",
+                                text: "About Mutiny"
                             }
                         ]}
                     />

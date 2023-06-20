@@ -1,7 +1,6 @@
 import { DefaultMain, SafeArea, VStack, Card } from "~/components/layout";
 import BalanceBox, { LoadingShimmer } from "~/components/BalanceBox";
 import NavBar from "~/components/NavBar";
-import ReloadPrompt from "~/components/Reload";
 import { A } from "solid-start";
 import { OnboardWarning } from "~/components/OnboardWarning";
 import { CombinedActivity } from "./Activity";
@@ -16,6 +15,7 @@ import { PendingNwc } from "./PendingNwc";
 import { useI18n } from "~/i18n/context";
 import { DecryptDialog } from "./DecryptDialog";
 import { LoadingIndicator } from "./LoadingIndicator";
+import ReloadPrompt from "./Reload";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
