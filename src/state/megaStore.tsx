@@ -225,7 +225,16 @@ export const Provider: ParentComponent = (props) => {
     };
 
     onCleanup(() => {
-        console.warn('Parent Component is being unmounted!!!');
+        console.warn("Parent Component is being unmounted!!!");
+        state.mutiny_wallet
+            ?.stop()
+            .then(() => {
+                console.warn("Successfully stopped mutiny wallet");
+                sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
+            })
+            .catch((e) => {
+                console.error("Error stopping mutiny wallet", e);
+            });
     });
 
     // Fetch status from remote on load
