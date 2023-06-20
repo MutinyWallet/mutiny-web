@@ -1,8 +1,8 @@
 import Reader from "~/components/Reader";
-import { createEffect, createSignal, onMount } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { useNavigate } from "solid-start";
 import { Button } from "~/components/layout";
-import init, { PaymentParams } from "@mutinywallet/waila-wasm";
+import { PaymentParams } from "@mutinywallet/waila-wasm";
 import { showToast } from "~/components/Toaster";
 import { useMegaStore } from "~/state/megaStore";
 import { Result } from "~/utils/typescript";
@@ -82,10 +82,6 @@ export default function Scanner() {
             console.error(e);
         }
     }
-
-    onMount(async () => {
-        await init();
-    });
 
     // When we have a nice result we can head over to the send screen
     createEffect(() => {
