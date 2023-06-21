@@ -34,6 +34,23 @@ export default function Root() {
                     content="Lightning wallet for the web"
                 />
                 <Link rel="icon" href="/favicon.ico" />
+                <Meta name="twitter:card" content="summary_large_image" />
+                <Meta
+                    property="twitter:title"
+                    content="Mutiny Wallet"
+                />
+                <Meta
+                    property="twitter:site"
+                    content="https://app.mutinywallet.com/"
+                />
+                <Meta
+                    property="twitter:description"
+                    content="Sign up for our waitlist and we'll send a message when Mutiny Wallet is ready for you."
+                />
+                <Meta
+                    property="twitter:image"
+                    content="https://app.mutinywallet.com/images/twitter_card_image.png"
+                />
                 <Link
                     rel="apple-touch-icon"
                     href="/images/icon.png"
