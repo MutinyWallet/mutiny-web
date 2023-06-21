@@ -247,6 +247,20 @@ export const AmountEditable: ParentComponent<{
         }
     }
 
+    function handleClose() {
+        props.setAmountSats(BigInt(props.initialAmountSats));
+        setIsOpen(false);
+        setLocalSats(props.initialAmountSats);
+        setLocalFiat(
+            satsToUsd(
+                state.price,
+                parseInt(props.initialAmountSats || "0") || 0,
+                false
+            )
+        );
+        props.exitRoute && navigate(props.exitRoute);
+    }
+
     // What we're all here for in the first place: returning a value
     function handleSubmit(e: SubmitEvent | MouseEvent) {
         e.preventDefault();
@@ -328,44 +342,12 @@ export const AmountEditable: ParentComponent<{
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content
                         class={DIALOG_CONTENT}
-                        onEscapeKeyDown={() => {
-                            props.setAmountSats(
-                                BigInt(props.initialAmountSats)
-                            );
-                            setIsOpen(false);
-                            setLocalSats(props.initialAmountSats);
-                            setLocalFiat(
-                                satsToUsd(
-                                    state.price,
-                                    parseInt(props.initialAmountSats || "0") ||
-                                        0,
-                                    false
-                                )
-                            );
-                            props.exitRoute && navigate(props.exitRoute);
-                        }}
+                        onEscapeKeyDown={handleClose}
                     >
                         {/* TODO: figure out how to submit on enter */}
                         <div class="w-full flex justify-end">
                             <button
-                                onClick={() => {
-                                    props.setAmountSats(
-                                        BigInt(props.initialAmountSats)
-                                    );
-                                    setIsOpen(false);
-                                    setLocalSats(props.initialAmountSats);
-                                    setLocalFiat(
-                                        satsToUsd(
-                                            state.price,
-                                            parseInt(
-                                                props.initialAmountSats || "0"
-                                            ) || 0,
-                                            false
-                                        )
-                                    );
-                                    props.exitRoute &&
-                                        navigate(props.exitRoute);
-                                }}
+                                onClick={handleClose}
                                 class="hover:bg-white/10 rounded-lg active:bg-m-blue w-8 h-8"
                             >
                                 <img src={close} alt="Close" />
