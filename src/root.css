@@ -8,6 +8,10 @@ body {
     min-height: 100.3%;
 }
 
+#mutiny-logo {
+    image-rendering: pixelated;
+}
+
 .bg-gradient {
     @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b];
 }

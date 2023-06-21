@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { Button, FancyCard } from "~/components/layout";
+import { Button, FancyCard, Hr, Indicator } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
 import { A, useNavigate } from "solid-start";
@@ -19,7 +19,7 @@ export function LoadingShimmer() {
 }
 
 const STYLE =
-    "px-2 py-1 rounded-xl border border-neutral-400 text-sm flex gap-2 items-center font-semibold";
+    "px-2 py-1 rounded-xl text-sm flex gap-2 items-center font-semibold";
 
 export default function BalanceBox(props: { loading?: boolean }) {
     const [state, _actions] = useMegaStore();
@@ -39,38 +39,41 @@ export default function BalanceBox(props: { loading?: boolean }) {
 
     return (
         <>
-            <FancyCard title="Lightning">
+            <FancyCard>
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
                     <Amount
                         amountSats={state.balance?.lightning || 0}
                         showFiat
+                        icon="lightning"
                     />
                 </Show>
-            </FancyCard>
-
-            <FancyCard
-                title="On-Chain"
-                subtitle={
-                    (Number(state.balance?.unconfirmed) || 0) +
-                    (Number(state.balance?.force_close) || 0)
-                        ? "Unconfirmed"
-                        : undefined
-                }
-            >
+                <hr class="my-2 border-m-grey-750" />
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
                     <div class="flex justify-between">
-                        <Amount amountSats={totalOnchain()} showFiat />
-                        <Show when={totalOnchain() != 0n }>
-                            <div class="self-end justify-self-end">
-                                <A href="/swap" class={STYLE}>
-                                    <img
-                                        src={shuffle}
-                                        alt="swap"
-                                        class="h-8 w-8"
-                                    />
-                                </A>
-                            </div>
-                        </Show>
+                        <Amount
+                            amountSats={totalOnchain()}
+                            showFiat
+                            icon="chain"
+                        />
+                        <div class="flex flex-col items-end gap-1 justify-between">
+                            <Show when={state.balance?.unconfirmed != 0n}>
+                                <Indicator>Pending</Indicator>
+                            </Show>
+                            <Show when={state.balance?.unconfirmed === 0n}>
+                                <div />
+                            </Show>
+                            <Show when={totalOnchain() != 0n}>
+                                <div class="self-end justify-self-end">
+                                    <A href="/swap" class={STYLE}>
+                                        <img
+                                            src={shuffle}
+                                            alt="swap"
+                                            class="h-6 w-6"
+                                        />
+                                    </A>
+                                </div>
+                            </Show>
+                        </div>
                     </div>
                 </Show>
             </FancyCard>

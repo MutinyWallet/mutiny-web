@@ -1,4 +1,3 @@
-import logo from "~/assets/icons/mutiny-logo.svg";
 import { DefaultMain, SafeArea, VStack, Card } from "~/components/layout";
 import BalanceBox, { LoadingShimmer } from "~/components/BalanceBox";
 import NavBar from "~/components/NavBar";
@@ -6,11 +5,12 @@ import ReloadPrompt from "~/components/Reload";
 import { A } from "solid-start";
 import { OnboardWarning } from "~/components/OnboardWarning";
 import { CombinedActivity } from "./Activity";
-import userClock from "~/assets/icons/user-clock.svg";
 import { useMegaStore } from "~/state/megaStore";
 import { Show } from "solid-js";
 import { ExternalLink } from "./layout/ExternalLink";
 import { BetaWarningModal } from "~/components/BetaWarningModal";
+import settings from "~/assets/icons/settings.svg";
+import pixelLogo from "~/assets/mutiny-pixel-logo.png";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
@@ -19,24 +19,29 @@ export default function App() {
         <SafeArea>
             <DefaultMain>
                 <header class="w-full flex justify-between items-center mt-4 mb-2">
-                    <div class="flex flex-col justify-center gap-2">
-                        <img src={logo} class="h-10" alt="logo" />
+                    <div class="flex items-center gap-2">
+                        <img
+                            id="mutiny-logo"
+                            src={pixelLogo}
+                            class="h-[25px] w-[75px]"
+                            alt="Mutiny logo"
+                        />
                         <Show
                             when={
                                 !state.wallet_loading &&
                                 state.mutiny_wallet?.get_network() !== "bitcoin"
                             }
                         >
-                            <div class="box-border px-2 py-1 -my-1 bg-white/70 rounded text-xs uppercase text-black w-fit">
+                            <div class="box-border px-2 py-1 -my-1 text-white-400 bg-neutral-800 rounded text-xs uppercase  w-fit">
                                 {state.mutiny_wallet?.get_network()}
                             </div>
                         </Show>
                     </div>
                     <A
                         class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue"
-                        href="/activity"
+                        href="/settings"
                     >
-                        <img src={userClock} alt="Activity" class="h-8 w-8" />
+                        <img src={settings} alt="Settings" class="h-6 w-6" />
                     </A>
                 </header>
                 <Show when={!state.wallet_loading}>

@@ -92,18 +92,7 @@ export default function Activity() {
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
-                    <LargeHeader
-                        action={
-                            <A
-                                class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue"
-                                href="/settings"
-                            >
-                                <img src={settings} alt="Settings" />
-                            </A>
-                        }
-                    >
-                        Activity
-                    </LargeHeader>
+                    <LargeHeader>Activity</LargeHeader>
                     <ContactRow />
                     <Tabs.Root defaultValue="mutiny">
                         <Tabs.List class="relative flex justify-around mt-4 mb-8 gap-1 bg-neutral-950 p-1 rounded-xl">
