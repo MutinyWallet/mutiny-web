@@ -1,13 +1,12 @@
+import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { Button, InnerCard, NiceP, VStack } from "~/components/layout";
-import { useMegaStore } from "~/state/megaStore";
 import { downloadTextFile } from "~/utils/download";
 
 export function Logs() {
-    const [state, _] = useMegaStore();
-
     async function handleSave() {
         try {
-            const logs = await state.mutiny_wallet?.get_logs();
+            const logs = await MutinyWallet.get_logs();
+
             downloadTextFile(
                 logs.join("") || "",
                 "mutiny-logs.txt",

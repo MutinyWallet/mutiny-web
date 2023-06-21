@@ -1,11 +1,13 @@
-import { Title } from "solid-start";
+import { A, Title } from "solid-start";
 import {
     Button,
     DefaultMain,
     LargeHeader,
+    NiceP,
     SafeArea,
     SmallHeader
 } from "~/components/layout";
+import { ExternalLink } from "./layout/ExternalLink";
 
 export default function ErrorDisplay(props: { error: Error }) {
     return (
@@ -18,6 +20,17 @@ export default function ErrorDisplay(props: { error: Error }) {
                     <span class="font-bold">{props.error.name}</span>:{" "}
                     {props.error.message}
                 </p>
+                <NiceP>
+                    Try reloading this page or clicking the "Dangit" button. If
+                    you keep having problems,{" "}
+                    <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
+                        reach out to us for support.
+                    </ExternalLink>
+                </NiceP>
+                <NiceP>
+                    Getting desperate? Try the{" "}
+                    <A href="/emergencykit">emergency kit.</A>
+                </NiceP>
                 <div class="h-full" />
                 <Button
                     onClick={() => (window.location.href = "/")}

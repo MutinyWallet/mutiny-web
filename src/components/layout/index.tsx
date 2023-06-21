@@ -1,4 +1,11 @@
-import { JSX, ParentComponent, Show, Suspense, createResource } from "solid-js";
+import {
+    JSX,
+    ParentComponent,
+    Show,
+    Suspense,
+    createResource,
+    createSignal
+} from "solid-js";
 import Linkify from "./Linkify";
 import { Button, ButtonLink } from "./Button";
 import { Checkbox as KCheckbox, Separator } from "@kobalte/core";
@@ -7,6 +14,7 @@ import check from "~/assets/icons/check.svg";
 import { MutinyTagItem } from "~/utils/tags";
 import { generateGradient } from "~/utils/gradientHash";
 import close from "~/assets/icons/close.svg";
+import { A } from "solid-start";
 
 export { Button, ButtonLink, Linkify };
 
@@ -84,9 +92,24 @@ export const DefaultMain: ParentComponent = (props) => {
 };
 
 export const FullscreenLoader = () => {
+    const [waitedTooLong, setWaitedTooLong] = createSignal(false);
+
+    setTimeout(() => {
+        setWaitedTooLong(true);
+    }, 10000);
+
     return (
-        <div class="w-full h-[100dvh] flex justify-center items-center">
+        <div class="w-full h-[100dvh] flex flex-col gap-4 justify-center items-center">
             <LoadingSpinner wide />
+            <Show when={waitedTooLong()}>
+                <p class="max-w-[20rem] text-neutral-400">
+                    Stuck on this screen? Try reloading. If that doesn't work,
+                    check out the{" "}
+                    <A class="text-white" href="/emergencykit">
+                        emergency kit.
+                    </A>
+                </p>
+            </Show>
         </div>
     );
 };

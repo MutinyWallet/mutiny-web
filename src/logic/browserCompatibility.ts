@@ -6,7 +6,7 @@ export async function checkBrowserCompatibility(): Promise<boolean> {
         localStorage.removeItem("test");
     } catch (e) {
         console.error(e);
-        throw new Error("LocalStorage is not supported.");
+        throw new Error("Browser error: LocalStorage is not supported.");
     }
 
     // Check if the browser supports WebAssembly
@@ -17,7 +17,7 @@ export async function checkBrowserCompatibility(): Promise<boolean> {
             Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00)
         )
     ) {
-        throw new Error("WebAssembly is not supported.");
+        throw new Error("Browser error: WebAssembly is not supported.");
     }
 
     console.debug("Checking indexedDB");
@@ -26,7 +26,7 @@ export async function checkBrowserCompatibility(): Promise<boolean> {
         await openDatabase();
     } catch (e) {
         console.error(e);
-        throw new Error("IndexedDB is not supported.");
+        throw new Error("Browser error: IndexedDB is not supported.");
     }
 
     return true;

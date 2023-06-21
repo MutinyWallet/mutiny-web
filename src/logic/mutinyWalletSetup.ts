@@ -117,15 +117,18 @@ export async function setupMutinyWallet(
     console.log("Using esplora address", esplora);
     console.log("Using rgs address", rgs);
     console.log("Using lsp address", lsp);
-
     const mutinyWallet = await new MutinyWallet(
+        // Password
         "",
+        // Mnemonic
         undefined,
         proxy,
         network,
         esplora,
         rgs,
-        lsp
+        lsp,
+        // Do not connect peers
+        undefined
     );
 
     const nodes = await mutinyWallet.list_nodes();
