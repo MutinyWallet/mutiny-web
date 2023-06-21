@@ -12,7 +12,6 @@ import {
 } from "solid-js";
 import { Hr, ModalCloseButton, TinyButton, VStack } from "~/components/layout";
 import {
-    ChannelClosure,
     MutinyChannel,
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
@@ -34,6 +33,13 @@ import { Network } from "~/logic/mutinyWalletSetup";
 import { AmountSmall } from "./Amount";
 import { ExternalLink } from "./layout/ExternalLink";
 import { InfoBox } from "./InfoBox";
+
+type ChannelClosure = {
+    channel_id: string;
+    node_id: string;
+    reason: string;
+    timestamp: number;
+};
 
 export const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm";
 export const DIALOG_POSITIONER =

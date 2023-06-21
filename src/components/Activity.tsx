@@ -1,7 +1,7 @@
 import { NiceP } from "./layout";
 import { For, Match, Show, Switch, createEffect, createSignal } from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
-import { ActivityItem as MutinyActivity } from "@mutinywallet/mutiny-wasm";
+import { Contact } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
 import { DetailsIdModal } from "./DetailsModal";
 
@@ -39,8 +39,18 @@ export type UtxoItem = {
     redshifted?: boolean;
 };
 
+export type ActivityItem = {
+    kind: HackActivityType
+    id: string;
+    amount_sats: number;
+    inbound: boolean;
+    labels: string[];
+    contacts: Contact[];
+    last_updated: number;
+};
+
 function UnifiedActivityItem(props: {
-    item: MutinyActivity;
+    item: ActivityItem;
     onClick: (id: string, kind: HackActivityType) => void;
 }) {
     const click = () => {
