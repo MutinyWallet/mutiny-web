@@ -14,6 +14,8 @@ import { SeedWords } from "~/components/SeedWords";
 import { SettingsStringsEditor } from "~/components/SettingsStringsEditor";
 import { useMegaStore } from "~/state/megaStore";
 import { LiquidityMonitor } from "~/components/LiquidityMonitor";
+import { A } from "solid-start";
+import { Suspense } from "solid-js";
 
 export default function Settings() {
     const [store, _actions] = useMegaStore();
@@ -41,6 +43,13 @@ export default function Settings() {
                             </VStack>
                         </Card>
                         <SettingsStringsEditor />
+                        <Card title="Emergency Kit">
+                            <NiceP>
+                                Having some serious problems with your wallet?
+                                Check out the{" "}
+                                <A href="/emergencykit">emergency kit.</A>
+                            </NiceP>
+                        </Card>
                         <Card title="If you know what you're doing">
                             <VStack>
                                 <NiceP>

@@ -6,13 +6,13 @@ import { showToast } from "./Toaster";
 import { downloadTextFile } from "~/utils/download";
 import { createFileUploader } from "@solid-primitives/upload";
 import { ConfirmDialog } from "./Dialog";
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 
-export function ImportExport() {
+export function ImportExport(props: { emergency?: boolean }) {
     const [state, _] = useMegaStore();
 
     async function handleSave() {
-        const json = await state.mutiny_wallet?.export_json();
+        const json = await MutinyWallet.export_json();
         downloadTextFile(json || "", "mutiny-state.json");
     }
 
@@ -39,17 +39,28 @@ export function ImportExport() {
                 fileReader.readAsText(file, "UTF-8");
             });
 
+            if (state.mutiny_wallet && !props.emergency) {
+                console.log("Mutiny wallet loaded, stopping");
+                try {
+                    await state.mutiny_wallet.stop();
+                } catch (e) {
+                    console.error(e);
+                }
+            } else {
+                // If there's no mutiny wallet loaded we need to initialize WASM
+                console.log("Initializing WASM");
+                await initMutinyWallet();
+            }
+
             // This should throw if there's a parse error, so we won't end up clearing
             if (text) {
                 JSON.parse(text);
-                MutinyWallet.import_json(text);
+                await MutinyWallet.import_json(text);
             }
 
-            if (state.mutiny_wallet) {
-                await state.mutiny_wallet.stop();
-            }
-
-            window.location.href = "/";
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000);
         } catch (e) {
             showToast(eify(e));
         } finally {

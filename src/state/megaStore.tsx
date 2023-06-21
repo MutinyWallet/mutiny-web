@@ -151,17 +151,23 @@ export const Provider: ParentComponent = (props) => {
                 });
             } catch (e) {
                 console.error(e);
+                setState({ setup_error: eify(e) });
             }
         },
         async deleteMutinyWallet(): Promise<void> {
-            await state.mutiny_wallet?.stop();
-            setState((prevState) => ({
-                ...prevState,
-                mutiny_wallet: undefined,
-                deleting: true
-            }));
-            MutinyWallet.import_json("{}");
-            localStorage.clear();
+            try {
+                if (state.mutiny_wallet) {
+                    await state.mutiny_wallet?.stop();
+                }
+                setState((prevState) => ({
+                    ...prevState,
+                    mutiny_wallet: undefined,
+                    deleting: true
+                }));
+                MutinyWallet.import_json("{}");
+            } catch (e) {
+                console.error(e);
+            }
         },
         setWaitlistId(waitlist_id: string) {
             setState({ waitlist_id });

@@ -1,7 +1,32 @@
 import { Title } from "solid-start";
-import { DefaultMain, LargeHeader, NiceP, SafeArea } from "~/components/layout";
+import {
+    DefaultMain,
+    LargeHeader,
+    NiceP,
+    SafeArea,
+    SmallHeader
+} from "~/components/layout";
 import { ExternalLink } from "./layout/ExternalLink";
 import { Match, Switch } from "solid-js";
+import { ImportExport } from "./ImportExport";
+import { Logs } from "./Logs";
+import { DeleteEverything } from "./DeleteEverything";
+
+function ErrorFooter() {
+    return (
+        <>
+            <div class="h-full" />
+            <p class="self-center text-neutral-500 mt-4">
+                Bugs? Feedback?{" "}
+                <span class="text-neutral-400">
+                    <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
+                        Create an issue
+                    </ExternalLink>
+                </span>
+            </p>
+        </>
+    );
+}
 
 export default function SetupErrorDisplay(props: { error: Error }) {
     return (
@@ -22,18 +47,10 @@ export default function SetupErrorDisplay(props: { error: Error }) {
                             this page, or close this tab and refresh the other
                             one.
                         </NiceP>
-                        <div class="h-full" />
-                        <p class="self-center text-neutral-500 mt-4">
-                            Bugs? Feedback?{" "}
-                            <span class="text-neutral-400">
-                                <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
-                                    Create an issue
-                                </ExternalLink>
-                            </span>
-                        </p>
+                        <ErrorFooter />
                     </DefaultMain>
                 </Match>
-                <Match when={true}>
+                <Match when={props.error.message.startsWith("Browser error")}>
                     <Title>Incompatible browser</Title>
                     <DefaultMain>
                         <LargeHeader>Incompatible browser detected</LargeHeader>
@@ -61,15 +78,39 @@ export default function SetupErrorDisplay(props: { error: Error }) {
                             Supported Browsers
                         </ExternalLink>
 
-                        <div class="h-full" />
-                        <p class="self-center text-neutral-500 mt-4">
-                            Bugs? Feedback?{" "}
-                            <span class="text-neutral-400">
-                                <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
-                                    Create an issue
-                                </ExternalLink>
-                            </span>
+                        <ErrorFooter />
+                    </DefaultMain>
+                </Match>
+                <Match when={true}>
+                    <Title>Failed to load</Title>
+                    <DefaultMain>
+                        <LargeHeader>Failed to load Mutiny</LargeHeader>
+                        <p class="bg-white/10 rounded-xl p-4 font-mono">
+                            <span class="font-bold">{props.error.name}</span>:{" "}
+                            {props.error.message}
                         </p>
+                        <NiceP>
+                            Something went wrong while booting up Mutiny Wallet.
+                        </NiceP>
+                        <NiceP>
+                            If your wallet seems broken, here are some tools to
+                            try to debug and repair it.
+                        </NiceP>
+                        <NiceP>
+                            If you have any questions on what these buttons do,
+                            please{" "}
+                            <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
+                                reach out to us for support.
+                            </ExternalLink>
+                        </NiceP>
+                        <ImportExport emergency />
+                        <Logs />
+                        <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red">
+                            <SmallHeader>Danger zone</SmallHeader>
+                            <DeleteEverything emergency />
+                        </div>
+
+                        <ErrorFooter />
                     </DefaultMain>
                 </Match>
             </Switch>
