@@ -54,18 +54,7 @@ export const FancyCard: ParentComponent<{
     tag?: JSX.Element;
 }> = (props) => {
     return (
-        <div class="border border-black/50 rounded-xl border-b-4 p-4 flex flex-col gap-2 bg-neutral-800/50 shadow-fancy-card">
-            <div class="w-full flex justify-between items-center">
-                <div class="flex gap-2">
-                    {props.title && <SmallHeader>{props.title}</SmallHeader>}
-                    {props.subtitle && (
-                        <SmallHeader class="text-neutral-500">
-                            {props.subtitle}
-                        </SmallHeader>
-                    )}
-                </div>
-                {props.tag && props.tag}
-            </div>
+        <div class="border border-black/50 rounded-xl border-b-4 p-4 flex flex-col gap-2 bg-m-grey-800 shadow-fancy-card">
             {props.children}
         </div>
     );
@@ -154,7 +143,7 @@ export const LoadingSpinner = (props: { big?: boolean; wide?: boolean }) => {
     );
 };
 
-export const Hr = () => <Separator.Root class="my-4 border-white/20" />;
+export const Hr = () => <Separator.Root class="my-4 border-m-grey-750" />;
 
 export const LargeHeader: ParentComponent<{ action?: JSX.Element }> = (
     props
