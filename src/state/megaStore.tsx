@@ -14,16 +14,13 @@ import {
     MutinyWalletSettingStrings,
     setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
-import {
-    MutinyBalance,
-    MutinyWallet,
-    ActivityItem as MutinyActivity
-} from "@mutinywallet/mutiny-wasm";
+import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ParsedParams } from "~/routes/Scanner";
 import { MutinyTagItem } from "~/utils/tags";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import eify from "~/utils/eify";
 import { timeout } from "~/utils/timeout";
+import { ActivityItem } from "~/components/Activity";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -45,7 +42,7 @@ export type MegaStore = [
         dismissed_restore_prompt: boolean;
         wallet_loading: boolean;
         nwc_enabled: boolean;
-        activity: MutinyActivity[];
+        activity: ActivityItem[];
         setup_error?: Error;
         is_pwa: boolean;
         existing_tab_detected: boolean;
@@ -85,7 +82,7 @@ export const Provider: ParentComponent = (props) => {
             localStorage.getItem("dismissed_restore_prompt") === "true",
         wallet_loading: true,
         nwc_enabled: localStorage.getItem("nwc_enabled") === "true",
-        activity: [] as MutinyActivity[],
+        activity: [] as ActivityItem[],
         setup_error: undefined as Error | undefined,
         is_pwa: window.matchMedia("(display-mode: standalone)").matches,
         existing_tab_detected: false
@@ -248,6 +245,38 @@ export const Provider: ParentComponent = (props) => {
         actions.fetchUserStatus().then((status) => {
             setState({ user_status: status });
 
+            function handleExisting() {
+                if (state.existing_tab_detected) {
+                    setState({
+                        setup_error: new Error(
+                            "Existing tab detected, aborting setup"
+                        )
+                    });
+                } else {
+                    console.log("running setup node manager...");
+                    actions
+                        .setupMutinyWallet()
+                        .then(() => console.log("node manager setup done"))
+                        .catch((e) => {
+                            console.error(e);
+                            setState({ setup_error: eify(e) });
+                        });
+
+                    // Setup an event listener to stop the mutiny wallet when the page unloads
+                    window.onunload = async (_e) => {
+                        console.log("stopping mutiny_wallet");
+                        await state.mutiny_wallet?.stop();
+                        console.log("mutiny_wallet stopped");
+                    };
+                }
+            }
+
+            function handleGoodBrowser() {
+                console.log("checking if any other tabs are open");
+                // 500ms should hopefully be enough time for any tabs to reply
+                timeout(500).then(handleExisting);
+            }
+
             // Only load node manager when status is approved
             if (
                 state.user_status === "approved" &&
@@ -255,39 +284,7 @@ export const Provider: ParentComponent = (props) => {
                 !state.deleting
             ) {
                 console.log("checking for browser compatibility...");
-                actions.checkBrowserCompat().then((browserIsGood) => {
-                    if (browserIsGood) {
-                        console.log("checking if any other tabs are open");
-                        // 500ms should hopefully be enough time for any tabs to reply
-                        timeout(500).then(() => {
-                            if (state.existing_tab_detected) {
-                                setState({
-                                    setup_error: new Error(
-                                        "Existing tab detected, aborting setup"
-                                    )
-                                });
-                            } else {
-                                console.log("running setup node manager...");
-                                actions
-                                    .setupMutinyWallet()
-                                    .then(() =>
-                                        console.log("node manager setup done")
-                                    )
-                                    .catch((e) => {
-                                        console.error(e);
-                                        setState({ setup_error: eify(e) });
-                                    });
-
-                                // Setup an event listener to stop the mutiny wallet when the page unloads
-                                window.onunload = async (_e) => {
-                                    console.log("stopping mutiny_wallet");
-                                    await state.mutiny_wallet?.stop();
-                                    console.log("mutiny_wallet stopped");
-                                };
-                            }
-                        });
-                    }
-                });
+                actions.checkBrowserCompat().then(handleGoodBrowser);
             }
         });
     });

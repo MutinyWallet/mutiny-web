@@ -1,12 +1,13 @@
 import { Component, For, createEffect, createSignal } from "solid-js";
 
-import { Event, nip19 } from "nostr-tools";
+import { nip19 } from "nostr-tools";
 import { Linkify } from "~/components/layout";
 
 type NostrEvent = {
     content: string;
     created_at: number;
     id?: string;
+    tags: string;
 };
 
 const Note: Component<{ e: NostrEvent }> = (props) => {
@@ -46,7 +47,7 @@ const Note: Component<{ e: NostrEvent }> = (props) => {
     );
 };
 
-function filterReplies(event: Event) {
+function filterReplies(event: NostrEvent) {
     // If there's a "p" tag or an "e" tag we want to return false, otherwise true
     for (const tag of event.tags) {
         if (tag[0] === "p" || tag[0] === "e") {
@@ -56,7 +57,7 @@ function filterReplies(event: Event) {
     return true;
 }
 
-const Notes: Component<{ notes: Event[] }> = (props) => {
+const Notes: Component<{ notes: NostrEvent[] }> = (props) => {
     return (
         <ul class="flex flex-col">
             <For
