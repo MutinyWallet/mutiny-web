@@ -11,7 +11,12 @@ export async function checkBrowserCompatibility(): Promise<boolean> {
 
     // Check if the browser supports WebAssembly
     console.debug("Checking WebAssembly");
-    if (typeof WebAssembly !== 'object' || !WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00))) {
+    if (
+        typeof WebAssembly !== "object" ||
+        !WebAssembly.validate(
+            Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00)
+        )
+    ) {
         throw new Error("WebAssembly is not supported.");
     }
 
