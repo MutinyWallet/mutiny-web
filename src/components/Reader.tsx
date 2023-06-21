@@ -1,37 +1,32 @@
 import QrScanner from "qr-scanner";
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { onCleanup, onMount } from "solid-js";
 
 export default function Scanner(props: { onResult: (result: string) => void }) {
-    let container: HTMLVideoElement | null;
+    let container: HTMLVideoElement | undefined;
+    let scanner: QrScanner | undefined;
 
-    // TODO: not sure it's appropriate to use a signal for this but it works!
-    const [scanner, setScanner] = createSignal<QrScanner | null>(null);
-
-    const handleResult = (result: { data: string }) => {
-        props.onResult(result.data);
+    const handleResult = ({ data }: { data: string }) => {
+        props.onResult(data);
     };
 
-    onMount(() => {
+    onMount(async () => {
         if (container) {
-            const newScanner = new QrScanner(container, handleResult, {
+            scanner = new QrScanner(container, handleResult, {
                 returnDetailedScanResult: true
             });
-            newScanner.start();
-            setScanner(newScanner);
+            await scanner.start();
         }
     });
 
     onCleanup(() => {
-        scanner()?.destroy();
-        setScanner(null);
-        container = null;
+        scanner?.destroy();
     });
 
     return (
         <>
             <div id="video-container">
                 <video
-                    ref={(el) => (container = el)}
+                    ref={container}
                     class="w-full h-full fixed object-cover bg-gray"
                 />
             </div>
