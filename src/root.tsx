@@ -35,20 +35,31 @@ export default function Root() {
                 />
                 <Link rel="icon" href="/favicon.ico" />
                 <Meta name="twitter:card" content="summary_large_image" />
+                <Meta name="twitter:title" content="Mutiny Wallet" />
                 <Meta
-                    property="twitter:title"
-                    content="Mutiny Wallet"
-                />
-                <Meta
-                    property="twitter:site"
-                    content="https://app.mutinywallet.com/"
-                />
-                <Meta
-                    property="twitter:description"
+                    name="twitter:description"
                     content="Sign up for our waitlist and we'll send a message when Mutiny Wallet is ready for you."
                 />
                 <Meta
-                    property="twitter:image"
+                    name="twitter:site"
+                    content="https://app.mutinywallet.com/"
+                />
+                <Meta
+                    name="twitter:image"
+                    content="https://app.mutinywallet.com/images/twitter_card_image.png"
+                />
+                <Meta property="og:type" content="website" />
+                <Meta property="og:title" content="Mutiny Wallet" />
+                <Meta
+                    property="og:description"
+                    content="Sign up for our waitlist and we'll send a message when Mutiny Wallet is ready for you."
+                />
+                <Meta
+                    property="og:url"
+                    content="https://app.mutinywallet.com/"
+                />
+                <Meta
+                    property="og:image"
                     content="https://app.mutinywallet.com/images/twitter_card_image.png"
                 />
                 <Link
