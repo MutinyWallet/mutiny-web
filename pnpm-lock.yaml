@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   '@kobalte/core':
     specifier: ^0.9.6
@@ -15,8 +11,8 @@ dependencies:
     specifier: ^0.13.2
     version: 0.13.2(solid-js@1.7.5)
   '@mutinywallet/mutiny-wasm':
-    specifier: 0.3.12
-    version: 0.3.12
+    specifier: 0.3.13
+    version: 0.3.13
   '@mutinywallet/waila-wasm':
     specifier: ^0.2.0
     version: 0.2.0
@@ -1692,8 +1688,8 @@ packages:
       solid-js: 1.7.5
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.3.12:
-    resolution: {integrity: sha512-mlBFrG59RoAV4aF4e46Uq9UaIPSXd5LcFl+RMM05b5UUDKR4Etf5pQ9ynoKcJ3Aa/P/YS6CLTCwBhFBgOqb3AA==}
+  /@mutinywallet/mutiny-wasm@0.3.13:
+    resolution: {integrity: sha512-Tlizm1iaMesZNO8zbDSAulKha4U7E5puTnIIMp/Z+9lMF/vmnTb5bgC2dMjB7nC11AL869hlixgbGQk4p8N3LQ==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.2.0:
@@ -5677,3 +5673,7 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
