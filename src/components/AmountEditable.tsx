@@ -4,7 +4,8 @@ import {
     Show,
     createResource,
     createSignal,
-    onMount
+    onMount,
+    onCleanup
 } from "solid-js";
 import { Button } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
@@ -12,6 +13,7 @@ import { satsToUsd, usdToSats } from "~/utils/conversions";
 import { Dialog } from "@kobalte/core";
 import close from "~/assets/icons/close.svg";
 import pencil from "~/assets/icons/pencil.svg";
+import currencySwap from "~/assets/icons/currency-swap.svg";
 import { InlineAmount } from "./AmountCard";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { InfoBox } from "./InfoBox";
@@ -76,8 +78,32 @@ function satsInputSanitizer(input: string): string {
 function SingleDigitButton(props: {
     character: string;
     onClick: (c: string) => void;
+    onClear: () => void;
     fiat: boolean;
 }) {
+    let holdTimer: number;
+    const holdThreshold = 500;
+
+    function onHold() {
+        holdTimer = setTimeout(() => {
+            props.onClear();
+        }, holdThreshold);
+    }
+
+    function endHold() {
+        clearTimeout(holdTimer);
+    }
+
+    function onClick() {
+        props.onClick(props.character);
+
+        clearTimeout(holdTimer);
+    }
+
+    onCleanup(() => {
+        clearTimeout(holdTimer);
+    });
+
     return (
         // Skip the "." if it's fiat
         <Show
@@ -85,8 +111,11 @@ function SingleDigitButton(props: {
             fallback={<div />}
         >
             <button
-                class="disabled:opacity-50 p-2 rounded-lg md:hover:bg-white/10 active:bg-m-blue text-white text-4xl font-semi font-mono"
-                onClick={() => props.onClick(props.character)}
+                class="disabled:opacity-50 flex justify-center items-center p-2 rounded-lg md:hover:bg-white/10 active:bg-m-blue text-white text-4xl font-semi font-inter"
+                onMouseDown={onHold}
+                onMouseUp={endHold}
+                onMouseLeave={endHold}
+                onClick={onClick}
             >
                 {props.character}
             </button>
@@ -99,14 +128,14 @@ function BigScalingText(props: { text: string; fiat: boolean }) {
 
     return (
         <h1
-            class="font-light text-center transition-transform ease-out duration-300 text-4xl"
+            class="font-light px-2 text-center transition-transform ease-out duration-300 text-4xl"
             classList={{
-                "scale-90": chars() > 9,
-                "scale-95": chars() > 8,
-                "scale-100": chars() > 7,
-                "scale-105": chars() > 6,
-                "scale-110": chars() > 5,
-                "scale-125": chars() > 4,
+                "scale-90": chars() >= 11,
+                "scale-95": chars() === 10,
+                "scale-100": chars() === 9,
+                "scale-105": chars() === 7,
+                "scale-110": chars() === 6,
+                "scale-125": chars() === 5,
                 "scale-150": chars() <= 4
             }}
         >
@@ -118,17 +147,38 @@ function BigScalingText(props: { text: string; fiat: boolean }) {
 
 function SmallSubtleAmount(props: { text: string; fiat: boolean }) {
     return (
-        <h2 class="text-xl font-light text-neutral-400">
-            &#8776;&nbsp;{props.text}&nbsp;
-            <span class="text-sm">{props.fiat ? "USD" : "SATS"}</span>
+        <h2 class="flex flex-row items-end text-xl font-light text-neutral-400">
+            ~{props.text}&nbsp;
+            <span class="text-base">{props.fiat ? "USD" : "SATS"}</span>
+            <img
+                class={"pl-[4px] pb-[4px] hover:cursor-pointer"}
+                src={currencySwap}
+                height={24}
+                width={24}
+                alt="Swap currencies"
+            />
         </h2>
     );
 }
 
 function toDisplayHandleNaN(input: string, _fiat: boolean): string {
     const parsed = Number(input);
+
+    //handle decimals so the user can always see the accurate amount
     if (isNaN(parsed)) {
         return "0";
+    } else if (parsed === Math.trunc(parsed) && input.endsWith(".")) {
+        return parsed.toLocaleString() + ".";
+    } else if (parsed === Math.trunc(parsed) && input.endsWith(".0")) {
+        return parsed.toFixed(1);
+    } else if (parsed === Math.trunc(parsed) && input.endsWith(".00")) {
+        return parsed.toFixed(2);
+    } else if (
+        parsed !== Math.trunc(parsed) &&
+        input.endsWith("0") &&
+        input.includes(".", input.length - 3)
+    ) {
+        return parsed.toFixed(2);
     } else {
         return parsed.toLocaleString();
     }
@@ -212,7 +262,11 @@ export const AmountEditable: ParentComponent<{
         let sane;
 
         if (character === "DEL") {
-            sane = inputSanitizer(localValue().slice(0, -1));
+            if (localValue().length <= 1) {
+                sane = "0";
+            } else {
+                sane = inputSanitizer(localValue().slice(0, -1));
+            }
         } else {
             if (localValue() === "0") {
                 sane = inputSanitizer(character);
@@ -229,6 +283,21 @@ export const AmountEditable: ParentComponent<{
         } else {
             setLocalSats(sane);
             setLocalFiat(satsToUsd(state.price, Number(sane) || 0, false));
+        }
+
+        // After a button press make sure we re-focus the input
+        focus();
+    }
+
+    function handleClear() {
+        const isFiatMode = mode() === "fiat";
+
+        if (isFiatMode) {
+            setLocalFiat("0");
+            setLocalSats(usdToSats(state.price, parseFloat("0") || 0, false));
+        } else {
+            setLocalSats("0");
+            setLocalFiat(satsToUsd(state.price, Number("0") || 0, false));
         }
 
         // After a button press make sure we re-focus the input
@@ -265,6 +334,7 @@ export const AmountEditable: ParentComponent<{
     function handleSubmit(e: SubmitEvent | MouseEvent) {
         e.preventDefault();
         props.setAmountSats(BigInt(localSats()));
+        setLocalFiat(satsToUsd(state.price, Number(localSats()) || 0, false));
         setIsOpen(false);
     }
 
@@ -377,26 +447,28 @@ export const AmountEditable: ParentComponent<{
                         </form>
 
                         <div class="flex flex-col flex-1 justify-around gap-2 max-w-[400px] mx-auto w-full">
-                            <div
-                                class="p-4 flex flex-col gap-4 items-center justify-center"
-                                onClick={toggle}
-                            >
-                                <BigScalingText
-                                    text={
-                                        mode() === "fiat"
-                                            ? displayFiat()
-                                            : displaySats()
-                                    }
-                                    fiat={mode() === "fiat"}
-                                />
-                                <SmallSubtleAmount
-                                    text={
-                                        mode() === "fiat"
-                                            ? displaySats()
-                                            : displayFiat()
-                                    }
-                                    fiat={mode() !== "fiat"}
-                                />
+                            <div class="flex justify-center">
+                                <div
+                                    class="p-4 flex flex-col gap-4 w-max items-center justify-center"
+                                    onClick={toggle}
+                                >
+                                    <BigScalingText
+                                        text={
+                                            mode() === "fiat"
+                                                ? displayFiat()
+                                                : displaySats()
+                                        }
+                                        fiat={mode() === "fiat"}
+                                    />
+                                    <SmallSubtleAmount
+                                        text={
+                                            mode() !== "fiat"
+                                                ? displayFiat()
+                                                : displaySats()
+                                        }
+                                        fiat={mode() !== "fiat"}
+                                    />
+                                </div>
                             </div>
                             <Show when={warningText() && !props.skipWarnings}>
                                 <InfoBox accent="blue">
@@ -444,12 +516,13 @@ export const AmountEditable: ParentComponent<{
                                             fiat={mode() === "fiat"}
                                             character={character}
                                             onClick={handleCharacterInput}
+                                            onClear={handleClear}
                                         />
                                     )}
                                 </For>
                             </div>
                             <Button
-                                intent="blue"
+                                intent="green"
                                 class="w-full flex-none"
                                 onClick={handleSubmit}
                             >

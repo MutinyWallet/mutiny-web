@@ -53,7 +53,7 @@ function USDShower(props: { amountSats: string; fee?: string }) {
         <Show when={!(props.amountSats === "0")}>
             <KeyValue gray key="">
                 <div class="self-end">
-                    &#8776; {amountInUsd()}&nbsp;
+                    ~{amountInUsd()}&nbsp;
                     <span class="text-sm">USD</span>
                 </div>
             </KeyValue>
