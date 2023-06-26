@@ -82,7 +82,7 @@ export default function NavBar(props: { activeTab: ActiveTab }) {
                     }
                 >
                     <A href="/settings">
-                        <img src={settings} alt="settings" />
+                        <img src={settings} alt="Settings" />
                     </A>
                 </li>
             </ul>

@@ -71,6 +71,11 @@ export default function Settings() {
                                 accent: "green"
                             },
                             {
+                                href: "/settings/restore",
+                                text: "Restore",
+                                accent: "red"
+                            },
+                            {
                                 href: "/settings/servers",
                                 text: "Servers",
                                 caption:
