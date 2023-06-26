@@ -20,7 +20,8 @@ import {
     Indicator,
     LargeHeader,
     MutinyWalletGuard,
-    SafeArea
+    SafeArea,
+    SimpleDialog
 } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
@@ -33,16 +34,16 @@ import { StyledRadioGroup } from "~/components/layout/Radio";
 import { showToast } from "~/components/Toaster";
 import { useNavigate } from "solid-start";
 import { AmountCard } from "~/components/AmountCard";
-import { ShareCard } from "~/components/ShareCard";
 import { BackButton } from "~/components/layout/BackButton";
 import { MutinyTagItem } from "~/utils/tags";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { MegaCheck } from "~/components/successfail/MegaCheck";
 import { ExternalLink } from "~/components/layout/ExternalLink";
-import { CopyableQR } from "~/components/CopyableQR";
 import { InfoBox } from "~/components/InfoBox";
 import { FeesModal } from "~/components/MoreInfoModal";
+import { IntegratedQr } from "~/components/IntegratedQR";
+import side2side from "~/assets/icons/side-to-side.svg";
 
 type OnChainTx = {
     transaction: {
@@ -69,12 +70,27 @@ type OnChainTx = {
 };
 
 const RECEIVE_FLAVORS = [
-    { value: "unified", label: "Unified", caption: "Sender decides" },
-    { value: "lightning", label: "Lightning", caption: "Fast and cool" },
-    { value: "onchain", label: "On-chain", caption: "Just like Satoshi did it" }
+    {
+        value: "unified",
+        label: "Unified",
+        caption:
+            "Combines a bitcoin address and a lightning invoice. Sender chooses payment method."
+    },
+    {
+        value: "lightning",
+        label: "Lightning invoice",
+        caption:
+            "Ideal for small transactions. Usually lower fees than on-chain."
+    },
+    {
+        value: "onchain",
+        label: "Bitcoin address",
+        caption:
+            "On-chain, just like Satoshi did it. Ideal for very large transactions."
+    }
 ];
 
-type ReceiveFlavor = "unified" | "lightning" | "onchain";
+export type ReceiveFlavor = "unified" | "lightning" | "onchain";
 type ReceiveState = "edit" | "show" | "paid";
 type PaidState = "lightning_paid" | "onchain_paid";
 
@@ -292,6 +308,8 @@ export default function Receive() {
         });
     });
 
+    const [methodChooserOpen, setMethodChooserOpen] = createSignal(false);
+
     return (
         <MutinyWalletGuard>
             <SafeArea>
@@ -347,31 +365,34 @@ export default function Receive() {
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>
                             <FeeWarning fee={lspFee()} flavor={flavor()} />
-                            <CopyableQR value={receiveString() ?? ""} />
+                            <IntegratedQr
+                                value={receiveString() ?? ""}
+                                amountSats={amount() || "0"}
+                                kind={flavor()}
+                            />
                             <p class="text-neutral-400 text-center">
-                                <Switch>
-                                    <Match when={flavor() === "lightning"}>
-                                        Show or share this invoice with the
-                                        sender.
-                                    </Match>
-                                    <Match when={flavor() === "onchain"}>
-                                        Show or share this address with the
-                                        sender.
-                                    </Match>
-                                    <Match when={flavor() === "unified"}>
-                                        Show or share this code with the sender.
-                                        Sender decides method of payment.
-                                    </Match>
-                                </Switch>
+                                Keep Mutiny open to receive the payment.
                             </p>
-                            <StyledRadioGroup
-                                small
-                                value={flavor()}
-                                onValueChange={setFlavor}
-                                choices={RECEIVE_FLAVORS}
-                                accent="white"
-                            />{" "}
-                            <ShareCard text={receiveString() ?? ""} />
+                            <button
+                                class="font-bold text-m-grey-400 flex gap-2 p-2 items-center mx-auto"
+                                onClick={() => setMethodChooserOpen(true)}
+                            >
+                                <span>Choose format</span>
+                                <img class="w-4 h-4" src={side2side} />
+                            </button>
+                            <SimpleDialog
+                                title="Choose payment format"
+                                open={methodChooserOpen()}
+                                setOpen={(open) => setMethodChooserOpen(open)}
+                            >
+                                <StyledRadioGroup
+                                    value={flavor()}
+                                    onValueChange={setFlavor}
+                                    choices={RECEIVE_FLAVORS}
+                                    accent="white"
+                                    vertical
+                                />
+                            </SimpleDialog>
                         </Match>
                         <Match
                             when={

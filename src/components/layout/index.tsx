@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import Linkify from "./Linkify";
 import { Button, ButtonLink } from "./Button";
-import { Checkbox as KCheckbox, Separator } from "@kobalte/core";
+import { Dialog, Checkbox as KCheckbox, Separator } from "@kobalte/core";
 import { useMegaStore } from "~/state/megaStore";
 import check from "~/assets/icons/check.svg";
 import { MutinyTagItem } from "~/utils/tags";
@@ -74,7 +74,6 @@ export const SettingsCard: ParentComponent<{
         </VStack>
     );
 };
-
 
 export const SafeArea: ParentComponent = (props) => {
     return (
@@ -166,7 +165,7 @@ export const LargeHeader: ParentComponent<{ action?: JSX.Element }> = (
 ) => {
     return (
         <header class="w-full flex justify-between items-center mt-4 mb-2">
-            <h1 class="text-3xl font-semibold">{props.children}</h1>
+            <h1 class="text-2xl font-semibold">{props.children}</h1>
             <Show when={props.action}>{props.action}</Show>
         </header>
     );
@@ -282,3 +281,38 @@ export function ModalCloseButton() {
         </button>
     );
 }
+
+export const SIMPLE_OVERLAY = "fixed inset-0 z-50 bg-black/70 backdrop-blur-md";
+export const SIMPLE_DIALOG_POSITIONER =
+    "fixed inset-0 z-50 flex items-center justify-center";
+export const SIMPLE_DIALOG_CONTENT =
+    "max-w-[500px] w-[90vw] max-h-[100dvh] overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/80 backdrop-blur-md shadow-xl rounded-xl border border-white/10";
+
+export const SimpleDialog: ParentComponent<{
+    title: string;
+    open: boolean;
+    setOpen: (open: boolean) => void;
+}> = (props) => {
+    return (
+        <Dialog.Root open={props.open} onOpenChange={props.setOpen}>
+            <Dialog.Portal>
+                <Dialog.Overlay class={SIMPLE_OVERLAY} />
+                <div class={SIMPLE_DIALOG_POSITIONER}>
+                    <Dialog.Content class={SIMPLE_DIALOG_CONTENT}>
+                        <div class="flex justify-between mb-2 items-center">
+                            <Dialog.Title>
+                                <SmallHeader>{props.title}</SmallHeader>
+                            </Dialog.Title>
+                            <Dialog.CloseButton>
+                                <ModalCloseButton />
+                            </Dialog.CloseButton>
+                        </div>
+                        <Dialog.Description class="flex flex-col gap-4">
+                            {props.children}
+                        </Dialog.Description>
+                    </Dialog.Content>
+                </div>
+            </Dialog.Portal>
+        </Dialog.Root>
+    );
+};

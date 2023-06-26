@@ -15,16 +15,20 @@ export function StyledRadioGroup(props: {
     onValueChange: (value: string) => void;
     small?: boolean;
     accent?: "red" | "white";
+    vertical?: boolean;
 }) {
     return (
         // TODO: rewrite this with CVA, props are bad for tailwind
         <RadioGroup.Root
             value={props.value}
             onChange={props.onValueChange}
-            class={"grid w-full gap-4"}
+            class={"w-full gap-4"}
             classList={{
-                "grid-cols-2": props.choices.length === 2,
-                "grid-cols-3": props.choices.length === 3,
+                "flex flex-col": props.vertical,
+                "grid grid-cols-2":
+                    props.choices.length === 2 && !props.vertical,
+                "grid grid-cols-3":
+                    props.choices.length === 3 && !props.vertical,
                 "gap-2": props.small
             }}
         >
