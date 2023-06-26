@@ -1,7 +1,15 @@
 import { useMegaStore } from "~/state/megaStore";
 import { Hr, Button, InnerCard, VStack } from "~/components/layout";
 import NostrWalletConnectModal from "~/components/NostrWalletConnectModal";
-import { For, Show, Suspense, createResource, createSignal } from "solid-js";
+import {
+    For,
+    Match,
+    Show,
+    Suspense,
+    Switch,
+    createResource,
+    createSignal
+} from "solid-js";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import { Collapsible, TextField } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
@@ -155,30 +163,31 @@ type RefetchChannelsListType = (
     info?: unknown
 ) => MutinyChannel[] | Promise<MutinyChannel[] | undefined> | null | undefined;
 
+type PendingChannelAction = "close" | "force_close" | "abandon";
+
 function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
     const [state, _] = useMegaStore();
 
-    const [confirmOpen, setConfirmOpen] = createSignal(false);
+    const [pendingChannelAction, setPendingChannelAction] =
+        createSignal<PendingChannelAction>();
     const [confirmLoading, setConfirmLoading] = createSignal(false);
 
-    function handleCloseChannel() {
-        setConfirmOpen(true);
-    }
-
-    async function confirmCloseChannel() {
+    async function confirmChannelAction() {
+        const action = pendingChannelAction();
+        if (!action) return;
         setConfirmLoading(true);
         try {
             await state.mutiny_wallet?.close_channel(
                 props.channel.outpoint as string,
-                false,
-                false
+                action === "force_close",
+                action === "abandon"
             );
         } catch (e) {
             console.error(e);
             showToast(eify(e));
         }
         setConfirmLoading(false);
-        setConfirmOpen(false);
+        setPendingChannelAction(undefined);
     }
 
     return (
@@ -204,18 +213,51 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
                     <Button
                         intent="glowy"
                         layout="xs"
-                        onClick={handleCloseChannel}
+                        onClick={() => setPendingChannelAction("close")}
                     >
                         Close Channel
                     </Button>
+                    <Button
+                        intent="glowy"
+                        layout="xs"
+                        onClick={() => setPendingChannelAction("force_close")}
+                    >
+                        Force close Channel
+                    </Button>
+                    <Button
+                        intent="glowy"
+                        layout="xs"
+                        onClick={() => setPendingChannelAction("abandon")}
+                    >
+                        Abandon Channel
+                    </Button>
                 </VStack>
                 <ConfirmDialog
-                    open={confirmOpen()}
-                    onConfirm={confirmCloseChannel}
-                    onCancel={() => setConfirmOpen(false)}
+                    open={!!pendingChannelAction()}
+                    onConfirm={confirmChannelAction}
+                    onCancel={() => setPendingChannelAction(undefined)}
                     loading={confirmLoading()}
                 >
-                    <p>Are you sure you want to close this channel?</p>
+                    <Switch>
+                        <Match when={pendingChannelAction() === "close"}>
+                            <p>Are you sure you want to close this channel?</p>
+                        </Match>
+                        <Match when={pendingChannelAction() === "force_close"}>
+                            <p>
+                                Are you sure you want to force close this
+                                channel? Your funds will take a few days to
+                                redeem on chain.
+                            </p>
+                        </Match>
+                        <Match when={pendingChannelAction() === "abandon"}>
+                            <p>
+                                Are you sure you want to abandon this channel?
+                                Typically only do this if the opening
+                                transaction will never confirm. Otherwise, you
+                                will lose funds.
+                            </p>
+                        </Match>
+                    </Switch>
                 </ConfirmDialog>
             </Collapsible.Content>
         </Collapsible.Root>
