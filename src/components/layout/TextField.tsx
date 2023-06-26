@@ -2,7 +2,7 @@ import { TextField as KTextField } from "@kobalte/core";
 import { type JSX, Show, splitProps } from "solid-js";
 import { TinyText } from ".";
 
-type TextFieldProps = {
+export type TextFieldProps = {
     name: string;
     type?: "text" | "email" | "tel" | "password" | "url" | "date";
     label?: string;
