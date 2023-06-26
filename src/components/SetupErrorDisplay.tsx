@@ -28,17 +28,20 @@ function ErrorFooter() {
     );
 }
 
-export default function SetupErrorDisplay(props: { error: Error }) {
+export default function SetupErrorDisplay(props: { initialError: Error }) {
+    // Error shouldn't be reactive, so we assign to it so it just gets rendered with the first value
+    const error = props.initialError;
+
     return (
         <SafeArea>
             <Switch>
-                <Match when={props.error.message.startsWith("Existing tab")}>
+                <Match when={error.message.startsWith("Existing tab")}>
                     <Title>Multiple tabs detected</Title>
                     <DefaultMain>
                         <LargeHeader>Multiple tabs detected</LargeHeader>
                         <p class="bg-white/10 rounded-xl p-4 font-mono">
-                            <span class="font-bold">{props.error.name}</span>:{" "}
-                            {props.error.message}
+                            <span class="font-bold">{error.name}</span>:{" "}
+                            {error.message}
                         </p>
                         <NiceP>
                             Mutiny currently only supports use in one tab at a
@@ -50,13 +53,13 @@ export default function SetupErrorDisplay(props: { error: Error }) {
                         <ErrorFooter />
                     </DefaultMain>
                 </Match>
-                <Match when={props.error.message.startsWith("Browser error")}>
+                <Match when={error.message.startsWith("Browser error")}>
                     <Title>Incompatible browser</Title>
                     <DefaultMain>
                         <LargeHeader>Incompatible browser detected</LargeHeader>
                         <p class="bg-white/10 rounded-xl p-4 font-mono">
-                            <span class="font-bold">{props.error.name}</span>:{" "}
-                            {props.error.message}
+                            <span class="font-bold">{error.name}</span>:{" "}
+                            {error.message}
                         </p>
                         <NiceP>
                             Mutiny requires a modern browser that supports
@@ -86,8 +89,8 @@ export default function SetupErrorDisplay(props: { error: Error }) {
                     <DefaultMain>
                         <LargeHeader>Failed to load Mutiny</LargeHeader>
                         <p class="bg-white/10 rounded-xl p-4 font-mono">
-                            <span class="font-bold">{props.error.name}</span>:{" "}
-                            {props.error.message}
+                            <span class="font-bold">{error.name}</span>:{" "}
+                            {error.message}
                         </p>
                         <NiceP>
                             Something went wrong while booting up Mutiny Wallet.

@@ -134,6 +134,10 @@ export const Provider: ParentComponent = (props) => {
             settings?: MutinyWalletSettingStrings
         ): Promise<void> {
             try {
+                // If we're already in an error state there should be no reason to continue
+                if (state.setup_error) {
+                    throw state.setup_error;
+                }
                 setState({ wallet_loading: true });
                 const mutinyWallet = await setupMutinyWallet(settings);
                 // Get balance optimistically
