@@ -169,7 +169,9 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
         setConfirmLoading(true);
         try {
             await state.mutiny_wallet?.close_channel(
-                props.channel.outpoint as string
+                props.channel.outpoint as string,
+                false,
+                false
             );
         } catch (e) {
             console.error(e);
