@@ -1,7 +1,9 @@
 import { Card, VStack } from "~/components/layout";
 import { useCopy } from "~/utils/useCopy";
 import copyIcon from "~/assets/icons/copy.svg";
+import copyBlack from "~/assets/icons/copy-black.svg";
 import shareIcon from "~/assets/icons/share.svg";
+import shareBlack from "~/assets/icons/share-black.svg";
 import eyeIcon from "~/assets/icons/eye.svg";
 import { Show, createSignal } from "solid-js";
 import { JsonModal } from "./JsonModal";
@@ -9,7 +11,10 @@ import { JsonModal } from "./JsonModal";
 const STYLE =
     "px-4 py-2 rounded-xl border-2 border-white flex gap-2 items-center font-semibold hover:text-m-blue transition-colors";
 
-export function ShareButton(props: { receiveString: string }) {
+export function ShareButton(props: {
+    receiveString: string;
+    whiteBg?: boolean;
+}) {
     async function share(receiveString: string) {
         // If the browser doesn't support share we can just copy the address
         if (!navigator.share) {
@@ -29,14 +34,20 @@ export function ShareButton(props: { receiveString: string }) {
     return (
         <button class={STYLE} onClick={(_) => share(props.receiveString)}>
             <span>Share</span>
-            <img src={shareIcon} alt="share" />
+            <img src={props.whiteBg ? shareBlack : shareIcon} alt="share" />
         </button>
     );
 }
 
-export function TruncateMiddle(props: { text: string }) {
+export function TruncateMiddle(props: { text: string; whiteBg?: boolean }) {
     return (
-        <div class="flex text-neutral-300 font-mono">
+        <div
+            class="flex font-mono"
+            classList={{
+                "text-black": props.whiteBg,
+                "text-neutral-300": !props.whiteBg
+            }}
+        >
             <span class="truncate">{props.text}</span>
             <span class="pr-2">
                 {props.text.length > 8 ? props.text.slice(-8) : ""}
@@ -65,7 +76,11 @@ export function StringShower(props: { text: string }) {
     );
 }
 
-export function CopyButton(props: { text?: string; title?: string }) {
+export function CopyButton(props: {
+    text?: string;
+    title?: string;
+    whiteBg?: boolean;
+}) {
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     function handleCopy() {
@@ -75,7 +90,7 @@ export function CopyButton(props: { text?: string; title?: string }) {
     return (
         <button class={STYLE} onClick={handleCopy}>
             {copied() ? "Copied" : props.title ?? "Copy"}
-            <img src={copyIcon} alt="copy" />
+            <img src={props.whiteBg ? copyBlack : copyIcon} alt="copy" />
         </button>
     );
 }

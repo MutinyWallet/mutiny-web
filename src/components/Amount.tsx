@@ -17,6 +17,7 @@ export function Amount(props: {
     loading?: boolean;
     centered?: boolean;
     icon?: "lightning" | "chain";
+    whiteBg?: boolean;
 }) {
     const [state, _] = useMegaStore();
 
@@ -26,7 +27,9 @@ export function Amount(props: {
     return (
         <div
             class="flex flex-col gap-1"
-            classList={{ "items-center": props.centered }}
+            classList={{
+                "items-center": props.centered
+            }}
         >
             <div class="flex gap-2 items-center">
                 <Show when={props.icon === "lightning"}>
@@ -35,7 +38,12 @@ export function Amount(props: {
                 <Show when={props.icon === "chain"}>
                     <img src={chain} alt="chain" class="h-[18px]" />
                 </Show>
-                <h1 class="text-2xl font-light">
+                <h1
+                    class="text-2xl font-light"
+                    classList={{
+                        "text-black": props.whiteBg
+                    }}
+                >
                     {props.loading
                         ? "..."
                         : prettyPrintAmount(props.amountSats)}
@@ -44,7 +52,13 @@ export function Amount(props: {
                 </h1>
             </div>
             <Show when={props.showFiat}>
-                <h2 class="text-sm font-light text-white/70">
+                <h2
+                    class="text-sm font-light"
+                    classList={{
+                        "text-black": props.whiteBg,
+                        "text-white/70": !props.whiteBg
+                    }}
+                >
                     &#8776; {props.loading ? "..." : amountInUsd()}&nbsp;
                     <span class="text-sm">USD</span>
                 </h2>

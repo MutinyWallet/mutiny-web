@@ -1,7 +1,6 @@
 import {
     DefaultMain,
     LargeHeader,
-    MutinyWalletGuard,
     SafeArea,
     SettingsCard,
     VStack
