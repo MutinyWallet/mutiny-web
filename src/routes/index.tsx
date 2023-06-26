@@ -12,7 +12,7 @@ export default function Home() {
     return (
         <Switch fallback={<FullscreenLoader />}>
             <Match when={state.setup_error}>
-                <SetupErrorDisplay error={state.setup_error!} />
+                <SetupErrorDisplay initialError={state.setup_error!} />
             </Match>
             <Match when={state.user_status === "approved"}>
                 <App />
