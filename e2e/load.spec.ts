@@ -5,18 +5,18 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("initial load", async ({ page }) => {
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Mutiny Wallet/);
+    // Expect a title "to contain" a substring.
+    await expect(page).toHaveTitle(/Mutiny Wallet/);
 
-  // Wait up to 30 seconds for the "header" text to be visible
-  await page.waitForSelector("text=Lightning", { timeout: 30000 });
+    await expect(page.locator("header")).toContainText(["Activity"]);
 
-  await expect(page.locator("header")).toContainText(["Lightning", "On-Chain", "Activity"]);
+    // Wait up to 30 seconds for an image element matching the selector to be visible
+    await page.waitForSelector("img[alt='lightning']", { timeout: 30000 });
 
-  // Wait for an element matching the selector to appear in DOM.
-  await page.waitForSelector("text=0 SATS");
+    // Wait for an element matching the selector to appear in DOM.
+    await page.waitForSelector("text=0 SATS");
 
-  console.log("Page loaded.");
+    console.log("Page loaded.");
 });
 
 test("first receive", async ({ page }) => {
