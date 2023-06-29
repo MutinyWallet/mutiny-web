@@ -75,7 +75,6 @@ export const SettingsCard: ParentComponent<{
     );
 };
 
-
 export const SafeArea: ParentComponent = (props) => {
     return (
         <div class="h-[100dvh] safe-left safe-right">

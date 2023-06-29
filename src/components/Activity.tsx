@@ -40,7 +40,7 @@ export type UtxoItem = {
 };
 
 export type ActivityItem = {
-    kind: HackActivityType
+    kind: HackActivityType;
     id: string;
     amount_sats: number;
     inbound: boolean;
