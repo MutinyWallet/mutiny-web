@@ -11,10 +11,7 @@ import {
     createResource
 } from "solid-js";
 import { Hr, ModalCloseButton, TinyButton, VStack } from "~/components/layout";
-import {
-    MutinyChannel,
-    MutinyInvoice
-} from "@mutinywallet/mutiny-wasm";
+import { MutinyChannel, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { OnChainTx } from "./Activity";
 
 import bolt from "~/assets/icons/bolt-black.svg";
