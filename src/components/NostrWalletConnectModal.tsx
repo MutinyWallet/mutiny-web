@@ -1,8 +1,9 @@
-import { QRCodeSVG } from "solid-qr-code";
-import { As, Dialog } from "@kobalte/core";
-import { Button, Card, InnerCard, NiceP } from "~/components/layout";
-import { useMegaStore } from "~/state/megaStore";
-import { createResource, Show } from "solid-js";
+import {QRCodeSVG} from "solid-qr-code";
+import {As, Dialog} from "@kobalte/core";
+import {Button, Card, InnerCard, NiceP} from "~/components/layout";
+import {useMegaStore} from "~/state/megaStore";
+import {createResource, Show} from "solid-js";
+import {NwcProfile} from "../../../mutiny-node/mutiny-wasm/pkg";
 
 const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm";
 const DIALOG_POSITIONER = "fixed inset-0 z-50 flex items-center justify-center";
@@ -13,9 +14,15 @@ const SMALL_HEADER = "text-sm font-semibold uppercase";
 export default function NostrWalletConnectModal() {
     const [state, actions] = useMegaStore();
 
-    const getConnectionURI = () => {
+    const getConnectionURI = async () => {
         if (state.mutiny_wallet) {
-            return state.mutiny_wallet.get_nwc_uri();
+            // todo eventually remove this
+            // for now just create a profile if we don't have one
+            const profiles: NwcProfile[] = state.mutiny_wallet.get_nwc_profiles();
+            if (profiles.length <= 0) {
+                await state.mutiny_wallet.create_nwc_profile("zaps", BigInt(10_000))
+            }
+            return state.mutiny_wallet.get_nwc_uri(0);
         } else {
             return undefined;
         }
@@ -39,13 +46,13 @@ export default function NostrWalletConnectModal() {
     return (
         <InnerCard title="Nostr Wallet Connect">
             <NiceP>Test out some nostr stuff.</NiceP>
-            <div />
+            <div/>
             <Dialog.Root>
                 <Dialog.Trigger asChild>
                     <As component={Button}>Show Nostr Wallet Connect URI</As>
                 </Dialog.Trigger>
                 <Dialog.Portal>
-                    <Dialog.Overlay class={OVERLAY} />
+                    <Dialog.Overlay class={OVERLAY}/>
                     <div class={DIALOG_POSITIONER}>
                         <Dialog.Content class={DIALOG_CONTENT}>
                             <div class="flex justify-between mb-2">
