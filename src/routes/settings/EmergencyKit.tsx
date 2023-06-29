@@ -17,7 +17,7 @@ export default function EmergencyKit() {
     return (
         <SafeArea>
             <DefaultMain>
-                <BackLink />
+                <BackLink href="/settings" title="Settings" />
                 <LargeHeader>Emergency Kit</LargeHeader>
                 <VStack>
                     <NiceP>
@@ -39,7 +39,7 @@ export default function EmergencyKit() {
                     </div>
                 </VStack>
             </DefaultMain>
-            <NavBar activeTab="none" />
+            <NavBar activeTab="settings" />
         </SafeArea>
     );
 }

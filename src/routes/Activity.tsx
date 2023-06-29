@@ -12,8 +12,6 @@ import {
 } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { CombinedActivity } from "~/components/Activity";
-import { A } from "solid-start";
-import settings from "~/assets/icons/settings.svg";
 import { Tabs } from "@kobalte/core";
 import { gradientsPerContact } from "~/utils/gradientHash";
 import { ContactEditor } from "~/components/ContactEditor";

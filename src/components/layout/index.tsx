@@ -60,6 +60,22 @@ export const FancyCard: ParentComponent<{
     );
 };
 
+export const SettingsCard: ParentComponent<{
+    title?: string;
+}> = (props) => {
+    return (
+        <VStack smallgap>
+            <div class="mt-2 pl-4">
+                <SmallHeader>{props.title}</SmallHeader>
+            </div>
+            <div class="rounded-xl py-4 flex flex-col gap-2 bg-m-grey-800 w-full">
+                {props.children}
+            </div>
+        </VStack>
+    );
+};
+
+
 export const SafeArea: ParentComponent = (props) => {
     return (
         <div class="h-[100dvh] safe-left safe-right">

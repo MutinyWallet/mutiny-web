@@ -49,7 +49,7 @@ function Quiz(props: { setHasCheckedAll: (hasChecked: boolean) => void }) {
     );
 }
 
-export default function App() {
+export default function Backup() {
     const [store, actions] = useMegaStore();
     const navigate = useNavigate();
 
@@ -65,7 +65,7 @@ export default function App() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink />
+                    <BackLink href="/settings" title="Settings" />
                     <LargeHeader>Backup</LargeHeader>
 
                     <VStack>
@@ -98,7 +98,7 @@ export default function App() {
                         </Button>
                     </VStack>
                 </DefaultMain>
-                <NavBar activeTab="none" />
+                <NavBar activeTab="settings" />
             </SafeArea>
         </MutinyWalletGuard>
     );

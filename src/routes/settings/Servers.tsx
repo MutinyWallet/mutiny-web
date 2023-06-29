@@ -5,10 +5,20 @@ import {
     getExistingSettings,
     setAndGetMutinySettings
 } from "~/logic/mutinyWalletSetup";
-import { Button, Card, NiceP } from "~/components/layout";
-import { showToast } from "./Toaster";
+import {
+    Button,
+    Card,
+    DefaultMain,
+    LargeHeader,
+    MutinyWalletGuard,
+    NiceP,
+    SafeArea
+} from "~/components/layout";
+import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
-import { ExternalLink } from "./layout/ExternalLink";
+import { ExternalLink } from "~/components/layout/ExternalLink";
+import { BackLink } from "~/components/layout/BackLink";
+import NavBar from "~/components/NavBar";
 
 export function SettingsStringsEditor() {
     const existingSettings = getExistingSettings();
@@ -105,5 +115,20 @@ export function SettingsStringsEditor() {
                 </Button>
             </Form>
         </Card>
+    );
+}
+
+export default function Servers() {
+    return (
+        <MutinyWalletGuard>
+            <SafeArea>
+                <DefaultMain>
+                    <BackLink href="/settings" title="Settings" />
+                    <LargeHeader>Backup</LargeHeader>
+                    <SettingsStringsEditor />
+                </DefaultMain>
+                <NavBar activeTab="settings" />
+            </SafeArea>
+        </MutinyWalletGuard>
     );
 }
