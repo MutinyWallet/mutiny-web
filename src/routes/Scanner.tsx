@@ -77,7 +77,8 @@ export default function Scanner() {
     async function handlePaste() {
         try {
             const text = await navigator.clipboard.readText();
-            setScanResult(text);
+            const trimText = text.trim();
+            setScanResult(trimText);
         } catch (e) {
             console.error(e);
         }
