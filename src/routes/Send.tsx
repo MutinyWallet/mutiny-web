@@ -131,9 +131,10 @@ function DestinationInput(props: {
             <SmallHeader>Destination</SmallHeader>
             <textarea
                 value={props.fieldDestination}
-                onInput={(e) =>
-                    props.setFieldDestination(e.currentTarget.value)
-                }
+                onInput={(e) => {
+                    const trim = e.currentTarget.value.trim();
+                    props.setFieldDestination(trim);
+                }}
                 placeholder="bitcoin:..."
                 class="p-2 rounded-lg bg-white/10 placeholder-neutral-400"
             />
@@ -384,8 +385,9 @@ export default function Send() {
 
         try {
             const text = await navigator.clipboard.readText();
-            setFieldDestination(text);
-            parsePaste(text);
+            const trimText = text.trim();
+            setFieldDestination(trimText);
+            parsePaste(trimText);
         } catch (e) {
             console.error(e);
         }
