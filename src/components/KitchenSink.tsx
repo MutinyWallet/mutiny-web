@@ -1,6 +1,5 @@
 import { useMegaStore } from "~/state/megaStore";
 import { Hr, Button, InnerCard, VStack } from "~/components/layout";
-import NostrWalletConnectModal from "~/components/NostrWalletConnectModal";
 import {
     For,
     Match,
@@ -16,10 +15,8 @@ import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import eify from "~/utils/eify";
 import { ConfirmDialog } from "~/components/Dialog";
 import { showToast } from "~/components/Toaster";
-import { ImportExport } from "~/components/ImportExport";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { ExternalLink } from "./layout/ExternalLink";
-import { Logs } from "./Logs";
 import { Restart } from "./Restart";
 import { ResyncOnchain } from "./ResyncOnchain";
 import { MiniStringShower } from "./DetailsModal";
@@ -399,53 +396,6 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
     );
 }
 
-function LnUrlAuth() {
-    const [state, _] = useMegaStore();
-
-    const [value, setValue] = createSignal("");
-
-    const onSubmit = async (e: SubmitEvent) => {
-        e.preventDefault();
-
-        const lnurl = value().trim();
-        await state.mutiny_wallet?.lnurl_auth(0, lnurl);
-
-        setValue("");
-    };
-
-    return (
-        <InnerCard>
-            <form class="flex flex-col gap-4" onSubmit={onSubmit}>
-                <TextField.Root
-                    value={value()}
-                    onChange={setValue}
-                    validationState={
-                        value() == "" ||
-                        value().toLowerCase().startsWith("lnurl")
-                            ? "valid"
-                            : "invalid"
-                    }
-                    class="flex flex-col gap-4"
-                >
-                    <TextField.Label class="text-sm font-semibold uppercase">
-                        LNURL Auth
-                    </TextField.Label>
-                    <TextField.Input
-                        class="w-full p-2 rounded-lg text-black"
-                        placeholder="LNURL..."
-                    />
-                    <TextField.ErrorMessage class="text-red-500">
-                        Expecting something like LNURL...
-                    </TextField.ErrorMessage>
-                </TextField.Root>
-                <Button layout="small" type="submit">
-                    Auth
-                </Button>
-            </form>
-        </InnerCard>
-    );
-}
-
 function ListNodes() {
     const [state, _] = useMegaStore();
 
@@ -470,23 +420,15 @@ function ListNodes() {
 export default function KitchenSink() {
     return (
         <>
-            <Logs />
-            <Hr />
             <ListNodes />
-            <Hr />
-            <NostrWalletConnectModal />
             <Hr />
             <PeersList />
             <Hr />
             <ChannelsList />
             <Hr />
-            <LnUrlAuth />
-            <Hr />
             <ResyncOnchain />
             <Hr />
             <Restart />
-            <Hr />
-            <ImportExport />
             <Hr />
         </>
     );

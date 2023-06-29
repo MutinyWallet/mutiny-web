@@ -83,7 +83,7 @@ export function OnboardWarning() {
                                 intent="blue"
                                 layout="xs"
                                 class="self-auto"
-                                href="/backup"
+                                href="/settings/backup"
                             >
                                 Backup
                             </ButtonLink>

@@ -35,7 +35,7 @@ export default function Admin() {
                         </div>
                     </VStack>
                 </DefaultMain>
-                <NavBar activeTab="none" />
+                <NavBar activeTab="settings" />
             </SafeArea>
         </MutinyWalletGuard>
     );
