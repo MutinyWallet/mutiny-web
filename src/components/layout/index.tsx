@@ -1,20 +1,23 @@
 import {
     JSX,
+    Match,
     ParentComponent,
     Show,
     Suspense,
+    Switch,
     createResource,
     createSignal
 } from "solid-js";
 import Linkify from "./Linkify";
 import { Button, ButtonLink } from "./Button";
-import { Dialog, Checkbox as KCheckbox, Separator } from "@kobalte/core";
+import { Collapsible, Checkbox as KCheckbox, Dialog, Separator } from "@kobalte/core";
 import { useMegaStore } from "~/state/megaStore";
 import check from "~/assets/icons/check.svg";
 import { MutinyTagItem } from "~/utils/tags";
 import { generateGradient } from "~/utils/gradientHash";
 import close from "~/assets/icons/close.svg";
 import { A } from "solid-start";
+import down from "~/assets/icons/down.svg";
 
 export { Button, ButtonLink, Linkify };
 
@@ -74,6 +77,39 @@ export const SettingsCard: ParentComponent<{
         </VStack>
     );
 };
+
+export const Collapser: ParentComponent<{
+    title: string;
+    defaultOpen?: boolean;
+    activityLight?: "on" | "off";
+}> = (props) => {
+    return (
+        <Collapsible.Root class="collapsible">
+            <Collapsible.Trigger class="flex w-full justify-between py-2 hover:bg-m-grey-750 active:bg-m-grey-900 px-4">
+                <div class="flex items-center gap-2">
+                    <Switch>
+                        <Match when={props.activityLight === "on"}>
+                            <div class="w-2 h-2 rounded-full bg-m-green" />
+                        </Match>
+                        <Match when={props.activityLight === "off"}>
+                            <div class="w-2 h-2 rounded-full bg-m-red" />
+                        </Match>
+                    </Switch>
+                    <span>{props.title}</span>
+                </div>
+                <img
+                    src={down}
+                    alt="expand / collapse"
+                    class="collapsible__trigger-icon"
+                />
+            </Collapsible.Trigger>
+            <Collapsible.Content class="p-4 bg-m-grey-900 shadow-inner">
+                {props.children}
+            </Collapsible.Content>
+        </Collapsible.Root>
+    );
+};
+
 
 export const SafeArea: ParentComponent = (props) => {
     return (

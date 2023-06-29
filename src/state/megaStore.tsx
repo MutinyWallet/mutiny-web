@@ -56,7 +56,6 @@ export type MegaStore = [
         dismissRestorePrompt(): void;
         setHasBackedUp(): void;
         listTags(): Promise<MutinyTagItem[]>;
-        setNwc(enabled: boolean): void;
         syncActivity(): Promise<void>;
         checkBrowserCompat(): Promise<boolean>;
     }

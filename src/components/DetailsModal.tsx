@@ -149,10 +149,10 @@ function OnchainHeader(props: {
     );
 }
 
-const KeyValue: ParentComponent<{ key: string }> = (props) => {
+export const KeyValue: ParentComponent<{ key: string }> = (props) => {
     return (
         <li class="flex justify-between items-center gap-4">
-            <span class="uppercase font-semibold whitespace-nowrap">
+            <span class="uppercase font-semibold whitespace-nowrap text-sm">
                 {props.key}
             </span>
             <span class="font-light">{props.children}</span>
