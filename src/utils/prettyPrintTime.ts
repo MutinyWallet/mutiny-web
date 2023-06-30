@@ -14,20 +14,24 @@ export function timeAgo(ts?: number | bigint): string {
     if (!ts || ts === 0) return "Pending";
     const timestamp = Number(ts) * 1000;
     const now = Date.now();
-    const elapsedMilliseconds = now - timestamp;
+    const negative = now - timestamp < 0;
+    const nowOrAgo = negative ? "from now" : "ago";
+    const elapsedMilliseconds = Math.abs(now - timestamp);
     const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
     const elapsedMinutes = Math.floor(elapsedSeconds / 60);
     const elapsedHours = Math.floor(elapsedMinutes / 60);
     const elapsedDays = Math.floor(elapsedHours / 24);
 
     if (elapsedSeconds < 60) {
-        return "Just now";
+        return negative ? "seconds from now" : "Just now";
     } else if (elapsedMinutes < 60) {
-        return `${elapsedMinutes} minute${elapsedMinutes > 1 ? "s" : ""} ago`;
+        return `${elapsedMinutes} minute${
+            elapsedMinutes > 1 ? "s" : ""
+        } ${nowOrAgo}`;
     } else if (elapsedHours < 24) {
-        return `${elapsedHours} hour${elapsedHours > 1 ? "s" : ""} ago`;
+        return `${elapsedHours} hour${elapsedHours > 1 ? "s" : ""} ${nowOrAgo}`;
     } else if (elapsedDays < 7) {
-        return `${elapsedDays} day${elapsedDays > 1 ? "s" : ""} ago`;
+        return `${elapsedDays} day${elapsedDays > 1 ? "s" : ""} ${nowOrAgo}`;
     } else {
         const date = new Date(timestamp);
         const day = String(date.getDate()).padStart(2, "0");
