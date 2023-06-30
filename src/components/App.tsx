@@ -11,6 +11,7 @@ import { ExternalLink } from "./layout/ExternalLink";
 import { BetaWarningModal } from "~/components/BetaWarningModal";
 import settings from "~/assets/icons/settings.svg";
 import pixelLogo from "~/assets/mutiny-pixel-logo.png";
+import { PendingNwc } from "./PendingNwc";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
@@ -49,6 +50,9 @@ export default function App() {
                     <ReloadPrompt />
                 </Show>
                 <BalanceBox loading={state.wallet_loading} />
+                <Show when={!state.wallet_loading}>
+                    <PendingNwc />
+                </Show>
                 <Card title="Activity">
                     <div class="p-1" />
                     <VStack>
@@ -58,12 +62,11 @@ export default function App() {
                         >
                             <CombinedActivity limit={3} />
                         </Show>
-                        {/* <ButtonLink href="/activity">View All</ButtonLink> */}
                     </VStack>
                     <Show when={state.activity && state.activity.length > 0}>
                         <A
                             href="/activity"
-                            class="text-m-red active:text-m-red/80 text-xl font-semibold no-underline self-center"
+                            class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
                         >
                             View All
                         </A>
