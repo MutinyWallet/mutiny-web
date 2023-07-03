@@ -52,7 +52,9 @@ test("first receive", async ({ page }) => {
   continueButton.click();
 
   // Find a p with the text "Show or share this code with the sender."
-  await expect(page.locator("p")).toContainText(["Show or share this code with the sender."]);
+  await expect(page.locator("p")).toContainText([
+      "Keep Mutiny open to receive the payment."
+  ]);
 
   // Locate an SVG inside a div with id "qr"
   const qrCode = await page.locator("#qr > svg");
