@@ -138,13 +138,6 @@ export async function setupMutinyWallet(
         undefined
     );
 
-    const nodes = await mutinyWallet.list_nodes();
-
-    // If we don't have any nodes yet, create one
-    if (!nodes.length) {
-        await mutinyWallet?.new_node();
-    }
-
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
 
     return mutinyWallet;
