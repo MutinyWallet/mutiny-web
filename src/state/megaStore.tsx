@@ -41,7 +41,6 @@ export type MegaStore = [
         has_backed_up: boolean;
         dismissed_restore_prompt: boolean;
         wallet_loading: boolean;
-        nwc_enabled: boolean;
         activity: ActivityItem[];
         setup_error?: Error;
         is_pwa: boolean;
@@ -81,7 +80,6 @@ export const Provider: ParentComponent = (props) => {
         dismissed_restore_prompt:
             localStorage.getItem("dismissed_restore_prompt") === "true",
         wallet_loading: true,
-        nwc_enabled: localStorage.getItem("nwc_enabled") === "true",
         activity: [] as ActivityItem[],
         setup_error: undefined as Error | undefined,
         is_pwa: window.matchMedia("(display-mode: standalone)").matches,
@@ -142,12 +140,6 @@ export const Provider: ParentComponent = (props) => {
                 const mutinyWallet = await setupMutinyWallet(settings);
                 // Get balance optimistically
                 const balance = await mutinyWallet.get_balance();
-                // start nwc if enabled
-                if (state.nwc_enabled) {
-                    const nodes = await mutinyWallet.list_nodes();
-                    const firstNode = (nodes[0] as string) || "";
-                    // await mutinyWallet.start_nostr_wallet_connect(firstNode);
-                }
                 setState({
                     mutiny_wallet: mutinyWallet,
                     wallet_loading: false,
@@ -221,10 +213,6 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
                 return [];
             }
-        },
-        setNwc(enabled: boolean) {
-            localStorage.setItem("nwc_enabled", enabled.toString());
-            setState({ nwc_enabled: enabled });
         },
         async checkBrowserCompat(): Promise<boolean> {
             try {
