@@ -55,10 +55,13 @@ export default function Backup() {
 
     const [hasSeenBackup, setHasSeenBackup] = createSignal(false);
     const [hasCheckedAll, setHasCheckedAll] = createSignal(false);
+    const [loading, setLoading] = createSignal(false);
 
     function wroteDownTheWords() {
+        setLoading(true);
         actions.setHasBackedUp();
-        navigate("/");
+        navigate("/settings/encrypt");
+        setLoading(false);
     }
 
     return (
@@ -93,6 +96,7 @@ export default function Backup() {
                             disabled={!hasSeenBackup() || !hasCheckedAll()}
                             intent="blue"
                             onClick={wroteDownTheWords}
+                            loading={loading()}
                         >
                             I wrote down the words
                         </Button>

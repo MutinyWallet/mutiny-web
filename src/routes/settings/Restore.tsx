@@ -2,7 +2,6 @@ import {
     Button,
     DefaultMain,
     LargeHeader,
-    MutinyWalletGuard,
     NiceP,
     SafeArea,
     VStack
@@ -235,30 +234,28 @@ function TwelveWordsEntry() {
 
 export default function RestorePage() {
     return (
-        <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain>
-                    <BackLink title="Settings" href="/settings" />
-                    <LargeHeader>Restore</LargeHeader>
-                    <VStack>
-                        <NiceP>
-                            You can restore an existing Mutiny Wallet from your
-                            12 word seed phrase. This will replace your existing
-                            wallet, so make sure you know what you're doing!
-                        </NiceP>
-                        <NiceP>
-                            <strong class="font-bold text-m-red">
-                                Beta warning:
-                            </strong>{" "}
-                            you can currently only restore on-chain funds.
-                            Lightning backup restore is coming soon.
-                        </NiceP>
-                        <TwelveWordsEntry />
-                    </VStack>
-                </DefaultMain>
-                <NavBar activeTab="settings" />
-            </SafeArea>
-        </MutinyWalletGuard>
+        <SafeArea>
+            <DefaultMain>
+                <BackLink title="Settings" href="/settings" />
+                <LargeHeader>Restore</LargeHeader>
+                <VStack>
+                    <NiceP>
+                        You can restore an existing Mutiny Wallet from your 12
+                        word seed phrase. This will replace your existing
+                        wallet, so make sure you know what you're doing!
+                    </NiceP>
+                    <NiceP>
+                        <strong class="font-bold text-m-red">
+                            Beta warning:
+                        </strong>{" "}
+                        you can currently only restore on-chain funds. Lightning
+                        backup restore is coming soon.
+                    </NiceP>
+                    <TwelveWordsEntry />
+                </VStack>
+            </DefaultMain>
+            <NavBar activeTab="settings" />
+        </SafeArea>
     );
 }
 

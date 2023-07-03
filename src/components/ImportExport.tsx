@@ -1,19 +1,64 @@
 import { useMegaStore } from "~/state/megaStore";
-import { Button, InnerCard, NiceP, VStack } from "~/components/layout";
-import { createSignal } from "solid-js";
+import {
+    Button,
+    InnerCard,
+    NiceP,
+    SimpleDialog,
+    VStack
+} from "~/components/layout";
+import { Show, createSignal } from "solid-js";
 import eify from "~/utils/eify";
 import { showToast } from "./Toaster";
 import { downloadTextFile } from "~/utils/download";
 import { createFileUploader } from "@solid-primitives/upload";
 import { ConfirmDialog } from "./Dialog";
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { InfoBox } from "./InfoBox";
+import { TextField } from "./layout/TextField";
 
 export function ImportExport(props: { emergency?: boolean }) {
     const [state, _] = useMegaStore();
 
+    const [error, setError] = createSignal<Error>();
+    const [exportDecrypt, setExportDecrypt] = createSignal(false);
+    const [password, setPassword] = createSignal("");
+
     async function handleSave() {
-        const json = await MutinyWallet.export_json();
-        downloadTextFile(json || "", "mutiny-state.json");
+        try {
+            setError(undefined);
+            const json = await MutinyWallet.export_json();
+            downloadTextFile(json || "", "mutiny-state.json");
+        } catch (e) {
+            console.error(e);
+            const err = eify(e);
+            if (err.message === "Incorrect password entered.") {
+                setExportDecrypt(true);
+            } else {
+                setError(err);
+            }
+        }
+    }
+
+    async function savePassword(e: Event) {
+        e.preventDefault();
+        try {
+            setError(undefined);
+            if (!password()) {
+                throw new Error("Password is required");
+            }
+            const json = await MutinyWallet.export_json(password());
+            downloadTextFile(json || "", "mutiny-state.json");
+        } catch (e) {
+            console.error(e);
+            setError(eify(e));
+        } finally {
+            setExportDecrypt(false);
+            setPassword("");
+        }
+    }
+
+    function noop() {
+        // noop
     }
 
     const { files, selectFiles } = createFileUploader();
@@ -23,6 +68,7 @@ export function ImportExport(props: { emergency?: boolean }) {
         const fileReader = new FileReader();
 
         try {
+            setError(undefined);
             const file: File = files()[0].file;
 
             const text = await new Promise<string | null>((resolve, reject) => {
@@ -45,6 +91,7 @@ export function ImportExport(props: { emergency?: boolean }) {
                     await state.mutiny_wallet.stop();
                 } catch (e) {
                     console.error(e);
+                    setError(eify(e));
                 }
             } else {
                 // If there's no mutiny wallet loaded we need to initialize WASM
@@ -96,6 +143,9 @@ export function ImportExport(props: { emergency?: boolean }) {
                     to make sure you don't create conflicts.
                 </NiceP>
                 <div />
+                <Show when={error()}>
+                    <InfoBox accent="red">{error()?.message}</InfoBox>
+                </Show>
                 <VStack>
                     <Button onClick={handleSave}>Save State As File</Button>
                     <Button onClick={uploadFile}>Import State From File</Button>
@@ -109,6 +159,32 @@ export function ImportExport(props: { emergency?: boolean }) {
             >
                 Do you want to replace your state with {files()[0].name}?
             </ConfirmDialog>
+            {/* TODO: this is pretty redundant with the DecryptDialog, could make a shared component */}
+            <SimpleDialog
+                title="Enter your password to decrypt"
+                open={exportDecrypt()}
+            >
+                <form onSubmit={savePassword}>
+                    <div class="flex flex-col gap-4">
+                        <TextField
+                            name="password"
+                            type="password"
+                            ref={noop}
+                            value={password()}
+                            onInput={(e) => setPassword(e.currentTarget.value)}
+                            error={""}
+                            onBlur={noop}
+                            onChange={noop}
+                        />
+                        <Show when={error()}>
+                            <InfoBox accent="red">{error()?.message}</InfoBox>
+                        </Show>
+                        <Button intent="blue" onClick={savePassword}>
+                            Decrypt Wallet
+                        </Button>
+                    </div>
+                </form>
+            </SimpleDialog>
         </>
     );
 }

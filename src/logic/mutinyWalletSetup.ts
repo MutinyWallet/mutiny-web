@@ -106,7 +106,8 @@ export async function checkForWasm() {
 }
 
 export async function setupMutinyWallet(
-    settings?: MutinyWalletSettingStrings
+    settings?: MutinyWalletSettingStrings,
+    password?: string
 ): Promise<MutinyWallet> {
     // Ultimate defense against getting multiple instances of the wallet running.
     // If we detect that the wallet has already been initialized in this session, we'll reload the page.
@@ -138,7 +139,7 @@ export async function setupMutinyWallet(
     console.log("Using subscriptions address", subscriptions);
     const mutinyWallet = await new MutinyWallet(
         // Password
-        "",
+        password ? password : undefined,
         // Mnemonic
         undefined,
         proxy,
