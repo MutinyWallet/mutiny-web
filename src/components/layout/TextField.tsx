@@ -61,7 +61,9 @@ export function TextField(props: TextFieldProps) {
                     class="w-full p-2 rounded-lg bg-white/10 placeholder-neutral-400"
                 />
             </Show>
-            <KTextField.ErrorMessage>{props.error}</KTextField.ErrorMessage>
+            <KTextField.ErrorMessage class="text-m-red">
+                {props.error}
+            </KTextField.ErrorMessage>
             <Show when={props.caption}>
                 <TinyText>{props.caption}</TinyText>
             </Show>

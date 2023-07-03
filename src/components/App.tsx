@@ -6,7 +6,7 @@ import { A } from "solid-start";
 import { OnboardWarning } from "~/components/OnboardWarning";
 import { CombinedActivity } from "./Activity";
 import { useMegaStore } from "~/state/megaStore";
-import { Match, Show, Switch, createMemo } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 import { ExternalLink } from "./layout/ExternalLink";
 import { BetaWarningModal } from "~/components/BetaWarningModal";
 import settings from "~/assets/icons/settings.svg";
@@ -14,6 +14,7 @@ import pixelLogo from "~/assets/mutiny-pixel-logo.png";
 import plusLogo from "~/assets/mutiny-plus-logo.png";
 import { PendingNwc } from "./PendingNwc";
 import { useI18n } from "~/i18n/context";
+import { DecryptDialog } from "./DecryptDialog";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
@@ -96,6 +97,7 @@ export default function App() {
                     </span>
                 </p>
             </DefaultMain>
+            <DecryptDialog />
             <BetaWarningModal />
             <NavBar activeTab="home" />
         </SafeArea>

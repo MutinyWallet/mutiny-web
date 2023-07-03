@@ -47,10 +47,14 @@ export type MegaStore = [
         existing_tab_detected: boolean;
         subscription_timestamp?: number;
         readonly mutiny_plus: boolean;
+        needs_password: boolean;
     },
     {
         fetchUserStatus(): Promise<UserStatus>;
-        setupMutinyWallet(settings?: MutinyWalletSettingStrings): Promise<void>;
+        setupMutinyWallet(
+            settings?: MutinyWalletSettingStrings,
+            password?: string
+        ): Promise<void>;
         deleteMutinyWallet(): Promise<void>;
         setWaitlistId(waitlist_id: string): void;
         setScanResult(scan_result: ParsedParams | undefined): void;
@@ -95,7 +99,8 @@ export const Provider: ParentComponent = (props) => {
             if (state.subscription_timestamp < Math.ceil(Date.now() / 1000))
                 return false;
             else return true;
-        }
+        },
+        needs_password: false
     });
 
     const actions = {
@@ -161,17 +166,24 @@ export const Provider: ParentComponent = (props) => {
             }
         },
         async setupMutinyWallet(
-            settings?: MutinyWalletSettingStrings
+            settings?: MutinyWalletSettingStrings,
+            password?: string
         ): Promise<void> {
             try {
                 // If we're already in an error state there should be no reason to continue
                 if (state.setup_error) {
                     throw state.setup_error;
                 }
+
                 setState({ wallet_loading: true });
 
-                // This is where all the real setup happens
-                const mutinyWallet = await setupMutinyWallet(settings);
+                const mutinyWallet = await setupMutinyWallet(
+                    settings,
+                    password
+                );
+
+                // If we get this far then we don't need the password anymore
+                setState({ needs_password: false });
 
                 // Get balance optimistically
                 const balance = await mutinyWallet.get_balance();
@@ -210,7 +222,11 @@ export const Provider: ParentComponent = (props) => {
                 });
             } catch (e) {
                 console.error(e);
-                setState({ setup_error: eify(e) });
+                if (eify(e).message === "Incorrect password entered.") {
+                    setState({ needs_password: true });
+                } else {
+                    setState({ setup_error: eify(e) });
+                }
             }
         },
         async deleteMutinyWallet(): Promise<void> {
@@ -315,13 +331,10 @@ export const Provider: ParentComponent = (props) => {
                     });
                 } else {
                     console.log("running setup node manager...");
+
                     actions
                         .setupMutinyWallet()
-                        .then(() => console.log("node manager setup done"))
-                        .catch((e) => {
-                            console.error(e);
-                            setState({ setup_error: eify(e) });
-                        });
+                        .then(() => console.log("node manager setup done"));
 
                     // Setup an event listener to stop the mutiny wallet when the page unloads
                     window.onunload = async (_e) => {

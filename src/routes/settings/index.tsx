@@ -10,6 +10,7 @@ import NavBar from "~/components/NavBar";
 import { A } from "solid-start";
 import { For, Show } from "solid-js";
 import forward from "~/assets/icons/forward.svg";
+import { useMegaStore } from "~/state/megaStore";
 
 function SettingsLinkList(props: {
     header: string;
@@ -18,6 +19,7 @@ function SettingsLinkList(props: {
         text: string;
         caption?: string;
         accent?: "red" | "green";
+        disabled?: boolean;
     }[];
 }) {
     return (
@@ -26,7 +28,11 @@ function SettingsLinkList(props: {
                 {(link) => (
                     <A
                         href={link.href}
-                        class="no-underline flex w-full flex-col gap-1 py-2 hover:bg-m-grey-750 active:bg-m-grey-900 px-4 "
+                        class="no-underline flex w-full flex-col gap-1 py-2 hover:bg-m-grey-750 active:bg-m-grey-900 px-4"
+                        classList={{
+                            "opacity-50 cursor pointer-events-none grayscale":
+                                link.disabled
+                        }}
                     >
                         <div class="flex justify-between">
                             <span
@@ -52,6 +58,8 @@ function SettingsLinkList(props: {
 }
 
 export default function Settings() {
+    const [state, _actions] = useMegaStore();
+
     return (
         <SafeArea>
             <DefaultMain>
@@ -83,6 +91,14 @@ export default function Settings() {
                                 href: "/settings/restore",
                                 text: "Restore",
                                 accent: "red"
+                            },
+                            {
+                                href: "/settings/encrypt",
+                                text: "Change Password",
+                                disabled: !state.has_backed_up,
+                                caption: !state.has_backed_up
+                                    ? "Backup first to unlock encryption"
+                                    : undefined
                             },
                             {
                                 href: "/settings/servers",
