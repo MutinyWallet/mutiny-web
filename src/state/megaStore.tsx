@@ -146,7 +146,7 @@ export const Provider: ParentComponent = (props) => {
                 if (state.nwc_enabled) {
                     const nodes = await mutinyWallet.list_nodes();
                     const firstNode = (nodes[0] as string) || "";
-                    await mutinyWallet.start_nostr_wallet_connect(firstNode);
+                    // await mutinyWallet.start_nostr_wallet_connect(firstNode);
                 }
                 setState({
                     mutiny_wallet: mutinyWallet,
