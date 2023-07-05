@@ -50,7 +50,7 @@ export function TruncateMiddle(props: { text: string; whiteBg?: boolean }) {
         >
             <span class="truncate">{props.text}</span>
             <span class="pr-2">
-                {props.text.length > 8 ? props.text.slice(-8) : ""}
+                {props.text.length > 32 ? props.text.slice(-8) : ""}
             </span>
         </div>
     );
