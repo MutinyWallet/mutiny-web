@@ -19,6 +19,7 @@ import { Network } from "~/logic/mutinyWalletSetup";
 import { ExternalLink } from "./layout/ExternalLink";
 import { Restart } from "./Restart";
 import { ResyncOnchain } from "./ResyncOnchain";
+import { ResetRouter } from "./ResetRouter";
 import { MiniStringShower } from "./DetailsModal";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
@@ -427,6 +428,8 @@ export default function KitchenSink() {
             <ChannelsList />
             <Hr />
             <ResyncOnchain />
+            <Hr />
+            <ResetRouter />
             <Hr />
             <Restart />
             <Hr />
