@@ -12,19 +12,29 @@ import {
 import { createStore, reconcile } from "solid-js/store";
 import {
     MutinyWalletSettingStrings,
+    doubleInitDefense,
+    initializeWasm,
     setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
 import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
-import { ParsedParams } from "~/routes/Scanner";
 import { MutinyTagItem } from "~/utils/tags";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import eify from "~/utils/eify";
 import { timeout } from "~/utils/timeout";
 import { ActivityItem } from "~/components/Activity";
+import { ParsedParams } from "~/logic/waila";
 
 const MegaStoreContext = createContext<MegaStore>();
 
 type UserStatus = undefined | "new_here" | "waitlisted" | "approved";
+
+export type LoadStage =
+    | "fresh"
+    | "checking_user"
+    | "checking_double_init"
+    | "downloading"
+    | "setup"
+    | "done";
 
 export type MegaStore = [
     {
@@ -48,6 +58,7 @@ export type MegaStore = [
         subscription_timestamp?: number;
         readonly mutiny_plus: boolean;
         needs_password: boolean;
+        load_stage: LoadStage;
     },
     {
         fetchUserStatus(): Promise<UserStatus>;
@@ -100,7 +111,8 @@ export const Provider: ParentComponent = (props) => {
                 return false;
             else return true;
         },
-        needs_password: false
+        needs_password: false,
+        load_stage: "fresh" as LoadStage
     });
 
     const actions = {
@@ -175,7 +187,15 @@ export const Provider: ParentComponent = (props) => {
                     throw state.setup_error;
                 }
 
-                setState({ wallet_loading: true });
+                setState({
+                    wallet_loading: true,
+                    load_stage: "checking_double_init"
+                });
+
+                await doubleInitDefense();
+                setState({ load_stage: "downloading" });
+                await initializeWasm();
+                setState({ load_stage: "setup" });
 
                 const mutinyWallet = await setupMutinyWallet(
                     settings,
@@ -184,9 +204,6 @@ export const Provider: ParentComponent = (props) => {
 
                 // If we get this far then we don't need the password anymore
                 setState({ needs_password: false });
-
-                // Get balance optimistically
-                const balance = await mutinyWallet.get_balance();
 
                 // Subscription stuff. Skip if it's not already in localstorage
                 let subscription_timestamp = undefined;
@@ -214,10 +231,14 @@ export const Provider: ParentComponent = (props) => {
                     }
                 }
 
+                // Get balance optimistically
+                const balance = await mutinyWallet.get_balance();
+
                 setState({
                     mutiny_wallet: mutinyWallet,
                     wallet_loading: false,
                     subscription_timestamp: subscription_timestamp,
+                    load_stage: "done",
                     balance
                 });
             } catch (e) {
@@ -318,6 +339,7 @@ export const Provider: ParentComponent = (props) => {
 
     // Fetch status from remote on load
     onMount(() => {
+        setState({ load_stage: "checking_user" });
         // eslint-disable-next-line
         actions.fetchUserStatus().then((status) => {
             setState({ user_status: status });
@@ -341,6 +363,7 @@ export const Provider: ParentComponent = (props) => {
                         console.log("stopping mutiny_wallet");
                         await state.mutiny_wallet?.stop();
                         console.log("mutiny_wallet stopped");
+                        sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
                     };
                 }
             }

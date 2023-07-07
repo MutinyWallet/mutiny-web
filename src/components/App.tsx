@@ -15,6 +15,7 @@ import plusLogo from "~/assets/mutiny-plus-logo.png";
 import { PendingNwc } from "./PendingNwc";
 import { useI18n } from "~/i18n/context";
 import { DecryptDialog } from "./DecryptDialog";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 export default function App() {
     const [state, _actions] = useMegaStore();
@@ -23,6 +24,7 @@ export default function App() {
     return (
         <SafeArea>
             <DefaultMain>
+                <LoadingIndicator />
                 <header class="w-full flex justify-between items-center mt-4 mb-2">
                     <div class="flex items-center gap-2">
                         <Switch>
