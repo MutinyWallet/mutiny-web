@@ -26,7 +26,6 @@ import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
 import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { StyledRadioGroup } from "~/components/layout/Radio";
-import { ParsedParams, toParsedParams } from "./Scanner";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
 import megacheck from "~/assets/icons/megacheck.png";
@@ -44,6 +43,7 @@ import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { ExternalLink } from "~/components/layout/ExternalLink";
 import { InfoBox } from "~/components/InfoBox";
 import { useI18n } from "~/i18n/context";
+import { ParsedParams, toParsedParams } from "~/logic/waila";
 
 export type SendSource = "lightning" | "onchain";
 

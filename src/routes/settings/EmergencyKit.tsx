@@ -1,5 +1,6 @@
 import { DeleteEverything } from "~/components/DeleteEverything";
 import { ImportExport } from "~/components/ImportExport";
+import { LoadingIndicator } from "~/components/LoadingIndicator";
 import { Logs } from "~/components/Logs";
 import NavBar from "~/components/NavBar";
 import {
@@ -13,6 +14,19 @@ import {
 import { BackLink } from "~/components/layout/BackLink";
 import { ExternalLink } from "~/components/layout/ExternalLink";
 
+function EmergencyStack() {
+    return (
+        <VStack>
+            <ImportExport emergency />
+            <Logs />
+            <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red overflow-x-hidden">
+                <SmallHeader>Danger zone</SmallHeader>
+                <DeleteEverything emergency />
+            </div>
+        </VStack>
+    );
+}
+
 export default function EmergencyKit() {
     return (
         <SafeArea>
@@ -20,6 +34,7 @@ export default function EmergencyKit() {
                 <BackLink href="/settings" title="Settings" />
                 <LargeHeader>Emergency Kit</LargeHeader>
                 <VStack>
+                    <LoadingIndicator />
                     <NiceP>
                         If your wallet seems broken, here are some tools to try
                         to debug and repair it.
@@ -31,12 +46,7 @@ export default function EmergencyKit() {
                             reach out to us for support.
                         </ExternalLink>
                     </NiceP>
-                    <ImportExport emergency />
-                    <Logs />
-                    <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red overflow-x-hidden">
-                        <SmallHeader>Danger zone</SmallHeader>
-                        <DeleteEverything emergency />
-                    </div>
+                    <EmergencyStack />
                 </VStack>
             </DefaultMain>
             <NavBar activeTab="settings" />

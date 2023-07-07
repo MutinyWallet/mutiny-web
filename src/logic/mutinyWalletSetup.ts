@@ -1,7 +1,6 @@
 /* @refresh reload */
 
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
-import initWaila from "@mutinywallet/waila-wasm";
 
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 export type MutinyWalletSettingStrings = {
@@ -105,10 +104,8 @@ export async function checkForWasm() {
     }
 }
 
-export async function setupMutinyWallet(
-    settings?: MutinyWalletSettingStrings,
-    password?: string
-): Promise<MutinyWallet> {
+export async function doubleInitDefense() {
+    console.log("Starting init...");
     // Ultimate defense against getting multiple instances of the wallet running.
     // If we detect that the wallet has already been initialized in this session, we'll reload the page.
     // A successful stop of the wallet in onCleanup will clear this flag
@@ -121,11 +118,17 @@ export async function setupMutinyWallet(
         sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
         window.location.reload();
     }
+}
 
+export async function initializeWasm() {
+    // Actually intialize the WASM, this should be the first thing that requires the WASM blob to be downloaded
     await initMutinyWallet();
-    // Might as well init waila while we're at it
-    await initWaila();
+}
 
+export async function setupMutinyWallet(
+    settings?: MutinyWalletSettingStrings,
+    password?: string
+): Promise<MutinyWallet> {
     console.log("Starting setup...");
     const { network, proxy, esplora, rgs, lsp, auth, subscriptions } =
         await setAndGetMutinySettings(settings);
