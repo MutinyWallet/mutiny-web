@@ -39,21 +39,27 @@ const pwaOptions: Partial<VitePWAOptions> = {
 };
 
 export default defineConfig({
-  server: {
-    port: 3420,
-    fs: {
-      // Allow serving files from one level up (so that if mutiny-node is a sibling folder we can use it locally)
-      allow: [".."]
+    server: {
+        port: 3420,
+        fs: {
+            // Allow serving files from one level up (so that if mutiny-node is a sibling folder we can use it locally)
+            allow: [".."]
+        }
+    },
+    plugins: [wasm(), solid({ ssr: false }), VitePWA(pwaOptions)],
+    resolve: {
+        alias: [{ find: "~", replacement: path.resolve(__dirname, "./src") }]
+    },
+    optimizeDeps: {
+        // Don't want vite to bundle these late during dev causing reload
+        include: [
+            "qr-scanner",
+            "nostr-tools",
+            "class-variance-authority",
+            "@kobalte/core",
+            "@solid-primitives/upload"
+        ],
+        // This is necessary because otherwise `vite dev` can't find the wasm
+        exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
     }
-  },
-  plugins: [wasm(), solid({ ssr: false }), VitePWA(pwaOptions)],
-  resolve: {
-    alias: [{ find: '~', replacement: path.resolve(__dirname, './src') }]
-  },
-  optimizeDeps: {
-    // Don't want vite to bundle these late during dev causing reload
-    include: ["qr-scanner", "nostr-tools", "class-variance-authority", "@kobalte/core", "@solid-primitives/upload"],
-    // This is necessary because otherwise `vite dev` can't find the wasm
-    exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"],
-  },
 });
