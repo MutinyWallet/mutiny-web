@@ -59,6 +59,15 @@ export default function Settings() {
                 <LargeHeader>Settings</LargeHeader>
                 <VStack biggap>
                     <SettingsLinkList
+                        header="Mutiny+"
+                        links={[
+                            {
+                                href: "/settings/plus",
+                                text: "Learn how to support Mutiny"
+                            }
+                        ]}
+                    />
+                    <SettingsLinkList
                         header="General"
                         links={[
                             {

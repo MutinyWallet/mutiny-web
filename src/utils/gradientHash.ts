@@ -14,7 +14,6 @@ export async function generateGradient(str: string) {
 }
 
 export async function gradientsPerContact(contacts: Contact[]) {
-    console.log(contacts);
     const gradients = new Map();
     for (const contact of contacts) {
         const gradient = await generateGradient(contact.name);

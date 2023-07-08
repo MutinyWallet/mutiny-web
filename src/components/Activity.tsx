@@ -1,10 +1,19 @@
 import { NiceP } from "./layout";
-import { For, Match, Show, Switch, createEffect, createSignal } from "solid-js";
+import {
+    For,
+    Match,
+    Show,
+    Suspense,
+    Switch,
+    createEffect,
+    createSignal
+} from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
 import { useI18n } from "~/i18n/context";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
 import { DetailsIdModal } from "./DetailsModal";
+import { LoadingShimmer } from "./BalanceBox";
 
 export const THREE_COLUMNS =
     "grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0";
@@ -105,7 +114,7 @@ export function CombinedActivity(props: { limit?: number }) {
     });
 
     return (
-        <>
+        <Suspense fallback={<LoadingShimmer />}>
             <Show when={detailsId() && detailsKind()}>
                 <DetailsIdModal
                     open={detailsOpen()}
@@ -117,7 +126,9 @@ export function CombinedActivity(props: { limit?: number }) {
             <Switch>
                 <Match when={state.activity.length === 0}>
                     <div class="w-full text-center pb-4">
-                        <NiceP>{i18n.t("receive_some_sats_to_get_started")}</NiceP>
+                        <NiceP>
+                            {i18n.t("receive_some_sats_to_get_started")}
+                        </NiceP>
                     </div>
                 </Match>
                 <Match
@@ -143,6 +154,6 @@ export function CombinedActivity(props: { limit?: number }) {
                     </For>
                 </Match>
             </Switch>
-        </>
+        </Suspense>
     );
 }
