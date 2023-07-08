@@ -24,7 +24,7 @@ import { ActivityItem } from "~/components/Activity";
 
 const MegaStoreContext = createContext<MegaStore>();
 
-type UserStatus = undefined | "new_here" | "waitlisted" | "approved" | "paid";
+type UserStatus = undefined | "new_here" | "waitlisted" | "approved";
 
 export type MegaStore = [
     {
@@ -45,6 +45,8 @@ export type MegaStore = [
         setup_error?: Error;
         is_pwa: boolean;
         existing_tab_detected: boolean;
+        subscription_timestamp?: number;
+        readonly mutiny_plus: boolean;
     },
     {
         fetchUserStatus(): Promise<UserStatus>;
@@ -58,6 +60,7 @@ export type MegaStore = [
         listTags(): Promise<MutinyTagItem[]>;
         syncActivity(): Promise<void>;
         checkBrowserCompat(): Promise<boolean>;
+        checkForSubscription(justPaid?: boolean): Promise<void>;
     }
 ];
 
@@ -82,7 +85,17 @@ export const Provider: ParentComponent = (props) => {
         activity: [] as ActivityItem[],
         setup_error: undefined as Error | undefined,
         is_pwa: window.matchMedia("(display-mode: standalone)").matches,
-        existing_tab_detected: false
+        existing_tab_detected: false,
+        subscription_timestamp: undefined as number | undefined,
+        get mutiny_plus(): boolean {
+            // No subscription
+            if (!state.subscription_timestamp) return false;
+
+            // Expired
+            if (state.subscription_timestamp < Math.ceil(Date.now() / 1000))
+                return false;
+            else return true;
+        }
     });
 
     const actions = {
@@ -127,6 +140,26 @@ export const Provider: ParentComponent = (props) => {
                 return "new_here";
             }
         },
+        async checkForSubscription(justPaid?: boolean): Promise<void> {
+            try {
+                const timestamp = await state.mutiny_wallet?.check_subscribed();
+                console.log("timestamp:", timestamp);
+                if (timestamp) {
+                    localStorage.setItem(
+                        "subscription_timestamp",
+                        timestamp?.toString()
+                    );
+                    setState({ subscription_timestamp: Number(timestamp) });
+                }
+            } catch (e) {
+                if (justPaid) {
+                    // we make a fake timestamp for 24 hours from now, in case the server is down
+                    const timestamp = Math.ceil(Date.now() / 1000) + 86400;
+                    setState({ subscription_timestamp: timestamp });
+                }
+                console.error(e);
+            }
+        },
         async setupMutinyWallet(
             settings?: MutinyWalletSettingStrings
         ): Promise<void> {
@@ -136,12 +169,43 @@ export const Provider: ParentComponent = (props) => {
                     throw state.setup_error;
                 }
                 setState({ wallet_loading: true });
+
+                // This is where all the real setup happens
                 const mutinyWallet = await setupMutinyWallet(settings);
+
                 // Get balance optimistically
                 const balance = await mutinyWallet.get_balance();
+
+                // Subscription stuff. Skip if it's not already in localstorage
+                let subscription_timestamp = undefined;
+                const stored_subscription_timestamp = localStorage.getItem(
+                    "subscription_timestamp"
+                );
+                // If we have a stored timestamp, check if it's still valid
+                if (stored_subscription_timestamp) {
+                    try {
+                        const timestamp =
+                            await mutinyWallet?.check_subscribed();
+
+                        // Check that timestamp is a number
+                        if (!timestamp || isNaN(Number(timestamp))) {
+                            throw new Error("Timestamp is not a number");
+                        }
+
+                        subscription_timestamp = Number(timestamp);
+                        localStorage.setItem(
+                            "subscription_timestamp",
+                            timestamp.toString()
+                        );
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
                 setState({
                     mutiny_wallet: mutinyWallet,
                     wallet_loading: false,
+                    subscription_timestamp: subscription_timestamp,
                     balance
                 });
             } catch (e) {

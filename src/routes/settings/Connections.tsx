@@ -30,8 +30,6 @@ function Nwc() {
             const profiles: NwcProfile[] =
                 await state.mutiny_wallet?.get_nwc_profiles();
 
-            console.log("profiles:", profiles);
-
             return profiles;
         } catch (e) {
             console.error(e);

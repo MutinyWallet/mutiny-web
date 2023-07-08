@@ -89,12 +89,11 @@ export function ImportExport(props: { emergency?: boolean }) {
                     import it into a new browser. It usually works!
                 </NiceP>
                 <NiceP>
-                    <strong class="font-semibold">Important caveats:</strong>{" "}
-                    after exporting don't do any operations in the original
-                    browser. If you do, you'll need to export again. After a
-                    successful import, a best practice is to clear the state of
-                    the original browser just to make sure you don't create
-                    conflicts.
+                    <strong>Important caveats:</strong> after exporting don't do
+                    any operations in the original browser. If you do, you'll
+                    need to export again. After a successful import, a best
+                    practice is to clear the state of the original browser just
+                    to make sure you don't create conflicts.
                 </NiceP>
                 <div />
                 <VStack>
