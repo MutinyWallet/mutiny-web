@@ -11,6 +11,7 @@ export type MutinyWalletSettingStrings = {
     rgs?: string;
     lsp?: string;
     auth?: string;
+    subscriptions?: string;
 };
 
 export function getExistingSettings(): MutinyWalletSettingStrings {
@@ -28,17 +29,23 @@ export function getExistingSettings(): MutinyWalletSettingStrings {
     const lsp =
         localStorage.getItem("MUTINY_SETTINGS_lsp") || import.meta.env.VITE_LSP;
     const auth =
-        localStorage.getItem("MUTINY_SETTINGS_auth") || import.meta.env.VITE_AUTH;
+        localStorage.getItem("MUTINY_SETTINGS_auth") ||
+        import.meta.env.VITE_AUTH;
+    const subscriptions =
+        localStorage.getItem("MUTINY_SETTINGS_subscriptions") ||
+        import.meta.env.VITE_SUBSCRIPTIONS;
 
-    return { network, proxy, esplora, rgs, lsp, auth };
+    return { network, proxy, esplora, rgs, lsp, auth, subscriptions };
 }
 
 export async function setAndGetMutinySettings(
     settings?: MutinyWalletSettingStrings
 ): Promise<MutinyWalletSettingStrings> {
-    let { network, proxy, esplora, rgs, lsp, auth } = settings || {};
+    let { network, proxy, esplora, rgs, lsp, auth, subscriptions } =
+        settings || {};
 
     const existingSettings = getExistingSettings();
+
     try {
         network = network || existingSettings.network;
         proxy = proxy || existingSettings.proxy;
@@ -46,6 +53,7 @@ export async function setAndGetMutinySettings(
         rgs = rgs || existingSettings.rgs;
         lsp = lsp || existingSettings.lsp;
         auth = auth || existingSettings.auth;
+        subscriptions = subscriptions || existingSettings.subscriptions;
 
         if (!network || !proxy || !esplora) {
             throw new Error(
@@ -64,8 +72,13 @@ export async function setAndGetMutinySettings(
         rgs && localStorage.setItem("MUTINY_SETTINGS_rgs", rgs);
         lsp && localStorage.setItem("MUTINY_SETTINGS_lsp", lsp);
         auth && localStorage.setItem("MUTINY_SETTINGS_auth", auth);
+        subscriptions &&
+            localStorage.setItem(
+                "MUTINY_SETTINGS_subscriptions",
+                subscriptions
+            );
 
-        return { network, proxy, esplora, rgs, lsp, auth };
+        return { network, proxy, esplora, rgs, lsp, auth, subscriptions };
     } catch (error) {
         console.error(error);
         throw error;
@@ -113,9 +126,8 @@ export async function setupMutinyWallet(
     await initWaila();
 
     console.log("Starting setup...");
-    const { network, proxy, esplora, rgs, lsp, auth } = await setAndGetMutinySettings(
-        settings
-    );
+    const { network, proxy, esplora, rgs, lsp, auth, subscriptions } =
+        await setAndGetMutinySettings(settings);
     console.log("Initializing Mutiny Manager");
     console.log("Using network", network);
     console.log("Using proxy", proxy);
@@ -123,6 +135,7 @@ export async function setupMutinyWallet(
     console.log("Using rgs address", rgs);
     console.log("Using lsp address", lsp);
     console.log("Using auth address", auth);
+    console.log("Using subscriptions address", subscriptions);
     const mutinyWallet = await new MutinyWallet(
         // Password
         "",
@@ -134,6 +147,7 @@ export async function setupMutinyWallet(
         rgs,
         lsp,
         auth,
+        subscriptions,
         // Do not connect peers
         undefined
     );
