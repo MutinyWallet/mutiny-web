@@ -5,7 +5,9 @@ import {
     createResource,
     createSignal,
     onMount,
-    onCleanup
+    onCleanup,
+    Switch,
+    Match
 } from "solid-js";
 import { Button } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
@@ -254,6 +256,18 @@ export const AmountEditable: ParentComponent<{
         return undefined;
     };
 
+    const betaWarning = () => {
+        const parsed = Number(localSats());
+        if (isNaN(parsed)) {
+            return undefined;
+        }
+
+        // If over 4 million sats, warn that it's a beta bro
+        if (parsed >= 4000000) {
+            return i18n.t("too_big_for_beta");
+        }
+    };
+
     function handleCharacterInput(character: string) {
         const isFiatMode = mode() === "fiat";
         const inputSanitizer = isFiatMode
@@ -401,7 +415,9 @@ export const AmountEditable: ParentComponent<{
                 <Show
                     when={localSats() !== "0"}
                     fallback={
-                        <div class="inline-block font-semibold">{i18n.t("set_amount")}</div>
+                        <div class="inline-block font-semibold">
+                            {i18n.t("set_amount")}
+                        </div>
                     }
                 >
                     <InlineAmount amount={maxOrLocalSats()} />
@@ -472,11 +488,20 @@ export const AmountEditable: ParentComponent<{
                                     />
                                 </div>
                             </div>
-                            <Show when={warningText() && !props.skipWarnings}>
-                                <InfoBox accent="blue">
-                                    {warningText()} <FeesModal />
-                                </InfoBox>
-                            </Show>
+                            <Switch>
+                                <Match when={betaWarning()}>
+                                    <InfoBox accent="red">
+                                        {betaWarning()}
+                                    </InfoBox>
+                                </Match>
+                                <Match
+                                    when={warningText() && !props.skipWarnings}
+                                >
+                                    <InfoBox accent="blue">
+                                        {warningText()} <FeesModal />
+                                    </InfoBox>
+                                </Match>
+                            </Switch>
                             <div class="flex justify-center gap-4 my-2">
                                 <For
                                     each={

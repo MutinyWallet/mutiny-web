@@ -18,5 +18,7 @@ export default {
     receive_add_the_sender: "Add the sender for your records",
     continue: "Continue",
     receive_bitcoin: "Receive Bitcoin",
-    keep_mutiny_open: "Keep Mutiny open to complete the payment."
+    keep_mutiny_open: "Keep Mutiny open to complete the payment.",
+    too_big_for_beta:
+        "That's a lot of sats. You do know Mutiny Wallet is still in beta, yeah?"
 };
