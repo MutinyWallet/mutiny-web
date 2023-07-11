@@ -68,12 +68,20 @@ export function IntegratedQr(props: {
                     <p class="text-xl font-bold">Copied</p>
                 </div>
             </Show>
-            <div class="w-full flex justify-between items-center py-4 max-w-[256px]">
-                <Amount
-                    amountSats={Number(props.amountSats)}
-                    showFiat
-                    whiteBg
-                />
+            <div
+                class="w-full flex items-center py-4 max-w-[256px]"
+                classList={{
+                    "justify-between": props.kind !== "onchain",
+                    "justify-end": props.kind === "onchain"
+                }}
+            >
+                <Show when={props.kind !== "onchain"}>
+                    <Amount
+                        amountSats={Number(props.amountSats)}
+                        showFiat
+                        whiteBg
+                    />
+                </Show>
                 <KindIndicator kind={props.kind} />
             </div>
 

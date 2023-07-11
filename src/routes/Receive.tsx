@@ -45,6 +45,8 @@ import { FeesModal } from "~/components/MoreInfoModal";
 import { IntegratedQr } from "~/components/IntegratedQR";
 import side2side from "~/assets/icons/side-to-side.svg";
 import { useI18n } from "~/i18n/context";
+import eify from "~/utils/eify";
+import { matchError } from "~/logic/errorDispatch";
 
 type OnChainTx = {
     transaction: {
@@ -167,6 +169,9 @@ export default function Receive() {
     // The flavor of the receive
     const [flavor, setFlavor] = createSignal<ReceiveFlavor>("unified");
 
+    // loading state for the continue button
+    const [loading, setLoading] = createSignal(false);
+
     const receiveString = createMemo(() => {
         if (unified() && receiveState() === "show") {
             if (flavor() === "unified") {
@@ -227,8 +232,23 @@ export default function Receive() {
 
     async function getUnifiedQr(amount: string) {
         const bigAmount = BigInt(amount);
+        setLoading(true);
+
+        // Both paths use tags so we'll do this once
+        let tags;
+
         try {
-            const tags = await processContacts(selectedValues());
+            tags = await processContacts(selectedValues());
+        } catch (e) {
+            showToast(eify(e));
+            console.error(e);
+            setLoading(false);
+            return;
+        }
+
+        // Happy path
+        // First we try to get both an invoice and an address
+        try {
             const raw = await state.mutiny_wallet?.create_bip21(
                 bigAmount,
                 tags
@@ -241,10 +261,31 @@ export default function Receive() {
                 lightning: raw?.invoice
             });
 
+            setLoading(false);
             return `bitcoin:${raw?.address}?${params}`;
         } catch (e) {
-            showToast(new Error("Failed to create invoice. Please try again."));
+            showToast(matchError(e));
             console.error(e);
+        }
+
+        // If we didn't return before this, that means create_bip21 failed
+        // So now we'll just try and get an address without the invoice
+        try {
+            const raw = await state.mutiny_wallet?.get_new_address(tags);
+
+            // Save the raw info so we can watch the address
+            setBip21Raw(raw);
+
+            setFlavor("onchain");
+
+            // We won't meddle with a "unified" QR here
+            return raw?.address;
+        } catch (e) {
+            // If THAT failed we're really screwed
+            showToast(matchError(e));
+            console.error(e);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -267,19 +308,22 @@ export default function Receive() {
             const address = bip21.address;
 
             try {
-                const invoice = await state.mutiny_wallet?.get_invoice(
-                    lightning
-                );
+                // Lightning invoice might be blank
+                if (lightning) {
+                    const invoice = await state.mutiny_wallet?.get_invoice(
+                        lightning
+                    );
 
-                // If the invoice has a fees amount that's probably the LSP fee
-                if (invoice?.fees_paid) {
-                    setLspFee(invoice.fees_paid);
-                }
+                    // If the invoice has a fees amount that's probably the LSP fee
+                    if (invoice?.fees_paid) {
+                        setLspFee(invoice.fees_paid);
+                    }
 
-                if (invoice && invoice.paid) {
-                    setReceiveState("paid");
-                    setPaymentInvoice(invoice);
-                    return "lightning_paid";
+                    if (invoice && invoice.paid) {
+                        setReceiveState("paid");
+                        setPaymentInvoice(invoice);
+                        return "lightning_paid";
+                    }
                 }
 
                 const tx = (await state.mutiny_wallet?.check_address(
@@ -350,7 +394,9 @@ export default function Receive() {
                                     <TagEditor
                                         selectedValues={selectedValues()}
                                         setSelectedValues={setSelectedValues}
-                                        placeholder={i18n.t("receive_add_the_sender")}
+                                        placeholder={i18n.t(
+                                            "receive_add_the_sender"
+                                        )}
                                     />
                                 </Card>
 
@@ -360,6 +406,7 @@ export default function Receive() {
                                     disabled={!amount()}
                                     intent="green"
                                     onClick={onSubmit}
+                                    loading={loading()}
                                 >
                                     {i18n.t("continue")}
                                 </Button>
@@ -375,26 +422,31 @@ export default function Receive() {
                             <p class="text-neutral-400 text-center">
                                 {i18n.t("keep_mutiny_open")}
                             </p>
-                            <button
-                                class="font-bold text-m-grey-400 flex gap-2 p-2 items-center mx-auto"
-                                onClick={() => setMethodChooserOpen(true)}
-                            >
-                                <span>Choose format</span>
-                                <img class="w-4 h-4" src={side2side} />
-                            </button>
-                            <SimpleDialog
-                                title="Choose payment format"
-                                open={methodChooserOpen()}
-                                setOpen={(open) => setMethodChooserOpen(open)}
-                            >
-                                <StyledRadioGroup
-                                    value={flavor()}
-                                    onValueChange={setFlavor}
-                                    choices={RECEIVE_FLAVORS}
-                                    accent="white"
-                                    vertical
-                                />
-                            </SimpleDialog>
+                            {/* Only show method chooser when we have an invoice */}
+                            <Show when={bip21Raw()?.invoice}>
+                                <button
+                                    class="font-bold text-m-grey-400 flex gap-2 p-2 items-center mx-auto"
+                                    onClick={() => setMethodChooserOpen(true)}
+                                >
+                                    <span>Choose format</span>
+                                    <img class="w-4 h-4" src={side2side} />
+                                </button>
+                                <SimpleDialog
+                                    title="Choose payment format"
+                                    open={methodChooserOpen()}
+                                    setOpen={(open) =>
+                                        setMethodChooserOpen(open)
+                                    }
+                                >
+                                    <StyledRadioGroup
+                                        value={flavor()}
+                                        onValueChange={setFlavor}
+                                        choices={RECEIVE_FLAVORS}
+                                        accent="white"
+                                        vertical
+                                    />
+                                </SimpleDialog>
+                            </Show>
                         </Match>
                         <Match
                             when={
