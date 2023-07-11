@@ -244,13 +244,6 @@ export default function RestorePage() {
                         word seed phrase. This will replace your existing
                         wallet, so make sure you know what you're doing!
                     </NiceP>
-                    <NiceP>
-                        <strong class="font-bold text-m-red">
-                            Beta warning:
-                        </strong>{" "}
-                        you can currently only restore on-chain funds. Lightning
-                        backup restore is coming soon.
-                    </NiceP>
                     <TwelveWordsEntry />
                 </VStack>
             </DefaultMain>
