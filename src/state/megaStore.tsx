@@ -25,11 +25,8 @@ import { ParsedParams } from "~/logic/waila";
 
 const MegaStoreContext = createContext<MegaStore>();
 
-type UserStatus = undefined | "new_here" | "waitlisted" | "approved";
-
 export type LoadStage =
     | "fresh"
-    | "checking_user"
     | "checking_double_init"
     | "downloading"
     | "setup"
@@ -37,11 +34,8 @@ export type LoadStage =
 
 export type MegaStore = [
     {
-        already_approved?: boolean;
-        waitlist_id?: string;
         mutiny_wallet?: MutinyWallet;
         deleting: boolean;
-        user_status: UserStatus;
         scan_result?: ParsedParams;
         balance?: MutinyBalance;
         is_syncing?: boolean;
@@ -59,13 +53,11 @@ export type MegaStore = [
         load_stage: LoadStage;
     },
     {
-        fetchUserStatus(): Promise<UserStatus>;
         setupMutinyWallet(
             settings?: MutinyWalletSettingStrings,
             password?: string
         ): Promise<void>;
         deleteMutinyWallet(): Promise<void>;
-        setWaitlistId(waitlist_id: string): void;
         setScanResult(scan_result: ParsedParams | undefined): void;
         sync(): Promise<void>;
         dismissRestorePrompt(): void;
@@ -78,13 +70,8 @@ export type MegaStore = [
 
 export const Provider: ParentComponent = (props) => {
     const [state, setState] = createStore({
-        already_approved:
-            import.meta.env.VITE_SELFHOSTED === "true" ||
-            localStorage.getItem("already_approved") === "true",
-        waitlist_id: localStorage.getItem("waitlist_id"),
         mutiny_wallet: undefined as MutinyWallet | undefined,
         deleting: false,
-        user_status: undefined as UserStatus,
         scan_result: undefined as ParsedParams | undefined,
         price: 0,
         has_backed_up: localStorage.getItem("has_backed_up") === "true",
@@ -112,47 +99,6 @@ export const Provider: ParentComponent = (props) => {
     });
 
     const actions = {
-        async fetchUserStatus(): Promise<UserStatus> {
-            if (state.already_approved) {
-                console.log("welcome back!");
-                return "approved";
-            }
-
-            // Using a PWA
-            if (state.is_pwa) {
-                localStorage.setItem("already_approved", "true");
-                return "approved";
-            }
-
-            // Got an invite link
-            const urlParams = new URLSearchParams(window.location.search);
-            const invite = urlParams.get("invite");
-            if (invite === "true") {
-                localStorage.setItem("already_approved", "true");
-                return "approved";
-            }
-
-            if (!state.waitlist_id) {
-                return "new_here";
-            }
-
-            try {
-                const res = await fetch(
-                    `https://waitlist.mutiny-waitlist.workers.dev/waitlist/${state.waitlist_id}`
-                );
-                const data = await res.json();
-
-                if (data.approval_date) {
-                    // Remember them so we don't have to check every time
-                    localStorage.setItem("already_approved", "true");
-                    return "approved";
-                } else {
-                    return "waitlisted";
-                }
-            } catch (e) {
-                return "new_here";
-            }
-        },
         async checkForSubscription(justPaid?: boolean): Promise<void> {
             try {
                 const timestamp = await state.mutiny_wallet?.check_subscribed();
@@ -261,9 +207,6 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
             }
         },
-        setWaitlistId(waitlist_id: string) {
-            setState({ waitlist_id });
-        },
         async sync(): Promise<void> {
             try {
                 if (state.mutiny_wallet && !state.is_syncing) {
@@ -327,58 +270,40 @@ export const Provider: ParentComponent = (props) => {
 
     // Fetch status from remote on load
     onMount(() => {
-        setState({ load_stage: "checking_user" });
-        // eslint-disable-next-line
-        actions.fetchUserStatus().then((status) => {
-            setState({ user_status: status });
+        function handleExisting() {
+            if (state.existing_tab_detected) {
+                setState({
+                    setup_error: new Error(
+                        "Existing tab detected, aborting setup"
+                    )
+                });
+            } else {
+                console.log("running setup node manager...");
 
-            function handleExisting() {
-                if (state.existing_tab_detected) {
-                    setState({
-                        setup_error: new Error(
-                            "Existing tab detected, aborting setup"
-                        )
-                    });
-                } else {
-                    console.log("running setup node manager...");
+                actions
+                    .setupMutinyWallet()
+                    .then(() => console.log("node manager setup done"));
 
-                    actions
-                        .setupMutinyWallet()
-                        .then(() => console.log("node manager setup done"));
-
-                    // Setup an event listener to stop the mutiny wallet when the page unloads
-                    window.onunload = async (_e) => {
-                        console.log("stopping mutiny_wallet");
-                        await state.mutiny_wallet?.stop();
-                        console.log("mutiny_wallet stopped");
-                        sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
-                    };
-                }
+                // Setup an event listener to stop the mutiny wallet when the page unloads
+                window.onunload = async (_e) => {
+                    console.log("stopping mutiny_wallet");
+                    await state.mutiny_wallet?.stop();
+                    console.log("mutiny_wallet stopped");
+                    sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
+                };
             }
+        }
 
-            function handleGoodBrowser() {
-                console.log("checking if any other tabs are open");
-                // 500ms should hopefully be enough time for any tabs to reply
-                timeout(500).then(handleExisting);
-            }
+        function handleGoodBrowser() {
+            console.log("checking if any other tabs are open");
+            // 500ms should hopefully be enough time for any tabs to reply
+            timeout(500).then(handleExisting);
+        }
 
-            // Only load node manager when status is approved
-            if (
-                state.user_status === "approved" &&
-                !state.mutiny_wallet &&
-                !state.deleting
-            ) {
-                console.log("checking for browser compatibility...");
-                actions.checkBrowserCompat().then(handleGoodBrowser);
-            }
-        });
-    });
-
-    // Be reactive to changes in waitlist_id
-    createEffect(() => {
-        state.waitlist_id
-            ? localStorage.setItem("waitlist_id", state.waitlist_id)
-            : localStorage.removeItem("waitlist_id");
+        if (!state.mutiny_wallet && !state.deleting) {
+            console.log("checking for browser compatibility...");
+            actions.checkBrowserCompat().then(handleGoodBrowser);
+        }
     });
 
     createEffect(() => {

@@ -8,14 +8,12 @@ export function LoadingBar(props: { value: number; max: number }) {
             case 0:
                 return "Just getting started";
             case 1:
-                return "Checking user status";
-            case 2:
                 return "Double checking something";
-            case 3:
+            case 2:
                 return "Downloading";
-            case 4:
+            case 3:
                 return "Setup";
-            case 5:
+            case 4:
                 return "Done";
             default:
                 return "Just getting started";
@@ -44,16 +42,14 @@ export function LoadingIndicator() {
         switch (state.load_stage) {
             case "fresh":
                 return 0;
-            case "checking_user":
-                return 1;
             case "checking_double_init":
-                return 2;
+                return 1;
             case "downloading":
-                return 3;
+                return 2;
             case "setup":
-                return 4;
+                return 3;
             case "done":
-                return 5;
+                return 4;
             default:
                 return 0;
         }
@@ -61,7 +57,7 @@ export function LoadingIndicator() {
 
     return (
         <Show when={state.load_stage !== "done"}>
-            <LoadingBar value={loadStageValue()} max={5} />
+            <LoadingBar value={loadStageValue()} max={4} />
         </Show>
     );
 }

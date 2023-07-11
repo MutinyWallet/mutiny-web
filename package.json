@@ -47,7 +47,6 @@
         "class-variance-authority": "^0.4.0",
         "i18next": "^22.5.1",
         "i18next-browser-languagedetector": "^7.1.0",
-        "nostr-tools": "^1.11.1",
         "qr-scanner": "^1.4.2",
         "solid-js": "^1.7.7",
         "solid-qr-code": "^0.0.8",

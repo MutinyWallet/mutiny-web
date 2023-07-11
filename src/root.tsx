@@ -32,14 +32,14 @@ export default function Root() {
                 <Meta name="theme-color" content="rgb(23,23,23)" />
                 <Meta
                     name="description"
-                    content="Lightning wallet for the web"
+                    content="Mutiny is a self-custodial lightning wallet that runs in the browser."
                 />
                 <Link rel="icon" href="/favicon.ico" />
                 <Meta name="twitter:card" content="summary_large_image" />
                 <Meta name="twitter:title" content="Mutiny Wallet" />
                 <Meta
                     name="twitter:description"
-                    content="Sign up for our waitlist and we'll send a message when Mutiny Wallet is ready for you."
+                    content="Mutiny is a self-custodial lightning wallet that runs in the browser."
                 />
                 <Meta
                     name="twitter:site"
@@ -53,7 +53,7 @@ export default function Root() {
                 <Meta property="og:title" content="Mutiny Wallet" />
                 <Meta
                     property="og:description"
-                    content="Sign up for our waitlist and we'll send a message when Mutiny Wallet is ready for you."
+                    content="Mutiny is a self-custodial lightning wallet that runs in the browser."
                 />
                 <Meta
                     property="og:url"
