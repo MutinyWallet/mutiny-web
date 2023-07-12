@@ -61,4 +61,26 @@ test("restore from seed", async ({ page }) => {
 
     // Eventually we should have a balance of 100k sats
     await page.waitForSelector("text=100,000 SATS");
+
+    // Now we should clean up after ourselves and delete the wallet
+    settingsLink.click();
+
+    // Wait for settings to load
+    await page.waitForSelector("text=Settings");
+
+    // Click the "Restore" link
+    page.click("text=Admin Page");
+
+    // Clicke the Delete Everything button
+    page.click("text=Delete Everything");
+
+    // A modal should pop up, click the "Confirm" button
+    const confirmDeleteButton = await page.locator("button", {
+        hasText: "Confirm"
+    });
+    confirmDeleteButton.click();
+
+    // Wait for the wallet to load
+    // Wait for the wallet to load
+    await page.waitForSelector("img[alt='lightning']");
 });

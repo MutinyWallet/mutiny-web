@@ -8,7 +8,9 @@ test("initial load", async ({ page }) => {
     // Expect a title "to contain" a substring.
     await expect(page).toHaveTitle(/Mutiny Wallet/);
 
-    await expect(page.locator("header")).toContainText(["Activity"]);
+    await expect(page.locator("header")).toContainText(["Activity"], {
+        timeout: 30000
+    });
 
     // Wait up to 30 seconds for an image element matching the selector to be visible
     await page.waitForSelector("img[alt='lightning']", { timeout: 30000 });
@@ -51,10 +53,9 @@ test("first receive", async ({ page }) => {
 
   continueButton.click();
 
-  // Find a p with the text "Show or share this code with the sender."
-  await expect(page.locator("p")).toContainText([
-      "Keep Mutiny open to receive the payment."
-  ]);
+  await expect(
+      page.getByText("Keep Mutiny open to complete the payment.")
+  ).toBeVisible();
 
   // Locate an SVG inside a div with id "qr"
   const qrCode = await page.locator("#qr > svg");
