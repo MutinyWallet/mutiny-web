@@ -6,7 +6,7 @@ import { A } from "solid-start";
 import { OnboardWarning } from "~/components/OnboardWarning";
 import { CombinedActivity } from "./Activity";
 import { useMegaStore } from "~/state/megaStore";
-import { Match, Show, Switch } from "solid-js";
+import { Match, Show, Suspense, Switch } from "solid-js";
 import { ExternalLink } from "./layout/ExternalLink";
 import { BetaWarningModal } from "~/components/BetaWarningModal";
 import settings from "~/assets/icons/settings.svg";
@@ -74,21 +74,15 @@ export default function App() {
                 <Card title="Activity">
                     <div class="p-1" />
                     <VStack>
-                        <Show
-                            when={!state.wallet_loading}
-                            fallback={<LoadingShimmer />}
-                        >
-                            <CombinedActivity limit={3} />
-                        </Show>
+                        <Suspense>
+                            <Show
+                                when={!state.wallet_loading}
+                                fallback={<LoadingShimmer />}
+                            >
+                                <CombinedActivity limit={3} />
+                            </Show>
+                        </Suspense>
                     </VStack>
-                    <Show when={state.activity && state.activity.length > 0}>
-                        <A
-                            href="/activity"
-                            class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
-                        >
-                            {i18n.t("view_all")}
-                        </A>
-                    </Show>
                 </Card>
                 <p class="self-center text-neutral-500 mt-4 font-normal">
                     Bugs? Feedback?{" "}

@@ -9,7 +9,7 @@ import {
     onMount,
     useContext
 } from "solid-js";
-import { createStore, reconcile } from "solid-js/store";
+import { createStore } from "solid-js/store";
 import {
     MutinyWalletSettingStrings,
     doubleInitDefense,
@@ -21,7 +21,6 @@ import { MutinyTagItem } from "~/utils/tags";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import eify from "~/utils/eify";
 import { timeout } from "~/utils/timeout";
-import { ActivityItem } from "~/components/Activity";
 import { ParsedParams } from "~/logic/waila";
 
 const MegaStoreContext = createContext<MegaStore>();
@@ -51,7 +50,6 @@ export type MegaStore = [
         has_backed_up: boolean;
         dismissed_restore_prompt: boolean;
         wallet_loading: boolean;
-        activity: ActivityItem[];
         setup_error?: Error;
         is_pwa: boolean;
         existing_tab_detected: boolean;
@@ -73,7 +71,6 @@ export type MegaStore = [
         dismissRestorePrompt(): void;
         setHasBackedUp(): void;
         listTags(): Promise<MutinyTagItem[]>;
-        syncActivity(): Promise<void>;
         checkBrowserCompat(): Promise<boolean>;
         checkForSubscription(justPaid?: boolean): Promise<void>;
     }
@@ -97,7 +94,6 @@ export const Provider: ParentComponent = (props) => {
         dismissed_restore_prompt:
             localStorage.getItem("dismissed_restore_prompt") === "true",
         wallet_loading: true,
-        activity: [] as ActivityItem[],
         setup_error: undefined as Error | undefined,
         is_pwa: window.matchMedia("(display-mode: standalone)").matches,
         existing_tab_detected: false,
@@ -285,14 +281,6 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
             } finally {
                 setState({ is_syncing: false });
-            }
-        },
-        async syncActivity(): Promise<void> {
-            try {
-                const activity = await state.mutiny_wallet?.get_activity();
-                setState("activity", reconcile(activity, { merge: true }));
-            } catch (e) {
-                console.error(e);
             }
         },
         setScanResult(scan_result: ParsedParams) {
