@@ -21,7 +21,7 @@ export default function LnUrlAuth() {
         e.preventDefault();
 
         const lnurl = value().trim();
-        await state.mutiny_wallet?.lnurl_auth(0, lnurl);
+        await state.mutiny_wallet?.lnurl_auth(lnurl);
 
         setValue("");
     };
