@@ -68,9 +68,11 @@ export default function App() {
                     <ReloadPrompt />
                 </Show>
                 <BalanceBox loading={state.wallet_loading} />
-                <Show when={!state.wallet_loading}>
-                    <PendingNwc />
-                </Show>
+                <Suspense>
+                    <Show when={!state.wallet_loading}>
+                        <PendingNwc />
+                    </Show>
+                </Suspense>
                 <Card title="Activity">
                     <div class="p-1" />
                     <VStack>

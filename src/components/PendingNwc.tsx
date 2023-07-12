@@ -19,6 +19,7 @@ import { ActivityAmount } from "./ActivityItem";
 import { InfoBox } from "./InfoBox";
 import eify from "~/utils/eify";
 import { A } from "solid-start";
+import { createDeepSignal } from "~/utils/deepSignal";
 
 type PendingItem = {
     id: string;
@@ -32,7 +33,7 @@ export function PendingNwc() {
 
     const [error, setError] = createSignal<Error>();
 
-    const [pendingRequests, { refetch }] = createResource(async () => {
+    async function fetchPendingRequests() {
         const profiles: NwcProfile[] =
             await state.mutiny_wallet?.get_nwc_profiles();
 
@@ -53,7 +54,13 @@ export function PendingNwc() {
             }
         }
         return pendingItems;
-    });
+    }
+
+    const [pendingRequests, { refetch }] = createResource(
+        fetchPendingRequests,
+        // Create deepsignal so we don't get flicker on refresh
+        { storage: createDeepSignal }
+    );
 
     const [paying, setPaying] = createSignal<string>("");
 
@@ -90,6 +97,13 @@ export function PendingNwc() {
             setTimeout(() => {
                 setError(undefined);
             }, 5000);
+        }
+    });
+
+    createEffect(() => {
+        // Refetch on the sync interval
+        if (!state.is_syncing) {
+            refetch();
         }
     });
 
