@@ -3,9 +3,9 @@ import {
     For,
     Match,
     Show,
-    Suspense,
     Switch,
     createEffect,
+    createResource,
     createSignal
 } from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
@@ -13,7 +13,9 @@ import { useI18n } from "~/i18n/context";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { ActivityItem, HackActivityType } from "./ActivityItem";
 import { DetailsIdModal } from "./DetailsModal";
+import { A } from "solid-start";
 import { LoadingShimmer } from "./BalanceBox";
+import { createDeepSignal } from "~/utils/deepSignal";
 
 export const THREE_COLUMNS =
     "grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0";
@@ -85,8 +87,10 @@ function UnifiedActivityItem(props: {
     );
 }
 
+
+
 export function CombinedActivity(props: { limit?: number }) {
-    const [state, actions] = useMegaStore();
+    const [state, _actions] = useMegaStore();
     const i18n = useI18n();
 
     const [detailsOpen, setDetailsOpen] = createSignal(false);
@@ -107,14 +111,26 @@ export function CombinedActivity(props: { limit?: number }) {
         setDetailsOpen(true);
     }
 
+    async function fetchActivity() {
+        return await state.mutiny_wallet?.get_activity();
+    }
+
+    const [activity, { refetch }] = createResource(fetchActivity, {
+        storage: createDeepSignal
+    });
+
     createEffect(() => {
-        if (!state.wallet_loading && !state.is_syncing) {
-            actions.syncActivity();
+        // Should re-run after every sync
+        if (!state.is_syncing) {
+            refetch();
         }
     });
 
     return (
-        <Suspense fallback={<LoadingShimmer />}>
+        <Show
+            when={activity.state === "ready" || activity.state === "refreshing"}
+            fallback={<LoadingShimmer />}
+        >
             <Show when={detailsId() && detailsKind()}>
                 <DetailsIdModal
                     open={detailsOpen()}
@@ -124,7 +140,7 @@ export function CombinedActivity(props: { limit?: number }) {
                 />
             </Show>
             <Switch>
-                <Match when={state.activity.length === 0}>
+                <Match when={activity.latest.length === 0}>
                     <div class="w-full text-center pb-4">
                         <NiceP>
                             {i18n.t("receive_some_sats_to_get_started")}
@@ -132,9 +148,9 @@ export function CombinedActivity(props: { limit?: number }) {
                     </div>
                 </Match>
                 <Match
-                    when={props.limit && state.activity.length > props.limit}
+                    when={props.limit && activity.latest.length > props.limit}
                 >
-                    <For each={state.activity.slice(0, props.limit)}>
+                    <For each={activity.latest.slice(0, props.limit)}>
                         {(activityItem) => (
                             <UnifiedActivityItem
                                 item={activityItem}
@@ -143,8 +159,8 @@ export function CombinedActivity(props: { limit?: number }) {
                         )}
                     </For>
                 </Match>
-                <Match when={state.activity.length >= 0}>
-                    <For each={state.activity}>
+                <Match when={activity.latest.length >= 0}>
+                    <For each={activity.latest}>
                         {(activityItem) => (
                             <UnifiedActivityItem
                                 item={activityItem}
@@ -154,6 +170,14 @@ export function CombinedActivity(props: { limit?: number }) {
                     </For>
                 </Match>
             </Switch>
-        </Suspense>
+            <Show when={props.limit && activity.latest.length > 0}>
+                <A
+                    href="/activity"
+                    class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
+                >
+                    {i18n.t("view_all")}
+                </A>
+            </Show>
+        </Show>
     );
 }

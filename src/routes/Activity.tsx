@@ -1,4 +1,4 @@
-import { For, Show, createResource } from "solid-js";
+import { For, Show, Suspense, createResource } from "solid-js";
 import NavBar from "~/components/NavBar";
 import {
     Button,
@@ -107,12 +107,14 @@ export default function Activity() {
                             <Card title="Activity">
                                 <div class="p-1" />
                                 <VStack>
-                                    <Show
-                                        when={!state.wallet_loading}
-                                        fallback={<LoadingShimmer />}
-                                    >
-                                        <CombinedActivity />
-                                    </Show>
+                                    <Suspense>
+                                        <Show
+                                            when={!state.wallet_loading}
+                                            fallback={<LoadingShimmer />}
+                                        >
+                                            <CombinedActivity />
+                                        </Show>
+                                    </Suspense>
                                 </VStack>
                             </Card>
                         </Tabs.Content>
