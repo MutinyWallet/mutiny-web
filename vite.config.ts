@@ -54,7 +54,6 @@ export default defineConfig({
         // Don't want vite to bundle these late during dev causing reload
         include: [
             "qr-scanner",
-            "nostr-tools",
             "class-variance-authority",
             "@kobalte/core",
             "@solid-primitives/upload",
