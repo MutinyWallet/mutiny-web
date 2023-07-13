@@ -13,10 +13,6 @@ export function BetaWarningModal() {
                 Wallet is in beta, and there are still bugs and rough edges.
             </p>
             <p>
-                For instance, Mutiny currently doesn't have seed restore
-                functionality or an easy way to do lightning backups.
-            </p>
-            <p>
                 Please be careful and don't put more money into Mutiny than
                 you're willing to lose.
             </p>
