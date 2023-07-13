@@ -11,8 +11,8 @@ dependencies:
     specifier: ^0.13.2
     version: 0.13.2(solid-js@1.7.7)
   '@mutinywallet/mutiny-wasm':
-    specifier: 0.4.2
-    version: 0.4.2
+    specifier: 0.4.3
+    version: 0.4.3
   '@mutinywallet/waila-wasm':
     specifier: ^0.2.1
     version: 0.2.1
@@ -1868,8 +1868,8 @@ packages:
       solid-js: 1.7.7
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.4.2:
-    resolution: {integrity: sha512-R/ZF+GTOvVwmIbYJzKex1AIreGv5Fs2pQad17xMp4vEh11OTGy26aN2eGc5bdRZCtq5+B1HRzXzMG9vuUaB8rg==}
+  /@mutinywallet/mutiny-wasm@0.4.3:
+    resolution: {integrity: sha512-t94p5p6ZSLLbRWf80HGj4aNqdTzst1qd9exERDsxR6Qv+Uatf/dswW+RT9T0A3f2PT27uS4pAc9lGUQTvDKsDA==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.2.1:
