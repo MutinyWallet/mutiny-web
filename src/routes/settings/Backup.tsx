@@ -60,7 +60,8 @@ export default function Backup() {
     function wroteDownTheWords() {
         setLoading(true);
         actions.setHasBackedUp();
-        navigate("/settings/encrypt");
+        // navigate("/settings/encrypt");
+        navigate("/");
         setLoading(false);
     }
 
