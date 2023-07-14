@@ -6,8 +6,8 @@ import { SmallHeader } from "./layout";
 export function Toaster() {
     return (
         <Portal>
-            <Toast.Region class="top-0 fixed flex gap-4 w-full justify-center safe-top safe-left safe-right safe-bottom">
-                <Toast.List class="z-[9999] max-w-[100vw] w-[400px] mt-8 flex flex-col gap-4" />
+            <Toast.Region class="z-[9999] top-0 fixed flex gap-4 w-full justify-center safe-top safe-left safe-right safe-bottom">
+                <Toast.List class="max-w-[100vw] w-[400px] mt-8 flex flex-col gap-4" />
             </Toast.Region>
         </Portal>
     );
@@ -58,7 +58,7 @@ export function ToastItem(props: {
                         <p>{props.description}</p>
                     </Toast.Description>
                 </div>
-                <Toast.CloseButton class="hover:bg-white/10 rounded-lg active:bg-m-blue flex-0">
+                <Toast.CloseButton class="hover:bg-white/10 rounded-lg active:bg-m-blue flex-0 w-8 h-8">
                     <img src={close} alt="Close" />
                 </Toast.CloseButton>
             </div>
