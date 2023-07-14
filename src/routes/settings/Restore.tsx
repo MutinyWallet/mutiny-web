@@ -240,9 +240,14 @@ export default function RestorePage() {
                 <LargeHeader>Restore</LargeHeader>
                 <VStack>
                     <NiceP>
-                        You can restore an existing Mutiny Wallet from your 12
-                        word seed phrase. This will replace your existing
-                        wallet, so make sure you know what you're doing!
+                        <p>
+                            You can restore an existing Mutiny Wallet from your 12
+                            word seed phrase. This will replace your existing
+                            wallet, so make sure you know what you're doing!
+                        </p>
+                        <p>
+			    Do not use on multiple browsers at the same time.
+                        </p>
                     </NiceP>
                     <TwelveWordsEntry />
                 </VStack>
