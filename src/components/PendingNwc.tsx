@@ -128,7 +128,10 @@ export function PendingNwc() {
                                         {pendingItem.name_of_connection}
                                     </span>
                                     <time class="text-sm text-neutral-500">
-                                        Expires {timeAgo(pendingItem.date)}
+                                        {pendingItem.date <= Date.now()
+                                            ? `Expired`
+                                            : `Expires`}{" "}
+                                        ${timeAgo(pendingItem.date)}`
                                     </time>
                                 </div>
                                 <div>
