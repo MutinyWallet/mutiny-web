@@ -1,4 +1,5 @@
 import { DeleteEverything } from "~/components/DeleteEverything";
+import { ImportExport } from "~/components/ImportExport";
 import KitchenSink from "~/components/KitchenSink";
 import NavBar from "~/components/NavBar";
 import {
@@ -29,6 +30,7 @@ export default function Admin() {
                             the app. Please be careful!
                         </NiceP>
                         <KitchenSink />
+                        <ImportExport emergency />
                         <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red overflow-x-hidden">
                             <SmallHeader>Danger zone</SmallHeader>
                             <DeleteEverything />

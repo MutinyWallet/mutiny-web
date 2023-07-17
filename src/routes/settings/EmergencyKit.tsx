@@ -1,5 +1,4 @@
 import { DeleteEverything } from "~/components/DeleteEverything";
-import { ImportExport } from "~/components/ImportExport";
 import { LoadingIndicator } from "~/components/LoadingIndicator";
 import { Logs } from "~/components/Logs";
 import NavBar from "~/components/NavBar";
@@ -17,7 +16,6 @@ import { ExternalLink } from "~/components/layout/ExternalLink";
 function EmergencyStack() {
     return (
         <VStack>
-            <ImportExport emergency />
             <Logs />
             <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red overflow-x-hidden">
                 <SmallHeader>Danger zone</SmallHeader>
@@ -36,15 +34,15 @@ export default function EmergencyKit() {
                 <VStack>
                     <LoadingIndicator />
                     <NiceP>
-                        If your wallet seems broken, here are some tools to try
-                        to debug and repair it.
+                        Please{" "}
+                        <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
+                            reach out to us for support
+                        </ExternalLink>{" "}
+                        if you need help.
                     </NiceP>
                     <NiceP>
-                        If you have any questions on what these buttons do,
-                        please{" "}
-                        <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
-                            reach out to us for support.
-                        </ExternalLink>
+                        Deleting everything is a last resort and{" "}
+                        <strong>can result in loss of funds!</strong>
                     </NiceP>
                     <EmergencyStack />
                 </VStack>
