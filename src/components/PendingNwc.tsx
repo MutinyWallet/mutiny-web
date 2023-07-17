@@ -1,5 +1,5 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
-import { timeAgo } from "~/utils/prettyPrintTime";
+import { formatExpiration } from "~/utils/prettyPrintTime";
 import { Card, LoadingSpinner, VStack } from "./layout";
 import bolt from "~/assets/icons/bolt.svg";
 import {
@@ -128,10 +128,7 @@ export function PendingNwc() {
                                         {pendingItem.name_of_connection}
                                     </span>
                                     <time class="text-sm text-neutral-500">
-                                        {pendingItem.date <= Date.now()
-                                            ? `Expired`
-                                            : `Expires`}{" "}
-                                        ${timeAgo(pendingItem.date)}`
+                                        {formatExpiration(pendingItem.date)}
                                     </time>
                                 </div>
                                 <div>
