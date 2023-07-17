@@ -19,6 +19,7 @@ import close from "~/assets/icons/close.svg";
 import { A } from "solid-start";
 import down from "~/assets/icons/down.svg";
 import { DecryptDialog } from "../DecryptDialog";
+import { LoadingIndicator } from "~/components/LoadingIndicator";
 
 export { Button, ButtonLink, Linkify };
 
@@ -158,9 +159,18 @@ export const MutinyWalletGuard: ParentComponent = (props) => {
     const [state, _] = useMegaStore();
     return (
         <Suspense fallback={<FullscreenLoader />}>
-            <Show when={state.mutiny_wallet && !state.wallet_loading}>
-                {props.children}
-            </Show>
+            <Switch>
+                <Match when={state.mutiny_wallet && !state.wallet_loading}>
+                    {props.children}
+                </Match>
+                <Match when={true}>
+                    <SafeArea>
+                        <DefaultMain>
+                            <LoadingIndicator />
+                        </DefaultMain>
+                    </SafeArea>
+                </Match>
+            </Switch>
             <DecryptDialog />
         </Suspense>
     );
