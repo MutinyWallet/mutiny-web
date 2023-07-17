@@ -40,3 +40,15 @@ export function timeAgo(ts?: number | bigint): string {
         return `${month}/${day}/${year}`;
     }
 }
+
+export function formatExpiration(expiration?: bigint) {
+    if (!expiration) {
+        return "Unknown expiration";
+    }
+
+    if (expiration <= Date.now() / 1000) {
+        return "Expired";
+    }
+
+    return `Expires ${timeAgo(expiration)}`;
+}
