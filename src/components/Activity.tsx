@@ -87,8 +87,6 @@ function UnifiedActivityItem(props: {
     );
 }
 
-
-
 export function CombinedActivity(props: { limit?: number }) {
     const [state, _actions] = useMegaStore();
     const i18n = useI18n();

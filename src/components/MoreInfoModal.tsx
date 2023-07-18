@@ -1,20 +1,26 @@
 import { Dialog } from "@kobalte/core";
-import { ParentComponent, createSignal } from "solid-js";
+import { ParentComponent, createSignal, JSXElement } from "solid-js";
 import { DIALOG_CONTENT, DIALOG_POSITIONER, OVERLAY } from "./DetailsModal";
 import { ModalCloseButton, SmallHeader } from "./layout";
 import { ExternalLink } from "./layout/ExternalLink";
+import help from "~/assets/icons/help.svg";
 import { useI18n } from "~/i18n/context";
 
-export function FeesModal() {
+export function FeesModal(props: { icon?: boolean }) {
     const i18n = useI18n();
     return (
-        <MoreInfoModal title={i18n.t("whats_with_the_fees")} linkText={i18n.t("why?")}>
-            <p>
-                {i18n.t("more_info_modal_p1")}
-            </p>
-            <p>
-                {i18n.t("more_info_modal_p2")}
-            </p>
+        <MoreInfoModal
+            title={i18n.t("whats_with_the_fees")}
+            linkText={
+                props.icon ? (
+                    <img src={help} alt="help" class="w-4 h-4 cursor-pointer" />
+                ) : (
+                    i18n.t("why?")
+                )
+            }
+        >
+            <p>{i18n.t("more_info_modal_p1")}</p>
+            <p>{i18n.t("more_info_modal_p2")}</p>
             <p>
                 <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Understanding-liquidity">
                     {i18n.t("learn_more_about_liquidity")}
@@ -25,7 +31,7 @@ export function FeesModal() {
 }
 
 export const MoreInfoModal: ParentComponent<{
-    linkText: string;
+    linkText: string | JSXElement;
     title: string;
 }> = (props) => {
     const [open, setOpen] = createSignal(false);

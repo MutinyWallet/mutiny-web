@@ -65,5 +65,5 @@ select {
 }
 
 strong {
-@apply font-semibold text-m-red;
+    @apply font-semibold text-m-red;
 }

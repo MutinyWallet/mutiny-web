@@ -10,7 +10,6 @@ import NavBar from "~/components/NavBar";
 import { A } from "solid-start";
 import { For, Show } from "solid-js";
 import forward from "~/assets/icons/forward.svg";
-import { useMegaStore } from "~/state/megaStore";
 
 function SettingsLinkList(props: {
     header: string;
@@ -58,8 +57,6 @@ function SettingsLinkList(props: {
 }
 
 export default function Settings() {
-    const [state, _actions] = useMegaStore();
-
     return (
         <SafeArea>
             <DefaultMain>

@@ -26,14 +26,16 @@ import { TextField } from "~/components/layout/TextField";
 import { MethodChooser, SendSource } from "~/routes/Send";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
-import megaex from "~/assets/icons/megaex.png";
-import megacheck from "~/assets/icons/megacheck.png";
+import { MegaCheck } from "~/components/successfail/MegaCheck";
+import { MegaEx } from "~/components/successfail/MegaEx";
 import { InfoBox } from "~/components/InfoBox";
 import { useNavigate } from "solid-start";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { ExternalLink } from "~/components/layout/ExternalLink";
 import { Network } from "~/logic/mutinyWalletSetup";
+import { useI18n } from "~/i18n/context";
+import { AmountFiat } from "~/components/AmountFiat";
 
 const CHANNEL_FEE_ESTIMATE_ADDRESS =
     "bc1qf7546vg73ddsjznzq57z3e8jdn6gtw6au576j07kt6d9j7nz8mzsyn6lgf";
@@ -50,6 +52,7 @@ type ChannelOpenDetails = {
 export default function Swap() {
     const [state, _actions] = useMegaStore();
     const navigate = useNavigate();
+    const i18n = useI18n();
 
     const [source, setSource] = createSignal<SendSource>("onchain");
     const [amountSats, setAmountSats] = createSignal(0n);
@@ -265,13 +268,8 @@ export default function Swap() {
                     <BackLink />
                     <LargeHeader>Swap to Lightning</LargeHeader>
                     <SuccessModal
-                        title={
-                            channelOpenResult()?.channel
-                                ? "Swap Success"
-                                : "Swap Failed"
-                        }
                         confirmText={
-                            channelOpenResult()?.channel ? "Nice" : "Too Bad"
+                            channelOpenResult()?.channel ? "Nice" : "Home"
                         }
                         open={!!channelOpenResult()}
                         setOpen={(open: boolean) => {
@@ -284,35 +282,37 @@ export default function Swap() {
                     >
                         <Switch>
                             <Match when={channelOpenResult()?.failure_reason}>
-                                <img
-                                    src={megaex}
-                                    alt="fail"
-                                    class="w-1/2 mx-auto max-w-[30vh] flex-shrink"
-                                />
-
-                                <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
-                                    {
-                                        channelOpenResult()?.failure_reason
-                                            ?.message
-                                    }
-                                </p>
+                                <MegaEx />
+                                <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
+                                    {channelOpenResult()?.failure_reason
+                                        ? channelOpenResult()?.failure_reason
+                                              ?.message
+                                        : ""}
+                                </h1>
+                                {/*TODO: Error hint needs to be added for possible failure reasons*/}
                             </Match>
-                            <Match when={true}>
-                                <img
-                                    src={megacheck}
-                                    alt="success"
-                                    class="w-1/2 mx-auto max-w-[30vh] flex-shrink"
-                                />
-                                <AmountCard
-                                    amountSats={
-                                        channelOpenResult()?.channel?.balance?.toString() ||
-                                        ""
-                                    }
-                                    reserve={
-                                        channelOpenResult()?.channel?.reserve?.toString() ||
-                                        ""
-                                    }
-                                />
+                            <Match when={channelOpenResult()?.channel}>
+                                <MegaCheck />
+                                <div class="flex flex-col justify-center">
+                                    <h1 class="w-full mt-4 mb-2 justify-center text-2xl font-semibold text-center md:text-3xl">
+                                        Swap Initiated
+                                    </h1>
+                                    <p class="text-xl text-center">
+                                        +
+                                        {channelOpenResult()?.channel?.balance.toLocaleString() ??
+                                            "0"}{" "}
+                                        sats will be added to your Lightning
+                                        balance
+                                    </p>
+                                    <AmountFiat
+                                        amountSats={
+                                            channelOpenResult()?.channel
+                                                ?.balance
+                                        }
+                                        classes="text-sm text-center"
+                                    />
+                                </div>
+                                <hr class="w-16 bg-m-grey-400" />
                                 <Show
                                     when={
                                         channelOpenResult()?.channel?.outpoint
@@ -326,7 +326,7 @@ export default function Swap() {
                                             network
                                         )}
                                     >
-                                        View Transaction
+                                        {i18n.t("view_transaction")}
                                     </ExternalLink>
                                 </Show>
                                 {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}

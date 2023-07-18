@@ -28,8 +28,8 @@ import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
-import megacheck from "~/assets/icons/megacheck.png";
-import megaex from "~/assets/icons/megaex.png";
+import { MegaCheck } from "~/components/successfail/MegaCheck";
+import { MegaEx } from "~/components/successfail/MegaEx";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { BackLink } from "~/components/layout/BackLink";
 import { useNavigate } from "solid-start";
@@ -44,6 +44,7 @@ import { ExternalLink } from "~/components/layout/ExternalLink";
 import { InfoBox } from "~/components/InfoBox";
 import { useI18n } from "~/i18n/context";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
+import { FeesModal } from "~/components/MoreInfoModal";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -56,6 +57,7 @@ type SentDetails = {
     destination?: string;
     txid?: string;
     failure_reason?: string;
+    fee_estimate?: bigint | number;
 };
 
 export function MethodChooser(props: {
@@ -504,6 +506,7 @@ export default function Send() {
                     sentDetails.amount = amountSats();
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
+                    sentDetails.fee_estimate = feeEstimate() ?? 0;
                 } else {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const txid = await state.mutiny_wallet?.send_to_address(
@@ -514,6 +517,7 @@ export default function Send() {
                     sentDetails.amount = amountSats();
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
+                    sentDetails.fee_estimate = feeEstimate() ?? 0;
                 }
             }
             setSentDetails(sentDetails as SentDetails);
@@ -562,10 +566,7 @@ export default function Send() {
                     </Show>
                     <LargeHeader>{i18n.t("send_bitcoin")}</LargeHeader>
                     <SuccessModal
-                        title={
-                            sentDetails()?.amount ? "Sent" : "Payment Failed"
-                        }
-                        confirmText={sentDetails()?.amount ? "Nice" : "Too Bad"}
+                        confirmText={sentDetails()?.amount ? "Nice" : "Home"}
                         open={!!sentDetails()}
                         setOpen={(open: boolean) => {
                             if (!open) setSentDetails(undefined);
@@ -577,26 +578,47 @@ export default function Send() {
                     >
                         <Switch>
                             <Match when={sentDetails()?.failure_reason}>
-                                <img
-                                    src={megaex}
-                                    alt="fail"
-                                    class="w-1/2 mx-auto max-w-[50vh]"
-                                />
-                                <p class="text-xl font-light py-2 px-4 rounded-xl bg-white/10">
-                                    {sentDetails()?.failure_reason}
-                                </p>
+                                <MegaEx />
+                                <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
+                                    {sentDetails()?.amount
+                                        ? "Payment Initiated"
+                                        : sentDetails()?.failure_reason}
+                                </h1>
+                                {/*TODO: add failure hint logic for different failure conditions*/}
                             </Match>
                             <Match when={true}>
-                                <img
-                                    src={megacheck}
-                                    alt="success"
-                                    class="w-1/2 mx-auto max-w-[50vh]"
-                                />
+                                <MegaCheck />
+                                <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
+                                    {sentDetails()?.amount
+                                        ? "Payment Initiated"
+                                        : sentDetails()?.failure_reason}
+                                </h1>
                                 <Amount
                                     amountSats={sentDetails()?.amount}
                                     showFiat
-                                    centered
+                                    align="center"
+                                    size="large"
+                                    icon="minus"
                                 />
+                                <hr class="w-16 bg-m-grey-400" />
+                                <div class="flex flex-row items-start gap-3">
+                                    <p class="text-m-grey-400 text-sm leading-[17px] text-center">
+                                        Fees
+                                    </p>
+                                    <div class="flex items-start gap-1">
+                                        <Amount
+                                            amountSats={
+                                                sentDetails()?.fee_estimate
+                                            }
+                                            align="right"
+                                            size="small"
+                                            showFiat
+                                        />
+                                        <div class="flex items-start py-[1px]">
+                                            <FeesModal icon />
+                                        </div>
+                                    </div>
+                                </div>
                                 <Show when={sentDetails()?.txid}>
                                     <ExternalLink
                                         href={mempoolTxUrl(
@@ -636,7 +658,9 @@ export default function Send() {
                                             lnurl={lnurlp()}
                                             clearAll={clearAll}
                                         />
-                                        <SmallHeader>{i18n.t("private_tags")}</SmallHeader>
+                                        <SmallHeader>
+                                            {i18n.t("private_tags")}
+                                        </SmallHeader>
                                         <TagEditor
                                             selectedValues={selectedContacts()}
                                             setSelectedValues={
