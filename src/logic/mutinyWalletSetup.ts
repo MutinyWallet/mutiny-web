@@ -83,7 +83,16 @@ export async function setAndGetMutinySettings(
             );
         storage && localStorage.setItem("MUTINY_SETTINGS_storage", storage);
 
-        return { network, proxy, esplora, rgs, lsp, auth, subscriptions, storage };
+        return {
+            network,
+            proxy,
+            esplora,
+            rgs,
+            lsp,
+            auth,
+            subscriptions,
+            storage
+        };
     } catch (error) {
         console.error(error);
         throw error;

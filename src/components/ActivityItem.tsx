@@ -1,11 +1,4 @@
-import {
-    Match,
-    ParentComponent,
-    Switch,
-    createMemo,
-    createResource
-} from "solid-js";
-import { satsToUsd } from "~/utils/conversions";
+import { Match, ParentComponent, Switch, createResource } from "solid-js";
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
 import shuffle from "~/assets/icons/shuffle.svg";
@@ -16,6 +9,7 @@ import { timeAgo } from "~/utils/prettyPrintTime";
 import { generateGradient } from "~/utils/gradientHash";
 import { useMegaStore } from "~/state/megaStore";
 import { Contact } from "@mutinywallet/mutiny-wasm";
+import { Amount } from "~/components/Amount";
 
 export const ActivityAmount: ParentComponent<{
     amount: string;
@@ -23,24 +17,6 @@ export const ActivityAmount: ParentComponent<{
     positive?: boolean;
     center?: boolean;
 }> = (props) => {
-    const amountInUsd = createMemo(() => {
-        const parsed = Number(props.amount);
-        if (isNaN(parsed)) {
-            return props.amount;
-        } else {
-            return satsToUsd(props.price, parsed, true);
-        }
-    });
-
-    const prettyPrint = createMemo(() => {
-        const parsed = Number(props.amount);
-        if (isNaN(parsed)) {
-            return props.amount;
-        } else {
-            return parsed.toLocaleString();
-        }
-    });
-
     return (
         <div
             class="flex flex-col"
@@ -49,17 +25,13 @@ export const ActivityAmount: ParentComponent<{
                 "items-center": props.center
             }}
         >
-            <div
-                class="text-base"
-                classList={{ "text-m-green": props.positive }}
-            >
-                {props.positive && "+ "}
-                {prettyPrint()}&nbsp;<span class="text-sm">SATS</span>
-            </div>
-            <div class="text-sm text-neutral-500">
-                &#8776;&nbsp;{amountInUsd()}&nbsp;
-                <span class="text-sm">USD</span>
-            </div>
+            <Amount
+                amountSats={Number(props.amount)}
+                align="right"
+                icon={props.positive ? "plus" : undefined}
+                showFiat
+                green={props.positive ? true : false}
+            />
         </div>
     );
 };

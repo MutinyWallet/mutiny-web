@@ -16,7 +16,8 @@ export function ResetRouter() {
         <InnerCard>
             <VStack>
                 <NiceP>
-                    Failing to make payments? Try resetting the lightning router.
+                    Failing to make payments? Try resetting the lightning
+                    router.
                 </NiceP>
                 <Button intent="red" onClick={reset}>
                     Reset Router

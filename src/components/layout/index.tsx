@@ -10,7 +10,12 @@ import {
 } from "solid-js";
 import Linkify from "./Linkify";
 import { Button, ButtonLink } from "./Button";
-import { Collapsible, Checkbox as KCheckbox, Dialog, Separator } from "@kobalte/core";
+import {
+    Collapsible,
+    Checkbox as KCheckbox,
+    Dialog,
+    Separator
+} from "@kobalte/core";
 import { useMegaStore } from "~/state/megaStore";
 import check from "~/assets/icons/check.svg";
 import { MutinyTagItem } from "~/utils/tags";
@@ -207,12 +212,26 @@ export const LoadingSpinner = (props: { big?: boolean; wide?: boolean }) => {
 
 export const Hr = () => <Separator.Root class="my-4 border-m-grey-750" />;
 
-export const LargeHeader: ParentComponent<{ action?: JSX.Element }> = (
-    props
-) => {
+export const LargeHeader: ParentComponent<{
+    action?: JSX.Element;
+    centered?: boolean;
+}> = (props) => {
     return (
-        <header class="w-full flex justify-between items-center mt-4 mb-2">
-            <h1 class="text-2xl font-semibold">{props.children}</h1>
+        <header
+            class="w-full flex justify-between items-center mt-4 mb-2"
+            classList={{
+                "justify-between": !props.centered,
+                "justify-center": props.centered
+            }}
+        >
+            <h1
+                class="text-3xl font-semibold"
+                classList={{
+                    "text-center": props.centered
+                }}
+            >
+                {props.children}
+            </h1>
             <Show when={props.action}>{props.action}</Show>
         </header>
     );

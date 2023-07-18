@@ -15,9 +15,11 @@ export function Amount(props: {
     amountSats: bigint | number | undefined;
     showFiat?: boolean;
     loading?: boolean;
-    centered?: boolean;
-    icon?: "lightning" | "chain";
     whiteBg?: boolean;
+    align?: "left" | "center" | "right";
+    icon?: "lightning" | "chain" | "plus" | "minus";
+    size?: "small" | "large" | "xl";
+    green?: boolean;
 }) {
     const [state, _] = useMegaStore();
 
@@ -28,7 +30,9 @@ export function Amount(props: {
         <div
             class="flex flex-col gap-1"
             classList={{
-                "items-center": props.centered
+                "items-start": props.align === "left",
+                "items-center": props.align === "center",
+                "items-end": props.align === "right"
             }}
         >
             <div class="flex gap-2 items-center">
@@ -39,28 +43,78 @@ export function Amount(props: {
                     <img src={chain} alt="chain" class="h-[18px]" />
                 </Show>
                 <h1
-                    class="text-2xl font-light"
+                    class="font-light text-right"
                     classList={{
-                        "text-black": props.whiteBg
+                        "text-black": props.whiteBg,
+                        "text-sm": props.size === "small",
+                        "text-xl": props.size === "large",
+                        "text-2xl": props.size === "xl",
+                        "text-m-green": props.green
                     }}
                 >
+                    <Show when={props.icon === "plus"}>
+                        <span>+</span>
+                    </Show>
+                    <Show when={props.icon === "minus"}>
+                        <span>-</span>
+                    </Show>
                     {props.loading
                         ? "..."
                         : prettyPrintAmount(props.amountSats)}
                     &nbsp;
-                    <span class="text-base font-light">SATS</span>
+                    <span
+                        class="font-light text-base"
+                        classList={{
+                            "text-sm": props.size === "small",
+                            "text-lg": props.size === "xl"
+                        }}
+                    >
+                        <Show
+                            when={
+                                !props.amountSats ||
+                                Number(props.amountSats) > 1 ||
+                                Number(props.amountSats) === 0
+                            }
+                        >
+                            SATS
+                        </Show>
+                        <Show
+                            when={
+                                props.amountSats &&
+                                Number(props.amountSats) === 1
+                            }
+                        >
+                            SAT
+                        </Show>
+                    </span>
                 </h1>
             </div>
             <Show when={props.showFiat}>
                 <h2
-                    class="text-sm font-light"
+                    class="font-light text-white/70"
                     classList={{
                         "text-black": props.whiteBg,
-                        "text-white/70": !props.whiteBg
+                        "text-white/70": !props.whiteBg,
+                        "text-sm": !props.size,
+                        "text-xs": props.size === "small",
+                        "text-base": props.size === "large",
+                        "text-lg": props.size === "xl"
                     }}
                 >
-                    &#8776; {props.loading ? "..." : amountInUsd()}&nbsp;
-                    <span class="text-sm">USD</span>
+                    ~
+                    <Show when={props.size === "xl"}>
+                        <span>&nbsp;</span>
+                    </Show>
+                    {props.loading ? "..." : amountInUsd()}
+                    <span
+                        class="text-sm"
+                        classList={{
+                            "text-xs": props.size === "small",
+                            "text-base": props.size === "large"
+                        }}
+                    >
+                        &nbsp;USD
+                    </span>
                 </h2>
             </Show>
         </div>
