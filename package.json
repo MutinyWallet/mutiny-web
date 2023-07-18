@@ -13,6 +13,8 @@
     },
     "type": "module",
     "devDependencies": {
+        "@capacitor/assets": "^2.0.4",
+        "@capacitor/cli": "^5.2.1",
         "@playwright/test": "^1.35.1",
         "@types/node": "^18.16.19",
         "@typescript-eslint/eslint-plugin": "^5.61.0",
@@ -35,6 +37,9 @@
         "workbox-window": "^6.6.0"
     },
     "dependencies": {
+        "@capacitor/android": "^5.2.1",
+        "@capacitor/camera": "^5.0.6",
+        "@capacitor/core": "^5.2.1",
         "@kobalte/core": "^0.9.8",
         "@kobalte/tailwindcss": "^0.5.0",
         "@modular-forms/solid": "^0.13.2",
