@@ -72,16 +72,17 @@ export default defineConfig({
                         id.includes("@mutinywallet") ||
                         id.includes("i18next") ||
                         id.includes("qr-scanner") ||
-                        id.includes("class-variance-authority")
+                        id.includes("class-variance-authority") ||
+                        id.includes("@kobalte")
                     ) {
                         return undefined;
                     }
 
-                    if (id.includes("node_modules")) {
-                        return "vendor";
-                    } else {
+                    if (!id.includes("node_modules")) {
                         return "megabundle";
                     }
+
+                    return undefined;
                 }
             }
         }
