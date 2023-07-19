@@ -37,7 +37,7 @@
         "workbox-window": "^6.6.0"
     },
     "dependencies": {
-        "@capacitor-community/barcode-scanner": "github:capacitor-community/barcode-scanner#ml-kit",
+        "@mutinywallet/barcode-scanner": "5.0.0-beta.3",
         "@capacitor/android": "^5.2.1",
         "@capacitor/clipboard": "^5.0.6",
         "@capacitor/core": "^5.2.1",

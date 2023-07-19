@@ -1,9 +1,6 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  '@capacitor-community/barcode-scanner':
-    specifier: github:capacitor-community/barcode-scanner#ml-kit
-    version: github.com/capacitor-community/barcode-scanner/fa543b640a5336e6f3909490d9cb1f22b7aeb216(@capacitor/core@5.2.1)
   '@capacitor/android':
     specifier: ^5.2.1
     version: 5.2.1(@capacitor/core@5.2.1)
@@ -22,6 +19,9 @@ dependencies:
   '@modular-forms/solid':
     specifier: ^0.13.2
     version: 0.13.2(solid-js@1.7.7)
+  '@mutinywallet/barcode-scanner':
+    specifier: 5.0.0-beta.3
+    version: 5.0.0-beta.3(@capacitor/core@5.2.1)
   '@mutinywallet/mutiny-wasm':
     specifier: 0.4.4
     version: 0.4.4
@@ -2101,6 +2101,14 @@ packages:
       solid-js: 1.7.7
     dev: false
 
+  /@mutinywallet/barcode-scanner@5.0.0-beta.3(@capacitor/core@5.2.1):
+    resolution: {integrity: sha512-UIR/OibIUoyMI3i691e/G97hr2gOXGZ0PX0WpuPWzuBLDCReKl6Uj+uEnrdrJjdkbN+oeXQ9mWuQrWJ6LSL1hQ==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.1
+    dev: false
+
   /@mutinywallet/mutiny-wasm@0.4.4:
     resolution: {integrity: sha512-+coNJGqPluTgsIuy/NDLbVMtRWtM4gfKbRmFeojZsRxUM3DtVS15P3pJ234gqBTsAnRNnKNJZonURR1m4xoe5A==}
     dev: false
@@ -2744,8 +2752,8 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: true
 
-  /@xmldom/xmldom@0.8.9:
-    resolution: {integrity: sha512-4VSbbcMoxc4KLjb1gs96SRmi7w4h1SF+fCoiK0XaQX62buCc1G5d0DC5bJ9xJBNPDSVCmIrcl8BiYxzjrqaaJA==}
+  /@xmldom/xmldom@0.8.10:
+    resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
     engines: {node: '>=10.0.0'}
     dev: true
 
@@ -6128,7 +6136,7 @@ packages:
     resolution: {integrity: sha512-uysumyrvkUX0rX/dEVqt8gC3sTBzd4zoWfLeS29nb53imdaXVvLINYXTI2GNqzaMuvacNx4uJQ8+b3zXR0pkgQ==}
     engines: {node: '>=10.4.0'}
     dependencies:
-      '@xmldom/xmldom': 0.8.9
+      '@xmldom/xmldom': 0.8.10
       base64-js: 1.5.1
       xmlbuilder: 15.1.1
     dev: true
@@ -8015,19 +8023,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-  github.com/capacitor-community/barcode-scanner/fa543b640a5336e6f3909490d9cb1f22b7aeb216(@capacitor/core@5.2.1):
-    resolution: {tarball: https://codeload.github.com/capacitor-community/barcode-scanner/tar.gz/fa543b640a5336e6f3909490d9cb1f22b7aeb216}
-    id: github.com/capacitor-community/barcode-scanner/fa543b640a5336e6f3909490d9cb1f22b7aeb216
-    name: '@capacitor-community/barcode-scanner'
-    version: 5.0.0-beta.2
-    prepare: true
-    requiresBuild: true
-    peerDependencies:
-      '@capacitor/core': ^5.0.0
-    dependencies:
-      '@capacitor/core': 5.2.1
-    dev: false
 
 settings:
   autoInstallPeers: true
