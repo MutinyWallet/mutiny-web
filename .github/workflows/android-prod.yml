@@ -1,0 +1,161 @@
+name: Build Android
+
+on:
+  push:
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Cache gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install app dependencies
+        run: pnpm install
+
+      - name: Build SolidJS app
+        env:
+          VITE_NETWORK: bitcoin
+          VITE_PROXY: wss://p.mutinywallet.com
+          VITE_ESPLORA: https://mempool.space/api
+          VITE_LSP: https://lsp.voltageapi.com
+          VITE_RGS: https://rapidsync.lightningdevkit.org/snapshot/
+          VITE_AUTH: https://auth.mutinywallet.com
+          VITE_SUBSCRIPTIONS: https://subscriptions.mutinywallet.com
+          VITE_STORAGE: https://storage.mutinywallet.com
+        run: pnpm build
+
+      - name: Capacitor sync
+        run: npx cap sync
+
+      - name: Build AAB
+        working-directory: android
+        run: ./gradlew clean bundleRelease --stacktrace
+
+      - name: Sign AAB (F-Droid)
+        uses: r0adkll/sign-android-release@v1
+        working-directory: android
+        with:
+          releaseDirectory: app/build/outputs/bundle/fdroidRelease
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Build APK
+        working-directory: android
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Sign APK (F-Droid)
+        uses: r0adkll/sign-android-release@v1
+        working-directory: android
+        with:
+          releaseDirectory: app/build/outputs/apk/fdroid/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        working-directory: android
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false 
+
+      # F-Droid APK
+      - name: Upload F-Droid APK Universal Asset
+        id: upload-release-asset-fdroid-universal-apk
+        uses: actions/upload-release-asset@v1
+        working-directory: android
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/fdroid/release/app-fdroid-universal-release-unsigned-signed.apk
+          asset_name: mutiny-wallet-fdroid-universal-${{ github.ref_name }}.apk
+          asset_content_type: application/zip
+
+      - name: Upload F-Droid APK x86 Asset
+        id: upload-release-asset-fdroid-x86-apk
+        uses: actions/upload-release-asset@v1
+        working-directory: android
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/fdroid/release/app-fdroid-x86-release-unsigned-signed.apk
+          asset_name: mutiny-wallet-fdroid-x86-${{ github.ref_name }}.apk
+          asset_content_type: application/zip
+
+      - name: Upload F-Droid APK x86_64 Asset
+        id: upload-release-asset-fdroid-x86-64-apk
+        uses: actions/upload-release-asset@v1
+        working-directory: android
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/fdroid/release/app-fdroid-x86_64-release-unsigned-signed.apk
+          asset_name: mutiny-wallet-fdroid-x86_64-${{ github.ref_name }}.apk
+          asset_content_type: application/zip
+
+      # FDroid AAB
+      - name: Upload F-Droid AAB Asset
+        id: upload-release-asset-fdroid-aab
+        uses: actions/upload-release-asset@v1
+        working-directory: android
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/bundle/fdroidRelease/app-fdroid-release.aab
+          asset_name: mutiny-wallet-fdroid-${{ github.ref_name }}.aab
+          asset_content_type: application/zip
