@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 import wasm from "vite-plugin-wasm";
 
-import * as path from 'path'
+import * as path from "path";
 
 const pwaOptions: Partial<VitePWAOptions> = {
     base: "/",
@@ -54,7 +54,6 @@ export default defineConfig({
         // Don't want vite to bundle these late during dev causing reload
         include: [
             "qr-scanner",
-            "nostr-tools",
             "class-variance-authority",
             "@kobalte/core",
             "@solid-primitives/upload",
@@ -63,5 +62,28 @@ export default defineConfig({
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
         exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: (id) => {
+                    if (
+                        id.includes("solid-js") ||
+                        id.includes("@mutinywallet") ||
+                        id.includes("i18next") ||
+                        id.includes("qr-scanner") ||
+                        id.includes("class-variance-authority")
+                    ) {
+                        return undefined;
+                    }
+
+                    if (id.includes("node_modules")) {
+                        return "vendor";
+                    } else {
+                        return "megabundle";
+                    }
+                }
+            }
+        }
     }
 });
