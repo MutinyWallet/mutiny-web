@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 body {
-    @apply text-white bg-neutral-900;
+    @apply text-white;
     overscroll-behavior-y: none;
     min-height: 100.3%;
+}
+
+html {
+    @apply bg-neutral-900;
 }
 
 #mutiny-logo {
@@ -41,6 +45,7 @@ p:not(:last-child) {
     width: max-content;
     height: max-content;
     overflow: hidden;
+    @apply bg-transparent;
 }
 
 #video-container .scan-region-highlight {
