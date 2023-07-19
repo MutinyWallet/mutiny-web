@@ -56,3 +56,45 @@ To revert back and use the remote version of mutiny-wasm:
 ```
 just remote
 ```
+
+## Android
+
+### How to test locally
+
+```
+pnpm build && npx cap sync
+```
+
+Now open up the `android` directory in android studio and run the build
+
+### Deploying
+
+#### Pull Requests
+
+Each pull request will build the debug signet app and upload it internally to the github actions run.
+
+#### Master
+
+Each push to master will build a signed release version running in signet mode. The build process is almost identical to the release version.
+
+Prereleased tags will be created for master.
+
+#### Release
+
+First bump up the `versionCode` and `versionName` in `./andriod/app/build.gradle`. The `versionCode` must always go up by one when making a release. The `versionName` can mimic `package.json` with an extra build number like `0.4.3-1` to make it easier to keep things looking like they are in sync when android only releases go out.
+
+Publish a new tag like `0.4.3-1` in order to trigger a signed release version running in mainnet mode.
+
+### Creating keys for the first time
+
+1. Generate a new signing key
+```
+keytool -genkey -v -keystore <my-release-key.keystore> -alias <alias_name> -keyalg RSA -keysize 2048 -validity 10000
+openssl base64 < <my-release-key.keystore> | tr -d '\n' | tee some_signing_key.jks.base64.txt
+```
+2. Create 3 Secret Key variables on your GitHub repository and fill in with the signing key information
+    - `KEY_ALIAS` <- `<alias_name>`
+    - `KEY_STORE_PASSWORD` <- `<your key store password>`
+    - `SIGNING_KEY` <- the data from `<my-release-key.keystore>`
+3. Change the `versionCode` and `versionName` on `app/build.gradle`
+4. Commit and push.

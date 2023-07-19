@@ -1,0 +1,85 @@
+name: Build Android
+
+on:
+  push:
+    branches:
+      - master
+      - prod
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Cache gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install app dependencies
+        run: pnpm install
+
+      - name: Build SolidJS app
+        env:
+          VITE_NETWORK: signet
+          VITE_PROXY: wss://p.mutinywallet.com
+          VITE_ESPLORA: https://mutinynet.com/api
+          VITE_LSP: https://signet-lsp.mutinywallet.com
+          VITE_RGS: https://rgs.mutinynet.com/snapshot/
+          VITE_AUTH: https://auth-staging.mutinywallet.com
+          VITE_SUBSCRIPTIONS: https://subscriptions-staging.mutinywallet.com
+          VITE_STORAGE: https://storage-staging.mutinywallet.com
+        run: pnpm build
+
+      - name: Capacitor sync
+        run: npx cap sync
+
+      - name: Build APK (gradle)
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: Debug APK
+          path: android/app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
