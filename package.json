@@ -37,8 +37,8 @@
         "workbox-window": "^6.6.0"
     },
     "dependencies": {
+        "@capacitor-community/barcode-scanner": "github:capacitor-community/barcode-scanner#ml-kit",
         "@capacitor/android": "^5.2.1",
-        "@capacitor/camera": "^5.0.6",
         "@capacitor/clipboard": "^5.0.6",
         "@capacitor/core": "^5.2.1",
         "@kobalte/core": "^0.9.8",
