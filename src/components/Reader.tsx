@@ -1,5 +1,5 @@
 import { onCleanup, onMount } from "solid-js";
-import { BarcodeScanner, BarcodeFormat, CameraPermissionState, CameraPermissionType, CameraPluginPermissions, PermissionStates } from '@capacitor-community/barcode-scanner';
+import { BarcodeScanner, BarcodeFormat, CameraPermissionState, CameraPermissionType, CameraPluginPermissions, PermissionStates } from '@mutinywallet/barcode-scanner';
 import QrScanner from "qr-scanner";
 
 export default function Scanner(props: { onResult: (result: string) => void }) {
