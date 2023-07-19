@@ -5,6 +5,8 @@ import { Button } from "~/components/layout";
 import { showToast } from "~/components/Toaster";
 import { useMegaStore } from "~/state/megaStore";
 import { toParsedParams } from "~/logic/waila";
+import { Clipboard } from "@capacitor/clipboard";
+import { Capacitor } from "@capacitor/core";
 
 export default function Scanner() {
     const [state, actions] = useMegaStore();
@@ -22,7 +24,17 @@ export default function Scanner() {
 
     async function handlePaste() {
         try {
-            const text = await navigator.clipboard.readText();
+            let text;
+
+            if (Capacitor.isNativePlatform()) {
+                const { value } = await Clipboard.read({
+                    type: "string"
+                });
+                text = value;
+            } else {
+                text = await navigator.clipboard.readText();
+            }
+
             const trimText = text.trim();
             setScanResult(trimText);
         } catch (e) {

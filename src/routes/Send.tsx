@@ -45,6 +45,8 @@ import { InfoBox } from "~/components/InfoBox";
 import { useI18n } from "~/i18n/context";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { FeesModal } from "~/components/MoreInfoModal";
+import { Clipboard } from "@capacitor/clipboard";
+import { Capacitor } from "@capacitor/core";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -384,11 +386,21 @@ export default function Send() {
     }
 
     async function handlePaste() {
-        if (!navigator.clipboard.readText)
-            return showToast(new Error("Clipboard not supported"));
-
         try {
-            const text = await navigator.clipboard.readText();
+            let text;
+
+            if (Capacitor.isNativePlatform()) {
+                const { value } = await Clipboard.read({
+                    type: "string"
+                });
+                text = value;
+            } else {
+                if (!navigator.clipboard.readText) {
+                    return showToast(new Error("Clipboard not supported"));
+                }
+                text = await navigator.clipboard.readText();
+            }
+
             const trimText = text.trim();
             setFieldDestination(trimText);
             parsePaste(trimText);

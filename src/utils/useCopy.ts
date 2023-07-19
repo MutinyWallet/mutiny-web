@@ -1,6 +1,8 @@
 // Thanks you https://soorria.com/snippets/use-copy-solidjs
 import type { Accessor } from "solid-js";
 import { createSignal } from "solid-js";
+import { Clipboard } from "@capacitor/clipboard";
+import { Capacitor } from "@capacitor/core";
 export type UseCopyProps = {
     copiedTimeout?: number;
 };
@@ -12,7 +14,13 @@ export const useCopy = ({ copiedTimeout = 2000 }: UseCopyProps = {}): [
     const [copied, setCopied] = createSignal(false);
     let timeout: number;
     const copy: CopyFn = async (text) => {
-        await navigator.clipboard.writeText(text);
+        if (Capacitor.isNativePlatform()) {
+            await Clipboard.write({
+                string: text
+            });
+        } else {
+            await navigator.clipboard.writeText(text);
+        }
         setCopied(true);
         if (timeout) clearTimeout(timeout);
         timeout = setTimeout(() => setCopied(false), copiedTimeout);
