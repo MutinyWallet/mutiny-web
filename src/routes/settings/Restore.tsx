@@ -27,6 +27,8 @@ import { ConfirmDialog } from "~/components/Dialog";
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { WORDS_EN } from "~/utils/words";
 import { InfoBox } from "~/components/InfoBox";
+import { Clipboard } from "@capacitor/clipboard";
+import { Capacitor } from "@capacitor/core";
 
 type SeedWordsForm = {
     words: string[];
@@ -91,17 +93,27 @@ function TwelveWordsEntry() {
         });
 
     async function handlePaste() {
-        if (!navigator.clipboard.readText)
-            return showToast(new Error("Clipboard not supported"));
-
         try {
-            const text = await navigator.clipboard.readText();
+            let text;
+
+            if (Capacitor.isNativePlatform()) {
+                const { value } = await Clipboard.read({
+                    type: "string"
+                });
+                text = value;
+            } else {
+                if (!navigator.clipboard.readText) {
+                    return showToast(new Error("Clipboard not supported"));
+                }
+                text = await navigator.clipboard.readText();
+            }
 
             // split words on space or newline
             const words = text.split(/[\s\n]+/);
 
-            if (words.length !== 12)
+            if (words.length !== 12) {
                 return showToast(new Error("Wrong number of words"));
+            }
 
             setValues(seedWordsForm, "words", words);
             validate(seedWordsForm);

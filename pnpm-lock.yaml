@@ -7,6 +7,9 @@ dependencies:
   '@capacitor/camera':
     specifier: ^5.0.6
     version: 5.0.6(@capacitor/core@5.2.1)
+  '@capacitor/clipboard':
+    specifier: ^5.0.6
+    version: 5.0.6(@capacitor/core@5.2.1)
   '@capacitor/core':
     specifier: ^5.2.1
     version: 5.2.1
@@ -1406,6 +1409,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@capacitor/clipboard@5.0.6(@capacitor/core@5.2.1):
+    resolution: {integrity: sha512-VsokRAn+0HVWj6riSRdspczEfqFoHbrhS/XRhGoEPsj0uvYPSufy0Kb2dpnSqkeeElhh2Jvn8jmVAzII2XeR9w==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.1
+    dev: false
 
   /@capacitor/core@5.2.1:
     resolution: {integrity: sha512-v7nzTQZj9l99Sp0v8C7Zq8QX6Cg5ljq7ASneWk/Hc5nBR5LOj/k3a+yEx/RoclWtkxJfs89Y5k+KJTFFQ6cLoA==}
