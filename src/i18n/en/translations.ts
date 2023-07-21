@@ -3,6 +3,7 @@ export default {
         nice: "Nice",
         home: "Home",
         sats: "SATS",
+        sat: "SAT",
         usd: "USD",
         fee: "Fee",
         send: "Send",
