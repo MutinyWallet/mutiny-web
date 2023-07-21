@@ -3,6 +3,7 @@ import { Card, VStack } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
 import { AmountEditable } from "./AmountEditable";
+import { useI18n } from "~/i18n/context";
 
 const noop = () => {
     // do nothing
@@ -25,6 +26,7 @@ export const InlineAmount: ParentComponent<{
     sign?: string;
     fiat?: boolean;
 }> = (props) => {
+    const i18n = useI18n();
     const prettyPrint = createMemo(() => {
         const parsed = Number(props.amount);
         if (isNaN(parsed)) {
@@ -39,12 +41,15 @@ export const InlineAmount: ParentComponent<{
             {props.sign ? `${props.sign} ` : ""}
             {props.fiat ? "$" : ""}
             {prettyPrint()}{" "}
-            <span class="text-sm">{props.fiat ? "USD" : "SATS"}</span>
+            <span class="text-sm">
+                {props.fiat ? i18n.t("common.usd") : i18n.t("common.sats")}
+            </span>
         </div>
     );
 };
 
 function USDShower(props: { amountSats: string; fee?: string }) {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
     const amountInUsd = () =>
         satsToUsd(state.price, add(props.amountSats, props.fee), true);
@@ -54,7 +59,7 @@ function USDShower(props: { amountSats: string; fee?: string }) {
             <KeyValue gray key="">
                 <div class="self-end">
                     ~{amountInUsd()}&nbsp;
-                    <span class="text-sm">USD</span>
+                    <span class="text-sm">{i18n.t("common.usd")}</span>
                 </div>
             </KeyValue>
         </Show>

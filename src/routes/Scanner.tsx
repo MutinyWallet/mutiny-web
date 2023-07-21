@@ -7,8 +7,10 @@ import { useMegaStore } from "~/state/megaStore";
 import { toParsedParams } from "~/logic/waila";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import { useI18n } from "~/i18n/context";
 
 export default function Scanner() {
+    const i18n = useI18n();
     const [state, actions] = useMegaStore();
     const [scanResult, setScanResult] = createSignal<string>();
     const navigate = useNavigate();
@@ -70,9 +72,9 @@ export default function Scanner() {
             <div class="w-full flex flex-col items-center fixed bottom-[2rem] gap-8 px-8">
                 <div class="w-full max-w-[800px] flex flex-col gap-2">
                     <Button intent="blue" onClick={handlePaste}>
-                        Paste Something
+                        {i18n.t("scanner.paste")}
                     </Button>
-                    <Button onClick={exit}>Cancel</Button>
+                    <Button onClick={exit}>{i18n.t("scanner.cancel")}</Button>
                 </div>
             </div>
         </div>

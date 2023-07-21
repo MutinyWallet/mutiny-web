@@ -1,5 +1,12 @@
 import { onCleanup, onMount } from "solid-js";
-import { BarcodeScanner, BarcodeFormat, CameraPermissionState, CameraPermissionType, CameraPluginPermissions, PermissionStates } from '@mutinywallet/barcode-scanner';
+import {
+    BarcodeScanner,
+    BarcodeFormat,
+    CameraPermissionState,
+    CameraPermissionType,
+    CameraPluginPermissions,
+    PermissionStates
+} from "@mutinywallet/barcode-scanner";
 import QrScanner from "qr-scanner";
 
 export default function Scanner(props: { onResult: (result: string) => void }) {
@@ -12,7 +19,8 @@ export default function Scanner(props: { onResult: (result: string) => void }) {
 
     const startScan = async () => {
         // Check camera permission
-        const permissions: PermissionStates = await BarcodeScanner.checkPermissions();
+        const permissions: PermissionStates =
+            await BarcodeScanner.checkPermissions();
         if (permissions.camera === "granted") {
             const callback = (result: ScanResult, err?: any) => {
                 if (err) {
@@ -24,10 +32,14 @@ export default function Scanner(props: { onResult: (result: string) => void }) {
                     handleResult({ data: result.content }); // pass the raw scanned content
                 }
             };
-            await BarcodeScanner.start({ targetedFormats: [BarcodeFormat.QR_CODE] }, callback);
+            await BarcodeScanner.start(
+                { targetedFormats: [BarcodeFormat.QR_CODE] },
+                callback
+            );
         } else if (permissions.camera === "prompt") {
             // Request permission if it has not been asked before
-            const requestedPermissions: PermissionStates = await BarcodeScanner.requestPermissions();
+            const requestedPermissions: PermissionStates =
+                await BarcodeScanner.requestPermissions();
             if (requestedPermissions.camera === "granted") {
                 // If user grants permission, start the scan
                 await startScan();
@@ -35,7 +47,7 @@ export default function Scanner(props: { onResult: (result: string) => void }) {
         } else if (permissions.camera === "denied") {
             // Handle the scenario when user denies the permission
             // Maybe show a user friendly message here
-            console.log('Camera permission was denied');
+            console.log("Camera permission was denied");
         }
     };
 

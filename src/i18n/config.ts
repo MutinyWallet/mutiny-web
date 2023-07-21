@@ -5,27 +5,32 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import en from "~/i18n/en/translations";
 import pt from "~/i18n/pt/translations";
 
+export const resources = {
+    en: {
+        translations: en
+    },
+    pt: {
+        translations: pt
+    }
+};
+
+export const defaultNS = "translations";
+
 const i18n = use(LanguageDetector).init(
     {
+        returnNull: false,
         fallbackLng: "en",
         preload: ["en"],
         load: "languageOnly",
         ns: ["translations"],
-        defaultNS: "translations",
+        defaultNS: defaultNS,
         fallbackNS: false,
         debug: true,
         detection: {
             order: ["querystring", "navigator", "htmlTag"],
             lookupQuerystring: "lang"
         },
-        resources: {
-            en: {
-                translations: en
-            },
-            pt: {
-                translations: pt
-            }
-        }
+        resources: resources
         // FIXME: this doesn't work when deployed
         // backend: {
         //   loadPath: 'src/i18n/{{lng}}/{{ns}}.json',

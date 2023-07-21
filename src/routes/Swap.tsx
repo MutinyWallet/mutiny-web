@@ -113,7 +113,7 @@ export default function Swap() {
             if (peer) {
                 setSelectedPeer(peer.pubkey);
             } else {
-                showToast(new Error("Peer not found"));
+                showToast(new Error(i18n.t("swap.peer_not_found")));
             }
         } catch (e) {
             showToast(eify(e));
@@ -198,11 +198,11 @@ export default function Swap() {
         const network = state.mutiny_wallet?.get_network() as Network;
 
         if (network === "bitcoin" && amountSats() < 50000n) {
-            return "It's just silly to make a channel smaller than 50,000 sats";
+            return i18n.t("swap.channel_too_small", { amount: "50,000" });
         }
 
         if (amountSats() < 10000n) {
-            return "It's just silly to make a channel smaller than 10,000 sats";
+            return i18n.t("swap.channel_too_small", { amount: "10,000" });
         }
 
         if (
@@ -211,7 +211,7 @@ export default function Swap() {
                     (state.balance?.unconfirmed || 0n) ||
             !feeEstimate()
         ) {
-            return "You don't have enough funds to make this channel";
+            return i18n.t("swap.insufficient_funds");
         }
 
         return undefined;
@@ -266,10 +266,12 @@ export default function Swap() {
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
-                    <LargeHeader>Swap to Lightning</LargeHeader>
+                    <LargeHeader>{i18n.t("swap.header")}</LargeHeader>
                     <SuccessModal
                         confirmText={
-                            channelOpenResult()?.channel ? "Nice" : "Home"
+                            channelOpenResult()?.channel
+                                ? i18n.t("common.nice")
+                                : i18n.t("common.home")
                         }
                         open={!!channelOpenResult()}
                         setOpen={(open: boolean) => {
@@ -295,14 +297,13 @@ export default function Swap() {
                                 <MegaCheck />
                                 <div class="flex flex-col justify-center">
                                     <h1 class="w-full mt-4 mb-2 justify-center text-2xl font-semibold text-center md:text-3xl">
-                                        Swap Initiated
+                                        {i18n.t("swap.initiated")}
                                     </h1>
                                     <p class="text-xl text-center">
                                         +
                                         {channelOpenResult()?.channel?.balance.toLocaleString() ??
                                             "0"}{" "}
-                                        sats will be added to your Lightning
-                                        balance
+                                        {i18n.t("swap.sats_added")}
                                     </p>
                                     <AmountFiat
                                         amountSats={
@@ -348,7 +349,7 @@ export default function Swap() {
                                                 for="peerselect"
                                                 class="uppercase font-semibold text-sm"
                                             >
-                                                Use existing peer
+                                                {i18n.t("swap.use_existing")}
                                             </label>
                                             <select
                                                 name="peerselect"
@@ -361,7 +362,7 @@ export default function Swap() {
                                                     class=""
                                                     selected
                                                 >
-                                                    Choose a peer
+                                                    {i18n.t("swap.choose_peer")}
                                                 </option>
                                                 <For each={peers()}>
                                                     {(peer) => (
@@ -389,8 +390,12 @@ export default function Swap() {
                                                             {...props}
                                                             value={field.value}
                                                             error={field.error}
-                                                            label="Connect to new peer"
-                                                            placeholder="Peer connect string"
+                                                            label={i18n.t(
+                                                                "swap.peer_connect_label"
+                                                            )}
+                                                            placeholder={i18n.t(
+                                                                "swap.peer_connect_placeholder"
+                                                            )}
                                                         />
                                                     )}
                                                 </Field>
@@ -400,8 +405,12 @@ export default function Swap() {
                                                     disabled={isConnecting()}
                                                 >
                                                     {isConnecting()
-                                                        ? "Connecting..."
-                                                        : "Connect"}
+                                                        ? i18n.t(
+                                                              "swap.connecting"
+                                                          )
+                                                        : i18n.t(
+                                                              "swap.connect"
+                                                          )}
                                                 </Button>
                                             </Form>
                                         </Show>
@@ -429,7 +438,7 @@ export default function Swap() {
                         onClick={handleSwap}
                         loading={loading()}
                     >
-                        {"Confirm Swap"}
+                        {i18n.t("swap.confirm_swap")}
                     </Button>
                 </DefaultMain>
                 <NavBar activeTab="none" />

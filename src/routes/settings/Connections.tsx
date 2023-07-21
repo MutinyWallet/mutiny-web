@@ -21,8 +21,10 @@ import { BackLink } from "~/components/layout/BackLink";
 import { TextField } from "~/components/layout/TextField";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
+import { useI18n } from "~/i18n/context";
 
 function Nwc() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const [nwcProfiles, { refetch }] = createResource(async () => {
@@ -47,7 +49,7 @@ function Nwc() {
             setCreateLoading(true);
 
             if (formName() === "") {
-                setError("Name cannot be empty");
+                setError(i18n.t("settings.connections.error_name"));
                 return;
             }
             const profile = await state.mutiny_wallet?.create_nwc_profile(
@@ -56,7 +58,7 @@ function Nwc() {
             );
 
             if (!profile) {
-                setError("Failed to create Wallet Connection");
+                setError(i18n.t("settings.connections.error_connection"));
                 return;
             } else {
                 refetch();
@@ -93,10 +95,12 @@ function Nwc() {
     return (
         <VStack biggap>
             <Button intent="blue" onClick={() => setDialogOpen(true)}>
-                Add Connection
+                {i18n.t("settings.connections.add_connection")}
             </Button>
             <Show when={nwcProfiles() && nwcProfiles()!.length > 0}>
-                <SettingsCard title="Manage Connections">
+                <SettingsCard
+                    title={i18n.t("settings.connections.manage_connections")}
+                >
                     <For each={nwcProfiles()}>
                         {(profile) => (
                             <Collapser
@@ -121,7 +125,13 @@ function Nwc() {
                                         layout="small"
                                         onClick={() => toggleEnabled(profile)}
                                     >
-                                        {profile.enabled ? "Disable" : "Enable"}
+                                        {profile.enabled
+                                            ? i18n.t(
+                                                  "settings.connections.disable_connection"
+                                              )
+                                            : i18n.t(
+                                                  "settings.connections.enable_connection"
+                                              )}
                                     </Button>
                                 </VStack>
                             </Collapser>
@@ -132,19 +142,23 @@ function Nwc() {
             <SimpleDialog
                 open={dialogOpen()}
                 setOpen={setDialogOpen}
-                title="New Connection"
+                title={i18n.t("settings.connections.new_connection")}
             >
                 <div class="flex flex-col gap-4 py-4">
                     <TextField
                         name="name"
-                        label="Name"
+                        label={i18n.t(
+                            "settings.connections.new_connection_label"
+                        )}
                         ref={noop}
                         value={formName()}
                         onInput={(e) => setFormName(e.currentTarget.value)}
                         error={""}
                         onBlur={noop}
                         onChange={noop}
-                        placeholder="My favorite nostr client..."
+                        placeholder={i18n.t(
+                            "settings.connections.new_connection_placeholder"
+                        )}
                     />
                     <Show when={error()}>
                         <InfoBox accent="red">{error()}</InfoBox>
@@ -156,7 +170,7 @@ function Nwc() {
                     loading={createLoading()}
                     onClick={createConnection}
                 >
-                    Create Connection
+                    {i18n.t("settings.connections.create_connection")}
                 </Button>
             </SimpleDialog>
         </VStack>
@@ -164,16 +178,19 @@ function Nwc() {
 }
 
 export default function Connections() {
+    const i18n = useI18n();
     return (
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
-                    <LargeHeader>Wallet Connections</LargeHeader>
-                    <NiceP>
-                        Authorize external services to request payments from
-                        your wallet. Pairs great with Nostr clients.
-                    </NiceP>
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
+                    <LargeHeader>
+                        {i18n.t("settings.connections.title")}
+                    </LargeHeader>
+                    <NiceP>{i18n.t("settings.connections.authorize")}</NiceP>
                     <Nwc />
                     <div class="h-full" />
                 </DefaultMain>

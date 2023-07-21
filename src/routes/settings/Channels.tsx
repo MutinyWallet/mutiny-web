@@ -14,13 +14,17 @@ import {
 import { AmountSmall } from "~/components/Amount";
 import { BackLink } from "~/components/layout/BackLink";
 import NavBar from "~/components/NavBar";
+import { useI18n } from "~/i18n/context";
 
 function BalanceBar(props: { inbound: number; outbound: number }) {
+    const i18n = useI18n();
     return (
         <VStack smallgap>
             <div class="flex justify-between">
-                <SmallHeader>Outbound</SmallHeader>
-                <SmallHeader>Inbound</SmallHeader>
+                <SmallHeader>
+                    {i18n.t("settings.channels.outbound")}
+                </SmallHeader>
+                <SmallHeader>{i18n.t("settings.channels.inbound")}</SmallHeader>
             </div>
             <div class="flex gap-1 w-full">
                 <div
@@ -45,6 +49,7 @@ function BalanceBar(props: { inbound: number; outbound: number }) {
 }
 
 export function LiquidityMonitor() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const [channelInfo] = createResource(async () => {
@@ -71,41 +76,41 @@ export function LiquidityMonitor() {
             <Match when={channelInfo()?.channelCount}>
                 <Card>
                     <NiceP>
-                        You have {channelInfo()?.channelCount} lightning{" "}
+                        {i18n.t("settings.channels.have_channels")}{" "}
+                        {channelInfo()?.channelCount}{" "}
                         {channelInfo()?.channelCount === 1
-                            ? "channel"
-                            : "channels"}
-                        .
+                            ? i18n.t("settings.channels.have_channels_one")
+                            : i18n.t("settings.channels.have_channels_many")}
                     </NiceP>{" "}
                     <BalanceBar
                         inbound={Number(channelInfo()?.inbound) || 0}
                         outbound={Number(state.balance?.lightning) || 0}
                     />
                     <TinyText>
-                        Outbound is the amount of money you can spend on
-                        lightning. Inbound is the amount you can receive without
-                        incurring a lightning service fee.
+                        {i18n.t("settings.channels.inbound_outbound_tip")}
                     </TinyText>
                 </Card>
             </Match>
             <Match when={true}>
-                <NiceP>
-                    It looks like you don't have any channels yet. To get
-                    started, receive some sats over lightning, or swap some
-                    on-chain funds into a channel. Get your hands dirty!
-                </NiceP>
+                <NiceP>{i18n.t("settings.channels.no_channels")}</NiceP>
             </Match>
         </Switch>
     );
 }
 
 export default function Channels() {
+    const i18n = useI18n();
     return (
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
-                    <LargeHeader>Lightning Channels</LargeHeader>
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
+                    <LargeHeader>
+                        {i18n.t("settings.channels.title")}
+                    </LargeHeader>
                     <LiquidityMonitor />
                 </DefaultMain>
                 <NavBar activeTab="settings" />

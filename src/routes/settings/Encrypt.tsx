@@ -17,6 +17,7 @@ import { TextField } from "~/components/layout/TextField";
 import { timeout } from "~/utils/timeout";
 import eify from "~/utils/eify";
 import { InfoBox } from "~/components/InfoBox";
+import { useI18n } from "~/i18n/context";
 
 type EncryptPasswordForm = {
     existingPassword: string;
@@ -25,6 +26,7 @@ type EncryptPasswordForm = {
 };
 
 export default function Encrypt() {
+    const i18n = useI18n();
     const [store, _actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
     const [loading, setLoading] = createSignal(false);
@@ -66,7 +68,10 @@ export default function Encrypt() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
                     <LargeHeader>
                         Encrypt your seed words (optional)
                     </LargeHeader>
