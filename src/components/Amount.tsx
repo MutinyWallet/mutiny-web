@@ -3,6 +3,7 @@ import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
+import { useI18n } from "~/i18n/context";
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
@@ -22,6 +23,7 @@ export function Amount(props: {
     green?: boolean;
 }) {
     const [state, _] = useMegaStore();
+    const i18n = useI18n();
 
     const amountInUsd = () =>
         satsToUsd(state.price, Number(props.amountSats) || 0, true);
@@ -76,7 +78,7 @@ export function Amount(props: {
                                 Number(props.amountSats) === 0
                             }
                         >
-                            SATS
+                            {i18n.t("common.sats")}
                         </Show>
                         <Show
                             when={
@@ -84,7 +86,7 @@ export function Amount(props: {
                                 Number(props.amountSats) === 1
                             }
                         >
-                            SAT
+                            {i18n.t("common.sat")}
                         </Show>
                     </span>
                 </h1>
@@ -113,7 +115,7 @@ export function Amount(props: {
                             "text-base": props.size === "large"
                         }}
                     >
-                        &nbsp;USD
+                        &nbsp;{i18n.t("common.usd")}
                     </span>
                 </h2>
             </Show>
@@ -124,13 +126,14 @@ export function Amount(props: {
 export function AmountSmall(props: {
     amountSats: bigint | number | undefined;
 }) {
+    const i18n = useI18n();
     return (
         <span class="font-light">
             {prettyPrintAmount(props.amountSats)}&nbsp;
             <span class="text-sm">
                 {props.amountSats === 1 || props.amountSats === 1n
-                    ? "SAT"
-                    : "SATS"}
+                    ? `${i18n.t("common.sat")}`
+                    : `${i18n.t("common.sats")}`}
             </span>
         </span>
     );

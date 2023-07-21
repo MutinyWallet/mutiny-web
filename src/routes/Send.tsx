@@ -574,12 +574,16 @@ export default function Send() {
                     >
                         <BackButton
                             onClick={() => clearAll()}
-                            title="Start Over"
+                            title={`${i18n.t("send.start_over")}`}
                         />
                     </Show>
                     <LargeHeader>{i18n.t("send_bitcoin")}</LargeHeader>
                     <SuccessModal
-                        confirmText={sentDetails()?.amount ? "Nice" : "Home"}
+                        confirmText={
+                            sentDetails()?.amount
+                                ? `${i18n.t("send.nice")}`
+                                : `${i18n.t("send.home")}`
+                        }
                         open={!!sentDetails()}
                         setOpen={(open: boolean) => {
                             if (!open) setSentDetails(undefined);
@@ -616,7 +620,7 @@ export default function Send() {
                                 <hr class="w-16 bg-m-grey-400" />
                                 <div class="flex flex-row items-start gap-3">
                                     <p class="text-m-grey-400 text-sm leading-[17px] text-center">
-                                        Fees
+                                        {i18n.t("common.fee")}
                                     </p>
                                     <div class="flex items-start gap-1">
                                         <Amount
@@ -679,7 +683,9 @@ export default function Send() {
                                             setSelectedValues={
                                                 setSelectedContacts
                                             }
-                                            placeholder="Add the receiver for your records"
+                                            placeholder={i18n.t(
+                                                "send.contact_placeholder"
+                                            )}
                                         />
                                     </VStack>
                                 </Card>
@@ -714,7 +720,9 @@ export default function Send() {
                                 onClick={handleSend}
                                 loading={sending()}
                             >
-                                {sending() ? "Sending..." : "Confirm Send"}
+                                {sending()
+                                    ? i18n.t("send.sending")
+                                    : i18n.t("send.confirm_send")}
                             </Button>
                         </Show>
                         <FeedbackLink />
