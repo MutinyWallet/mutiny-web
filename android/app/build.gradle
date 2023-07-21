@@ -33,6 +33,14 @@ android {
             dimension "channel"
         }
     }
+    splits {
+        abi {
+            enable true
+            reset()
+            include "x86", "x86_64"
+            universalApk true
+        }
+    }
 }
 
 repositories {
