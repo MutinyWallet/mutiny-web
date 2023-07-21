@@ -1,4 +1,4 @@
-name: Build Android
+name: Release Android Staging
 
 on:
   push:
@@ -102,10 +102,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Prerelease ${{ github.sha }}
+          tag_name: ${{ format('prerelease-{0}', github.run_number) }}
+          release_name: Prerelease ${{ format('prerelease-{0}', github.run_number) }}
+          body: Signet preleases based on every push to master.
           draft: false
-          prerelease: true # only prerelease for normal builds
+          prerelease: true
 
       # F-Droid APK
       - name: Upload F-Droid APK Universal Asset
