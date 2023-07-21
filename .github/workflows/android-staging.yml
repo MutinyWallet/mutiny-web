@@ -76,9 +76,8 @@ jobs:
 
       - name: Sign AAB (F-Droid)
         uses: r0adkll/sign-android-release@v1
-        working-directory: android
         with:
-          releaseDirectory: app/build/outputs/bundle/fdroidRelease
+          releaseDirectory: android/app/build/outputs/bundle/fdroidRelease
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
