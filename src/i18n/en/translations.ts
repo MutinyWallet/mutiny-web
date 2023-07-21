@@ -1,7 +1,41 @@
 export default {
+    common: {
+        nice: "Nice",
+        home: "Home",
+        sats: "SATS",
+        sat: "SAT",
+        usd: "USD",
+        fee: "Fee",
+        send: "Send",
+        receive: "Receive"
+    },
+    char: {
+        del: "DEL"
+    },
+    receive: {
+        receive_bitcoin: "Receive Bitcoin",
+        edit: "Edit",
+        checking: "Checking",
+        choose_format: "Choose format",
+        payment_received: "Payment Received",
+        payment_initiated: "Payment Initiated",
+        receive_add_the_sender: "Add the sender for your records"
+    },
+    send: {
+        sending: "Sending...",
+        confirm_send: "Confirm Send",
+        contact_placeholder: "Add the receiver for your records",
+        start_over: "Start Over"
+    },
+    activity: {
+        view_all: "View all",
+        receive_some_sats_to_get_started: "Receive some sats to get started",
+        channel_open: "Channel Open",
+        channel_close: "Channel Close",
+        unknown: "Unknown"
+    },
     create_an_issue: "Create an issue",
-    view_all: "View all",
-    receive_some_sats_to_get_started: "Receive some sats to get started",
+    feedback: "Bugs? Feedback?",
     send_bitcoin: "Send Bitcoin",
     view_transaction: "View Transaction",
     amount_editable_first_payment_10k_or_greater:
@@ -15,9 +49,7 @@ export default {
     set_amount: "Set amount",
     whats_with_the_fees: "What's with the fees?",
     private_tags: "Private tags",
-    receive_add_the_sender: "Add the sender for your records",
     continue: "Continue",
-    receive_bitcoin: "Receive Bitcoin",
     keep_mutiny_open: "Keep Mutiny open to complete the payment.",
     too_big_for_beta:
         "That's a lot of sats. You do know Mutiny Wallet is still in beta, yeah?"

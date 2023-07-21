@@ -4,6 +4,7 @@ import { useMegaStore } from "~/state/megaStore";
 import { Amount } from "./Amount";
 import { A, useNavigate } from "solid-start";
 import shuffle from "~/assets/icons/shuffle.svg";
+import { useI18n } from "~/i18n/context";
 
 export function LoadingShimmer() {
     return (
@@ -23,6 +24,7 @@ const STYLE =
 
 export default function BalanceBox(props: { loading?: boolean }) {
     const [state, _actions] = useMegaStore();
+    const i18n = useI18n();
 
     const emptyBalance = () =>
         (state.balance?.confirmed || 0n) === 0n &&
@@ -85,14 +87,14 @@ export default function BalanceBox(props: { loading?: boolean }) {
                     disabled={emptyBalance() || props.loading}
                     intent="green"
                 >
-                    Send
+                    {i18n.t("common.send")}
                 </Button>
                 <Button
                     onClick={() => navigate("/receive")}
                     disabled={props.loading}
                     intent="blue"
                 >
-                    Receive
+                    {i18n.t("common.receive")}
                 </Button>
             </div>
         </>

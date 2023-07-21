@@ -2,6 +2,7 @@ import { Dialog } from "@kobalte/core";
 import { JSX } from "solid-js";
 import { Button } from "~/components/layout";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
+import { useI18n } from "~/i18n/context";
 
 type SuccessModalProps = {
     open: boolean;
@@ -12,6 +13,7 @@ type SuccessModalProps = {
 };
 
 export function SuccessModal(props: SuccessModalProps) {
+    const i18n = useI18n();
     const onNice = () => {
         props.onConfirm ? props.onConfirm() : props.setOpen(false);
     };
@@ -27,7 +29,8 @@ export function SuccessModal(props: SuccessModalProps) {
                         </Dialog.Description>
                         <div class="w-full flex max-w-[300px] mx-auto">
                             <Button onClick={onNice} intent="inactive">
-                                {props.confirmText ?? "Nice"}
+                                {props.confirmText ??
+                                    `${i18n.t("common.nice")}`}
                             </Button>
                         </div>
                     </Dialog.Content>
