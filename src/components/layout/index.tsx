@@ -25,6 +25,7 @@ import { A } from "solid-start";
 import down from "~/assets/icons/down.svg";
 import { DecryptDialog } from "../DecryptDialog";
 import { LoadingIndicator } from "~/components/LoadingIndicator";
+import { useI18n } from "~/i18n/context";
 
 export { Button, ButtonLink, Linkify };
 
@@ -138,6 +139,7 @@ export const DefaultMain: ParentComponent = (props) => {
 };
 
 export const FullscreenLoader = () => {
+    const i18n = useI18n();
     const [waitedTooLong, setWaitedTooLong] = createSignal(false);
 
     setTimeout(() => {
@@ -149,10 +151,9 @@ export const FullscreenLoader = () => {
             <LoadingSpinner wide />
             <Show when={waitedTooLong()}>
                 <p class="max-w-[20rem] text-neutral-400">
-                    Stuck on this screen? Try reloading. If that doesn't work,
-                    check out the{" "}
+                    {i18n.t("error.load_time.stuck")}{" "}
                     <A class="text-white" href="/emergencykit">
-                        emergency kit.
+                        {i18n.t("error.load_time.emergency_link")}
                     </A>
                 </p>
             </Show>

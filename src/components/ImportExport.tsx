@@ -15,8 +15,10 @@ import { ConfirmDialog } from "./Dialog";
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { InfoBox } from "./InfoBox";
 import { TextField } from "./layout/TextField";
+import { useI18n } from "~/i18n/context";
 
 export function ImportExport(props: { emergency?: boolean }) {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const [error, setError] = createSignal<Error>();
@@ -44,7 +46,11 @@ export function ImportExport(props: { emergency?: boolean }) {
         try {
             setError(undefined);
             if (!password()) {
-                throw new Error("Password is required");
+                throw new Error(
+                    i18n.t(
+                        "settings.emergency_kit.import_export.error_password"
+                    )
+                );
             }
             const json = await MutinyWallet.export_json(password());
             downloadTextFile(json || "", "mutiny-state.json");
@@ -77,11 +83,23 @@ export function ImportExport(props: { emergency?: boolean }) {
                     if (result) {
                         resolve(result);
                     } else {
-                        reject(new Error("No text found in file"));
+                        reject(
+                            new Error(
+                                i18n.t(
+                                    "settings.emergency_kit.import_export.error_no_text"
+                                )
+                            )
+                        );
                     }
                 };
                 fileReader.onerror = (_e) =>
-                    reject(new Error("File read error"));
+                    reject(
+                        new Error(
+                            i18n.t(
+                                "settings.emergency_kit.import_export.error_read_file"
+                            )
+                        )
+                    );
                 fileReader.readAsText(file, "UTF-8");
             });
 
@@ -130,25 +148,35 @@ export function ImportExport(props: { emergency?: boolean }) {
 
     return (
         <>
-            <InnerCard title="Export wallet state">
+            <InnerCard
+                title={i18n.t("settings.emergency_kit.import_export.title")}
+            >
                 <NiceP>
-                    You can export your entire Mutiny Wallet state to a file and
-                    import it into a new browser. It usually works!
+                    {i18n.t("settings.emergency_kit.import_export.tip")}
                 </NiceP>
                 <NiceP>
-                    <strong>Important caveats:</strong> after exporting don't do
-                    any operations in the original browser. If you do, you'll
-                    need to export again. After a successful import, a best
-                    practice is to clear the state of the original browser just
-                    to make sure you don't create conflicts.
+                    <strong>
+                        {i18n.t(
+                            "settings.emergency_kit.import_export.caveat_header"
+                        )}
+                    </strong>{" "}
+                    {i18n.t("settings.emergency_kit.import_export.caveat")}
                 </NiceP>
                 <div />
                 <Show when={error()}>
                     <InfoBox accent="red">{error()?.message}</InfoBox>
                 </Show>
                 <VStack>
-                    <Button onClick={handleSave}>Save State As File</Button>
-                    <Button onClick={uploadFile}>Import State From File</Button>
+                    <Button onClick={handleSave}>
+                        {i18n.t(
+                            "settings.emergency_kit.import_export.save_state"
+                        )}
+                    </Button>
+                    <Button onClick={uploadFile}>
+                        {i18n.t(
+                            "settings.emergency_kit.import_export.import_state"
+                        )}
+                    </Button>
                 </VStack>
             </InnerCard>
             <ConfirmDialog
@@ -157,11 +185,14 @@ export function ImportExport(props: { emergency?: boolean }) {
                 onConfirm={importJson}
                 onCancel={() => setConfirmOpen(false)}
             >
-                Do you want to replace your state with {files()[0].name}?
+                {i18n.t("settings.emergency_kit.import_export.confirm_replace")}{" "}
+                {files()[0].name}?
             </ConfirmDialog>
             {/* TODO: this is pretty redundant with the DecryptDialog, could make a shared component */}
             <SimpleDialog
-                title="Enter your password to decrypt"
+                title={i18n.t(
+                    "settings.emergency_kit.import_export.confirm_replace"
+                )}
                 open={exportDecrypt()}
             >
                 <form onSubmit={savePassword}>
@@ -180,7 +211,9 @@ export function ImportExport(props: { emergency?: boolean }) {
                             <InfoBox accent="red">{error()?.message}</InfoBox>
                         </Show>
                         <Button intent="blue" onClick={savePassword}>
-                            Decrypt Wallet
+                            {i18n.t(
+                                "settings.emergency_kit.import_export.decrypt_wallet"
+                            )}
                         </Button>
                     </div>
                 </form>

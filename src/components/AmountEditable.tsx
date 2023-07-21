@@ -69,13 +69,19 @@ function SingleDigitButton(props: {
     onClear: () => void;
     fiat: boolean;
 }) {
+    const i18n = useI18n();
     let holdTimer: number;
     const holdThreshold = 500;
 
     function onHold() {
-        holdTimer = setTimeout(() => {
-            props.onClear();
-        }, holdThreshold);
+        if (
+            props.character === "DEL" ||
+            props.character === i18n.t("char.del")
+        ) {
+            holdTimer = setTimeout(() => {
+                props.onClear();
+            }, holdThreshold);
+        }
     }
 
     function endHold() {
@@ -130,7 +136,7 @@ function BigScalingText(props: { text: string; fiat: boolean }) {
         >
             {props.text}&nbsp;
             <span class="text-xl">
-                {props.fiat ? "USD" : `${i18n.t("common.sats")}`}
+                {props.fiat ? i18n.t("common.usd") : i18n.t("common.sats")}
             </span>
         </h1>
     );
@@ -142,7 +148,7 @@ function SmallSubtleAmount(props: { text: string; fiat: boolean }) {
         <h2 class="flex flex-row items-end text-xl font-light text-neutral-400">
             ~{props.text}&nbsp;
             <span class="text-base">
-                {props.fiat ? "USD" : `${i18n.t("common.sats")}`}
+                {props.fiat ? i18n.t("common.usd") : `${i18n.t("common.sats")}`}
             </span>
             <img
                 class={"pl-[4px] pb-[4px] hover:cursor-pointer"}
@@ -214,7 +220,7 @@ export const AmountEditable: ParentComponent<{
         "9",
         ".",
         "0",
-        `${i18n.t("char.del")}`
+        i18n.t("char.del")
     ];
 
     const displaySats = () => toDisplayHandleNaN(localSats(), false);
@@ -243,9 +249,13 @@ export const AmountEditable: ParentComponent<{
         if ((state.balance?.lightning || 0n) === 0n) {
             const network = state.mutiny_wallet?.get_network() as Network;
             if (network === "bitcoin") {
-                return "Your first lightning receive needs to be 50,000 sats or greater. A setup fee will be deducted from the requested amount.";
+                return i18n.t("receive.amount_editable.receive_too_small", {
+                    amount: "50,000"
+                });
             } else {
-                return i18n.t("amount_editable_first_payment_10k_or_greater");
+                return i18n.t("receive.amount_editable.receive_too_small", {
+                    amount: "10,000"
+                });
             }
         }
 
@@ -255,7 +265,7 @@ export const AmountEditable: ParentComponent<{
         }
 
         if (parsed > (inboundCapacity() || 0)) {
-            return "A lightning setup fee will be charged if paid over lightning.";
+            return i18n.t("receive.amount_editable.setup_fee_lightning");
         }
 
         return undefined;
@@ -269,10 +279,10 @@ export const AmountEditable: ParentComponent<{
 
         if (parsed >= 2099999997690000) {
             // If over 21 million bitcoin, warn that too much
-            return i18n.t("more_than_21m");
+            return i18n.t("receive.amount_editable.more_than_21m");
         } else if (parsed >= 4000000) {
             // If over 4 million sats, warn that it's a beta bro
-            return i18n.t("too_big_for_beta");
+            return i18n.t("receive.amount_editable.too_big_for_beta");
         }
     };
 
@@ -285,7 +295,7 @@ export const AmountEditable: ParentComponent<{
 
         let sane;
 
-        if (character === "DEL") {
+        if (character === "DEL" || character === i18n.t("char.del")) {
             if (localValue().length <= 1) {
                 sane = "0";
             } else {
@@ -424,7 +434,7 @@ export const AmountEditable: ParentComponent<{
                     when={localSats() !== "0"}
                     fallback={
                         <div class="inline-block font-semibold">
-                            {i18n.t("set_amount")}
+                            {i18n.t("receive.amount_editable.set_amount")}
                         </div>
                     }
                 >
@@ -540,7 +550,7 @@ export const AmountEditable: ParentComponent<{
                                         }}
                                         class="py-2 px-4 rounded-lg bg-white/10"
                                     >
-                                        MAX
+                                        {i18n.t("receive.amount_editable.max")}
                                     </button>
                                 </Show>
                             </div>
@@ -561,7 +571,7 @@ export const AmountEditable: ParentComponent<{
                                 class="w-full flex-none"
                                 onClick={handleSubmit}
                             >
-                                {i18n.t("set_amount")}
+                                {i18n.t("receive.amount_editable.set_amount")}
                             </Button>
                         </div>
                     </Dialog.Content>

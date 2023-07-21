@@ -10,6 +10,7 @@ import NavBar from "~/components/NavBar";
 import { A } from "solid-start";
 import { For, Show } from "solid-js";
 import forward from "~/assets/icons/forward.svg";
+import { useI18n } from "~/i18n/context";
 
 function SettingsLinkList(props: {
     header: string;
@@ -57,36 +58,37 @@ function SettingsLinkList(props: {
 }
 
 export default function Settings() {
+    const i18n = useI18n();
     return (
         <SafeArea>
             <DefaultMain>
                 <BackLink />
-                <LargeHeader>Settings</LargeHeader>
+                <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
                 <VStack biggap>
                     <SettingsLinkList
-                        header="Mutiny+"
+                        header={i18n.t("settings.mutiny_plus")}
                         links={[
                             {
                                 href: "/settings/plus",
-                                text: "Learn how to support Mutiny"
+                                text: i18n.t("settings.support")
                             }
                         ]}
                     />
                     <SettingsLinkList
-                        header="General"
+                        header={i18n.t("settings.general")}
                         links={[
                             {
                                 href: "/settings/channels",
-                                text: "Lightning Channels"
+                                text: i18n.t("settings.channels.title")
                             },
                             {
                                 href: "/settings/backup",
-                                text: "Backup",
+                                text: i18n.t("settings.backup.title"),
                                 accent: "green"
                             },
                             {
                                 href: "/settings/restore",
-                                text: "Restore",
+                                text: i18n.t("settings.restore.title"),
                                 accent: "red"
                             },
                             // {
@@ -99,39 +101,38 @@ export default function Settings() {
                             // },
                             {
                                 href: "/settings/servers",
-                                text: "Servers",
-                                caption:
-                                    "Don't trust us! Use your own servers to back Mutiny."
+                                text: i18n.t("settings.servers.title"),
+                                caption: i18n.t("settings.servers.caption")
                             }
                         ]}
                     />
                     <SettingsLinkList
-                        header="Beta Features"
+                        header={i18n.t("settings.beta_features")}
                         links={[
                             {
                                 href: "/settings/connections",
-                                text: "Wallet Connections"
+                                text: i18n.t("settings.connections.title")
                             },
                             {
                                 href: "/settings/lnurlauth",
-                                text: "LNURL Auth"
+                                text: i18n.t("settings.lnurl_auth.title")
                             }
                         ]}
                     />
                     <SettingsLinkList
-                        header="Debug Tools"
+                        header={i18n.t("settings.debug_tools")}
                         links={[
                             {
                                 href: "/settings/emergencykit",
-                                text: "Emergency Kit",
-                                caption:
-                                    "Diagnose and solve problems with your wallet."
+                                text: i18n.t("settings.emergency_kit.title"),
+                                caption: i18n.t(
+                                    "settings.emergency_kit.caption"
+                                )
                             },
                             {
                                 href: "/settings/admin",
-                                text: "Admin Page",
-                                caption:
-                                    "Our internal debug tools. Use wisely!",
+                                text: i18n.t("settings.admin.title"),
+                                caption: i18n.t("settings.admin.caption"),
                                 accent: "red"
                             }
                         ]}

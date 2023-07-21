@@ -27,10 +27,12 @@ import feedback from "~/assets/icons/feedback.svg";
 import { InfoBox } from "~/components/InfoBox";
 import eify from "~/utils/eify";
 import { MegaCheck } from "~/components/successfail/MegaCheck";
+import { useI18n } from "~/i18n/context";
 
 const FEEDBACK_API = import.meta.env.VITE_FEEDBACK;
 
 export function FeedbackLink(props: { setupError?: boolean }) {
+    const i18n = useI18n();
     const location = useLocation();
     return (
         <A
@@ -43,7 +45,7 @@ export function FeedbackLink(props: { setupError?: boolean }) {
             }}
             href="/feedback"
         >
-            Feedback?
+            {i18n.t("feedback.link")}
             <img src={feedback} class="h-5 w-5" alt="Feedback" />
         </A>
     );
@@ -57,11 +59,6 @@ type FeedbackForm = {
     include_logs: boolean;
     images: File[];
 };
-
-const COMMUNICATION_METHODS = [
-    { value: "nostr", label: "Nostr", caption: "Your freshest npub" },
-    { value: "email", label: "Email", caption: "Burners welcome" }
-];
 
 async function formDataFromFeedbackForm(f: FeedbackForm) {
     const formData = new FormData();
@@ -107,8 +104,22 @@ async function formDataFromFeedbackForm(f: FeedbackForm) {
 }
 
 function FeedbackForm(props: { onSubmitted: () => void }) {
+    const i18n = useI18n();
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<Error>();
+
+    const COMMUNICATION_METHODS = [
+        {
+            value: "nostr",
+            label: i18n.t("feedback.nostr"),
+            caption: i18n.t("feedback.nostr_caption")
+        },
+        {
+            value: "email",
+            label: i18n.t("feedback.email"),
+            caption: i18n.t("feedback.email_caption")
+        }
+    ];
 
     const [feedbackForm, { Form, Field }] = createForm<FeedbackForm>({
         initialValues: {
@@ -133,7 +144,9 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
             });
 
             if (!res.ok) {
-                throw new Error(`Error submitting feedback: ${res.statusText}`);
+                throw new Error(
+                    `${i18n.t("feedback.error")}: ${res.statusText}`
+                );
             }
 
             const json = await res.json();
@@ -142,7 +155,9 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                 props.onSubmitted();
             } else {
                 throw new Error(
-                    "Error submitting feedback. Please try again later."
+                    `${i18n.t("feedback.error")}. ${i18n.t(
+                        "feedback.try_again"
+                    )}`
                 );
             }
         } catch (e) {
@@ -158,7 +173,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
             <VStack>
                 <Field
                     name="feedback"
-                    validate={[required("Please say something!")]}
+                    validate={[required(i18n.t("feedback.invalid_feedback"))]}
                 >
                     {(field, props) => (
                         <TextField
@@ -166,7 +181,9 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                             {...props}
                             value={field.value}
                             error={field.error}
-                            placeholder="Bugs, feature requests, feedback, etc."
+                            placeholder={i18n.t(
+                                "feedback.feedback_placeholder"
+                            )}
                         />
                     )}
                 </Field>
@@ -174,8 +191,8 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                     {(field, _props) => (
                         <Checkbox
                             checked={field.value || false}
-                            label="Include contact info"
-                            caption="If you need us to follow-up on this issue"
+                            label={i18n.t("feedback.info_label")}
+                            caption={i18n.t("feedback.info_caption")}
                             onChange={(c) =>
                                 setValue(feedbackForm, "include_contact", c)
                             }
@@ -210,7 +227,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                             <Field
                                 name="id"
                                 validate={[
-                                    required("We need some way to contact you")
+                                    required(i18n.t("feedback.need_contact"))
                                 ]}
                             >
                                 {(field, props) => (
@@ -218,7 +235,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                                         {...props}
                                         value={field.value}
                                         error={field.error}
-                                        label="Nostr npub or NIP-05"
+                                        label={i18n.t("feedback.nostr_label")}
                                         placeholder="npub..."
                                     />
                                 )}
@@ -234,10 +251,8 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                             <Field
                                 name="id"
                                 validate={[
-                                    required("We need some way to contact you"),
-                                    email(
-                                        "That doesn't look like an email address to me"
-                                    )
+                                    required(i18n.t("feedback.need_contact")),
+                                    email(i18n.t("feedback.invalid_email"))
                                 ]}
                             >
                                 {(field, props) => (
@@ -246,7 +261,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                                         value={field.value}
                                         error={field.error}
                                         type="email"
-                                        label="Email"
+                                        label={i18n.t("feedback.email")}
                                         placeholder="email@nokycemail.com"
                                     />
                                 )}
@@ -267,7 +282,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                     intent="blue"
                     type="submit"
                 >
-                    Send Feedback
+                    {i18n.t("feedback.send_feedback")}
                 </Button>
             </VStack>
         </Form>
@@ -275,6 +290,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
 }
 
 export default function Feedback() {
+    const i18n = useI18n();
     const [submitted, setSubmitted] = createSignal(false);
     const location = useLocation();
 
@@ -292,35 +308,30 @@ export default function Feedback() {
                         <div class="flex flex-col gap-4 items-center h-full">
                             <MegaCheck />
                             <LargeHeader centered>
-                                Feedback received!
+                                {i18n.t("feedback.received")}
                             </LargeHeader>
-                            <NiceP>
-                                Thank you for letting us know what's going on.
-                            </NiceP>
+                            <NiceP>{i18n.t("feedback.thanks")}</NiceP>
                             <ButtonLink intent="blue" href="/" layout="full">
-                                Go Home
+                                {i18n.t("common.home")}
                             </ButtonLink>
                             <Button
                                 intent="text"
                                 layout="full"
                                 onClick={() => setSubmitted(false)}
                             >
-                                Got more to say?
+                                {i18n.t("feedback.more")}
                             </Button>
                         </div>
                     </Match>
                     <Match when={true}>
-                        <LargeHeader>Give us feedback!</LargeHeader>
+                        <LargeHeader>{i18n.t("feedback.header")}</LargeHeader>
+                        <NiceP>{i18n.t("feedback.tracking")}</NiceP>
                         <NiceP>
-                            Mutiny doesn't track or spy on your behavior, so
-                            your feedback is incredibly helpful.
-                        </NiceP>
-                        <NiceP>
-                            If you're comfortable with GitHub you can also{" "}
+                            {i18n.t("feedback.github_one")}{" "}
                             <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
-                                create an issue
+                                {i18n.t("feedback.create_issue")}
                             </ExternalLink>
-                            .
+                            {i18n.t("feedback.github_two")}
                         </NiceP>
                         <FeedbackForm onSubmitted={() => setSubmitted(true)} />
                     </Match>

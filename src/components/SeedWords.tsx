@@ -1,11 +1,13 @@
 import { For, Match, Switch, createMemo, createSignal } from "solid-js";
 import { useCopy } from "~/utils/useCopy";
 import copyIcon from "~/assets/icons/copy.svg";
+import { useI18n } from "~/i18n/context";
 
 export function SeedWords(props: {
     words: string;
     setHasSeen?: (hasSeen: boolean) => void;
 }) {
+    const i18n = useI18n();
     const [shouldShow, setShouldShow] = createSignal(false);
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
@@ -30,7 +32,9 @@ export function SeedWords(props: {
                         class="cursor-pointer flex w-full justify-center"
                         onClick={toggleShow}
                     >
-                        <code class="text-red">TAP TO REVEAL SEED WORDS</code>
+                        <code class="text-red">
+                            {i18n.t("settings.backup.seed_words.reveal")}
+                        </code>
                     </div>
                 </Match>
 
@@ -40,7 +44,9 @@ export function SeedWords(props: {
                             class="cursor-pointer flex w-full justify-center"
                             onClick={toggleShow}
                         >
-                            <code class="text-red">HIDE</code>
+                            <code class="text-red">
+                                {i18n.t("settings.backup.seed_words.hide")}
+                            </code>
                         </div>
                         <ol class="overflow-hidden columns-2 w-full list-decimal list-inside">
                             <For each={splitWords()}>
@@ -59,8 +65,12 @@ export function SeedWords(props: {
                                 <div class="flex items-center gap-2">
                                     <span>
                                         {copied()
-                                            ? "Copied!"
-                                            : "Dangerously Copy to Clipboard"}
+                                            ? i18n.t(
+                                                  "settings.backup.seed_words.copied"
+                                              )
+                                            : i18n.t(
+                                                  "settings.backup.seed_words.copy"
+                                              )}
                                     </span>
                                     <img
                                         src={copyIcon}

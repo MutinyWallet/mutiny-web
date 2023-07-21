@@ -574,15 +574,15 @@ export default function Send() {
                     >
                         <BackButton
                             onClick={() => clearAll()}
-                            title={`${i18n.t("send.start_over")}`}
+                            title={i18n.t("send.start_over")}
                         />
                     </Show>
                     <LargeHeader>{i18n.t("send_bitcoin")}</LargeHeader>
                     <SuccessModal
                         confirmText={
                             sentDetails()?.amount
-                                ? `${i18n.t("send.nice")}`
-                                : `${i18n.t("send.home")}`
+                                ? i18n.t("common.nice")
+                                : i18n.t("common.home")
                         }
                         open={!!sentDetails()}
                         setOpen={(open: boolean) => {

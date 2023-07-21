@@ -14,8 +14,10 @@ import { SeedWords } from "~/components/SeedWords";
 import { useMegaStore } from "~/state/megaStore";
 import { Show, createEffect, createSignal } from "solid-js";
 import { BackLink } from "~/components/layout/BackLink";
+import { useI18n } from "~/i18n/context";
 
 function Quiz(props: { setHasCheckedAll: (hasChecked: boolean) => void }) {
+    const i18n = useI18n();
     const [one, setOne] = createSignal(false);
     const [two, setTwo] = createSignal(false);
     const [three, setThree] = createSignal(false);
@@ -33,23 +35,24 @@ function Quiz(props: { setHasCheckedAll: (hasChecked: boolean) => void }) {
             <Checkbox
                 checked={one()}
                 onChange={setOne}
-                label="I wrote down the words"
+                label={i18n.t("settings.backup.confirm")}
             />
             <Checkbox
                 checked={two()}
                 onChange={setTwo}
-                label="I understand that my funds are my responsibility"
+                label={i18n.t("settings.backup.responsibility")}
             />
             <Checkbox
                 checked={three()}
                 onChange={setThree}
-                label="I'm not lying just to get this over with"
+                label={i18n.t("settings.backup.liar")}
             />
         </VStack>
     );
 }
 
 export default function Backup() {
+    const i18n = useI18n();
     const [store, actions] = useMegaStore();
     const navigate = useNavigate();
 
@@ -69,23 +72,19 @@ export default function Backup() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
-                    <LargeHeader>Backup</LargeHeader>
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
+                    <LargeHeader>{i18n.t("settings.backup.title")}</LargeHeader>
 
                     <VStack>
-                        <NiceP>Let's get these funds secured.</NiceP>
+                        <NiceP>{i18n.t("settings.backup.secure_funds")}</NiceP>
                         <NiceP>
-                            We'll show you 12 words. You write down the 12
-                            words.
+                            {i18n.t("settings.backup.twelve_words_tip")}
                         </NiceP>
-                        <NiceP>
-                            If you clear your browser history, or lose your
-                            device, these 12 words are the only way you can
-                            restore your wallet.
-                        </NiceP>
-                        <NiceP>
-                            Mutiny is self-custodial. It's all up to you...
-                        </NiceP>
+                        <NiceP>{i18n.t("settings.backup.warning_one")}</NiceP>
+                        <NiceP>{i18n.t("settings.backup.warning_two")}</NiceP>
                         <SeedWords
                             words={store.mutiny_wallet?.show_seed() || ""}
                             setHasSeen={setHasSeenBackup}
@@ -99,7 +98,7 @@ export default function Backup() {
                             onClick={wroteDownTheWords}
                             loading={loading()}
                         >
-                            I wrote down the words
+                            {i18n.t("settings.backup.confirm")}
                         </Button>
                     </VStack>
                 </DefaultMain>

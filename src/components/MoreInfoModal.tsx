@@ -15,7 +15,7 @@ export function FeesModal(props: { icon?: boolean }) {
                 props.icon ? (
                     <img src={help} alt="help" class="w-4 h-4 cursor-pointer" />
                 ) : (
-                    i18n.t("why?")
+                    i18n.t("why")
                 )
             }
         >

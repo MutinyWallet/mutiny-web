@@ -3,10 +3,12 @@ import { createSignal } from "solid-js";
 import { ConfirmDialog } from "~/components/Dialog";
 import { Button } from "~/components/layout";
 import { showToast } from "~/components/Toaster";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 
 export function DeleteEverything(props: { emergency?: boolean }) {
+    const i18n = useI18n();
     const [state, actions] = useMegaStore();
 
     async function confirmReset() {
@@ -34,7 +36,14 @@ export function DeleteEverything(props: { emergency?: boolean }) {
                 await MutinyWallet.import_json("{}");
             }
 
-            showToast({ title: "Deleted", description: `Deleted all data` });
+            showToast({
+                title: i18n.t(
+                    "settings.emergency_kit.delete_everything.deleted"
+                ),
+                description: i18n.t(
+                    "settings.emergency_kit.delete_everything.deleted_description"
+                )
+            });
 
             setTimeout(() => {
                 window.location.href = "/";
@@ -50,14 +59,16 @@ export function DeleteEverything(props: { emergency?: boolean }) {
 
     return (
         <>
-            <Button onClick={confirmReset}>Delete Everything</Button>
+            <Button onClick={confirmReset}>
+                {i18n.t("settings.emergency_kit.delete_everything.delete")}
+            </Button>
             <ConfirmDialog
                 loading={confirmLoading()}
                 open={confirmOpen()}
                 onConfirm={resetNode}
                 onCancel={() => setConfirmOpen(false)}
             >
-                This will delete your node's state. This can't be undone!
+                {i18n.t("settings.emergency_kit.delete_everything.confirm")}
             </ConfirmDialog>
         </>
     );
