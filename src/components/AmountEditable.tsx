@@ -24,21 +24,6 @@ import { FeesModal } from "./MoreInfoModal";
 import { useNavigate } from "@solidjs/router";
 import { useI18n } from "~/i18n/context";
 
-const CHARACTERS = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    ".",
-    "0",
-    "DEL"
-];
-
 const FIXED_AMOUNTS_SATS = [
     { label: "10k", amount: "10000" },
     { label: "100k", amount: "100000" },
@@ -128,6 +113,7 @@ function SingleDigitButton(props: {
 
 function BigScalingText(props: { text: string; fiat: boolean }) {
     const chars = () => props.text.length;
+    const i18n = useI18n();
 
     return (
         <h1
@@ -143,16 +129,21 @@ function BigScalingText(props: { text: string; fiat: boolean }) {
             }}
         >
             {props.text}&nbsp;
-            <span class="text-xl">{props.fiat ? "USD" : "SATS"}</span>
+            <span class="text-xl">
+                {props.fiat ? "USD" : `${i18n.t("common.sats")}`}
+            </span>
         </h1>
     );
 }
 
 function SmallSubtleAmount(props: { text: string; fiat: boolean }) {
+    const i18n = useI18n();
     return (
         <h2 class="flex flex-row items-end text-xl font-light text-neutral-400">
             ~{props.text}&nbsp;
-            <span class="text-base">{props.fiat ? "USD" : "SATS"}</span>
+            <span class="text-base">
+                {props.fiat ? "USD" : `${i18n.t("common.sats")}`}
+            </span>
             <img
                 class={"pl-[4px] pb-[4px] hover:cursor-pointer"}
                 src={currencySwap}
@@ -211,6 +202,20 @@ export const AmountEditable: ParentComponent<{
             false
         )
     );
+    const CHARACTERS = [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        ".",
+        "0",
+        `${i18n.t("char.del")}`
+    ];
 
     const displaySats = () => toDisplayHandleNaN(localSats(), false);
     const displayFiat = () => `$${toDisplayHandleNaN(localFiat(), true)}`;

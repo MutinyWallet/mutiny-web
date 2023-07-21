@@ -10,6 +10,7 @@ import { generateGradient } from "~/utils/gradientHash";
 import { useMegaStore } from "~/state/megaStore";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { Amount } from "~/components/Amount";
+import { useI18n } from "~/i18n/context";
 
 export const ActivityAmount: ParentComponent<{
     amount: string;
@@ -93,6 +94,7 @@ export function ActivityItem(props: {
     onClick?: () => void;
 }) {
     const [state, _actions] = useMegaStore();
+    const i18n = useI18n();
 
     const firstContact = () =>
         props.contacts?.length ? props.contacts[0] : null;
@@ -135,12 +137,12 @@ export function ActivityItem(props: {
                 <Switch>
                     <Match when={props.kind === "ChannelClose"}>
                         <span class="text-base font-semibold text-neutral-500">
-                            Channel Close
+                            {i18n.t("activity.channel_close")}
                         </span>
                     </Match>
                     <Match when={props.kind === "ChannelOpen"}>
                         <span class="text-base font-semibold text-neutral-500">
-                            Channel Open
+                            {i18n.t("activity.channel_open")}
                         </span>{" "}
                     </Match>
                     <Match when={firstContact()?.name}>
@@ -155,13 +157,13 @@ export function ActivityItem(props: {
                     </Match>
                     <Match when={props.positive}>
                         <span class="text-base font-semibold text-neutral-500">
-                            Unknown
+                            {i18n.t("activity.unknown")}
                         </span>
                     </Match>
 
                     <Match when={!props.positive}>
                         <span class="text-base font-semibold text-neutral-500">
-                            Unknown
+                            {i18n.t("activity.unknown")}
                         </span>
                     </Match>
                 </Switch>

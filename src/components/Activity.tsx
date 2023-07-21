@@ -141,7 +141,9 @@ export function CombinedActivity(props: { limit?: number }) {
                 <Match when={activity.latest.length === 0}>
                     <div class="w-full text-center pb-4">
                         <NiceP>
-                            {i18n.t("receive_some_sats_to_get_started")}
+                            {i18n.t(
+                                "activity.receive_some_sats_to_get_started"
+                            )}
                         </NiceP>
                     </div>
                 </Match>
@@ -173,7 +175,7 @@ export function CombinedActivity(props: { limit?: number }) {
                     href="/activity"
                     class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
                 >
-                    {i18n.t("view_all")}
+                    {i18n.t("activity.view_all")}
                 </A>
             </Show>
         </Show>

@@ -87,7 +87,7 @@ export default function App() {
                     </VStack>
                 </Card>
                 <p class="self-center text-neutral-500 mt-4 font-normal">
-                    Bugs? Feedback?{" "}
+                    {i18n.t("feedback")}{" "}
                     <span class="text-neutral-400">
                         <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
                             {i18n.t("create_an_issue")}

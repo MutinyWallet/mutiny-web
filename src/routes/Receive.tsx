@@ -344,18 +344,20 @@ export default function Receive() {
                     >
                         <BackButton
                             onClick={() => setReceiveState("edit")}
-                            title="Edit"
+                            title={`${i18n.t("receive.edit")}`}
                             showOnDesktop
                         />
                     </Show>
                     <LargeHeader
                         action={
                             receiveState() === "show" && (
-                                <Indicator>Checking</Indicator>
+                                <Indicator>
+                                    {i18n.t("receive.checking")}
+                                </Indicator>
                             )
                         }
                     >
-                        {i18n.t("receive_bitcoin")}
+                        {i18n.t("receive.receive_bitcoin")}
                     </LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
@@ -373,7 +375,7 @@ export default function Receive() {
                                         selectedValues={selectedValues()}
                                         setSelectedValues={setSelectedValues}
                                         placeholder={i18n.t(
-                                            "receive_add_the_sender"
+                                            "receive.receive_add_the_sender"
                                         )}
                                     />
                                 </Card>
@@ -406,7 +408,9 @@ export default function Receive() {
                                     class="font-bold text-m-grey-400 flex gap-2 p-2 items-center mx-auto"
                                     onClick={() => setMethodChooserOpen(true)}
                                 >
-                                    <span>Choose format</span>
+                                    <span>
+                                        {i18n.t("receive.choose_format")}
+                                    </span>
                                     <img class="w-4 h-4" src={side2side} />
                                 </button>
                                 <SimpleDialog
@@ -441,8 +445,8 @@ export default function Receive() {
                                 <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
                                     {receiveState() === "paid" &&
                                     paidState() === "lightning_paid"
-                                        ? "Payment Received"
-                                        : "Payment Initiated"}
+                                        ? i18n.t("receive.payment_received")
+                                        : i18n.t("receive.payment_initiated")}
                                 </h1>
                                 <Amount
                                     amountSats={
@@ -465,7 +469,7 @@ export default function Receive() {
                                 >
                                     <div class="flex flex-row items-start gap-3">
                                         <p class="text-m-grey-400 text-sm leading-[17px] items-center">
-                                            Fee
+                                            {i18n.t("common.fee")}
                                         </p>
                                         <div class="flex items-start gap-1">
                                             <Amount
@@ -495,7 +499,7 @@ export default function Receive() {
                                             network
                                         )}
                                     >
-                                        View payment details
+                                        {i18n.t("view_transaction")}
                                     </ExternalLink>
                                 </Show>
                             </SuccessModal>
