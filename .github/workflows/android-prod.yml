@@ -76,9 +76,8 @@ jobs:
 
       - name: Sign AAB (F-Droid)
         uses: r0adkll/sign-android-release@v1
-        working-directory: android
         with:
-          releaseDirectory: app/build/outputs/bundle/fdroidRelease
+          releaseDirectory: android/app/build/outputs/bundle/fdroidRelease
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -90,9 +89,8 @@ jobs:
 
       - name: Sign APK (F-Droid)
         uses: r0adkll/sign-android-release@v1
-        working-directory: android
         with:
-          releaseDirectory: app/build/outputs/apk/fdroid/release
+          releaseDirectory: android/app/build/outputs/apk/fdroid/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -101,9 +99,8 @@ jobs:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
-        working-directory: android
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -114,36 +111,33 @@ jobs:
       - name: Upload F-Droid APK Universal Asset
         id: upload-release-asset-fdroid-universal-apk
         uses: actions/upload-release-asset@v1
-        working-directory: android
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/apk/fdroid/release/app-fdroid-universal-release-unsigned-signed.apk
+          asset_path: android/app/build/outputs/apk/fdroid/release/app-fdroid-universal-release-unsigned-signed.apk
           asset_name: mutiny-wallet-fdroid-universal-${{ github.ref_name }}.apk
           asset_content_type: application/zip
 
       - name: Upload F-Droid APK x86 Asset
         id: upload-release-asset-fdroid-x86-apk
         uses: actions/upload-release-asset@v1
-        working-directory: android
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/apk/fdroid/release/app-fdroid-x86-release-unsigned-signed.apk
+          asset_path: android/app/build/outputs/apk/fdroid/release/app-fdroid-x86-release-unsigned-signed.apk
           asset_name: mutiny-wallet-fdroid-x86-${{ github.ref_name }}.apk
           asset_content_type: application/zip
 
       - name: Upload F-Droid APK x86_64 Asset
         id: upload-release-asset-fdroid-x86-64-apk
         uses: actions/upload-release-asset@v1
-        working-directory: android
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/apk/fdroid/release/app-fdroid-x86_64-release-unsigned-signed.apk
+          asset_path: android/app/build/outputs/apk/fdroid/release/app-fdroid-x86_64-release-unsigned-signed.apk
           asset_name: mutiny-wallet-fdroid-x86_64-${{ github.ref_name }}.apk
           asset_content_type: application/zip
 
@@ -151,11 +145,10 @@ jobs:
       - name: Upload F-Droid AAB Asset
         id: upload-release-asset-fdroid-aab
         uses: actions/upload-release-asset@v1
-        working-directory: android
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/bundle/fdroidRelease/app-fdroid-release.aab
+          asset_path: android/app/build/outputs/bundle/fdroidRelease/app-fdroid-release.aab
           asset_name: mutiny-wallet-fdroid-${{ github.ref_name }}.aab
           asset_content_type: application/zip

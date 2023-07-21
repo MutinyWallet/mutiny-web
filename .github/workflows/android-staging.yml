@@ -100,7 +100,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: ${{ github.sha }}
           release_name: Prerelease ${{ github.sha }}
@@ -112,7 +112,7 @@ jobs:
         id: upload-release-asset-fdroid-universal-apk
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: android/app/build/outputs/apk/fdroid/release/app-fdroid-universal-release-unsigned-signed.apk
@@ -123,7 +123,7 @@ jobs:
         id: upload-release-asset-fdroid-x86-apk
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: android/app/build/outputs/apk/fdroid/release/app-fdroid-x86-release-unsigned-signed.apk
@@ -134,7 +134,7 @@ jobs:
         id: upload-release-asset-fdroid-x86-64-apk
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: android/app/build/outputs/apk/fdroid/release/app-fdroid-x86_64-release-unsigned-signed.apk
@@ -146,7 +146,7 @@ jobs:
         id: upload-release-asset-fdroid-aab
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: android/app/build/outputs/bundle/fdroidRelease/app-fdroid-release.aab
