@@ -7,7 +7,7 @@ import {
     createSignal,
     onMount
 } from "solid-js";
-import { Amount } from "~/components/Amount";
+import { AmountSats, AmountFiat } from "~/components/Amount";
 import NavBar from "~/components/NavBar";
 import {
     Button,
@@ -610,27 +610,45 @@ export default function Send() {
                                         ? "Payment Initiated"
                                         : sentDetails()?.failure_reason}
                                 </h1>
-                                <Amount
-                                    amountSats={sentDetails()?.amount}
-                                    showFiat
-                                    align="center"
-                                    size="large"
-                                    icon="minus"
-                                />
+                                <div class="flex flex-col gap-1 items-center">
+                                    <div class="text-xl">
+                                        <AmountSats
+                                            amountSats={sentDetails()?.amount}
+                                            icon="minus"
+                                        />
+                                    </div>
+                                    <div class="text-white/70">
+                                        <AmountFiat
+                                            amountSats={sentDetails()?.amount}
+                                            denominationSize="sm"
+                                        />
+                                    </div>
+                                </div>
                                 <hr class="w-16 bg-m-grey-400" />
                                 <div class="flex flex-row items-start gap-3">
                                     <p class="text-m-grey-400 text-sm leading-[17px] text-center">
                                         {i18n.t("common.fee")}
                                     </p>
                                     <div class="flex items-start gap-1">
-                                        <Amount
-                                            amountSats={
-                                                sentDetails()?.fee_estimate
-                                            }
-                                            align="right"
-                                            size="small"
-                                            showFiat
-                                        />
+                                        <div class="flex flex-col gap-1 items-end">
+                                            <div class="text-right text-sm">
+                                                <AmountSats
+                                                    amountSats={
+                                                        sentDetails()
+                                                            ?.fee_estimate
+                                                    }
+                                                    denominationSize="sm"
+                                                />
+                                            </div>
+                                            <div class="text-xs text-white/70">
+                                                <AmountFiat
+                                                    amountSats={
+                                                        sentDetails()
+                                                            ?.fee_estimate
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
                                         <div class="flex items-start py-[1px]">
                                             <FeesModal icon />
                                         </div>
