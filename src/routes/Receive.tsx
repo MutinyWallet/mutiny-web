@@ -27,7 +27,7 @@ import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { Amount, AmountSmall } from "~/components/Amount";
+import { AmountSats, AmountFiat, AmountSmall } from "~/components/Amount";
 import { BackLink } from "~/components/layout/BackLink";
 import { TagEditor } from "~/components/TagEditor";
 import { StyledRadioGroup } from "~/components/layout/Radio";
@@ -453,18 +453,32 @@ export default function Receive() {
                                         ? i18n.t("receive.payment_received")
                                         : i18n.t("receive.payment_initiated")}
                                 </h1>
-                                <Amount
-                                    amountSats={
-                                        receiveState() === "paid" &&
-                                        paidState() === "lightning_paid"
-                                            ? paymentInvoice()?.amount_sats
-                                            : paymentTx()?.received
-                                    }
-                                    showFiat
-                                    align="center"
-                                    size="large"
-                                    icon="plus"
-                                />
+                                <div class="flex flex-col gap-1 items-center">
+                                    <div class="text-xl">
+                                        <AmountSats
+                                            amountSats={
+                                                receiveState() === "paid" &&
+                                                paidState() === "lightning_paid"
+                                                    ? paymentInvoice()
+                                                          ?.amount_sats
+                                                    : paymentTx()?.received
+                                            }
+                                            icon="plus"
+                                        />
+                                    </div>
+                                    <div class="text-white/70">
+                                        <AmountFiat
+                                            amountSats={
+                                                receiveState() === "paid" &&
+                                                paidState() === "lightning_paid"
+                                                    ? paymentInvoice()
+                                                          ?.amount_sats
+                                                    : paymentTx()?.received
+                                            }
+                                            denominationSize="sm"
+                                        />
+                                    </div>
+                                </div>
                                 <hr class="w-16 bg-m-grey-400" />
                                 <Show
                                     when={
@@ -477,12 +491,19 @@ export default function Receive() {
                                             {i18n.t("common.fee")}
                                         </p>
                                         <div class="flex items-start gap-1">
-                                            <Amount
-                                                amountSats={lspFee()}
-                                                align="right"
-                                                size="small"
-                                                showFiat
-                                            />
+                                            <div class="flex flex-col gap-1 items-end">
+                                                <div class="text-right text-sm">
+                                                    <AmountSats
+                                                        amountSats={lspFee()}
+                                                        denominationSize="sm"
+                                                    />
+                                                </div>
+                                                <div class="text-xs text-white/70">
+                                                    <AmountFiat
+                                                        amountSats={lspFee()}
+                                                    />
+                                                </div>
+                                            </div>
                                             <div class="flex items-start py-[1px]">
                                                 {/*TODO: Add different fee hints insode of <FeesModal />*/}
                                                 <FeesModal icon />

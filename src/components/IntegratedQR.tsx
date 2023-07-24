@@ -2,7 +2,7 @@ import { Match, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 import { ReceiveFlavor } from "~/routes/Receive";
 import { useCopy } from "~/utils/useCopy";
-import { Amount } from "./Amount";
+import { AmountSats, AmountFiat } from "./Amount";
 import { TruncateMiddle } from "./ShareCard";
 import copyBlack from "~/assets/icons/copy-black.svg";
 import shareBlack from "~/assets/icons/share-black.svg";
@@ -76,11 +76,14 @@ export function IntegratedQr(props: {
                 }}
             >
                 <Show when={props.kind !== "onchain"}>
-                    <Amount
-                        amountSats={Number(props.amountSats)}
-                        showFiat
-                        whiteBg
-                    />
+                    <div class="flex flex-col gap-1">
+                        <div class="text-black">
+                            <AmountSats amountSats={Number(props.amountSats)} />
+                        </div>
+                        <div class="text-black text-sm">
+                            <AmountFiat amountSats={Number(props.amountSats)} />
+                        </div>
+                    </div>
                 </Show>
                 <KindIndicator kind={props.kind} />
             </div>

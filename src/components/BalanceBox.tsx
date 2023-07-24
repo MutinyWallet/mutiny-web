@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 import { Button, FancyCard, Indicator } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
-import { Amount } from "./Amount";
+import { AmountSats, AmountFiat } from "./Amount";
 import { A, useNavigate } from "solid-start";
 import shuffle from "~/assets/icons/shuffle.svg";
 import { useI18n } from "~/i18n/context";
@@ -43,22 +43,40 @@ export default function BalanceBox(props: { loading?: boolean }) {
         <>
             <FancyCard>
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
-                    <Amount
-                        amountSats={state.balance?.lightning || 0}
-                        showFiat
-                        icon="lightning"
-                        size="xl"
-                    />
+                    <div class="flex flex-col gap-1">
+                        <div class="text-2xl">
+                            <AmountSats
+                                amountSats={state.balance?.lightning || 0}
+                                icon="lightning"
+                                denominationSize="lg"
+                            />
+                        </div>
+                        <div class="text-lg text-white/70">
+                            <AmountFiat
+                                amountSats={state.balance?.lightning || 0}
+                                denominationSize="sm"
+                            />
+                        </div>
+                    </div>
                 </Show>
                 <hr class="my-2 border-m-grey-750" />
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
                     <div class="flex justify-between">
-                        <Amount
-                            amountSats={totalOnchain()}
-                            showFiat
-                            icon="chain"
-                            size="xl"
-                        />
+                        <div class="flex flex-col gap-1">
+                            <div class="text-2xl">
+                                <AmountSats
+                                    amountSats={totalOnchain()}
+                                    icon="chain"
+                                    denominationSize="lg"
+                                />
+                            </div>
+                            <div class="text-lg text-white/70">
+                                <AmountFiat
+                                    amountSats={totalOnchain()}
+                                    denominationSize="sm"
+                                />
+                            </div>
+                        </div>
                         <div class="flex flex-col items-end gap-1 justify-between">
                             <Show when={state.balance?.unconfirmed != 0n}>
                                 <Indicator>Pending</Indicator>

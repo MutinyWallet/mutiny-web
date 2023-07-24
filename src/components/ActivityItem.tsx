@@ -9,8 +9,8 @@ import { timeAgo } from "~/utils/prettyPrintTime";
 import { generateGradient } from "~/utils/gradientHash";
 import { useMegaStore } from "~/state/megaStore";
 import { Contact } from "@mutinywallet/mutiny-wasm";
-import { Amount } from "~/components/Amount";
 import { useI18n } from "~/i18n/context";
+import { AmountFiat, AmountSats } from "~/components/Amount";
 
 export const ActivityAmount: ParentComponent<{
     amount: string;
@@ -20,19 +20,27 @@ export const ActivityAmount: ParentComponent<{
 }> = (props) => {
     return (
         <div
-            class="flex flex-col"
+            class="flex flex-col gap-1"
             classList={{
                 "items-end": !props.center,
                 "items-center": props.center
             }}
         >
-            <Amount
-                amountSats={Number(props.amount)}
-                align="right"
-                icon={props.positive ? "plus" : undefined}
-                showFiat
-                green={props.positive ? true : false}
-            />
+            <div
+                class="justify-end"
+                classList={{ "text-m-green": props.positive }}
+            >
+                <AmountSats
+                    amountSats={Number(props.amount)}
+                    icon={props.positive ? "plus" : undefined}
+                />
+            </div>
+            <div class="text-sm text-white/70">
+                <AmountFiat
+                    amountSats={Number(props.amount)}
+                    denominationSize="sm"
+                />
+            </div>
         </div>
     );
 };

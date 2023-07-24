@@ -41,7 +41,7 @@ import { Button } from "~/components/layout/Button";
 import { ProgressBar } from "~/components/layout/ProgressBar";
 import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { Amount } from "~/components/Amount";
+import { AmountSats } from "~/components/Amount";
 import { getRedshifted, setRedshifted } from "~/utils/fakeLabels";
 import { Network } from "~/logic/mutinyWalletSetup";
 
@@ -165,17 +165,17 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
                             </Show>
                         </KV> */}
                             <KV key="Starting amount">
-                                <Amount
+                                <AmountSats
                                     amountSats={redshiftResource()!.amount_sats}
                                 />
                             </KV>
                             <KV key="Fees paid">
-                                <Amount
+                                <AmountSats
                                     amountSats={redshiftResource()!.fees_paid}
                                 />
                             </KV>
                             <KV key="Change">
-                                <Amount
+                                <AmountSats
                                     amountSats={redshiftResource()!.change_amt}
                                 />
                             </KV>

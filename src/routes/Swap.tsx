@@ -35,7 +35,7 @@ import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { ExternalLink } from "~/components/layout/ExternalLink";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useI18n } from "~/i18n/context";
-import { AmountFiat } from "~/components/AmountFiat";
+import { AmountFiat } from "~/components/Amount";
 
 const CHANNEL_FEE_ESTIMATE_ADDRESS =
     "bc1qf7546vg73ddsjznzq57z3e8jdn6gtw6au576j07kt6d9j7nz8mzsyn6lgf";
@@ -305,13 +305,14 @@ export default function Swap() {
                                             "0"}{" "}
                                         {i18n.t("swap.sats_added")}
                                     </p>
-                                    <AmountFiat
-                                        amountSats={
-                                            channelOpenResult()?.channel
-                                                ?.balance
-                                        }
-                                        classes="text-sm text-center"
-                                    />
+                                    <div class="text-sm text-center text-white/70">
+                                        <AmountFiat
+                                            amountSats={
+                                                channelOpenResult()?.channel
+                                                    ?.balance
+                                            }
+                                        />
+                                    </div>
                                 </div>
                                 <hr class="w-16 bg-m-grey-400" />
                                 <Show
