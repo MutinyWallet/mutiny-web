@@ -319,6 +319,11 @@ export default function Receive() {
         }
     }
 
+    function selectFlavor(flavor: string) {
+        setFlavor(flavor as ReceiveFlavor);
+        setMethodChooserOpen(false);
+    }
+
     const [paidState, { refetch }] = createResource(bip21Raw, checkIfPaid);
 
     const network = state.mutiny_wallet?.get_network() as Network;
@@ -418,7 +423,7 @@ export default function Receive() {
                                 >
                                     <StyledRadioGroup
                                         value={flavor()}
-                                        onValueChange={setFlavor}
+                                        onValueChange={selectFlavor}
                                         choices={RECEIVE_FLAVORS}
                                         accent="white"
                                         vertical
