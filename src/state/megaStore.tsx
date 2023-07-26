@@ -194,15 +194,14 @@ export const Provider: ParentComponent = (props) => {
         },
         async deleteMutinyWallet(): Promise<void> {
             try {
-                if (state.mutiny_wallet) {
-                    await state.mutiny_wallet?.stop();
-                }
                 setState((prevState) => ({
                     ...prevState,
-                    mutiny_wallet: undefined,
                     deleting: true
                 }));
-                MutinyWallet.import_json("{}");
+                if (state.mutiny_wallet) {
+                    await state.mutiny_wallet?.stop();
+                    await state.mutiny_wallet?.delete_all();
+                }
             } catch (e) {
                 console.error(e);
             }
