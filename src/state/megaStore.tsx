@@ -202,7 +202,14 @@ export const Provider: ParentComponent = (props) => {
                     mutiny_wallet: undefined,
                     deleting: true
                 }));
-                MutinyWallet.import_json("{}");
+                // if we have a mutiny_wallet defined, use
+                // the delete_all method to delete all data
+                // otherwise, just import an empty json object
+                if (state.mutiny_wallet) {
+                    await state.mutiny_wallet?.delete_all();
+                } else {
+                    await MutinyWallet.import_json("{}");
+                }
             } catch (e) {
                 console.error(e);
             }
