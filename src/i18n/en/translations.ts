@@ -52,5 +52,7 @@ export default {
     continue: "Continue",
     keep_mutiny_open: "Keep Mutiny open to complete the payment.",
     too_big_for_beta:
-        "That's a lot of sats. You do know Mutiny Wallet is still in beta, yeah?"
+        "That's a lot of sats. You do know Mutiny Wallet is still in beta, yeah?",
+    more_than_21m:
+        "There are only 21 million bitcoin.",
 };
