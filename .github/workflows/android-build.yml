@@ -84,4 +84,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Debug APK
-          path: android/app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
+          path: android/app/build/outputs/apk/fdroid/debug/app-fdroid-universal-debug.apk
