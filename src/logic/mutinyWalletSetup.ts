@@ -12,6 +12,7 @@ export type MutinyWalletSettingStrings = {
     auth?: string;
     subscriptions?: string;
     storage?: string;
+    scorer?: string;
 };
 
 export function getExistingSettings(): MutinyWalletSettingStrings {
@@ -37,14 +38,17 @@ export function getExistingSettings(): MutinyWalletSettingStrings {
     const storage =
         localStorage.getItem("MUTINY_SETTINGS_storage") ||
         import.meta.env.VITE_STORAGE;
+    const scorer =
+        localStorage.getItem("MUTINY_SETTINGS_scorer") ||
+        import.meta.env.VITE_SCORER;
 
-    return { network, proxy, esplora, rgs, lsp, auth, subscriptions, storage };
+    return { network, proxy, esplora, rgs, lsp, auth, subscriptions, storage, scorer };
 }
 
 export async function setAndGetMutinySettings(
     settings?: MutinyWalletSettingStrings
 ): Promise<MutinyWalletSettingStrings> {
-    let { network, proxy, esplora, rgs, lsp, auth, subscriptions, storage } =
+    let { network, proxy, esplora, rgs, lsp, auth, subscriptions, storage, scorer } =
         settings || {};
 
     const existingSettings = getExistingSettings();
@@ -58,6 +62,7 @@ export async function setAndGetMutinySettings(
         auth = auth || existingSettings.auth;
         subscriptions = subscriptions || existingSettings.subscriptions;
         storage = storage || existingSettings.storage;
+        scorer = scorer || existingSettings.scorer;
 
         if (!network || !proxy || !esplora) {
             throw new Error(
@@ -82,6 +87,7 @@ export async function setAndGetMutinySettings(
                 subscriptions
             );
         storage && localStorage.setItem("MUTINY_SETTINGS_storage", storage);
+        scorer && localStorage.setItem("MUTINY_SETTINGS_scorer", scorer);
 
         return {
             network,
@@ -91,7 +97,8 @@ export async function setAndGetMutinySettings(
             lsp,
             auth,
             subscriptions,
-            storage
+            storage,
+	    scorer
         };
     } catch (error) {
         console.error(error);
@@ -145,7 +152,7 @@ export async function setupMutinyWallet(
     password?: string
 ): Promise<MutinyWallet> {
     console.log("Starting setup...");
-    const { network, proxy, esplora, rgs, lsp, auth, subscriptions, storage } =
+    const { network, proxy, esplora, rgs, lsp, auth, subscriptions, storage, scorer } =
         await setAndGetMutinySettings(settings);
     console.log("Initializing Mutiny Manager");
     console.log("Using network", network);
@@ -156,6 +163,7 @@ export async function setupMutinyWallet(
     console.log("Using auth address", auth);
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
+    console.log("Using scorer address", scorer);
     const mutinyWallet = await new MutinyWallet(
         // Password
         password ? password : undefined,
@@ -169,6 +177,7 @@ export async function setupMutinyWallet(
         auth,
         subscriptions,
         storage,
+        scorer,
         // Do not connect peers
         undefined
     );
