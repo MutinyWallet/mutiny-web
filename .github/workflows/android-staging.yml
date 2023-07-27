@@ -65,6 +65,7 @@ jobs:
           VITE_AUTH: https://auth-staging.mutinywallet.com
           VITE_SUBSCRIPTIONS: https://subscriptions-staging.mutinywallet.com
           VITE_STORAGE: https://storage-staging.mutinywallet.com
+          VITE_SCORER: https://scorer-staging.mutinywallet.com
         run: pnpm build
 
       - name: Capacitor sync
