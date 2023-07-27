@@ -267,8 +267,11 @@ export const AmountEditable: ParentComponent<{
             return undefined;
         }
 
-        // If over 4 million sats, warn that it's a beta bro
-        if (parsed >= 4000000) {
+        if (parsed >= 2099999997690000) {
+            // If over 21 million bitcoin, warn that too much
+            return i18n.t("more_than_21m");
+        } else if (parsed >= 4000000) {
+            // If over 4 million sats, warn that it's a beta bro
             return i18n.t("too_big_for_beta");
         }
     };
