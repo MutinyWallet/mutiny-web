@@ -1,0 +1,55 @@
+name: Code Quality Check
+on:
+  push:
+    branches:
+      - master
+      - prod
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  code_quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Step Zero - Install Dependencies
+        run: pnpm install
+
+      - name: Step One - Check Code Formatting
+        run: pnpm run check-format
+
+      - name: Step Two - Check Lint Errors
+        run: pnpm run eslint
+
+      - name: Step Three - Check Type Check Errors
+        run: pnpm run check-types
+
