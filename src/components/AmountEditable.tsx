@@ -21,8 +21,8 @@ import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { InfoBox } from "./InfoBox";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { FeesModal } from "./MoreInfoModal";
-import { useNavigate } from "@solidjs/router";
 import { useI18n } from "~/i18n/context";
+import { useNavigate } from "solid-start";
 
 const FIXED_AMOUNTS_SATS = [
     { label: "10k", amount: "10000" },
@@ -70,7 +70,7 @@ function SingleDigitButton(props: {
     fiat: boolean;
 }) {
     const i18n = useI18n();
-    let holdTimer: number;
+    let holdTimer: ReturnType<typeof setTimeout> | undefined;
     const holdThreshold = 500;
 
     function onHold() {
