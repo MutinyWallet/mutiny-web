@@ -69,7 +69,7 @@ function LabelCircle(props: {
 
     return (
         <div
-            class="flex h-[3rem] w-[3rem] flex-none items-center justify-center rounded-full border-b border-t border-b-white/10 border-t-white/50 bg-neutral-700 text-3xl uppercase"
+            class="flex h-[3rem] w-[3rem] flex-none items-center justify-center overflow-clip rounded-full border-b border-t border-b-white/10 border-t-white/50 bg-neutral-700 text-3xl uppercase"
             style={{ background: bg() }}
         >
             <Switch>

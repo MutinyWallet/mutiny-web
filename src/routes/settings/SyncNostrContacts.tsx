@@ -1,6 +1,7 @@
 import { TextField } from "@kobalte/core";
 import { createSignal } from "solid-js";
-import NavBar from "~/components/NavBar";
+
+import { NavBar } from "~/components";
 import {
     Button,
     DefaultMain,
@@ -43,7 +44,7 @@ export default function SyncNostrContacts() {
                                     Sync Nostr Contacts
                                 </TextField.Label>
                                 <TextField.Input
-                                    class="w-full p-2 rounded-lg text-black"
+                                    class="w-full rounded-lg p-2 text-black"
                                     // placeholder="LNURL..."
                                 />
                                 <TextField.ErrorMessage class="text-red-500">
