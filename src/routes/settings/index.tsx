@@ -120,6 +120,10 @@ export default function Settings() {
                             {
                                 href: "/settings/lnurlauth",
                                 text: i18n.t("settings.lnurl_auth.title")
+                            },
+                            {
+                                href: "/settings/syncnostrcontacts",
+                                text: "Sync Nostr Contacts"
                             }
                         ]}
                     />
