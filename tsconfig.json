@@ -20,7 +20,10 @@
         "src/**/*",
         "src/routes/**/*",
         "tailwind.config.cjs",
-        ".eslintrc.cjs"
+        "playwright.config.ts",
+        "vite.config.ts",
+        ".eslintrc.cjs",
+        "e2e/**/*"
     ],
     "exclude": [
         "node_modules",

@@ -1,4 +1,4 @@
-const plugin = require('tailwindcss/plugin')
+const plugin = require("tailwindcss/plugin");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -35,9 +35,7 @@ module.exports = {
                 "m-grey-700": "hsla(0, 0%, 25%, 1)",
                 "m-grey-750": "hsla(0, 0%, 17%, 1)",
                 "m-grey-800": "hsla(0, 0%, 12%, 1)",
-                "m-grey-900": "hsla(0, 0%, 9%, 1)",
-                "m-grey-750": "hsla(0, 0%, 17%, 1)",
-                "m-grey-400": "hsla(0, 0%, 64%, 1)"
+                "m-grey-900": "hsla(0, 0%, 9%, 1)"
             },
             backgroundImage: {
                 "fade-to-blue":
@@ -56,9 +54,9 @@ module.exports = {
                 "inner-button-disabled":
                     "2px 2px 4px rgba(0, 0, 0, 0.05), inset 2px 2px 4px rgba(255, 255, 255, 0.05), inset -2px -2px 6px rgba(0, 0, 0, 0.1)",
                 "fancy-card": "0px 4px 4px rgba(0, 0, 0, 0.1)",
-                "subtle-bevel": 
+                "subtle-bevel":
                     "inset -4px -4px 6px 0 rgba(0, 0, 0, 0.10), inset 4px 4px 4px 0 rgba(255, 255, 255, 0.10)",
-                above: "0px -4px 10px rgba(0, 0, 0, 0.25)",
+                above: "0px -4px 10px rgba(0, 0, 0, 0.25)"
             },
             textShadow: {
                 button: "1px 1px 0px rgba(0, 0, 0, 0.4)"
@@ -71,20 +69,16 @@ module.exports = {
         plugin(function ({ addUtilities }) {
             const newUtilities = {
                 ".safe-top": {
-                    paddingTop: "constant(safe-area-inset-top)",
-                    paddingTop: "env(safe-area-inset-top)"
+                    paddingTop: "constant(safe-area-inset-top)"
                 },
                 ".safe-left": {
-                    paddingLeft: "constant(safe-area-inset-left)",
-                    paddingLeft: "env(safe-area-inset-left)"
+                    paddingLeft: "constant(safe-area-inset-left)"
                 },
                 ".safe-right": {
-                    paddingRight: "constant(safe-area-inset-right)",
-                    paddingRight: "env(safe-area-inset-right)"
+                    paddingRight: "constant(safe-area-inset-right)"
                 },
                 ".safe-bottom": {
-                    paddingBottom: "constant(safe-area-inset-bottom)",
-                    paddingBottom: "env(safe-area-inset-bottom)"
+                    paddingBottom: "constant(safe-area-inset-bottom)"
                 },
                 ".disable-scrollbars": {
                     scrollbarWidth: "none",

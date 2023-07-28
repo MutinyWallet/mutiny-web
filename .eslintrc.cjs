@@ -1,7 +1,8 @@
 module.exports = {
     env: {
         browser: true,
-        es2021: true
+        es2021: true,
+        node: true
     },
     extends: [
         "eslint:recommended",
@@ -10,11 +11,21 @@ module.exports = {
         "plugin:import/typescript",
         "plugin:import/recommended"
     ],
-    overrides: [],
+    overrides: [
+        {
+            files: ["**/*.cjs"], // Specify the file pattern for CJS files
+            parserOptions: {
+                sourceType: "script" // Treat the CJS files as CommonJS modules
+            },
+            rules: {
+                "@typescript-eslint/no-var-requires": "off" // Disable this specific rule for CJS files
+            }
+        }
+    ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
         tsconfigRootDir: "./",
-        project: ["./tsconfig.json"],
+        project: "tsconfig.json",
         ecmaVersion: "latest",
         sourceType: "module",
         ecmaFeatures: {
