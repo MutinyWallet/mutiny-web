@@ -45,13 +45,18 @@ export function ContactViewer(props: {
                 onClick={() => setIsOpen(true)}
                 class="flex w-16 flex-shrink-0 flex-col items-center gap-2 overflow-x-hidden"
             >
-                <div
-                    class="flex h-16 w-16 flex-none items-center justify-center rounded-full border-b border-t border-b-white/10 border-t-white/50 text-4xl uppercase"
-                    style={{ background: props.gradient }}
-                >
-                    {props.contact.name[0]}
-                </div>
-                <SmallHeader class="h-4 w-16 overflow-hidden overflow-ellipsis text-center">
+                {props.contact.image_url && (
+                    <img src={props.contact.image_url} />
+                )}
+                {!props.contact.image_url && (
+                    <div
+                        class="flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+                        style={{ background: props.gradient }}
+                    >
+                        {props.contact.name[0]}
+                    </div>
+                )}
+                <SmallHeader class="overflow-ellipsis w-16 text-center overflow-hidden h-4">
                     {props.contact.name}
                 </SmallHeader>
             </button>
@@ -86,18 +91,34 @@ export function ContactViewer(props: {
                                 />
                             </Match>
                             <Match when={!isEditing()}>
-                                <div class="mx-auto flex w-full max-w-[400px] flex-1 flex-col items-center justify-around gap-4">
-                                    <div class="flex w-full flex-col items-center">
-                                        <div
-                                            class="flex h-32 w-32 flex-none items-center justify-center rounded-full border-b border-t border-b-white/10 border-t-white/50 text-8xl uppercase"
-                                            style={{
-                                                background: props.gradient
-                                            }}
-                                        >
-                                            {props.contact.name[0]}
-                                        </div>
-                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
+                                <div class="flex flex-col flex-1 justify-around items-center gap-4 max-w-[400px] mx-auto w-full">
+                                    <div class="flex flex-col items-center w-full">
+                                        {props.contact.image_url && (
+                                            <img
+                                                src={props.contact.image_url}
+                                            />
+                                        )}
+                                        {!props.contact.image_url && (
+                                            <div
+                                                class="flex-none h-32 w-32 rounded-full flex items-center justify-center text-8xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+                                                style={{
+                                                    background: props.gradient
+                                                }}
+                                            >
+                                                {props.contact.name[0]}
+                                            </div>
+                                        )}
+                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
                                             {props.contact.name}
+                                        </h1>
+                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                            {props.contact.npub}
+                                        </h1>
+                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                            {props.contact.ln_address}
+                                        </h1>
+                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                            {props.contact.lnurl}
                                         </h1>
                                         <Card
                                             title={i18n.t(

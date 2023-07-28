@@ -46,6 +46,7 @@ export const ActivityAmount: ParentComponent<{
 
 function LabelCircle(props: {
     name?: string;
+    image_url?: string;
     contact: boolean;
     label: boolean;
     channel?: HackActivityType;
@@ -72,6 +73,9 @@ function LabelCircle(props: {
             style={{ background: bg() }}
         >
             <Switch>
+                <Match when={props.image_url}>
+                    <img src={props.image_url} alt={"image"} />
+                </Match>
                 <Match when={props.channel === "ChannelOpen"}>
                     <img src={on} alt="channel open" />
                 </Match>
@@ -134,6 +138,7 @@ export function ActivityItem(props: {
                 <div class="">
                     <LabelCircle
                         name={firstContact()?.name}
+                        image_url={firstContact()?.image_url}
                         contact={props.contacts?.length > 0}
                         label={props.labels?.length > 0}
                         channel={props.kind}
