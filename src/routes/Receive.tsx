@@ -27,7 +27,7 @@ import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { AmountSats, AmountFiat, AmountSmall } from "~/components/Amount";
+import { AmountSats, AmountFiat } from "~/components/Amount";
 import { BackLink } from "~/components/layout/BackLink";
 import { TagEditor } from "~/components/TagEditor";
 import { StyledRadioGroup } from "~/components/layout/Radio";
@@ -44,9 +44,9 @@ import { InfoBox } from "~/components/InfoBox";
 import { FeesModal } from "~/components/MoreInfoModal";
 import { IntegratedQr } from "~/components/IntegratedQR";
 import side2side from "~/assets/icons/side-to-side.svg";
-import { useI18n } from "~/i18n/context";
 import eify from "~/utils/eify";
 import { matchError } from "~/logic/errorDispatch";
+import { useI18n } from "~/i18n/context";
 import { Fee } from "~/components/Fee";
 
 type OnChainTx = {
@@ -73,48 +73,30 @@ type OnChainTx = {
     };
 };
 
-const RECEIVE_FLAVORS = [
-    {
-        value: "unified",
-        label: "Unified",
-        caption:
-            "Combines a bitcoin address and a lightning invoice. Sender chooses payment method."
-    },
-    {
-        value: "lightning",
-        label: "Lightning invoice",
-        caption:
-            "Ideal for small transactions. Usually lower fees than on-chain."
-    },
-    {
-        value: "onchain",
-        label: "Bitcoin address",
-        caption:
-            "On-chain, just like Satoshi did it. Ideal for very large transactions."
-    }
-];
-
 export type ReceiveFlavor = "unified" | "lightning" | "onchain";
 type ReceiveState = "edit" | "show" | "paid";
 type PaidState = "lightning_paid" | "onchain_paid";
 
 function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
+    const i18n = useI18n();
     return (
         // TODO: probably won't always be fixed 2500?
         <Show when={props.fee > 1000n}>
             <Switch>
                 <Match when={props.flavor === "unified"}>
                     <InfoBox accent="blue">
-                        A lightning setup fee of{" "}
-                        <AmountSmall amountSats={props.fee} /> will be charged
-                        if paid over lightning. <FeesModal />
+                        {i18n.t("receive.unified_setup_fee", {
+                            amount: props.fee.toLocaleString()
+                        })}
+                        <FeesModal />
                     </InfoBox>
                 </Match>
                 <Match when={props.flavor === "lightning"}>
                     <InfoBox accent="blue">
-                        A lightning setup fee of{" "}
-                        <AmountSmall amountSats={props.fee} /> will be charged
-                        for this receive. <FeesModal />
+                        {i18n.t("receive.lightning_setup_fee", {
+                            amount: props.fee.toLocaleString()
+                        })}
+                        <FeesModal />
                     </InfoBox>
                 </Match>
             </Switch>
@@ -150,6 +132,24 @@ export default function Receive() {
 
     // loading state for the continue button
     const [loading, setLoading] = createSignal(false);
+
+    const RECEIVE_FLAVORS = [
+        {
+            value: "unified",
+            label: i18n.t("receive.unified_label"),
+            caption: i18n.t("receive.unified_caption")
+        },
+        {
+            value: "lightning",
+            label: i18n.t("receive.lightning_label"),
+            caption: i18n.t("receive.lightning_caption")
+        },
+        {
+            value: "onchain",
+            label: i18n.t("receive.onchain_label"),
+            caption: i18n.t("receive.onchain_caption")
+        }
+    ];
 
     const receiveString = createMemo(() => {
         if (unified() && receiveState() === "show") {
@@ -350,7 +350,7 @@ export default function Receive() {
                     >
                         <BackButton
                             onClick={() => setReceiveState("edit")}
-                            title={`${i18n.t("receive.edit")}`}
+                            title={i18n.t("receive.edit")}
                             showOnDesktop
                         />
                     </Show>
@@ -376,7 +376,7 @@ export default function Receive() {
                                     exitRoute={amount() ? "/receive" : "/"}
                                 />
 
-                                <Card title={i18n.t("private_tags")}>
+                                <Card title={i18n.t("common.private_tags")}>
                                     <TagEditor
                                         selectedValues={selectedValues()}
                                         setSelectedValues={setSelectedValues}
@@ -394,7 +394,7 @@ export default function Receive() {
                                     onClick={onSubmit}
                                     loading={loading()}
                                 >
-                                    {i18n.t("continue")}
+                                    {i18n.t("common.continue")}
                                 </Button>
                             </div>
                         </Match>
@@ -406,7 +406,7 @@ export default function Receive() {
                                 kind={flavor()}
                             />
                             <p class="text-neutral-400 text-center">
-                                {i18n.t("keep_mutiny_open")}
+                                {i18n.t("receive.keep_mutiny_open")}
                             </p>
                             {/* Only show method chooser when we have an invoice */}
                             <Show when={bip21Raw()?.invoice}>
@@ -420,7 +420,9 @@ export default function Receive() {
                                     <img class="w-4 h-4" src={side2side} />
                                 </button>
                                 <SimpleDialog
-                                    title="Choose payment format"
+                                    title={i18n.t(
+                                        "receive.choose_payment_format"
+                                    )}
                                     open={methodChooserOpen()}
                                     setOpen={(open) =>
                                         setMethodChooserOpen(open)
@@ -503,7 +505,7 @@ export default function Receive() {
                                             network
                                         )}
                                     >
-                                        {i18n.t("view_transaction")}
+                                        {i18n.t("common.view_transaction")}
                                     </ExternalLink>
                                 </Show>
                             </SuccessModal>

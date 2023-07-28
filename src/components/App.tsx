@@ -15,8 +15,10 @@ import { PendingNwc } from "./PendingNwc";
 import { DecryptDialog } from "./DecryptDialog";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { FeedbackLink } from "~/routes/Feedback";
+import { useI18n } from "~/i18n/context";
 
 export default function App() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     return (
@@ -71,7 +73,7 @@ export default function App() {
                         <PendingNwc />
                     </Show>
                 </Suspense>
-                <Card title="Activity">
+                <Card title={i18n.t("activity.title")}>
                     <div class="p-1" />
                     <VStack>
                         <Suspense>

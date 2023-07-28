@@ -29,6 +29,7 @@ import { WORDS_EN } from "~/utils/words";
 import { InfoBox } from "~/components/InfoBox";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import { useI18n } from "~/i18n/context";
 
 type SeedWordsForm = {
     words: string[];
@@ -78,6 +79,7 @@ export function SeedTextField(props: TextFieldProps) {
 }
 
 function TwelveWordsEntry() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const [error, setError] = createSignal<Error>();
@@ -101,7 +103,9 @@ function TwelveWordsEntry() {
                 text = value;
             } else {
                 if (!navigator.clipboard.readText) {
-                    return showToast(new Error("Clipboard not supported"));
+                    return showToast(
+                        new Error(i18n.t("settings.restore.error_clipboard"))
+                    );
                 }
                 text = await navigator.clipboard.readText();
             }
@@ -110,7 +114,9 @@ function TwelveWordsEntry() {
             const words = text.split(/[\s\n]+/);
 
             if (words.length !== 12) {
-                return showToast(new Error("Wrong number of words"));
+                return showToast(
+                    new Error(i18n.t("settings.restore.error_word_number"))
+                );
             }
 
             setValues(seedWordsForm, "words", words);
@@ -150,7 +156,7 @@ function TwelveWordsEntry() {
         const valid = values.words?.every(validateWord);
 
         if (!valid) {
-            setError(new Error("Invalid seed phrase"));
+            setError(new Error(i18n.t("settings.restore.error_invalid_seed")));
             return;
         }
 
@@ -180,11 +186,15 @@ function TwelveWordsEntry() {
                                                 name={`words.${index()}`}
                                                 validate={[
                                                     required(
-                                                        "You need to enter all 12 words"
+                                                        i18n.t(
+                                                            "settings.restore.all_twelve"
+                                                        )
                                                     ),
                                                     custom(
                                                         validateWord,
-                                                        "Wrong word"
+                                                        i18n.t(
+                                                            "settings.restore.wrong_word"
+                                                        )
                                                     )
                                                 ]}
                                             >
@@ -209,7 +219,7 @@ function TwelveWordsEntry() {
                             type="button"
                         >
                             <div class="flex items-center gap-2">
-                                <span>Dangerously Paste from Clipboard</span>
+                                <span>{i18n.t("settings.restore.paste")}</span>
                                 <img
                                     src={pasteIcon}
                                     alt="paste"
@@ -224,7 +234,7 @@ function TwelveWordsEntry() {
                     intent="red"
                     disabled={seedWordsForm.invalid || !seedWordsForm.dirty}
                 >
-                    Restore
+                    {i18n.t("settings.restore.title")}
                 </Button>
             </Form>
             <ConfirmDialog
@@ -233,29 +243,25 @@ function TwelveWordsEntry() {
                 onCancel={() => setConfirmOpen(false)}
                 loading={confirmLoading()}
             >
-                <p>
-                    Are you sure you want to restore to this wallet? Your
-                    existing wallet will be deleted!
-                </p>
+                <p>{i18n.t("settings.restore.confirm_text")}</p>
             </ConfirmDialog>
         </>
     );
 }
 
 export default function RestorePage() {
+    const i18n = useI18n();
     return (
         <SafeArea>
             <DefaultMain>
-                <BackLink title="Settings" href="/settings" />
-                <LargeHeader>Restore</LargeHeader>
+                <BackLink title={i18n.t("settings.header")} href="/settings" />
+                <LargeHeader>{i18n.t("settings.restore.title")}</LargeHeader>
                 <VStack>
                     <NiceP>
+                        <p>{i18n.t("settings.restore.restore_tip")}</p>
                         <p>
-                            You can restore an existing Mutiny Wallet from your
-                            12 word seed phrase. This will replace your existing
-                            wallet, so make sure you know what you're doing!
+                            {i18n.t("settings.restore.multi_browser_warning")}
                         </p>
-                        <p>Do not use on multiple browsers at the same time.</p>
                     </NiceP>
                     <TwelveWordsEntry />
                 </VStack>

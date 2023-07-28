@@ -30,6 +30,7 @@ import { Network } from "~/logic/mutinyWalletSetup";
 import { AmountSmall } from "./Amount";
 import { ExternalLink } from "./layout/ExternalLink";
 import { InfoBox } from "./InfoBox";
+import { useI18n } from "~/i18n/context";
 
 type ChannelClosure = {
     channel_id: string;
@@ -48,6 +49,7 @@ function LightningHeader(props: {
     info: MutinyInvoice;
     tags: MutinyTagItem[];
 }) {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     return (
@@ -56,7 +58,9 @@ function LightningHeader(props: {
                 <img src={bolt} alt="lightning bolt" class="w-8 h-8" />
             </div>
             <h1 class="uppercase font-semibold">
-                {props.info.inbound ? "Lightning receive" : "Lightning send"}
+                {props.info.inbound
+                    ? i18n.t("modals.transaction_details.lightning_receive")
+                    : i18n.t("modals.transaction_details.lightning_send")}
             </h1>
             <ActivityAmount
                 center
@@ -85,6 +89,7 @@ function OnchainHeader(props: {
     tags: MutinyTagItem[];
     kind?: HackActivityType;
 }) {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const isSend = () => {
@@ -118,12 +123,12 @@ function OnchainHeader(props: {
             </div>
             <h1 class="uppercase font-semibold">
                 {props.kind === "ChannelOpen"
-                    ? "Channel Open"
+                    ? i18n.t("modals.transaction_details.channel_open")
                     : props.kind === "ChannelClose"
-                    ? "Channel Close"
+                    ? i18n.t("modals.transaction_details.channel_close")
                     : isSend()
-                    ? "On-chain send"
-                    : "On-chain receive"}
+                    ? i18n.t("modals.transaction_details.onchain_send")
+                    : i18n.t("modals.transaction_details.onchain_receive")}
             </h1>
             <Show when={props.kind !== "ChannelClose"}>
                 <ActivityAmount
@@ -179,38 +184,45 @@ export function MiniStringShower(props: { text: string }) {
 }
 
 function LightningDetails(props: { info: MutinyInvoice }) {
+    const i18n = useI18n();
     return (
         <VStack>
             <ul class="flex flex-col gap-4">
-                <KeyValue key="Status">
+                <KeyValue key={i18n.t("modals.transaction_details.status")}>
                     <span class="text-neutral-300">
-                        {props.info.paid ? "Paid" : "Unpaid"}
+                        {props.info.paid
+                            ? i18n.t("modals.transaction_details.paid")
+                            : i18n.t("modals.transaction_details.unpaid")}
                     </span>
                 </KeyValue>
-                <KeyValue key="When">
+                <KeyValue key={i18n.t("modals.transaction_details.when")}>
                     <span class="text-neutral-300">
                         {prettyPrintTime(Number(props.info.last_updated))}
                     </span>
                 </KeyValue>
                 <Show when={props.info.description}>
-                    <KeyValue key="Description">
+                    <KeyValue
+                        key={i18n.t("modals.transaction_details.description")}
+                    >
                         <span class="text-neutral-300 truncate">
                             {props.info.description}
                         </span>
                     </KeyValue>
                 </Show>
-                <KeyValue key="Fees">
+                <KeyValue key={i18n.t("modals.transaction_details.fees")}>
                     <span class="text-neutral-300">
                         <AmountSmall amountSats={props.info.fees_paid} />
                     </span>
                 </KeyValue>
-                <KeyValue key="Bolt11">
+                <KeyValue key={i18n.t("modals.transaction_details.bolt11")}>
                     <MiniStringShower text={props.info.bolt11 ?? ""} />
                 </KeyValue>
-                <KeyValue key="Payment Hash">
+                <KeyValue
+                    key={i18n.t("modals.transaction_details.payment_hash")}
+                >
                     <MiniStringShower text={props.info.payment_hash ?? ""} />
                 </KeyValue>
-                <KeyValue key="Preimage">
+                <KeyValue key={i18n.t("modals.transaction_details.preimage")}>
                     <MiniStringShower text={props.info.preimage ?? ""} />
                 </KeyValue>
             </ul>
@@ -219,6 +231,7 @@ function LightningDetails(props: { info: MutinyInvoice }) {
 }
 
 function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const confirmationTime = () => {
@@ -251,13 +264,15 @@ function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
         <VStack>
             {/* <pre>{JSON.stringify(channelInfo() || "", null, 2)}</pre> */}
             <ul class="flex flex-col gap-4">
-                <KeyValue key="Status">
+                <KeyValue key={i18n.t("modals.transaction_details.status")}>
                     <span class="text-neutral-300">
-                        {confirmationTime() ? "Confirmed" : "Unconfirmed"}
+                        {confirmationTime()
+                            ? i18n.t("modals.transaction_details.confirmed")
+                            : i18n.t("modals.transaction_details.unconfirmed")}
                     </span>
                 </KeyValue>
                 <Show when={confirmationTime()}>
-                    <KeyValue key="When">
+                    <KeyValue key={i18n.t("modals.transaction_details.when")}>
                         <span class="text-neutral-300">
                             {confirmationTime()
                                 ? prettyPrintTime(Number(confirmationTime()))
@@ -266,32 +281,38 @@ function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
                     </KeyValue>
                 </Show>
                 <Show when={props.info.fee && props.info.fee > 0}>
-                    <KeyValue key="Fee">
+                    <KeyValue key={i18n.t("modals.transaction_details.fee")}>
                         <span class="text-neutral-300">
                             <AmountSmall amountSats={props.info.fee} />
                         </span>
                     </KeyValue>
                 </Show>
-                <KeyValue key="Txid">
+                <KeyValue key={i18n.t("modals.transaction_details.txid")}>
                     <MiniStringShower text={props.info.txid ?? ""} />
                 </KeyValue>
                 <Switch>
                     <Match when={props.kind === "ChannelOpen" && channelInfo()}>
-                        <KeyValue key="Balance">
+                        <KeyValue
+                            key={i18n.t("modals.transaction_details.balance")}
+                        >
                             <span class="text-neutral-300">
                                 <AmountSmall
                                     amountSats={channelInfo()?.balance}
                                 />
                             </span>
                         </KeyValue>
-                        <KeyValue key="Reserve">
+                        <KeyValue
+                            key={i18n.t("modals.transaction_details.reserve")}
+                        >
                             <span class="text-neutral-300">
                                 <AmountSmall
                                     amountSats={channelInfo()?.reserve}
                                 />
                             </span>
                         </KeyValue>
-                        <KeyValue key="Peer">
+                        <KeyValue
+                            key={i18n.t("modals.transaction_details.peer")}
+                        >
                             <span class="text-neutral-300">
                                 <MiniStringShower
                                     text={channelInfo()?.peer ?? ""}
@@ -301,15 +322,14 @@ function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
                     </Match>
                     <Match when={props.kind === "ChannelOpen"}>
                         <InfoBox accent="blue">
-                            No channel details found, which means this channel
-                            has likely been closed.
+                            {i18n.t("modals.transaction_details.no_details")}
                         </InfoBox>
                     </Match>
                 </Switch>
             </ul>
             <div class="text-center">
                 <ExternalLink href={mempoolTxUrl(props.info.txid, network)}>
-                    View Transaction
+                    {i18n.t("common.view_transaction")}
                 </ExternalLink>
             </div>
         </VStack>
@@ -317,23 +337,24 @@ function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
 }
 
 function ChannelCloseDetails(props: { info: ChannelClosure }) {
+    const i18n = useI18n();
     return (
         <VStack>
             {/* <pre>{JSON.stringify(props.info.value, null, 2)}</pre> */}
             <ul class="flex flex-col gap-4">
-                <KeyValue key="Channel ID">
+                <KeyValue key={i18n.t("modals.transaction_details.channel_id")}>
                     <MiniStringShower text={props.info.channel_id ?? ""} />
                 </KeyValue>
                 <Show when={props.info.timestamp}>
-                    <KeyValue key="When">
+                    <KeyValue key={i18n.t("modals.transaction_details.when")}>
                         <span class="text-neutral-300">
                             {props.info.timestamp
                                 ? prettyPrintTime(Number(props.info.timestamp))
-                                : "Pending"}
+                                : i18n.t("common.pending")}
                         </span>
                     </KeyValue>
                 </Show>
-                <KeyValue key="Reason">
+                <KeyValue key={i18n.t("modals.transaction_details.reason")}>
                     <p class="text-neutral-300 text-right">
                         {props.info.reason ?? ""}
                     </p>
@@ -349,6 +370,7 @@ export function DetailsIdModal(props: {
     id: string;
     setOpen: (open: boolean) => void;
 }) {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const id = () => props.id;
@@ -473,7 +495,7 @@ export function DetailsIdModal(props: {
                                 <Show when={props.kind !== "ChannelClose"}>
                                     <div class="flex justify-center">
                                         <CopyButton
-                                            title="Copy"
+                                            title={i18n.t("common.copy")}
                                             text={json()}
                                         />
                                     </div>

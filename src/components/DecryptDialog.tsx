@@ -5,8 +5,10 @@ import { InfoBox } from "~/components/InfoBox";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 import { A } from "solid-start";
+import { useI18n } from "~/i18n/context";
 
 export function DecryptDialog() {
+    const i18n = useI18n();
     const [state, actions] = useMegaStore();
 
     const [password, setPassword] = createSignal("");
@@ -27,7 +29,7 @@ export function DecryptDialog() {
             const err = eify(e);
             console.error(e);
             if (err.message === "wrong") {
-                setError("Invalid password");
+                setError(i18n.t("settings.decrypt.error_wrong_password"));
             } else {
                 throw e;
             }
@@ -42,7 +44,7 @@ export function DecryptDialog() {
 
     return (
         <SimpleDialog
-            title="Enter your password"
+            title={i18n.t("settings.decrypt.title")}
             // Only show the dialog if we need a password and there's no setup error
             open={state.needs_password && !state.setup_error}
         >
@@ -62,12 +64,12 @@ export function DecryptDialog() {
                         <InfoBox accent="red">{error()}</InfoBox>
                     </Show>
                     <Button intent="blue" loading={loading()} onClick={decrypt}>
-                        Decrypt Wallet
+                        {i18n.t("settings.decrypt.decrypt_wallet")}
                     </Button>
                 </div>
             </form>
             <A class="self-end text-m-grey-400" href="/settings/restore">
-                Forgot Password?
+                {i18n.t("settings.decrypt.forgot_password_link")}
             </A>
         </SimpleDialog>
     );

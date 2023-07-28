@@ -8,23 +8,31 @@ import copyBlack from "~/assets/icons/copy-black.svg";
 import shareBlack from "~/assets/icons/share-black.svg";
 import chainBlack from "~/assets/icons/chain-black.svg";
 import boltBlack from "~/assets/icons/bolt-black.svg";
+import { useI18n } from "~/i18n/context";
 
 function KindIndicator(props: { kind: ReceiveFlavor }) {
+    const i18n = useI18n();
     return (
         <div class="text-black flex flex-col items-end">
             <Switch>
                 <Match when={props.kind === "onchain"}>
-                    <h3 class="font-semibold">On-chain</h3>
+                    <h3 class="font-semibold">
+                        {i18n.t("receive.integrated_qr.onchain")}
+                    </h3>
                     <img src={chainBlack} alt="chain" />
                 </Match>
 
                 <Match when={props.kind === "lightning"}>
-                    <h3 class="font-semibold">Lightning</h3>
+                    <h3 class="font-semibold">
+                        {i18n.t("receive.integrated_qr.lightning")}
+                    </h3>
                     <img src={boltBlack} alt="bolt" />
                 </Match>
 
                 <Match when={props.kind === "unified"}>
-                    <h3 class="font-semibold">Unified</h3>
+                    <h3 class="font-semibold">
+                        {i18n.t("receive.integrated_qr.unified")}
+                    </h3>
                     <div class="flex gap-1">
                         <img src={chainBlack} alt="chain" />
                         <img src={boltBlack} alt="bolt" />
@@ -56,6 +64,7 @@ export function IntegratedQr(props: {
     amountSats: string;
     kind: ReceiveFlavor;
 }) {
+    const i18n = useI18n();
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
     return (
         <div
@@ -65,7 +74,7 @@ export function IntegratedQr(props: {
         >
             <Show when={copied()}>
                 <div class="absolute w-full h-full bg-neutral-900/60 z-50 rounded-xl flex flex-col items-center justify-center transition-all">
-                    <p class="text-xl font-bold">Copied</p>
+                    <p class="text-xl font-bold">{i18n.t("common.copied")}</p>
                 </div>
             </Show>
             <div

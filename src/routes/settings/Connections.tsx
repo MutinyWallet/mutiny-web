@@ -108,7 +108,11 @@ function Nwc() {
                                 activityLight={profile.enabled ? "on" : "off"}
                             >
                                 <VStack>
-                                    <KeyValue key="Relay">
+                                    <KeyValue
+                                        key={i18n.t(
+                                            "settings.connections.relay"
+                                        )}
+                                    >
                                         <MiniStringShower
                                             text={profile.relay}
                                         />

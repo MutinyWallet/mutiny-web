@@ -44,6 +44,7 @@ import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { AmountSats } from "~/components/Amount";
 import { getRedshifted, setRedshifted } from "~/utils/fakeLabels";
 import { Network } from "~/logic/mutinyWalletSetup";
+import { useI18n } from "~/i18n/context";
 
 type ShiftOption = "utxo" | "lightning";
 
@@ -87,6 +88,7 @@ const dummyRedshift: RedshiftResult = {
 };
 
 function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const getUtXos = async () => {
@@ -155,7 +157,7 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
                 </Show>
             </VStack> */}
             <VStack>
-                <NiceP>What happened?</NiceP>
+                <NiceP>{i18n.t("redshift.what_happened")}</NiceP>
                 <Show when={redshiftResource()}>
                     <Card>
                         <VStack biggap>
@@ -164,22 +166,22 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
                                 <Utxo item={inputUtxo()!} />
                             </Show>
                         </KV> */}
-                            <KV key="Starting amount">
+                            <KV key={i18n.t("redshift.starting_amount")}>
                                 <AmountSats
                                     amountSats={redshiftResource()!.amount_sats}
                                 />
                             </KV>
-                            <KV key="Fees paid">
+                            <KV key={i18n.t("redshift.fees_paid")}>
                                 <AmountSats
                                     amountSats={redshiftResource()!.fees_paid}
                                 />
                             </KV>
-                            <KV key="Change">
+                            <KV key={i18n.t("redshift.change")}>
                                 <AmountSats
                                     amountSats={redshiftResource()!.change_amt}
                                 />
                             </KV>
-                            <KV key="Outbound channel">
+                            <KV key={i18n.t("redshift.outbound_channel")}>
                                 <VStack>
                                     <pre class="whitespace-pre-wrap break-all">
                                         {
@@ -198,12 +200,12 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
                                         target="_blank"
                                         rel="noreferrer"
                                     >
-                                        View on mempool
+                                        {i18n.t("common.view_transaction")}
                                     </a>
                                 </VStack>
                             </KV>
                             <Show when={redshiftResource()!.output_channel}>
-                                <KV key="Return channel">
+                                <KV key={i18n.t("redshift.return_channel")}>
                                     <VStack>
                                         <pre class="whitespace-pre-wrap break-all">
                                             {redshiftResource()!.output_channel}
@@ -219,7 +221,7 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
                                             target="_blank"
                                             rel="noreferrer"
                                         >
-                                            View on mempool
+                                            {i18n.t("common.view_transaction")}
                                         </a>
                                     </VStack>
                                 </KV>
@@ -232,20 +234,8 @@ function RedshiftReport(props: { redshift: RedshiftResult; utxo: UtxoItem }) {
     );
 }
 
-const SHIFT_OPTIONS = [
-    {
-        value: "utxo",
-        label: "UTXO",
-        caption: "Trade your UTXO for a fresh UTXO"
-    },
-    {
-        value: "lightning",
-        label: "Lightning",
-        caption: "Convert your UTXO into Lightning"
-    }
-];
-
 export function Utxo(props: { item: UtxoItem; onClick?: () => void }) {
+    const i18n = useI18n();
     const redshifted = createMemo(() => getRedshifted(props.item.outpoint));
     return (
         <>
@@ -260,9 +250,15 @@ export function Utxo(props: { item: UtxoItem; onClick?: () => void }) {
                     <div class="flex gap-2">
                         <Show
                             when={redshifted()}
-                            fallback={<h2 class={MISSING_LABEL}>Unknown</h2>}
+                            fallback={
+                                <h2 class={MISSING_LABEL}>
+                                    {i18n.t("redshift.unknown")}
+                                </h2>
+                            }
                         >
-                            <h2 class={REDSHIFT_LABEL}>Redshift</h2>
+                            <h2 class={REDSHIFT_LABEL}>
+                                {i18n.t("redshift.title")}
+                            </h2>
                         </Show>
                     </div>
                     <SmallAmount amount={props.item.txout.value} />
@@ -293,6 +289,7 @@ function ShiftObserver(props: {
     setShiftStage: (stage: ShiftStage) => void;
     redshiftId: string;
 }) {
+    const i18n = useI18n();
     const [_state, _actions] = useMegaStore();
 
     const [fakeStage, _setFakeStage] = createSignal(2);
@@ -348,7 +345,7 @@ function ShiftObserver(props: {
 
     return (
         <>
-            <NiceP>Watch it go!</NiceP>
+            <NiceP>{i18n.t("redshift.watch_it_go")}</NiceP>
             <Card>
                 <VStack>
                     <pre class="self-center">{FAKE_STATES[fakeStage()]}</pre>
@@ -370,12 +367,26 @@ const KV: ParentComponent<{ key: string }> = (props) => {
 };
 
 export default function Redshift() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const [shiftStage, setShiftStage] = createSignal<ShiftStage>("choose");
     const [shiftType, setShiftType] = createSignal<ShiftOption>("utxo");
 
     const [chosenUtxo, setChosenUtxo] = createSignal<UtxoItem>();
+
+    const SHIFT_OPTIONS = [
+        {
+            value: "utxo",
+            label: i18n.t("redshift.utxo_label"),
+            caption: i18n.t("redshift.utxo_caption")
+        },
+        {
+            value: "lightning",
+            label: i18n.t("redshift.lightning_label"),
+            caption: i18n.t("redshift.lightning_caption")
+        }
+    ];
 
     const getUtXos = async () => {
         console.log("Getting utxos");
@@ -439,14 +450,19 @@ export default function Redshift() {
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
-                    <LargeHeader>Redshift (coming soon)</LargeHeader>
+                    <LargeHeader>
+                        {i18n.t("redshift.title")}{" "}
+                        {i18n.t("common.coming_soon")}
+                    </LargeHeader>
                     <div class="relative filter grayscale pointer-events-none opacity-75">
                         <VStack biggap>
                             {/* <pre>{JSON.stringify(redshiftResource(), null, 2)}</pre> */}
                             <Switch>
                                 <Match when={shiftStage() === "choose"}>
                                     <VStack>
-                                        <NiceP>Where is this going?</NiceP>
+                                        <NiceP>
+                                            {i18n.t("redshift.where_this_goes")}
+                                        </NiceP>
                                         <StyledRadioGroup
                                             accent="red"
                                             value={shiftType()}
@@ -460,7 +476,7 @@ export default function Redshift() {
                                     </VStack>
                                     <VStack>
                                         <NiceP>
-                                            Choose your{" "}
+                                            {i18n.t("redshift.choose_your")}{" "}
                                             <span class="inline-block">
                                                 <img
                                                     class="h-4"
@@ -468,10 +484,14 @@ export default function Redshift() {
                                                     alt="sine wave"
                                                 />
                                             </span>{" "}
-                                            UTXO to begin
+                                            {i18n.t("redshift.utxo_to_begin")}
                                         </NiceP>
                                         <Suspense>
-                                            <Card title="Unshifted UTXOs">
+                                            <Card
+                                                title={i18n.t(
+                                                    "redshift.unshifted_utxo"
+                                                )}
+                                            >
                                                 <Switch>
                                                     <Match when={utxos.loading}>
                                                         <LoadingSpinner wide />
@@ -485,8 +505,9 @@ export default function Redshift() {
                                                         }
                                                     >
                                                         <code>
-                                                            No utxos (empty
-                                                            state)
+                                                            {i18n.t(
+                                                                "redshift.no_utxos_empty_state"
+                                                            )}
                                                         </code>
                                                     </Match>
                                                     <Match
@@ -521,9 +542,13 @@ export default function Redshift() {
                                                 titleElement={
                                                     <SmallHeader>
                                                         <span class="text-m-red">
-                                                            Redshifted{" "}
+                                                            {i18n.t(
+                                                                "redshift.redshifted"
+                                                            )}{" "}
                                                         </span>
-                                                        UTXOs
+                                                        {i18n.t(
+                                                            "redshift.utxos"
+                                                        )}
                                                     </SmallHeader>
                                                 }
                                             >
@@ -540,8 +565,9 @@ export default function Redshift() {
                                                         }
                                                     >
                                                         <code>
-                                                            No utxos (empty
-                                                            state)
+                                                            {i18n.t(
+                                                                "redshift.no_utxos_empty_state"
+                                                            )}
                                                         </code>
                                                     </Match>
                                                     <Match
@@ -594,15 +620,17 @@ export default function Redshift() {
                                             intent="red"
                                             onClick={resetState}
                                         >
-                                            Nice
+                                            {i18n.t("common.nice")}
                                         </Button>
                                     </VStack>
                                 </Match>
                                 <Match when={shiftStage() === "failure"}>
-                                    <NiceP>Oh dear</NiceP>
-                                    <NiceP>Here's what happened:</NiceP>
+                                    <NiceP>{i18n.t("redshift.oh_dear")}</NiceP>
+                                    <NiceP>
+                                        {i18n.t("redshift.here_is_error")}
+                                    </NiceP>
                                     <Button intent="red" onClick={resetState}>
-                                        Dangit
+                                        {i18n.t("common.dangit")}
                                     </Button>
                                 </Match>
                             </Switch>

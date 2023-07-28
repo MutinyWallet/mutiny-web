@@ -328,7 +328,7 @@ export default function Swap() {
                                             network
                                         )}
                                     >
-                                        {i18n.t("view_transaction")}
+                                        {i18n.t("common.view_transaction")}
                                     </ExternalLink>
                                 </Show>
                                 {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}

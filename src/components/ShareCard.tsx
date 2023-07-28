@@ -7,6 +7,7 @@ import shareBlack from "~/assets/icons/share-black.svg";
 import eyeIcon from "~/assets/icons/eye.svg";
 import { Show, createSignal } from "solid-js";
 import { JsonModal } from "./JsonModal";
+import { useI18n } from "~/i18n/context";
 
 const STYLE =
     "px-4 py-2 rounded-xl border-2 border-white flex gap-2 items-center font-semibold hover:text-m-blue transition-colors";
@@ -15,13 +16,14 @@ export function ShareButton(props: {
     receiveString: string;
     whiteBg?: boolean;
 }) {
+    const i18n = useI18n();
     async function share(receiveString: string) {
         // If the browser doesn't support share we can just copy the address
         if (!navigator.share) {
             console.error("Share not supported");
         }
         const shareData: ShareData = {
-            title: "Mutiny Wallet",
+            title: i18n.t("common.title"),
             text: receiveString
         };
         try {
@@ -33,7 +35,7 @@ export function ShareButton(props: {
 
     return (
         <button class={STYLE} onClick={(_) => share(props.receiveString)}>
-            <span>Share</span>
+            <span>{i18n.t("modals.share")}</span>
             <img src={props.whiteBg ? shareBlack : shareIcon} alt="share" />
         </button>
     );
@@ -57,13 +59,14 @@ export function TruncateMiddle(props: { text: string; whiteBg?: boolean }) {
 }
 
 export function StringShower(props: { text: string }) {
+    const i18n = useI18n();
     const [open, setOpen] = createSignal(false);
     return (
         <>
             <JsonModal
                 open={open()}
                 plaintext={props.text}
-                title="Details"
+                title={i18n.t("modals.details")}
                 setOpen={setOpen}
             />
             <div class="w-full grid grid-cols-[minmax(0,_1fr)_auto]">
@@ -81,6 +84,7 @@ export function CopyButton(props: {
     title?: string;
     whiteBg?: boolean;
 }) {
+    const i18n = useI18n();
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     function handleCopy() {
@@ -89,7 +93,9 @@ export function CopyButton(props: {
 
     return (
         <button class={STYLE} onClick={handleCopy}>
-            {copied() ? "Copied" : props.title ?? "Copy"}
+            {copied()
+                ? i18n.t("common.copied")
+                : props.title ?? i18n.t("common.copy")}
             <img src={props.whiteBg ? copyBlack : copyIcon} alt="copy" />
         </button>
     );

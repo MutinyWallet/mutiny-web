@@ -7,6 +7,7 @@ import { ContactForm } from "./ContactForm";
 import { showToast } from "./Toaster";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
+import { useI18n } from "~/i18n/context";
 
 export type ContactFormValues = {
     name: string;
@@ -18,6 +19,7 @@ export function ContactViewer(props: {
     gradient: string;
     saveContact: (contact: Contact) => void;
 }) {
+    const i18n = useI18n();
     const [isOpen, setIsOpen] = createSignal(false);
     const [isEditing, setIsEditing] = createSignal(false);
 
@@ -71,8 +73,8 @@ export function ContactViewer(props: {
                         <Switch>
                             <Match when={isEditing()}>
                                 <ContactForm
-                                    title="Edit contact"
-                                    cta="Save contact"
+                                    title={i18n.t("contacts.edit_contact")}
+                                    cta={i18n.t("contacts.save_contact")}
                                     handleSubmit={handleSubmit}
                                     initialValues={props.contact}
                                 />
@@ -91,9 +93,13 @@ export function ContactViewer(props: {
                                         <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
                                             {props.contact.name}
                                         </h1>
-                                        <Card title="Payment history">
+                                        <Card
+                                            title={i18n.t(
+                                                "contacts.payment_history"
+                                            )}
+                                        >
                                             <NiceP>
-                                                No payments yet with{" "}
+                                                {i18n.t("contacts.no_payments")}{" "}
                                                 <span class="font-semibold">
                                                     {props.contact.name}
                                                 </span>
@@ -107,19 +113,22 @@ export function ContactViewer(props: {
                                             intent="green"
                                             onClick={() => setIsEditing(true)}
                                         >
-                                            Edit
+                                            {i18n.t("contacts.edit")}
                                         </Button>
                                         <Button
                                             intent="blue"
                                             onClick={() => {
                                                 showToast({
-                                                    title: "Unimplemented",
-                                                    description:
-                                                        "We don't do that yet"
+                                                    title: i18n.t(
+                                                        "contacts.unimplemented"
+                                                    ),
+                                                    description: i18n.t(
+                                                        "contacts.not_available"
+                                                    )
                                                 });
                                             }}
                                         >
-                                            Pay
+                                            {i18n.t("contacts.pay")}
                                         </Button>
                                     </div>
                                 </div>
