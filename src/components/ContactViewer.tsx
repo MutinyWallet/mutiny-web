@@ -2,6 +2,7 @@ import { Dialog } from "@kobalte/core";
 import { SubmitHandler } from "@modular-forms/solid";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { createSignal, Match, Switch } from "solid-js";
+import { useNavigate } from "solid-start";
 
 import close from "~/assets/icons/close.svg";
 import {
@@ -13,6 +14,8 @@ import {
     SmallHeader
 } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { toParsedParams } from "~/logic/waila";
+import { useMegaStore } from "~/state/megaStore";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 
 export type ContactFormValues = {
@@ -28,6 +31,8 @@ export function ContactViewer(props: {
     const i18n = useI18n();
     const [isOpen, setIsOpen] = createSignal(false);
     const [isEditing, setIsEditing] = createSignal(false);
+    const [state, actions] = useMegaStore();
+    const navigate = useNavigate();
 
     const handleSubmit: SubmitHandler<ContactFormValues> = (
         c: ContactFormValues
@@ -39,24 +44,48 @@ export function ContactViewer(props: {
         setIsEditing(false);
     };
 
+    const handlePay = () => {
+        const network = state.mutiny_wallet?.get_network() || "signet";
+
+        const lnurl = props.contact.lnurl || props.contact.ln_address || "";
+
+        if (lnurl) {
+            const result = toParsedParams(lnurl, network);
+            if (!result.ok) {
+                showToast(result.error);
+                return;
+            } else {
+                if (
+                    result.value?.address ||
+                    result.value?.invoice ||
+                    result.value?.node_pubkey ||
+                    result.value?.lnurl
+                ) {
+                    actions.setScanResult(result.value);
+                    navigate("/send");
+                }
+            }
+        }
+    };
+
     return (
         <Dialog.Root open={isOpen()}>
             <button
                 onClick={() => setIsOpen(true)}
                 class="flex w-16 flex-shrink-0 flex-col items-center gap-2 overflow-x-hidden"
             >
-                {props.contact.image_url && (
-                    <img src={props.contact.image_url} />
-                )}
-                {!props.contact.image_url && (
-                    <div
-                        class="flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase border-t border-b border-t-white/50 border-b-white/10"
-                        style={{ background: props.gradient }}
-                    >
-                        {props.contact.name[0]}
-                    </div>
-                )}
-                <SmallHeader class="overflow-ellipsis w-16 text-center overflow-hidden h-4">
+                <div
+                    class="flex h-16 w-16 flex-none items-center justify-center overflow-clip rounded-full border-b border-t border-b-white/10 border-t-white/50 text-4xl uppercase"
+                    style={{ background: props.gradient }}
+                >
+                    <Switch>
+                        <Match when={props.contact.image_url}>
+                            <img src={props.contact.image_url} />
+                        </Match>
+                        <Match when={true}>{props.contact.name[0]}</Match>
+                    </Switch>
+                </div>
+                <SmallHeader class="h-4 w-16 overflow-hidden overflow-ellipsis text-center">
                     {props.contact.name}
                 </SmallHeader>
             </button>
@@ -91,33 +120,43 @@ export function ContactViewer(props: {
                                 />
                             </Match>
                             <Match when={!isEditing()}>
-                                <div class="flex flex-col flex-1 justify-around items-center gap-4 max-w-[400px] mx-auto w-full">
-                                    <div class="flex flex-col items-center w-full">
-                                        {props.contact.image_url && (
-                                            <img
-                                                src={props.contact.image_url}
-                                            />
-                                        )}
-                                        {!props.contact.image_url && (
-                                            <div
-                                                class="flex-none h-32 w-32 rounded-full flex items-center justify-center text-8xl uppercase border-t border-b border-t-white/50 border-b-white/10"
-                                                style={{
-                                                    background: props.gradient
-                                                }}
-                                            >
-                                                {props.contact.name[0]}
-                                            </div>
-                                        )}
-                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                <div class="mx-auto flex w-full max-w-[400px] flex-1 flex-col items-center justify-around gap-4">
+                                    <div class="flex w-full flex-col items-center">
+                                        <div
+                                            class="flex h-32 w-32 flex-none items-center justify-center overflow-clip rounded-full border-b border-t border-b-white/10 border-t-white/50 text-8xl uppercase"
+                                            style={{
+                                                background: props.gradient
+                                            }}
+                                        >
+                                            <Switch>
+                                                <Match
+                                                    when={
+                                                        props.contact.image_url
+                                                    }
+                                                >
+                                                    <img
+                                                        src={
+                                                            props.contact
+                                                                .image_url
+                                                        }
+                                                    />
+                                                </Match>
+                                                <Match when={true}>
+                                                    {props.contact.name[0]}
+                                                </Match>
+                                            </Switch>
+                                        </div>
+
+                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
                                             {props.contact.name}
                                         </h1>
-                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
                                             {props.contact.npub}
                                         </h1>
-                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
                                             {props.contact.ln_address}
                                         </h1>
-                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
                                             {props.contact.lnurl}
                                         </h1>
                                         <Card
@@ -144,16 +183,11 @@ export function ContactViewer(props: {
                                         </Button>
                                         <Button
                                             intent="blue"
-                                            onClick={() => {
-                                                showToast({
-                                                    title: i18n.t(
-                                                        "contacts.unimplemented"
-                                                    ),
-                                                    description: i18n.t(
-                                                        "contacts.not_available"
-                                                    )
-                                                });
-                                            }}
+                                            disabled={
+                                                !props.contact.lnurl &&
+                                                !props.contact.ln_address
+                                            }
+                                            onClick={handlePay}
                                         >
                                             {i18n.t("contacts.pay")}
                                         </Button>
