@@ -382,9 +382,10 @@ export default function Redshift() {
         return (await state.mutiny_wallet?.list_utxos()) as UtxoItem[];
     };
 
+    // TODO: FIXME: this is old code needs to be revisited!
     const getChannels = async () => {
         console.log("Getting channels");
-        await state.mutiny_wallet?.sync();
+        // await state.mutiny_wallet?.sync();
         const channels =
             (await state.mutiny_wallet?.list_channels()) as Promise<
                 MutinyChannel[]

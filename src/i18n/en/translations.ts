@@ -29,8 +29,7 @@ export default {
                 "A lightning setup fee will be charged if paid over lightning.",
             too_big_for_beta:
                 "That's a lot of sats. You do know Mutiny Wallet is still in beta, yeah?",
-            more_than_21m:
-                "There are only 21 million bitcoin.",
+            more_than_21m: "There are only 21 million bitcoin.",
             set_amount: "Set amount",
             max: "MAX"
         }

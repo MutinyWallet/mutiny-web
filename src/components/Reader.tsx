@@ -2,12 +2,11 @@ import { onCleanup, onMount } from "solid-js";
 import {
     BarcodeScanner,
     BarcodeFormat,
-    CameraPermissionState,
-    CameraPermissionType,
-    CameraPluginPermissions,
-    PermissionStates
+    PermissionStates,
+    ScanResult
 } from "@mutinywallet/barcode-scanner";
 import QrScanner from "qr-scanner";
+import { Capacitor } from "@capacitor/core";
 
 export default function Scanner(props: { onResult: (result: string) => void }) {
     let container: HTMLVideoElement | undefined;
@@ -22,7 +21,7 @@ export default function Scanner(props: { onResult: (result: string) => void }) {
         const permissions: PermissionStates =
             await BarcodeScanner.checkPermissions();
         if (permissions.camera === "granted") {
-            const callback = (result: ScanResult, err?: any) => {
+            const callback = (result: ScanResult, err?: unknown) => {
                 if (err) {
                     console.error(err);
                     return;
@@ -33,7 +32,7 @@ export default function Scanner(props: { onResult: (result: string) => void }) {
                 }
             };
             await BarcodeScanner.start(
-                { targetedFormats: [BarcodeFormat.QR_CODE] },
+                { formats: [BarcodeFormat.QR_CODE] },
                 callback
             );
         } else if (permissions.camera === "prompt") {

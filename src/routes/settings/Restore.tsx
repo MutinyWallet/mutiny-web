@@ -97,9 +97,7 @@ function TwelveWordsEntry() {
             let text;
 
             if (Capacitor.isNativePlatform()) {
-                const { value } = await Clipboard.read({
-                    type: "string"
-                });
+                const { value } = await Clipboard.read();
                 text = value;
             } else {
                 if (!navigator.clipboard.readText) {

@@ -12,7 +12,7 @@ export const useCopy = ({ copiedTimeout = 2000 }: UseCopyProps = {}): [
     copied: Accessor<boolean>
 ] => {
     const [copied, setCopied] = createSignal(false);
-    let timeout: number;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     const copy: CopyFn = async (text) => {
         if (Capacitor.isNativePlatform()) {
             await Clipboard.write({

@@ -1,11 +1,4 @@
 {
-    "include": [
-        "global.d.ts",
-        "src/**/*",
-        "src/routes/**/*",
-        "tailwind.config.cjs",
-        ".eslintrc.cjs"
-    ],
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
@@ -15,10 +8,29 @@
         "jsxImportSource": "solid-js",
         "jsx": "preserve",
         "strict": true,
-        "types": ["solid-start/env"],
+        "types": ["solid-start/env", "node"],
         "baseUrl": "./",
         "paths": {
             "~/*": ["./src/*"]
-        }
-    }
+        },
+        "skipLibCheck": true
+    },
+    "include": [
+        "global.d.ts",
+        "src/**/*",
+        "src/routes/**/*",
+        "tailwind.config.cjs",
+        ".eslintrc.cjs"
+    ],
+    "exclude": [
+        "node_modules",
+        "./node_modules",
+        "./node_modules/*",
+        "./node_modules/**/*",
+        "./node_modules/@types/node/index.d.ts",
+        "node_modules/.pnpm/solid-js@1.7.7/node_modules/solid-js/types/*",
+        "build",
+        "dist",
+        "public"
+    ]
 }
