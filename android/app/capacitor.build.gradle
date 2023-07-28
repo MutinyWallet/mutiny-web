@@ -9,8 +9,8 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation project(':mutinywallet-barcode-scanner')
     implementation project(':capacitor-clipboard')
+    implementation project(':mutinywallet-barcode-scanner')
 
 }
 
