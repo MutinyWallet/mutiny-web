@@ -2,6 +2,7 @@ import { SubmitHandler, createForm, required } from "@modular-forms/solid";
 import { Button, LargeHeader, VStack } from "~/components/layout";
 import { TextField } from "~/components/layout/TextField";
 import { ContactFormValues } from "./ContactViewer";
+import { useI18n } from "~/i18n/context";
 
 export function ContactForm(props: {
     handleSubmit: SubmitHandler<ContactFormValues>;
@@ -9,6 +10,7 @@ export function ContactForm(props: {
     title: string;
     cta: string;
 }) {
+    const i18n = useI18n();
     const [_contactForm, { Form, Field }] = createForm<ContactFormValues>({
         initialValues: props.initialValues
     });
@@ -23,15 +25,15 @@ export function ContactForm(props: {
                 <VStack>
                     <Field
                         name="name"
-                        validate={[required("We at least need a name")]}
+                        validate={[required(i18n.t("contacts.error_name"))]}
                     >
                         {(field, props) => (
                             <TextField
                                 {...props}
-                                placeholder="Satoshi"
+                                placeholder={i18n.t("contacts.placeholder")}
                                 value={field.value}
                                 error={field.error}
-                                label="Name"
+                                label={i18n.t("contacts.name")}
                             />
                         )}
                     </Field>

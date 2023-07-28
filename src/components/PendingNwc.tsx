@@ -20,6 +20,7 @@ import { InfoBox } from "./InfoBox";
 import eify from "~/utils/eify";
 import { A } from "solid-start";
 import { createDeepSignal } from "~/utils/deepSignal";
+import { useI18n } from "~/i18n/context";
 
 type PendingItem = {
     id: string;
@@ -29,6 +30,7 @@ type PendingItem = {
 };
 
 export function PendingNwc() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const [error, setError] = createSignal<Error>();
@@ -109,7 +111,7 @@ export function PendingNwc() {
 
     return (
         <Show when={pendingRequests() && pendingRequests()!.length > 0}>
-            <Card title="Pending Requests">
+            <Card title={i18n.t("settings.connections.pending_nwc.title")}>
                 <div class="p-1" />
                 <VStack>
                     <Show when={error()}>
@@ -183,7 +185,7 @@ export function PendingNwc() {
                     href="/settings/connections"
                     class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
                 >
-                    Configure
+                    {i18n.t("settings.connections.pending_nwc.configure_link")}
                 </A>
             </Card>
         </Show>

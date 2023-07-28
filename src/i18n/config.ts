@@ -4,6 +4,7 @@ import { use } from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import en from "~/i18n/en/translations";
 import pt from "~/i18n/pt/translations";
+import ko from "~/i18n/ko/translations";
 
 export const resources = {
     en: {
@@ -11,6 +12,9 @@ export const resources = {
     },
     pt: {
         translations: pt
+    },
+    ko: {
+        translations: ko
     }
 };
 

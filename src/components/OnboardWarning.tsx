@@ -5,8 +5,10 @@ import { showToast } from "./Toaster";
 import save from "~/assets/icons/save.svg";
 import close from "~/assets/icons/close.svg";
 import restore from "~/assets/icons/upload.svg";
+import { useI18n } from "~/i18n/context";
 
 export function OnboardWarning() {
+    const i18n = useI18n();
     const [state, actions] = useMegaStore();
     const [dismissedBackup, setDismissedBackup] = createSignal(
         sessionStorage.getItem("dismissed_backup") ?? false
@@ -31,11 +33,13 @@ export function OnboardWarning() {
                     </div>
                     <div class="flex md:flex-row flex-col items-center gap-4">
                         <div class="flex flex-col">
-                            <SmallHeader>Welcome!</SmallHeader>
+                            <SmallHeader>
+                                {i18n.t("modals.onboarding.welcome")}
+                            </SmallHeader>
                             <p class="text-base font-light">
-                                If you've used Mutiny before you can restore
-                                from a backup. Otherwise you can skip this and
-                                enjoy your new wallet!
+                                {i18n.t(
+                                    "modals.onboarding.restore_from_backup"
+                                )}
                             </p>
                         </div>
                         <Button
@@ -44,12 +48,14 @@ export function OnboardWarning() {
                             class="self-start md:self-auto"
                             onClick={() => {
                                 showToast({
-                                    title: "Unimplemented",
-                                    description: "We don't do that yet"
+                                    title: i18n.t("common.error_unimplemented"),
+                                    description: i18n.t(
+                                        "modals.onboarding.not_available"
+                                    )
                                 });
                             }}
                         >
-                            Restore
+                            {i18n.t("settings.restore.title")}
                         </Button>
                     </div>
                     <button
@@ -72,10 +78,11 @@ export function OnboardWarning() {
                     </div>
                     <div class="flex flex-row max-md:items-center justify-between gap-4">
                         <div class="flex flex-col">
-                            <SmallHeader>Secure your funds</SmallHeader>
+                            <SmallHeader>
+                                {i18n.t("modals.onboarding.secure_your_funds")}
+                            </SmallHeader>
                             <p class="text-base font-light max-md:hidden">
-                                You have money stored in this browser. Let's
-                                make sure you have a backup.
+                                {i18n.t("modals.onboarding.make_backup")}
                             </p>
                         </div>
                         <div class="flex items-center">
@@ -85,7 +92,7 @@ export function OnboardWarning() {
                                 class="self-auto"
                                 href="/settings/backup"
                             >
-                                Backup
+                                {i18n.t("settings.backup.title")}
                             </ButtonLink>
                         </div>
                     </div>

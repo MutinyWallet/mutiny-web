@@ -177,7 +177,9 @@ export function ActivityItem(props: {
                 </Switch>
                 <Switch>
                     <Match when={props.date && props.date > 2147483647}>
-                        <time class="text-sm text-neutral-500">Pending</time>
+                        <time class="text-sm text-neutral-500">
+                            {i18n.t("common.pending")}
+                        </time>
                     </Match>
                     <Match when={true}>
                         <time class="text-sm text-neutral-500">

@@ -26,28 +26,34 @@ import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 import party from "~/assets/party.gif";
 import { LoadingShimmer } from "~/components/BalanceBox";
+import { useI18n } from "~/i18n/context";
 
 function Perks(props: { alreadySubbed?: boolean }) {
+    const i18n = useI18n();
     return (
         <ul class="list-disc ml-8 font-light text-lg">
             <Show when={props.alreadySubbed}>
-                <li>Smug satisfaction</li>
+                <li>{i18n.t("settings.plus.satisfaction")}</li>
             </Show>
             <li>
-                Redshift <em>(coming soon)</em>
+                {i18n.t("redshift.title")}{" "}
+                <em>{i18n.t("common.coming_soon")}</em>
             </li>
             <li>
-                Gifting <em>(coming soon)</em>
+                {i18n.t("settings.plus.gifting")}{" "}
+                <em>{i18n.t("common.coming_soon")}</em>
             </li>
             <li>
-                Multi-device access <em>(coming soon)</em>
+                {i18n.t("settings.plus.multi_device")}{" "}
+                <em>{i18n.t("common.coming_soon")}</em>
             </li>
-            <li>... and more to come</li>
+            <li>{i18n.t("settings.plus.more")}</li>
         </ul>
     );
 }
 
 function PlusCTA() {
+    const i18n = useI18n();
     const [state, actions] = useMegaStore();
 
     const [subbing, setSubbing] = createSignal(false);
@@ -73,13 +79,14 @@ function PlusCTA() {
             setError(undefined);
 
             if (planDetails()?.id === undefined || planDetails()?.id === null)
-                throw new Error("No plans found");
+                throw new Error(i18n.t("settings.plus.error_no_plan"));
 
             const invoice = await state.mutiny_wallet?.subscribe_to_plan(
                 planDetails().id
             );
 
-            if (!invoice?.bolt11) throw new Error("Couldn't subscribe");
+            if (!invoice?.bolt11)
+                throw new Error(i18n.t("settings.plus.error_failure"));
 
             await state.mutiny_wallet?.pay_subscription_invoice(
                 invoice?.bolt11
@@ -102,7 +109,9 @@ function PlusCTA() {
             setRestoring(true);
             await actions.checkForSubscription();
             if (!state.subscription_timestamp) {
-                setError(new Error("No existing subscription found"));
+                setError(
+                    new Error(i18n.t("settings.plus.error_no_subscription"))
+                );
             }
         } catch (e) {
             console.error(e);
@@ -121,19 +130,26 @@ function PlusCTA() {
         <Show when={planDetails()}>
             <VStack>
                 <NiceP>
-                    Join <strong class="text-white">Mutiny+</strong> for{" "}
-                    {Number(planDetails().amount_sat).toLocaleString()} sats a
-                    month.
+                    {i18n.t("settings.plus.join")}{" "}
+                    <strong class="text-white">
+                        {i18n.t("settings.plus.title")}
+                    </strong>{" "}
+                    {i18n.t("settings.plus.sats_per_month", {
+                        amount: Number(
+                            planDetails().amount_sat
+                        ).toLocaleString()
+                    })}
                 </NiceP>
                 <Show when={error()}>
                     <InfoBox accent="red">{error()!.message}</InfoBox>
                 </Show>
                 <Show when={!hasEnough()}>
                     <TinyText>
-                        You'll need at least{" "}
-                        {Number(planDetails().amount_sat).toLocaleString()} sats
-                        in your lightning balance to get started. Try before you
-                        buy!
+                        {i18n.t("settings.plus.lightning_balance", {
+                            amount: Number(
+                                planDetails().amount_sat
+                            ).toLocaleString()
+                        })}
                     </TinyText>
                 </Show>
                 <div class="flex gap-2">
@@ -143,7 +159,7 @@ function PlusCTA() {
                         onClick={() => setConfirmOpen(true)}
                         disabled={!hasEnough()}
                     >
-                        Join
+                        {i18n.t("settings.plus.join")}
                     </Button>
                     <Button
                         intent="green"
@@ -151,7 +167,7 @@ function PlusCTA() {
                         onClick={restore}
                         loading={restoring()}
                     >
-                        Restore Subscription
+                        {i18n.t("settings.plus.restore")}
                     </Button>
                 </div>
             </VStack>
@@ -162,8 +178,11 @@ function PlusCTA() {
                 onCancel={() => setConfirmOpen(false)}
             >
                 <p>
-                    Ready to join <strong class="text-white">Mutiny+</strong>?
-                    Click confirm to pay for your first month.
+                    {i18n.t("settings.plus.ready_to_join")}{" "}
+                    <strong class="text-white">
+                        {i18n.t("settings.plus.title")}
+                    </strong>
+                    ?{i18n.t("settings.plus.click_confirm")}
                 </p>
             </ConfirmDialog>
         </Show>
@@ -171,25 +190,26 @@ function PlusCTA() {
 }
 
 export default function Plus() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     return (
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
-                    <LargeHeader>Mutiny+</LargeHeader>
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
+                    <LargeHeader>{i18n.t("settings.plus.title")}</LargeHeader>
                     <VStack>
                         <Switch>
                             <Match when={state.mutiny_plus}>
                                 <img src={party} class="w-1/2 mx-auto" />
-                                <NiceP>
-                                    You're part of the mutiny! Enjoy the
-                                    following perks:
-                                </NiceP>
+                                <NiceP>{i18n.t("settings.plus.thanks")}</NiceP>
                                 <Perks alreadySubbed />
                                 <NiceP>
-                                    You'll get a renewal payment request around{" "}
+                                    {i18n.t("settings.plus.renewal_time")}{" "}
                                     <strong class="text-white">
                                         {new Date(
                                             state.subscription_timestamp! * 1000
@@ -198,29 +218,32 @@ export default function Plus() {
                                     .
                                 </NiceP>
                                 <NiceP>
-                                    To cancel your subscription just don't pay.
-                                    You can also disable the Mutiny+{" "}
+                                    {i18n.t("settings.plus.cancel")}{" "}
                                     <A href="/settings/connections">
-                                        Wallet Connection.
+                                        {i18n.t(
+                                            "settings.plus.wallet_connection"
+                                        )}
                                     </A>
                                 </NiceP>
                             </Match>
                             <Match when={!state.mutiny_plus}>
                                 <NiceP>
-                                    Mutiny is open source and self-hostable.{" "}
+                                    {i18n.t("settings.plus.open_source")}{" "}
                                     <strong>
-                                        But also you can pay for it.
+                                        {i18n.t("settings.plus.optional_pay")}
                                     </strong>
                                 </NiceP>
                                 <NiceP>
-                                    Paying for{" "}
-                                    <strong class="text-white">Mutiny+</strong>{" "}
-                                    helps support ongoing development and
-                                    unlocks early access to new features and
-                                    premium functionality:
+                                    {i18n.t("settings.plus.paying_for")}{" "}
+                                    <strong class="text-white">
+                                        {i18n.t("settings.plus.title")}
+                                    </strong>{" "}
+                                    {i18n.t("settings.plus.supports_dev")}
                                 </NiceP>
                                 <Perks />
-                                <FancyCard title="Subscribe">
+                                <FancyCard
+                                    title={i18n.t("settings.plus.subscribe")}
+                                >
                                     <Suspense fallback={<LoadingShimmer />}>
                                         <PlusCTA />
                                     </Suspense>

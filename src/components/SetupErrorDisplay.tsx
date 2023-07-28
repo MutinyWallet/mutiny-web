@@ -12,6 +12,7 @@ import { ImportExport } from "./ImportExport";
 import { Logs } from "./Logs";
 import { DeleteEverything } from "./DeleteEverything";
 import { FeedbackLink } from "~/routes/Feedback";
+import { useI18n } from "~/i18n/context";
 
 function ErrorFooter() {
     return (
@@ -26,86 +27,100 @@ function ErrorFooter() {
 
 export default function SetupErrorDisplay(props: { initialError: Error }) {
     // Error shouldn't be reactive, so we assign to it so it just gets rendered with the first value
+    const i18n = useI18n();
     const error = props.initialError;
 
     return (
         <SafeArea>
             <Switch>
                 <Match when={error.message.startsWith("Existing tab")}>
-                    <Title>Multiple tabs detected</Title>
+                    <Title>{i18n.t("error.on_boot.existing_tab.title")}</Title>
                     <DefaultMain>
-                        <LargeHeader>Multiple tabs detected</LargeHeader>
+                        <LargeHeader>
+                            {i18n.t("error.on_boot.existing_tab.title")}
+                        </LargeHeader>
                         <p class="bg-white/10 rounded-xl p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
                         </p>
                         <NiceP>
-                            Mutiny currently only supports use in one tab at a
-                            time. It looks like you have another tab open with
-                            Mutiny running. Please close that tab and refresh
-                            this page, or close this tab and refresh the other
-                            one.
+                            {i18n.t("error.on_boot.existing_tab.description")}
                         </NiceP>
                         <ErrorFooter />
                     </DefaultMain>
                 </Match>
                 <Match when={error.message.startsWith("Browser error")}>
-                    <Title>Incompatible browser</Title>
+                    <Title>
+                        {i18n.t("error.on_boot.incompatible_browser.title")}
+                    </Title>
                     <DefaultMain>
-                        <LargeHeader>Incompatible browser detected</LargeHeader>
+                        <LargeHeader>
+                            {i18n.t(
+                                "error.on_boot.incompatible_browser.header"
+                            )}
+                        </LargeHeader>
                         <p class="bg-white/10 rounded-xl p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
                         </p>
                         <NiceP>
-                            Mutiny requires a modern browser that supports
-                            WebAssembly, LocalStorage, and IndexedDB. Some
-                            browsers disable these features in private mode.
+                            {i18n.t(
+                                "error.on_boot.incompatible_browser.description"
+                            )}
                         </NiceP>
                         <NiceP>
-                            Please make sure your browser supports all these
-                            features, or consider trying another browser. You
-                            might also try disabling certain extensions or
-                            "shields" that block these features.
+                            {i18n.t(
+                                "error.on_boot.incompatible_browser.try_different_browser"
+                            )}
                         </NiceP>
                         <NiceP>
-                            (We'd love to support more private browsers, but we
-                            have to save your wallet data to browser storage or
-                            else you will lose funds.)
+                            {i18n.t(
+                                "error.on_boot.incompatible_browser.browser_storage"
+                            )}
                         </NiceP>
                         <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Browser-Compatibility">
-                            Supported Browsers
+                            {i18n.t(
+                                "error.on_boot.incompatible_browser.browsers_link"
+                            )}
                         </ExternalLink>
 
                         <ErrorFooter />
                     </DefaultMain>
                 </Match>
                 <Match when={true}>
-                    <Title>Failed to load</Title>
+                    <Title>
+                        {i18n.t("error.on_boot.loading_failed.title")}
+                    </Title>
                     <DefaultMain>
-                        <LargeHeader>Failed to load Mutiny</LargeHeader>
+                        <LargeHeader>
+                            {i18n.t("error.on_boot.loading_failed.header")}
+                        </LargeHeader>
                         <p class="bg-white/10 rounded-xl p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
                         </p>
                         <NiceP>
-                            Something went wrong while booting up Mutiny Wallet.
+                            {i18n.t("error.on_boot.loading_failed.description")}
                         </NiceP>
                         <NiceP>
-                            If your wallet seems broken, here are some tools to
-                            try to debug and repair it.
+                            {i18n.t(
+                                "error.on_boot.loading_failed.repair_options"
+                            )}
                         </NiceP>
                         <NiceP>
-                            If you have any questions on what these buttons do,
-                            please{" "}
+                            {i18n.t("error.on_boot.loading_failed.questions")}{" "}
                             <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
-                                reach out to us for support.
+                                {i18n.t(
+                                    "error.on_boot.loading_failed.support_link"
+                                )}
                             </ExternalLink>
                         </NiceP>
                         <ImportExport emergency />
                         <Logs />
                         <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red">
-                            <SmallHeader>Danger zone</SmallHeader>
+                            <SmallHeader>
+                                {i18n.t("settings.danger_zone")}
+                            </SmallHeader>
                             <DeleteEverything emergency />
                         </div>
 

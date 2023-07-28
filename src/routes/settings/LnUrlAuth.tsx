@@ -11,8 +11,10 @@ import {
 } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
 import { useMegaStore } from "~/state/megaStore";
+import { useI18n } from "~/i18n/context";
 
 export default function LnUrlAuth() {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const [value, setValue] = createSignal("");
@@ -30,8 +32,13 @@ export default function LnUrlAuth() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
-                    <LargeHeader>LNURL Auth</LargeHeader>
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
+                    <LargeHeader>
+                        {i18n.t("settings.lnurl_auth.title")}
+                    </LargeHeader>
                     <InnerCard>
                         <form class="flex flex-col gap-4" onSubmit={onSubmit}>
                             <TextField.Root
@@ -46,18 +53,18 @@ export default function LnUrlAuth() {
                                 class="flex flex-col gap-4"
                             >
                                 <TextField.Label class="text-sm font-semibold uppercase">
-                                    LNURL Auth
+                                    {i18n.t("settings.lnurl_auth.title")}
                                 </TextField.Label>
                                 <TextField.Input
                                     class="w-full p-2 rounded-lg text-black"
                                     placeholder="LNURL..."
                                 />
                                 <TextField.ErrorMessage class="text-red-500">
-                                    Expecting something like LNURL...
+                                    {i18n.t("settings.lnurl_auth.expected")}
                                 </TextField.ErrorMessage>
                             </TextField.Root>
                             <Button layout="small" type="submit">
-                                Auth
+                                {i18n.t("settings.lnurl_auth.auth")}
                             </Button>
                         </form>
                     </InnerCard>

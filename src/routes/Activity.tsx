@@ -20,8 +20,10 @@ import { useMegaStore } from "~/state/megaStore";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { showToast } from "~/components/Toaster";
 import { LoadingShimmer } from "~/components/BalanceBox";
+import { useI18n } from "~/i18n/context";
 
 function ContactRow() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
     const [contacts, { refetch }] = createResource(async () => {
         try {
@@ -55,7 +57,7 @@ function ContactRow() {
 
     //
     async function saveContact(_contact: ContactFormValues) {
-        showToast(new Error("Unimplemented"));
+        showToast(new Error(i18n.t("common.error_unimplemented")));
         // await editContact(contact)
         refetch();
     }
@@ -84,27 +86,28 @@ const TAB =
     "flex-1 inline-block px-8 py-4 text-lg font-semibold rounded-lg ui-selected:bg-white/10 bg-neutral-950 hover:bg-white/10";
 
 export default function Activity() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
     return (
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackLink />
-                    <LargeHeader>Activity</LargeHeader>
+                    <LargeHeader>{i18n.t("activity.title")}</LargeHeader>
                     <ContactRow />
                     <Tabs.Root defaultValue="mutiny">
                         <Tabs.List class="relative flex justify-around mt-4 mb-8 gap-1 bg-neutral-950 p-1 rounded-xl">
                             <Tabs.Trigger value="mutiny" class={TAB}>
-                                Mutiny
+                                {i18n.t("activity.mutiny")}
                             </Tabs.Trigger>
                             <Tabs.Trigger value="nostr" class={TAB}>
-                                Nostr
+                                {i18n.t("activity.nostr")}
                             </Tabs.Trigger>
                             {/* <Tabs.Indicator class="absolute bg-m-blue transition-all bottom-[-1px] h-[2px]" /> */}
                         </Tabs.List>
                         <Tabs.Content value="mutiny">
                             {/* <MutinyActivity /> */}
-                            <Card title="Activity">
+                            <Card title={i18n.t("activity.title")}>
                                 <div class="p-1" />
                                 <VStack>
                                     <Suspense>
@@ -122,11 +125,10 @@ export default function Activity() {
                             <VStack>
                                 <div class="my-8 flex flex-col items-center gap-4 text-center max-w-[20rem] mx-auto">
                                     <NiceP>
-                                        Import your contacts from nostr to see
-                                        who they're zapping.
+                                        {i18n.t("activity.import_contacts")}
                                     </NiceP>
                                     <Button disabled intent="blue">
-                                        Coming soon
+                                        {i18n.t("activity.coming_soon")}
                                     </Button>
                                 </div>
                             </VStack>

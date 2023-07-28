@@ -19,8 +19,10 @@ import eify from "~/utils/eify";
 import { ExternalLink } from "~/components/layout/ExternalLink";
 import { BackLink } from "~/components/layout/BackLink";
 import NavBar from "~/components/NavBar";
+import { useI18n } from "~/i18n/context";
 
 export function SettingsStringsEditor() {
+    const i18n = useI18n();
     const existingSettings = getExistingSettings();
     const [settingsForm, { Form, Field }] =
         createForm<MutinyWalletSettingStrings>({
@@ -40,68 +42,66 @@ export function SettingsStringsEditor() {
     }
 
     return (
-        <Card title="Servers">
+        <Card title={i18n.t("settings.servers.title")}>
             <Form onSubmit={handleSubmit} class="flex flex-col gap-4">
-                <NiceP>
-                    Don't trust us! Use your own servers to back Mutiny.
-                </NiceP>
+                <NiceP>{i18n.t("settings.servers.caption")}</NiceP>
                 <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Self-hosting">
-                    Learn more about self-hosting
+                    {i18n.t("settings.servers.link")}
                 </ExternalLink>
                 <div />
                 <Field
                     name="proxy"
-                    validate={[url("Should be a url starting with wss://")]}
+                    validate={[url(i18n.t("settings.servers.error_proxy"))]}
                 >
                     {(field, props) => (
                         <TextField
                             {...props}
                             value={field.value}
                             error={field.error}
-                            label="Websockets Proxy"
-                            caption="How your lightning node communicates with the rest of the network."
+                            label={i18n.t("settings.servers.proxy_label")}
+                            caption={i18n.t("settings.servers.proxy_caption")}
                         />
                     )}
                 </Field>
                 <Field
                     name="esplora"
-                    validate={[url("That doesn't look like a URL")]}
+                    validate={[url(i18n.t("settings.servers.error_esplora"))]}
                 >
                     {(field, props) => (
                         <TextField
                             {...props}
                             value={field.value}
                             error={field.error}
-                            label="Esplora"
-                            caption="Block data for on-chain information."
+                            label={i18n.t("settings.servers.esplora_label")}
+                            caption={i18n.t("settings.servers.esplora_caption")}
                         />
                     )}
                 </Field>
                 <Field
                     name="rgs"
-                    validate={[url("That doesn't look like a URL")]}
+                    validate={[url(i18n.t("settings.servers.error_rgs"))]}
                 >
                     {(field, props) => (
                         <TextField
                             {...props}
                             value={field.value}
                             error={field.error}
-                            label="RGS"
-                            caption="Rapid Gossip Sync. Network data about the lightning network used for routing."
+                            label={i18n.t("settings.servers.rgs_label")}
+                            caption={i18n.t("settings.servers.rgs_caption")}
                         />
                     )}
                 </Field>
                 <Field
                     name="lsp"
-                    validate={[url("That doesn't look like a URL")]}
+                    validate={[url(i18n.t("settings.servers.error_lsp"))]}
                 >
                     {(field, props) => (
                         <TextField
                             {...props}
                             value={field.value}
                             error={field.error}
-                            label="LSP"
-                            caption="Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy."
+                            label={i18n.t("settings.servers.lsp_label")}
+                            caption={i18n.t("settings.servers.lsp_caption")}
                         />
                     )}
                 </Field>
@@ -111,7 +111,7 @@ export function SettingsStringsEditor() {
                     disabled={!settingsForm.dirty}
                     intent="blue"
                 >
-                    Save
+                    {i18n.t("settings.servers.save")}
                 </Button>
             </Form>
         </Card>
@@ -119,12 +119,18 @@ export function SettingsStringsEditor() {
 }
 
 export default function Servers() {
+    const i18n = useI18n();
     return (
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
-                    <LargeHeader>Backup</LargeHeader>
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
+                    <LargeHeader>
+                        {i18n.t("settings.servers.title")}
+                    </LargeHeader>
                     <SettingsStringsEditor />
                 </DefaultMain>
                 <NavBar activeTab="settings" />

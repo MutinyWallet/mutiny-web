@@ -1,22 +1,24 @@
 import { Progress } from "@kobalte/core";
 import { Show } from "solid-js";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
 export function LoadingBar(props: { value: number; max: number }) {
+    const i18n = useI18n();
     function valueToStage(value: number) {
         switch (value) {
             case 0:
-                return "Just getting started";
+                return i18n.t("modals.loading.default");
             case 1:
-                return "Double checking something";
+                return i18n.t("modals.loading.double_checking");
             case 2:
-                return "Downloading";
+                return i18n.t("modals.loading.downloading");
             case 3:
-                return "Setup";
+                return i18n.t("modals.loading.setup");
             case 4:
-                return "Done";
+                return i18n.t("modals.loading.done");
             default:
-                return "Just getting started";
+                return i18n.t("modals.loading.default");
         }
     }
     return (
@@ -24,7 +26,9 @@ export function LoadingBar(props: { value: number; max: number }) {
             value={props.value}
             minValue={0}
             maxValue={props.max}
-            getValueLabel={({ value }) => `Loading: ${valueToStage(value)}`}
+            getValueLabel={({ value }) =>
+                i18n.t("modals.loading.loading", { stage: valueToStage(value) })
+            }
             class="w-full flex flex-col gap-2"
         >
             <Progress.ValueLabel class="text-sm text-m-grey-400" />

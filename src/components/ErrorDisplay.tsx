@@ -8,35 +8,38 @@ import {
     SmallHeader
 } from "~/components/layout";
 import { ExternalLink } from "./layout/ExternalLink";
+import { useI18n } from "~/i18n/context";
 
 export default function ErrorDisplay(props: { error: Error }) {
+    const i18n = useI18n();
     return (
         <SafeArea>
-            <Title>Oh no!</Title>
+            <Title>{i18n.t("error.general.oh_no")}</Title>
             <DefaultMain>
-                <LargeHeader>Error</LargeHeader>
-                <SmallHeader>This never should've happened</SmallHeader>
+                <LargeHeader>{i18n.t("error.title")}</LargeHeader>
+                <SmallHeader>
+                    {i18n.t("error.general.never_should_happen")}
+                </SmallHeader>
                 <p class="bg-white/10 rounded-xl p-4 font-mono">
                     <span class="font-bold">{props.error.name}</span>:{" "}
                     {props.error.message}
                 </p>
                 <NiceP>
-                    Try reloading this page or clicking the "Dangit" button. If
-                    you keep having problems,{" "}
+                    {i18n.t("error.general.try_reloading")}{" "}
                     <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
-                        reach out to us for support.
+                        {i18n.t("error.general.support_link")}
                     </ExternalLink>
                 </NiceP>
                 <NiceP>
-                    Getting desperate? Try the{" "}
-                    <A href="/emergencykit">emergency kit.</A>
+                    {i18n.t("error.general.getting_desperate")}{" "}
+                    <A href="/emergencykit">{i18n.t("error.emergency_link")}</A>
                 </NiceP>
                 <div class="h-full" />
                 <Button
                     onClick={() => (window.location.href = "/")}
                     intent="red"
                 >
-                    Dangit
+                    {i18n.t("common.dangit")}
                 </Button>
             </DefaultMain>
         </SafeArea>

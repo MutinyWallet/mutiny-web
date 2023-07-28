@@ -41,7 +41,9 @@ export default function Encrypt() {
             validate: (values) => {
                 const errors: Record<string, string> = {};
                 if (values.password !== values.confirmPassword) {
-                    errors.confirmPassword = "Passwords do not match";
+                    errors.confirmPassword = i18n.t(
+                        "settings.encrypt.error_match"
+                    );
                 }
                 return errors;
             }
@@ -73,18 +75,15 @@ export default function Encrypt() {
                         title={i18n.t("settings.header")}
                     />
                     <LargeHeader>
-                        Encrypt your seed words (optional)
+                        {`${i18n.t("settings.encrypt.header")} ${i18n.t(
+                            "settings.encrypt.optional"
+                        )}`}
                     </LargeHeader>
                     <VStack>
                         <NiceP>
-                            Mutiny is a "hot wallet" so it needs your seed word
-                            to operate, but you can optionally encrypt those
-                            words with a password.
+                            {i18n.t("settings.encrypt.hot_wallet_warning")}
                         </NiceP>
-                        <NiceP>
-                            That way, if someone gets access to your browser,
-                            they still won't have access to your funds.
-                        </NiceP>
+                        <NiceP>{i18n.t("settings.encrypt.password_tip")}</NiceP>
                         <Form onSubmit={handleFormSubmit}>
                             <VStack>
                                 <Field name="existingPassword">
@@ -93,9 +92,17 @@ export default function Encrypt() {
                                             {...props}
                                             {...field}
                                             type="password"
-                                            label="Existing Password (optional)"
-                                            placeholder="Existing password"
-                                            caption="Leave blank if you haven't set a password yet."
+                                            label={`${i18n.t(
+                                                "settings.encrypt.existing_password"
+                                            )} ${i18n.t(
+                                                "settings.encrypt.optional"
+                                            )}`}
+                                            placeholder={i18n.t(
+                                                "settings.encrypt.existing_password"
+                                            )}
+                                            caption={i18n.t(
+                                                "settings.encrypt.existing_password_caption"
+                                            )}
                                         />
                                     )}
                                 </Field>
@@ -105,9 +112,15 @@ export default function Encrypt() {
                                             {...props}
                                             {...field}
                                             type="password"
-                                            label="Password"
-                                            placeholder="Enter a password"
-                                            caption="This password will be used to encrypt your seed words. If you forget it, you will need to re-enter your seed words to access your funds. You did write down your seed words, right?"
+                                            label={i18n.t(
+                                                "settings.encrypt.new_password_label"
+                                            )}
+                                            placeholder={i18n.t(
+                                                "settings.encrypt.new_password_placeholder"
+                                            )}
+                                            caption={i18n.t(
+                                                "settings.encrypt.new_password_caption"
+                                            )}
                                         />
                                     )}
                                 </Field>
@@ -117,8 +130,12 @@ export default function Encrypt() {
                                             {...props}
                                             {...field}
                                             type="password"
-                                            label="Confirm Password"
-                                            placeholder="Enter the same password"
+                                            label={i18n.t(
+                                                "settings.encrypt.confirm_password_label"
+                                            )}
+                                            placeholder={i18n.t(
+                                                "settings.encrypt.confirm_password_placeholder"
+                                            )}
                                         />
                                     )}
                                 </Field>
@@ -129,12 +146,12 @@ export default function Encrypt() {
                                 </Show>
                                 <div />
                                 <Button intent="blue" loading={loading()}>
-                                    Encrypt
+                                    {i18n.t("settings.encrypt.encrypt")}
                                 </Button>
                             </VStack>
                         </Form>
                         <ButtonLink href="/settings" intent="green">
-                            Skip
+                            {i18n.t("settings.encrypt.skip")}
                         </ButtonLink>
                     </VStack>
                 </DefaultMain>

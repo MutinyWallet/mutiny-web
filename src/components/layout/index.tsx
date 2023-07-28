@@ -153,7 +153,7 @@ export const FullscreenLoader = () => {
                 <p class="max-w-[20rem] text-neutral-400">
                     {i18n.t("error.load_time.stuck")}{" "}
                     <A class="text-white" href="/emergencykit">
-                        {i18n.t("error.load_time.emergency_link")}
+                        {i18n.t("error.emergency_link")}
                     </A>
                 </p>
             </Show>

@@ -21,6 +21,7 @@ import { Restart } from "./Restart";
 import { ResyncOnchain } from "./ResyncOnchain";
 import { ResetRouter } from "./ResetRouter";
 import { MiniStringShower } from "./DetailsModal";
+import { useI18n } from "~/i18n/context";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (
@@ -28,6 +29,7 @@ type RefetchPeersType = (
 ) => MutinyPeer[] | Promise<MutinyPeer[] | undefined> | null | undefined;
 
 function PeerItem(props: { peer: MutinyPeer }) {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const handleDisconnectPeer = async () => {
@@ -65,7 +67,7 @@ function PeerItem(props: { peer: MutinyPeer }) {
                         layout="xs"
                         onClick={handleDisconnectPeer}
                     >
-                        Disconnect
+                        {i18n.t("settings.admin.kitchen_sink.disconnect")}
                     </Button>
                 </VStack>
             </Collapsible.Content>
@@ -74,6 +76,7 @@ function PeerItem(props: { peer: MutinyPeer }) {
 }
 
 function PeersList() {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const getPeers = async () => {
@@ -86,20 +89,26 @@ function PeersList() {
 
     return (
         <>
-            <InnerCard title="Peers">
+            <InnerCard title={i18n.t("settings.admin.kitchen_sink.peers")}>
                 {/* By wrapping this in a suspense I don't cause the page to jump to the top */}
                 <Suspense>
                     <VStack>
                         <For
                             each={peers.latest}
-                            fallback={<code>No peers</code>}
+                            fallback={
+                                <code>
+                                    {i18n.t(
+                                        "settings.admin.kitchen_sink.no_peers"
+                                    )}
+                                </code>
+                            }
                         >
                             {(peer) => <PeerItem peer={peer} />}
                         </For>
                     </VStack>
                 </Suspense>
                 <Button layout="small" onClick={refetch}>
-                    Refresh Peers
+                    {i18n.t("settings.admin.kitchen_sink.refresh_peers")}
                 </Button>
             </InnerCard>
             <ConnectPeer refetchPeers={refetch} />
@@ -108,6 +117,7 @@ function PeersList() {
 }
 
 function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const [value, setValue] = createSignal("");
@@ -139,18 +149,18 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
                     class="flex flex-col gap-4"
                 >
                     <TextField.Label class="text-sm font-semibold uppercase">
-                        Connect Peer
+                        {i18n.t("settings.admin.kitchen_sink.connect_peer")}
                     </TextField.Label>
                     <TextField.Input
                         class="w-full p-2 rounded-lg text-black"
                         placeholder="028241..."
                     />
                     <TextField.ErrorMessage class="text-red-500">
-                        Expecting a value...
+                        {i18n.t("settings.admin.kitchen_sink.expect_a_value")}
                     </TextField.ErrorMessage>
                 </TextField.Root>
                 <Button layout="small" type="submit">
-                    Connect
+                    {i18n.t("settings.admin.kitchen_sink.connect")}
                 </Button>
             </form>
         </InnerCard>
@@ -164,6 +174,7 @@ type RefetchChannelsListType = (
 type PendingChannelAction = "close" | "force_close" | "abandon";
 
 function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const [pendingChannelAction, setPendingChannelAction] =
@@ -206,28 +217,28 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
                             props.network
                         )}
                     >
-                        View Transaction
+                        {i18n.t("common.view_transaction")}
                     </ExternalLink>
                     <Button
                         intent="glowy"
                         layout="xs"
                         onClick={() => setPendingChannelAction("close")}
                     >
-                        Close Channel
+                        {i18n.t("settings.admin.kitchen_sink.close_channel")}
                     </Button>
                     <Button
                         intent="glowy"
                         layout="xs"
                         onClick={() => setPendingChannelAction("force_close")}
                     >
-                        Force close Channel
+                        {i18n.t("settings.admin.kitchen_sink.force_close")}
                     </Button>
                     <Button
                         intent="glowy"
                         layout="xs"
                         onClick={() => setPendingChannelAction("abandon")}
                     >
-                        Abandon Channel
+                        {i18n.t("settings.admin.kitchen_sink.abandon_channel")}
                     </Button>
                 </VStack>
                 <ConfirmDialog
@@ -238,21 +249,24 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
                 >
                     <Switch>
                         <Match when={pendingChannelAction() === "close"}>
-                            <p>Are you sure you want to close this channel?</p>
+                            <p>
+                                {i18n.t(
+                                    "settings.admin.kitchen_sink.confirm_close_channel"
+                                )}
+                            </p>
                         </Match>
                         <Match when={pendingChannelAction() === "force_close"}>
                             <p>
-                                Are you sure you want to force close this
-                                channel? Your funds will take a few days to
-                                redeem on chain.
+                                {i18n.t(
+                                    "settings.admin.kitchen_sink.confirm_force_close"
+                                )}
                             </p>
                         </Match>
                         <Match when={pendingChannelAction() === "abandon"}>
                             <p>
-                                Are you sure you want to abandon this channel?
-                                Typically only do this if the opening
-                                transaction will never confirm. Otherwise, you
-                                will lose funds.
+                                {i18n.t(
+                                    "settings.admin.kitchen_sink.confirm_abandon_channel"
+                                )}
                             </p>
                         </Match>
                     </Switch>
@@ -263,6 +277,7 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
 }
 
 function ChannelsList() {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const getChannels = async () => {
@@ -277,10 +292,19 @@ function ChannelsList() {
 
     return (
         <>
-            <InnerCard title="Channels">
+            <InnerCard title={i18n.t("settings.admin.kitchen_sink.channels")}>
                 {/* By wrapping this in a suspense I don't cause the page to jump to the top */}
                 <Suspense>
-                    <For each={channels()} fallback={<code>No channels</code>}>
+                    <For
+                        each={channels()}
+                        fallback={
+                            <code>
+                                {i18n.t(
+                                    "settings.admin.kitchen_sink.no_channels"
+                                )}
+                            </code>
+                        }
+                    >
                         {(channel) => (
                             <ChannelItem channel={channel} network={network} />
                         )}
@@ -294,7 +318,7 @@ function ChannelsList() {
                         refetch();
                     }}
                 >
-                    Refresh Channels
+                    {i18n.t("settings.admin.kitchen_sink.refresh_channels")}
                 </Button>
             </InnerCard>
             <OpenChannel refetchChannels={refetch} />
@@ -303,6 +327,7 @@ function ChannelsList() {
 }
 
 function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const [creationError, setCreationError] = createSignal<Error>();
@@ -354,7 +379,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                         class="flex flex-col gap-2"
                     >
                         <TextField.Label class="text-sm font-semibold uppercase">
-                            Pubkey
+                            {i18n.t("settings.admin.kitchen_sink.pubkey")}
                         </TextField.Label>
                         <TextField.Input class="w-full p-2 rounded-lg text-black" />
                     </TextField.Root>
@@ -364,7 +389,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                         class="flex flex-col gap-2"
                     >
                         <TextField.Label class="text-sm font-semibold uppercase">
-                            Amount
+                            {i18n.t("settings.admin.kitchen_sink.amount")}
                         </TextField.Label>
                         <TextField.Input
                             type="number"
@@ -372,7 +397,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                         />
                     </TextField.Root>
                     <Button layout="small" type="submit">
-                        Open Channel
+                        {i18n.t("settings.admin.kitchen_sink.open_channel")}
                     </Button>
                 </form>
             </InnerCard>
@@ -387,7 +412,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                         network
                     )}
                 >
-                    View Transaction
+                    {i18n.t("common.view_transaction")}
                 </ExternalLink>
             </Show>
             <Show when={creationError()}>
@@ -398,6 +423,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
 }
 
 function ListNodes() {
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const getNodeIds = async () => {
@@ -408,9 +434,16 @@ function ListNodes() {
     const [nodeIds] = createResource(getNodeIds);
 
     return (
-        <InnerCard title="Nodes">
+        <InnerCard title={i18n.t("settings.admin.kitchen_sink.nodes")}>
             <Suspense>
-                <For each={nodeIds()} fallback={<code>No nodes</code>}>
+                <For
+                    each={nodeIds()}
+                    fallback={
+                        <code>
+                            {i18n.t("settings.admin.kitchen_sink.no_nodes")}
+                        </code>
+                    }
+                >
                     {(nodeId) => <MiniStringShower text={nodeId} />}
                 </For>
             </Suspense>

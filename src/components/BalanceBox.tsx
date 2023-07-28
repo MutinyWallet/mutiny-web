@@ -79,7 +79,9 @@ export default function BalanceBox(props: { loading?: boolean }) {
                         </div>
                         <div class="flex flex-col items-end gap-1 justify-between">
                             <Show when={state.balance?.unconfirmed != 0n}>
-                                <Indicator>Pending</Indicator>
+                                <Indicator>
+                                    {i18n.t("common.pending")}
+                                </Indicator>
                             </Show>
                             <Show when={state.balance?.unconfirmed === 0n}>
                                 <div />

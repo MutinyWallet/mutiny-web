@@ -4,28 +4,26 @@ import { DIALOG_CONTENT, DIALOG_POSITIONER, OVERLAY } from "./DetailsModal";
 import { ModalCloseButton, SmallHeader } from "./layout";
 import { ExternalLink } from "./layout/ExternalLink";
 import { getExistingSettings } from "~/logic/mutinyWalletSetup";
+import { useI18n } from "~/i18n/context";
 
 export function BetaWarningModal() {
+    const i18n = useI18n();
     return (
-        <WarningModal title="Warning: beta software" linkText="Why?">
-            <p>
-                We're so glad you're here. But we do want to warn you: Mutiny
-                Wallet is in beta, and there are still bugs and rough edges.
-            </p>
-            <p>
-                Please be careful and don't put more money into Mutiny than
-                you're willing to lose.
-            </p>
+        <WarningModal
+            title={i18n.t("modals.beta_warning.title")}
+            linkText={i18n.t("common.why")}
+        >
+            <p>{i18n.t("translations:modals.beta_warning.beta_warning")}</p>
+            <p>{i18n.t("modals.beta_warning.be_careful")}</p>
             <p>
                 <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Mutiny-Beta-Readme">
-                    Learn more about the beta
+                    {i18n.t("modals.beta_warning.beta_link")}
                 </ExternalLink>
             </p>
             <p class="small text-neutral-400">
-                If you want to use pretend money to test out Mutiny without
-                risk,{" "}
+                {i18n.t("modals.beta_warning.pretend_money")}{" "}
                 <ExternalLink href="https://blog.mutinywallet.com/mutiny-wallet-signet-release/">
-                    check out our Signet version.
+                    {i18n.t("modals.beta_warning.signet_link")}
                 </ExternalLink>
             </p>
         </WarningModal>

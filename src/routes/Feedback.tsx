@@ -145,7 +145,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
 
             if (!res.ok) {
                 throw new Error(
-                    `${i18n.t("feedback.error")}: ${res.statusText}`
+                    i18n.t("feedback.error", { error: `: ${res.statusText}` })
                 );
             }
 
@@ -155,9 +155,9 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                 props.onSubmitted();
             } else {
                 throw new Error(
-                    `${i18n.t("feedback.error")}. ${i18n.t(
-                        "feedback.try_again"
-                    )}`
+                    i18n.t("feedback.error", {
+                        error: `. ${i18n.t("feedback.try_again")}`
+                    })
                 );
             }
         } catch (e) {
@@ -327,11 +327,10 @@ export default function Feedback() {
                         <LargeHeader>{i18n.t("feedback.header")}</LargeHeader>
                         <NiceP>{i18n.t("feedback.tracking")}</NiceP>
                         <NiceP>
-                            {i18n.t("feedback.github_one")}{" "}
+                            {i18n.t("feedback.github")}{" "}
                             <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
                                 {i18n.t("feedback.create_issue")}
                             </ExternalLink>
-                            {i18n.t("feedback.github_two")}
                         </NiceP>
                         <FeedbackForm onSubmitted={() => setSubmitted(true)} />
                     </Match>

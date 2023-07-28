@@ -24,18 +24,6 @@ import { FeesModal } from "./MoreInfoModal";
 import { useI18n } from "~/i18n/context";
 import { useNavigate } from "solid-start";
 
-const FIXED_AMOUNTS_SATS = [
-    { label: "10k", amount: "10000" },
-    { label: "100k", amount: "100000" },
-    { label: "1m", amount: "1000000" }
-];
-
-const FIXED_AMOUNTS_USD = [
-    { label: "$1", amount: "1" },
-    { label: "$10", amount: "10" },
-    { label: "$100", amount: "100" }
-];
-
 function fiatInputSanitizer(input: string): string {
     // Make sure only numbers and a single decimal point are allowed
     const numeric = input.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
@@ -76,7 +64,7 @@ function SingleDigitButton(props: {
     function onHold() {
         if (
             props.character === "DEL" ||
-            props.character === i18n.t("char.del")
+            props.character === i18n.t("receive.amount_editable.del")
         ) {
             holdTimer = setTimeout(() => {
                 props.onClear();
@@ -148,7 +136,7 @@ function SmallSubtleAmount(props: { text: string; fiat: boolean }) {
         <h2 class="flex flex-row items-end text-xl font-light text-neutral-400">
             ~{props.text}&nbsp;
             <span class="text-base">
-                {props.fiat ? i18n.t("common.usd") : `${i18n.t("common.sats")}`}
+                {props.fiat ? i18n.t("common.usd") : i18n.t("common.sats")}
             </span>
             <img
                 class={"pl-[4px] pb-[4px] hover:cursor-pointer"}
@@ -208,6 +196,28 @@ export const AmountEditable: ParentComponent<{
             false
         )
     );
+
+    const FIXED_AMOUNTS_SATS = [
+        {
+            label: i18n.t("receive.amount_editable.fix_amounts.ten_k"),
+            amount: "10000"
+        },
+        {
+            label: i18n.t("receive.amount_editable.fix_amounts.one_hundred_k"),
+            amount: "100000"
+        },
+        {
+            label: i18n.t("receive.amount_editable.fix_amounts.one_million"),
+            amount: "1000000"
+        }
+    ];
+
+    const FIXED_AMOUNTS_USD = [
+        { label: "$1", amount: "1" },
+        { label: "$10", amount: "10" },
+        { label: "$100", amount: "100" }
+    ];
+
     const CHARACTERS = [
         "1",
         "2",
@@ -220,7 +230,7 @@ export const AmountEditable: ParentComponent<{
         "9",
         ".",
         "0",
-        i18n.t("char.del")
+        i18n.t("receive.amount_editable.del")
     ];
 
     const displaySats = () => toDisplayHandleNaN(localSats(), false);
@@ -295,7 +305,10 @@ export const AmountEditable: ParentComponent<{
 
         let sane;
 
-        if (character === "DEL" || character === i18n.t("char.del")) {
+        if (
+            character === "DEL" ||
+            character === i18n.t("receive.amount_editable.del")
+        ) {
             if (localValue().length <= 1) {
                 sane = "0";
             } else {

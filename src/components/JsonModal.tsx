@@ -7,6 +7,7 @@ import {
     OVERLAY
 } from "~/components/DetailsModal";
 import { CopyButton } from "./ShareCard";
+import { useI18n } from "~/i18n/context";
 
 export function JsonModal(props: {
     title: string;
@@ -16,6 +17,7 @@ export function JsonModal(props: {
     setOpen: (open: boolean) => void;
     children?: JSX.Element;
 }) {
+    const i18n = useI18n();
     const json = createMemo(() =>
         props.plaintext ? props.plaintext : JSON.stringify(props.data, null, 2)
     );
@@ -41,7 +43,10 @@ export function JsonModal(props: {
                                 </pre>
                             </div>
                             {props.children}
-                            <CopyButton title="Copy" text={json()} />
+                            <CopyButton
+                                title={i18n.t("common.copy")}
+                                text={json()}
+                            />
                         </Dialog.Description>
                     </Dialog.Content>
                 </div>

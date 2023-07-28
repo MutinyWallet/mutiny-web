@@ -81,6 +81,7 @@ export function AmountCard(props: {
     exitRoute?: string;
     maxAmountSats?: bigint;
 }) {
+    const i18n = useI18n();
     // Normally we want to add the fee to the amount, but for max amount we just show the max
     const totalOrTotalLessFee = () => {
         if (
@@ -99,7 +100,7 @@ export function AmountCard(props: {
                 <Switch>
                     <Match when={props.fee}>
                         <div class="flex flex-col gap-1">
-                            <KeyValue key="Amount">
+                            <KeyValue key={i18n.t("receive.amount")}>
                                 <Show
                                     when={props.isAmountEditable}
                                     fallback={
@@ -123,13 +124,13 @@ export function AmountCard(props: {
                                     />
                                 </Show>
                             </KeyValue>
-                            <KeyValue gray key="+ Fee">
+                            <KeyValue gray key={i18n.t("receive.fee")}>
                                 <InlineAmount amount={props.fee || "0"} />
                             </KeyValue>
                         </div>
                         <hr class="border-white/20" />
                         <div class="flex flex-col gap-1">
-                            <KeyValue key="Total">
+                            <KeyValue key={i18n.t("receive.total")}>
                                 <InlineAmount amount={totalOrTotalLessFee()} />
                             </KeyValue>
                             <USDShower
@@ -140,7 +141,7 @@ export function AmountCard(props: {
                     </Match>
                     <Match when={props.reserve}>
                         <div class="flex flex-col gap-1">
-                            <KeyValue key="Channel size">
+                            <KeyValue key={i18n.t("receive.channel_size")}>
                                 <InlineAmount
                                     amount={add(
                                         props.amountSats,
@@ -148,13 +149,16 @@ export function AmountCard(props: {
                                     ).toString()}
                                 />
                             </KeyValue>
-                            <KeyValue gray key="- Channel Reserve">
+                            <KeyValue
+                                gray
+                                key={i18n.t("receive.channel_reserve")}
+                            >
                                 <InlineAmount amount={props.reserve || "0"} />
                             </KeyValue>
                         </div>
                         <hr class="border-white/20" />
                         <div class="flex flex-col gap-1">
-                            <KeyValue key="Spendable">
+                            <KeyValue key={i18n.t("receive.spendable")}>
                                 <InlineAmount amount={props.amountSats} />
                             </KeyValue>
                             <USDShower
@@ -165,7 +169,7 @@ export function AmountCard(props: {
                     </Match>
                     <Match when={!props.fee && !props.reserve}>
                         <div class="flex flex-col gap-1">
-                            <KeyValue key="Amount">
+                            <KeyValue key={i18n.t("receive.amount")}>
                                 <Show
                                     when={props.isAmountEditable}
                                     fallback={

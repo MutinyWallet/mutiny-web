@@ -132,9 +132,10 @@ function DestinationInput(props: {
     handleDecode: () => void;
     handlePaste: () => void;
 }) {
+    const i18n = useI18n();
     return (
         <VStack>
-            <SmallHeader>Destination</SmallHeader>
+            <SmallHeader>{i18n.t("send.destination")}</SmallHeader>
             <textarea
                 value={props.fieldDestination}
                 onInput={(e) => {
@@ -149,19 +150,19 @@ function DestinationInput(props: {
                 intent="blue"
                 onClick={props.handleDecode}
             >
-                Continue
+                {i18n.t("common.continue")}
             </Button>
             <HStack>
                 <Button onClick={props.handlePaste}>
                     <div class="flex flex-col gap-2 items-center">
                         <Paste />
-                        <span>Paste</span>
+                        <span>{i18n.t("send.paste")}</span>
                     </div>
                 </Button>
                 <ButtonLink href="/scanner">
                     <div class="flex flex-col gap-2 items-center">
                         <Scan />
-                        <span>Scan QR</span>
+                        <span>{i18n.t("send.scan_qr")}</span>
                     </div>
                 </ButtonLink>
             </HStack>
@@ -260,9 +261,7 @@ export default function Send() {
         if (source() === "lightning") {
             return (
                 (state.balance?.lightning ?? 0n) <= amountSats() &&
-                setError(
-                    "We do not have enough balance to pay the given amount."
-                )
+                setError(i18n.t("send.error_low_balance"))
             );
         }
     };
@@ -395,7 +394,7 @@ export default function Send() {
                 text = value;
             } else {
                 if (!navigator.clipboard.readText) {
-                    return showToast(new Error("Clipboard not supported"));
+                    return showToast(new Error(i18n.t("send.error_clipboard")));
                 }
                 text = await navigator.clipboard.readText();
             }
@@ -486,7 +485,7 @@ export default function Send() {
 
                 // TODO: handle timeouts
                 if (!payment?.paid) {
-                    throw new Error("Keysend failed");
+                    throw new Error(i18n.t("send.error_keysend"));
                 } else {
                     sentDetails.amount = amountSats();
                 }
@@ -501,7 +500,7 @@ export default function Send() {
                 );
 
                 if (!payment?.paid) {
-                    throw new Error("Lnurl Pay failed");
+                    throw new Error(i18n.t("send.error_LNURL"));
                 } else {
                     sentDetails.amount = amountSats();
                 }
@@ -575,7 +574,7 @@ export default function Send() {
                             title={i18n.t("send.start_over")}
                         />
                     </Show>
-                    <LargeHeader>{i18n.t("send_bitcoin")}</LargeHeader>
+                    <LargeHeader>{i18n.t("send.send_bitcoin")}</LargeHeader>
                     <SuccessModal
                         confirmText={
                             sentDetails()?.amount
@@ -596,7 +595,9 @@ export default function Send() {
                                 <MegaEx />
                                 <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
                                     {sentDetails()?.amount
-                                        ? "Payment Initiated"
+                                        ? source() === "onchain"
+                                            ? i18n.t("send.payment_initiated")
+                                            : i18n.t("send.payment_sent")
                                         : sentDetails()?.failure_reason}
                                 </h1>
                                 {/*TODO: add failure hint logic for different failure conditions*/}
@@ -605,7 +606,9 @@ export default function Send() {
                                 <MegaCheck />
                                 <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
                                     {sentDetails()?.amount
-                                        ? "Payment Initiated"
+                                        ? source() === "onchain"
+                                            ? i18n.t("send.payment_initiated")
+                                            : i18n.t("send.payment_sent")
                                         : sentDetails()?.failure_reason}
                                 </h1>
                                 <div class="flex flex-col gap-1 items-center">
@@ -631,7 +634,7 @@ export default function Send() {
                                             network
                                         )}
                                     >
-                                        {i18n.t("view_transaction")}
+                                        {i18n.t("common.view_transaction")}
                                     </ExternalLink>
                                 </Show>
                             </Match>
@@ -652,7 +655,7 @@ export default function Send() {
                                     setSource={setSource}
                                     both={!!address() && !!invoice()}
                                 />
-                                <Card title="Destination">
+                                <Card title={i18n.t("send.destination")}>
                                     <VStack>
                                         <DestinationShower
                                             source={source()}
@@ -664,7 +667,7 @@ export default function Send() {
                                             clearAll={clearAll}
                                         />
                                         <SmallHeader>
-                                            {i18n.t("private_tags")}
+                                            {i18n.t("common.private_tags")}
                                         </SmallHeader>
                                         <TagEditor
                                             selectedValues={selectedContacts()}

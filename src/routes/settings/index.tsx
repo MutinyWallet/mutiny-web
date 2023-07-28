@@ -66,7 +66,7 @@ export default function Settings() {
                 <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
                 <VStack biggap>
                     <SettingsLinkList
-                        header={i18n.t("settings.mutiny_plus")}
+                        header={i18n.t("settings.plus.title")}
                         links={[
                             {
                                 href: "/settings/plus",
