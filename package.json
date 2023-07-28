@@ -11,7 +11,8 @@
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
         "lint": "pnpm run eslint && pnpm run check-types",
-        "format": "npx prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
+        "format": "npx prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
+        "check-format": "npx prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
     },
     "type": "module",
     "devDependencies": {
