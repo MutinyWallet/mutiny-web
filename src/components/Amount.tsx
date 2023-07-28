@@ -58,10 +58,10 @@ export function AmountSats(props: {
                             props.amountSats && Number(props.amountSats) === 1
                         }
                     >
-                            {i18n.t("common.sat")}
-                        </Show>
-                    </span>
-                </h1>
+                        {i18n.t("common.sat")}
+                    </Show>
+                </span>
+            </h1>
         </div>
     );
 }
@@ -71,7 +71,7 @@ export function AmountFiat(props: {
     loading?: boolean;
     denominationSize?: "sm" | "lg" | "xl";
 }) {
-    const i18n = useI18n()
+    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
     const amountInUsd = () =>
