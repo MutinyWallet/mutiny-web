@@ -47,6 +47,7 @@ import side2side from "~/assets/icons/side-to-side.svg";
 import { useI18n } from "~/i18n/context";
 import eify from "~/utils/eify";
 import { matchError } from "~/logic/errorDispatch";
+import { Fee } from "~/components/Fee";
 
 type OnChainTx = {
     transaction: {
@@ -486,30 +487,7 @@ export default function Receive() {
                                         paidState() === "lightning_paid"
                                     }
                                 >
-                                    <div class="flex flex-row items-start gap-3">
-                                        <p class="text-m-grey-400 text-sm leading-[17px] items-center">
-                                            {i18n.t("common.fee")}
-                                        </p>
-                                        <div class="flex items-start gap-1">
-                                            <div class="flex flex-col gap-1 items-end">
-                                                <div class="text-right text-sm">
-                                                    <AmountSats
-                                                        amountSats={lspFee()}
-                                                        denominationSize="sm"
-                                                    />
-                                                </div>
-                                                <div class="text-xs text-white/70">
-                                                    <AmountFiat
-                                                        amountSats={lspFee()}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="flex items-start py-[1px]">
-                                                {/*TODO: Add different fee hints insode of <FeesModal />*/}
-                                                <FeesModal icon />
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Fee amountSats={lspFee()} />
                                 </Show>
                                 {/*TODO: Confirmation time estimate still not possible needs to be implemented in mutiny-node first
                                 {/*TODO: add internal payment detail page* for lightning*/}
