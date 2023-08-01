@@ -44,10 +44,10 @@ import { ExternalLink } from "~/components/layout/ExternalLink";
 import { InfoBox } from "~/components/InfoBox";
 import { useI18n } from "~/i18n/context";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
-import { FeesModal } from "~/components/MoreInfoModal";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
 import { FeedbackLink } from "./Feedback";
+import { Fee } from "~/components/Fee";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -623,35 +623,7 @@ export default function Send() {
                                     </div>
                                 </div>
                                 <hr class="w-16 bg-m-grey-400" />
-                                <div class="flex flex-row items-start gap-3">
-                                    <p class="text-m-grey-400 text-sm leading-[17px] text-center">
-                                        {i18n.t("common.fee")}
-                                    </p>
-                                    <div class="flex items-start gap-1">
-                                        <div class="flex flex-col gap-1 items-end">
-                                            <div class="text-right text-sm">
-                                                <AmountSats
-                                                    amountSats={
-                                                        sentDetails()
-                                                            ?.fee_estimate
-                                                    }
-                                                    denominationSize="sm"
-                                                />
-                                            </div>
-                                            <div class="text-xs text-white/70">
-                                                <AmountFiat
-                                                    amountSats={
-                                                        sentDetails()
-                                                            ?.fee_estimate
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                        <div class="flex items-start py-[1px]">
-                                            <FeesModal icon />
-                                        </div>
-                                    </div>
-                                </div>
+                                <Fee amountSats={sentDetails()?.fee_estimate} />
                                 <Show when={sentDetails()?.txid}>
                                     <ExternalLink
                                         href={mempoolTxUrl(

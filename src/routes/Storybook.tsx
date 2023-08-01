@@ -1,4 +1,5 @@
 import { AmountCard } from "~/components/AmountCard";
+import { Fee } from "~/components/Fee";
 import NavBar from "~/components/NavBar";
 import { OnboardWarning } from "~/components/OnboardWarning";
 import { ShareCard } from "~/components/ShareCard";
@@ -24,6 +25,7 @@ export default function Admin() {
                     <Button loading intent="blue">
                         Button
                     </Button>
+                    <Fee amountSats={15000n} />
                 </VStack>
             </DefaultMain>
             <NavBar activeTab="none" />
