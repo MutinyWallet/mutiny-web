@@ -80,7 +80,7 @@ export function SeedTextField(props: TextFieldProps) {
 
 function TwelveWordsEntry() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, actions] = useMegaStore();
 
     const [error, setError] = createSignal<Error>();
     const [mnemnoic, setMnemonic] = createSignal<string>();
@@ -140,6 +140,8 @@ function TwelveWordsEntry() {
             }
 
             await MutinyWallet.restore_mnemonic(mnemnoic() || "", "");
+
+            actions.setHasBackedUp();
 
             setTimeout(() => {
                 window.location.href = "/";
