@@ -10,7 +10,7 @@ import {
     useContext
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import { useSearchParams } from "solid-start";
+import { useNavigate, useSearchParams } from "solid-start";
 
 import { Currency, FIAT_OPTIONS } from "~/components/ChooseCurrency";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
@@ -21,7 +21,7 @@ import {
     MutinyWalletSettingStrings,
     setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
-import { ParsedParams } from "~/logic/waila";
+import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { eify, MutinyTagItem, subscriptionValid } from "~/utils";
 
 const MegaStoreContext = createContext<MegaStore>();
@@ -71,11 +71,17 @@ export type MegaStore = [
         setPreferredInvoiceType(
             type: "unified" | "lightning" | "onchain"
         ): void;
+        handleIncomingString(
+            str: string,
+            onError: (e: Error) => void,
+            onSuccess: (value: ParsedParams) => void
+        ): void;
     }
 ];
 
 export const Provider: ParentComponent = (props) => {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const [state, setState] = createStore({
         mutiny_wallet: undefined as MutinyWallet | undefined,
@@ -314,6 +320,41 @@ export const Provider: ParentComponent = (props) => {
         },
         setPreferredInvoiceType(type: "unified" | "lightning" | "onchain") {
             setState({ preferredInvoiceType: type });
+        },
+        handleIncomingString(
+            str: string,
+            onError: (e: Error) => void,
+            onSuccess: (value: ParsedParams) => void
+        ): void {
+            try {
+                const url = new URL(str);
+                if (url && url.pathname.startsWith("/gift")) {
+                    navigate(url.pathname + url.search);
+                    return;
+                }
+            } catch (e) {
+                // If it's not a URL, we'll just continue with normal parsing
+            }
+
+            const network = state.mutiny_wallet?.get_network() || "signet";
+            const result = toParsedParams(str || "", network);
+            if (!result.ok) {
+                if (onError) {
+                    onError(result.error);
+                }
+                return;
+            } else {
+                if (
+                    result.value?.address ||
+                    result.value?.invoice ||
+                    result.value?.node_pubkey ||
+                    result.value?.lnurl
+                ) {
+                    if (onSuccess) {
+                        onSuccess(result.value);
+                    }
+                }
+            }
         }
     };
 

@@ -14,7 +14,10 @@ export function BackPop() {
 
     const state = location.state as StateWithPrevious;
 
-    const backPath = () => (state?.previous ? state?.previous : "/");
+    // If there's no previous state want to just go back one level, basically ../
+    const newBackPath = location.pathname.split("/").slice(0, -1).join("/");
+
+    const backPath = () => (state?.previous ? state?.previous : newBackPath);
 
     return (
         <BackButton

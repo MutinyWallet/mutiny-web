@@ -1,9 +1,8 @@
-import { Match, Show, Suspense, Switch } from "solid-js";
+import { Show, Suspense } from "solid-js";
 import { A } from "solid-start";
 
+import scan from "~/assets/icons/scan.svg";
 import settings from "~/assets/icons/settings.svg";
-import pixelLogo from "~/assets/mutiny-pixel-logo.png";
-import plusLogo from "~/assets/mutiny-plus-logo.png";
 import {
     BalanceBox,
     BetaWarningModal,
@@ -13,6 +12,7 @@ import {
     DefaultMain,
     LoadingIndicator,
     LoadingShimmer,
+    Logo,
     NavBar,
     OnboardWarning,
     PendingNwc,
@@ -34,24 +34,7 @@ export default function App() {
                 <LoadingIndicator />
                 <header class="mb-2 mt-4 flex w-full items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <Switch>
-                            <Match when={state.mutiny_plus}>
-                                <img
-                                    id="mutiny-logo"
-                                    src={plusLogo}
-                                    class="h-[25px] w-[86px]"
-                                    alt="Mutiny Plus logo"
-                                />
-                            </Match>
-                            <Match when={true}>
-                                <img
-                                    id="mutiny-logo"
-                                    src={pixelLogo}
-                                    class="h-[25px] w-[75px]"
-                                    alt="Mutiny logo"
-                                />
-                            </Match>
-                        </Switch>
+                        <Logo />
                         <Show
                             when={
                                 !state.wallet_loading &&
@@ -68,12 +51,24 @@ export default function App() {
                             </div>
                         </Show>
                     </div>
-                    <A
-                        class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
-                        href="/settings"
-                    >
-                        <img src={settings} alt="Settings" class="h-6 w-6" />
-                    </A>
+                    <div class="flex items-center gap-2">
+                        <A
+                            class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
+                            href="/scanner"
+                        >
+                            <img src={scan} alt="Scan" class="h-6 w-6" />
+                        </A>
+                        <A
+                            class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
+                            href="/settings"
+                        >
+                            <img
+                                src={settings}
+                                alt="Settings"
+                                class="h-6 w-6"
+                            />
+                        </A>
+                    </div>
                 </header>
                 <Show when={!state.wallet_loading}>
                     <OnboardWarning />

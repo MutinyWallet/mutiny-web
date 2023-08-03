@@ -104,7 +104,7 @@ export function NWCBudgetEditor(props: {
                         <TinyText>
                             {i18n.t("settings.connections.careful")}
                         </TinyText>
-                        <KeyValue key={"Budget"}>
+                        <KeyValue key={i18n.t("settings.connections.budget")}>
                             <Field name="budget_amount">
                                 {(field, _fieldProps) => (
                                     <div class="flex flex-col items-end gap-2">
@@ -129,7 +129,9 @@ export function NWCBudgetEditor(props: {
                                 )}
                             </Field>
                         </KeyValue>
-                        <KeyValue key={"Resets every"}>
+                        <KeyValue
+                            key={i18n.t("settings.connections.resets_every")}
+                        >
                             <Field name="interval">
                                 {(field, fieldProps) => (
                                     <select

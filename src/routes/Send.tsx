@@ -26,6 +26,7 @@ import {
     DefaultMain,
     ExternalLink,
     Fee,
+    GiftLink,
     HStack,
     InfoBox,
     LargeHeader,
@@ -44,11 +45,9 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
-import { ParsedParams, toParsedParams } from "~/logic/waila";
+import { ParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, mempoolTxUrl, MutinyTagItem } from "~/utils";
-
-import { FeedbackLink } from "./Feedback";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -379,25 +378,17 @@ export default function Send() {
     });
 
     function parsePaste(text: string) {
-        if (text) {
-            const network = state.mutiny_wallet?.get_network() || "signet";
-            const result = toParsedParams(text || "", network);
-            if (!result.ok) {
-                showToast(result.error);
-                return;
-            } else {
-                if (
-                    result.value?.address ||
-                    result.value?.invoice ||
-                    result.value?.node_pubkey ||
-                    result.value?.lnurl
-                ) {
-                    setDestination(result.value);
-                    // Important! we need to clear the scan result once we've used it
-                    actions.setScanResult(undefined);
-                }
+        actions.handleIncomingString(
+            text,
+            (error) => {
+                showToast(error);
+            },
+            (result) => {
+                setDestination(result);
+                // Important! we need to clear the scan result once we've used it
+                actions.setScanResult(undefined);
             }
-        }
+        );
     }
 
     function handleDecode() {
@@ -735,7 +726,9 @@ export default function Send() {
                                 </Button>
                             </VStack>
                         </Show>
-                        <FeedbackLink />
+                        <div class="flex justify-center">
+                            <GiftLink />
+                        </div>
                     </VStack>
                 </DefaultMain>
                 <NavBar activeTab="send" />

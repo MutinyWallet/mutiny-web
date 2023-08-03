@@ -191,7 +191,7 @@ function PlusCTA() {
                     <strong class="text-white">
                         {i18n.t("settings.plus.title")}
                     </strong>
-                    ?{i18n.t("settings.plus.click_confirm")}
+                    ? {i18n.t("settings.plus.click_confirm")}
                 </p>
             </ConfirmDialog>
         </Show>
