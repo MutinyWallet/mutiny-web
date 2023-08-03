@@ -91,14 +91,14 @@ export default function Settings() {
                                 text: i18n.t("settings.restore.title"),
                                 accent: "red"
                             },
-                            // {
-                            //     href: "/settings/encrypt",
-                            //     text: "Change Password",
-                            //     disabled: !state.has_backed_up,
-                            //     caption: !state.has_backed_up
-                            //         ? "Backup first to unlock encryption"
-                            //         : undefined
-                            // },
+                            {
+                                href: "/settings/encrypt",
+                                text: "Change Password",
+                                disabled: !state.has_backed_up,
+                                caption: !state.has_backed_up
+                                    ? "Backup first to unlock encryption"
+                                    : undefined
+                            },
                             {
                                 href: "/settings/servers",
                                 text: i18n.t("settings.servers.title"),
