@@ -297,16 +297,30 @@ export default function Swap() {
                                         {i18n.t("swap.initiated")}
                                     </h1>
                                     <p class="text-xl text-center">
-                                        +
-                                        {channelOpenResult()?.channel?.balance.toLocaleString() ??
-                                            "0"}{" "}
-                                        {i18n.t("swap.sats_added")}
+                                        {i18n.t("swap.sats_added", {
+                                            amount: (
+                                                Number(
+                                                    channelOpenResult()?.channel
+                                                        ?.balance
+                                                ) +
+                                                Number(
+                                                    channelOpenResult()?.channel
+                                                        ?.reserve
+                                                )
+                                            ).toLocaleString()
+                                        })}
                                     </p>
                                     <div class="text-sm text-center text-white/70">
                                         <AmountFiat
                                             amountSats={
-                                                channelOpenResult()?.channel
-                                                    ?.balance
+                                                Number(
+                                                    channelOpenResult()?.channel
+                                                        ?.balance
+                                                ) +
+                                                Number(
+                                                    channelOpenResult()?.channel
+                                                        ?.reserve
+                                                )
                                             }
                                         />
                                     </div>

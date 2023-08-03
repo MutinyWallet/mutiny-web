@@ -409,7 +409,7 @@ export default {
         insufficient_funds: "You don't have enough funds to make this channel",
         header: "Swap to Lightning",
         initiated: "Swap Initiated",
-        sats_added: "sats will be added to your Lightning balance",
+        sats_added: "+{{amount}} sats will be added to your Lightning balance",
         use_existing: "Use existing peer",
         choose_peer: "Choose a peer",
         peer_connect_label: "Connect to new peer",
