@@ -3,8 +3,8 @@ import { ParentComponent, createSignal } from "solid-js";
 import { DIALOG_CONTENT, DIALOG_POSITIONER, OVERLAY } from "./DetailsModal";
 import { ModalCloseButton, SmallHeader } from "./layout";
 import { ExternalLink } from "./layout/ExternalLink";
-import { getExistingSettings } from "~/logic/mutinyWalletSetup";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 export function BetaWarningModal() {
     const i18n = useI18n();
@@ -34,9 +34,11 @@ export const WarningModal: ParentComponent<{
     linkText: string;
     title: string;
 }> = (props) => {
+    const [state, _actions] = useMegaStore();
+
     const [open, setOpen] = createSignal(
         localStorage.getItem("betaWarned") !== "true" &&
-            getExistingSettings().network === "bitcoin"
+            state.settings?.network === "bitcoin"
     );
 
     function close() {

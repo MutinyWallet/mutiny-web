@@ -19,7 +19,7 @@ export function DecryptDialog() {
         e.preventDefault();
         setLoading(true);
         try {
-            await actions.setupMutinyWallet(undefined, password());
+            await actions.setup(password());
 
             // If we get this far and the state stills wants a password that means the password was wrong
             if (state.needs_password) {
