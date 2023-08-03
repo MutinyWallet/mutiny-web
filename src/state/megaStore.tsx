@@ -13,6 +13,7 @@ import { createStore } from "solid-js/store";
 import {
     MutinyWalletSettingStrings,
     doubleInitDefense,
+    getSettings,
     initializeWasm,
     setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
@@ -51,12 +52,10 @@ export type MegaStore = [
         readonly mutiny_plus: boolean;
         needs_password: boolean;
         load_stage: LoadStage;
+        settings?: MutinyWalletSettingStrings;
     },
     {
-        setupMutinyWallet(
-            settings?: MutinyWalletSettingStrings,
-            password?: string
-        ): Promise<void>;
+        setup(password?: string): Promise<void>;
         deleteMutinyWallet(): Promise<void>;
         setScanResult(scan_result: ParsedParams | undefined): void;
         sync(): Promise<void>;
@@ -95,7 +94,8 @@ export const Provider: ParentComponent = (props) => {
             else return true;
         },
         needs_password: false,
-        load_stage: "fresh" as LoadStage
+        load_stage: "fresh" as LoadStage,
+        settings: undefined as MutinyWalletSettingStrings | undefined
     });
 
     const actions = {
@@ -119,10 +119,7 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
             }
         },
-        async setupMutinyWallet(
-            settings?: MutinyWalletSettingStrings,
-            password?: string
-        ): Promise<void> {
+        async setup(password?: string): Promise<void> {
             try {
                 // If we're already in an error state there should be no reason to continue
                 if (state.setup_error) {
@@ -139,10 +136,15 @@ export const Provider: ParentComponent = (props) => {
                 await initializeWasm();
                 setState({ load_stage: "setup" });
 
+                const settings = await getSettings();
+
                 const mutinyWallet = await setupMutinyWallet(
                     settings,
                     password
                 );
+
+                // Give other components access to settings via the store
+                setState({ settings: settings });
 
                 // If we get this far then we don't need the password anymore
                 setState({ needs_password: false });
@@ -280,7 +282,7 @@ export const Provider: ParentComponent = (props) => {
                 console.log("running setup node manager...");
 
                 actions
-                    .setupMutinyWallet()
+                    .setup()
                     .then(() => console.log("node manager setup done"));
 
                 // Setup an event listener to stop the mutiny wallet when the page unloads

@@ -2,8 +2,7 @@ import { createForm, url } from "@modular-forms/solid";
 import { TextField } from "~/components/layout/TextField";
 import {
     MutinyWalletSettingStrings,
-    getExistingSettings,
-    setAndGetMutinySettings
+    setSettings
 } from "~/logic/mutinyWalletSetup";
 import {
     Button,
@@ -20,19 +19,19 @@ import { ExternalLink } from "~/components/layout/ExternalLink";
 import { BackLink } from "~/components/layout/BackLink";
 import NavBar from "~/components/NavBar";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 export function SettingsStringsEditor() {
     const i18n = useI18n();
-    const existingSettings = getExistingSettings();
+    const [state, _actions] = useMegaStore();
     const [settingsForm, { Form, Field }] =
         createForm<MutinyWalletSettingStrings>({
-            initialValues: existingSettings
+            initialValues: state.settings
         });
 
     async function handleSubmit(values: MutinyWalletSettingStrings) {
         try {
-            const newSettings = { ...existingSettings, ...values };
-            await setAndGetMutinySettings(newSettings);
+            await setSettings(values);
             window.location.reload();
         } catch (e) {
             console.error(e);

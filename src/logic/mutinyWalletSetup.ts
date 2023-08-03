@@ -3,8 +3,9 @@
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
+
 export type MutinyWalletSettingStrings = {
-    network?: Network;
+    network?: string;
     proxy?: string;
     esplora?: string;
     rgs?: string;
@@ -15,114 +16,108 @@ export type MutinyWalletSettingStrings = {
     scorer?: string;
 };
 
-export function getExistingSettings(): MutinyWalletSettingStrings {
-    const network =
-        localStorage.getItem("MUTINY_SETTINGS_network") ||
-        import.meta.env.VITE_NETWORK;
-    const proxy =
-        localStorage.getItem("MUTINY_SETTINGS_proxy") ||
-        import.meta.env.VITE_PROXY;
-    const esplora =
-        localStorage.getItem("MUTINY_SETTINGS_esplora") ||
-        import.meta.env.VITE_ESPLORA;
-    const rgs =
-        localStorage.getItem("MUTINY_SETTINGS_rgs") || import.meta.env.VITE_RGS;
-    const lsp =
-        localStorage.getItem("MUTINY_SETTINGS_lsp") || import.meta.env.VITE_LSP;
-    const auth =
-        localStorage.getItem("MUTINY_SETTINGS_auth") ||
-        import.meta.env.VITE_AUTH;
-    const subscriptions =
-        localStorage.getItem("MUTINY_SETTINGS_subscriptions") ||
-        import.meta.env.VITE_SUBSCRIPTIONS;
-    const storage =
-        localStorage.getItem("MUTINY_SETTINGS_storage") ||
-        import.meta.env.VITE_STORAGE;
-    const scorer =
-        localStorage.getItem("MUTINY_SETTINGS_scorer") ||
-        import.meta.env.VITE_SCORER;
+const SETTINGS_KEYS = [
+    {
+        name: "network",
+        storageKey: "USER_SETTINGS_network",
+        default: import.meta.env.VITE_NETWORK
+    },
+    {
+        name: "proxy",
+        storageKey: "USER_SETTINGS_proxy",
+        default: import.meta.env.VITE_PROXY
+    },
+    {
+        name: "esplora",
+        storageKey: "USER_SETTINGS_esplora",
+        default: import.meta.env.VITE_ESPLORA
+    },
+    {
+        name: "rgs",
+        storageKey: "USER_SETTINGS_rgs",
+        default: import.meta.env.VITE_RGS
+    },
+    {
+        name: "lsp",
+        storageKey: "USER_SETTINGS_lsp",
+        default: import.meta.env.VITE_LSP
+    },
+    {
+        name: "auth",
+        storageKey: "USER_SETTINGS_auth",
+        default: import.meta.env.VITE_AUTH
+    },
+    {
+        name: "subscriptions",
+        storageKey: "USER_SETTINGS_subscriptions",
+        default: import.meta.env.VITE_SUBSCRIPTIONS
+    },
+    {
+        name: "storage",
+        storageKey: "USER_SETTINGS_storage",
+        default: import.meta.env.VITE_STORAGE
+    },
+    {
+        name: "scorer",
+        storageKey: "USER_SETTINGS_scorer",
+        default: import.meta.env.VITE_SCORER
+    }
+];
 
-    return {
-        network,
-        proxy,
-        esplora,
-        rgs,
-        lsp,
-        auth,
-        subscriptions,
-        storage,
-        scorer
-    };
+function getItemOrDefault(
+    storageKey: string,
+    defaultValue: string
+): string | undefined {
+    const item = localStorage.getItem(storageKey);
+    if (item === "") {
+        return undefined;
+    } else if (item === null) {
+        return defaultValue;
+    } else {
+        return item;
+    }
 }
 
-export async function setAndGetMutinySettings(
-    settings?: MutinyWalletSettingStrings
-): Promise<MutinyWalletSettingStrings> {
-    let {
-        network,
-        proxy,
-        esplora,
-        rgs,
-        lsp,
-        auth,
-        subscriptions,
-        storage,
-        scorer
-    } = settings || {};
-
-    const existingSettings = getExistingSettings();
-
-    try {
-        network = network || existingSettings.network;
-        proxy = proxy || existingSettings.proxy;
-        esplora = esplora || existingSettings.esplora;
-        rgs = rgs || existingSettings.rgs;
-        lsp = lsp || existingSettings.lsp;
-        auth = auth || existingSettings.auth;
-        subscriptions = subscriptions || existingSettings.subscriptions;
-        storage = storage || existingSettings.storage;
-        scorer = scorer || existingSettings.scorer;
-
-        if (!network || !proxy || !esplora) {
-            throw new Error(
-                "Missing a default setting for network, proxy, or esplora. Check your .env file to make sure it looks like .env.sample"
-            );
-        }
-
-        localStorage.setItem("MUTINY_SETTINGS_network", network);
-        localStorage.setItem("MUTINY_SETTINGS_proxy", proxy);
-        localStorage.setItem("MUTINY_SETTINGS_esplora", esplora);
-
-        if (!rgs || !lsp) {
-            console.warn("RGS or LSP not set");
-        }
-
-        rgs && localStorage.setItem("MUTINY_SETTINGS_rgs", rgs);
-        lsp && localStorage.setItem("MUTINY_SETTINGS_lsp", lsp);
-        auth && localStorage.setItem("MUTINY_SETTINGS_auth", auth);
-        subscriptions &&
-            localStorage.setItem(
-                "MUTINY_SETTINGS_subscriptions",
-                subscriptions
-            );
-        storage && localStorage.setItem("MUTINY_SETTINGS_storage", storage);
-        scorer && localStorage.setItem("MUTINY_SETTINGS_scorer", scorer);
-
-        return {
-            network,
-            proxy,
-            esplora,
-            rgs,
-            lsp,
-            auth,
-            subscriptions,
-            storage,
-            scorer
-        };
-    } catch (error) {
-        console.error(error);
-        throw error;
+function setItemIfNotDefault(
+    key: string,
+    override: string,
+    defaultValue: string
+) {
+    if (override === defaultValue) {
+        localStorage.removeItem(key);
+    } else {
+        localStorage.setItem(key, override);
     }
+}
+
+export async function getSettings() {
+    const settings = <MutinyWalletSettingStrings>{};
+
+    SETTINGS_KEYS.forEach(({ name, storageKey, default: defaultValue }) => {
+        const n = name as keyof MutinyWalletSettingStrings;
+        const item = getItemOrDefault(storageKey, defaultValue);
+        settings[n] = item as string;
+    });
+
+    if (!settings.network || !settings.proxy || !settings.esplora) {
+        throw new Error(
+            "Missing a default setting for network, proxy, or esplora. Check your .env file to make sure it looks like .env.sample"
+        );
+    }
+
+    return settings;
+}
+
+export async function setSettings(newSettings: MutinyWalletSettingStrings) {
+    SETTINGS_KEYS.forEach(({ name, storageKey, default: defaultValue }) => {
+        const n = name as keyof MutinyWalletSettingStrings;
+        const override = newSettings[n];
+        // If the value is in the newSettings, and it's not the default, set it in localstorage
+        // Also, "" is a valid value, so we only want to reject undefined
+        if (override !== undefined) {
+            setItemIfNotDefault(storageKey, override, defaultValue);
+        }
+    });
 }
 
 export async function checkForWasm() {
@@ -167,10 +162,11 @@ export async function initializeWasm() {
 }
 
 export async function setupMutinyWallet(
-    settings?: MutinyWalletSettingStrings,
+    settings: MutinyWalletSettingStrings,
     password?: string
 ): Promise<MutinyWallet> {
     console.log("Starting setup...");
+
     const {
         network,
         proxy,
@@ -181,7 +177,8 @@ export async function setupMutinyWallet(
         subscriptions,
         storage,
         scorer
-    } = await setAndGetMutinySettings(settings);
+    } = settings;
+
     console.log("Initializing Mutiny Manager");
     console.log("Using network", network);
     console.log("Using proxy", proxy);
@@ -192,6 +189,7 @@ export async function setupMutinyWallet(
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
     console.log("Using scorer address", scorer);
+
     const mutinyWallet = await new MutinyWallet(
         // Password
         password ? password : undefined,

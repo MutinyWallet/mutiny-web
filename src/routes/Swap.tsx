@@ -75,10 +75,7 @@ export default function Swap() {
     }
 
     const hasLsp = () => {
-        return (
-            !!localStorage.getItem("MUTINY_SETTINGS_lsp") ||
-            !!import.meta.env.VITE_LSP
-        );
+        return !!state.settings?.lsp;
     };
 
     const getPeers = async () => {
