@@ -11,6 +11,7 @@ import { A } from "solid-start";
 import { For, Show } from "solid-js";
 import forward from "~/assets/icons/forward.svg";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 function SettingsLinkList(props: {
     header: string;
@@ -59,6 +60,8 @@ function SettingsLinkList(props: {
 
 export default function Settings() {
     const i18n = useI18n();
+    const [state, _actions] = useMegaStore();
+
     return (
         <SafeArea>
             <DefaultMain>
