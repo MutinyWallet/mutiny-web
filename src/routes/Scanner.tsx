@@ -5,12 +5,11 @@ import { useNavigate } from "solid-start";
 
 import { Button, Scanner as Reader, showToast } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { toParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
 
 export default function Scanner() {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [_state, actions] = useMegaStore();
     const [scanResult, setScanResult] = createSignal<string>();
     const navigate = useNavigate();
 
@@ -44,22 +43,16 @@ export default function Scanner() {
     // When we have a nice result we can head over to the send screen
     createEffect(() => {
         if (scanResult()) {
-            const network = state.mutiny_wallet?.get_network() || "signet";
-            const result = toParsedParams(scanResult() || "", network);
-            if (!result.ok) {
-                showToast(result.error);
-                return;
-            } else {
-                if (
-                    result.value?.address ||
-                    result.value?.invoice ||
-                    result.value?.node_pubkey ||
-                    result.value?.lnurl
-                ) {
-                    actions.setScanResult(result.value);
+            actions.handleIncomingString(
+                scanResult()!,
+                (error) => {
+                    showToast(error);
+                },
+                (result) => {
+                    actions.setScanResult(result);
                     navigate("/send");
                 }
-            }
+            );
         }
     });
 

@@ -133,6 +133,13 @@ export default function Settings() {
                                 text: i18n.t("settings.connections.title")
                             },
                             {
+                                href: "/settings/gift",
+                                disabled: !state.mutiny_plus,
+
+                                text: i18n.t("settings.gift.title"),
+                                caption: !state.mutiny_plus ? "Upgrade to Mutiny+ to enabled gifting" : undefined
+                            },
+                            {
                                 href: "/settings/lnurlauth",
                                 text: i18n.t("settings.lnurl_auth.title")
                             },

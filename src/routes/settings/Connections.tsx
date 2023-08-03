@@ -139,25 +139,35 @@ function NwcDetails(props: {
                     )}
                     remaining={Number(props.profile.budget_remaining || 0)}
                 />
-                <KeyValue key={"Budget"}>
+                <KeyValue key={i18n.t("settings.connections.budget")}>
                     <AmountSats amountSats={props.profile.budget_amount} />
                 </KeyValue>
-                <KeyValue key={"Resets every"}>
+                {/* No interval for gifts */}
+                <Show when={props.profile.budget_period}>
+                <KeyValue key={i18n.t("settings.connections.resets_every")}>
                     {props.profile.budget_period}
                 </KeyValue>
+                </Show>
             </Show>
 
             <Button layout="small" intent="green" onClick={props.onEdit}>
                 {i18n.t("settings.connections.edit_budget")}
             </Button>
 
-            <Button layout="small" onClick={openInNostrClient}>
-                {i18n.t("settings.connections.open_in_nostr_client")}
-            </Button>
+            <Show
+                when={
+                    props.profile.tag !== "Gift" &&
+                    props.profile.tag !== "Subscription"
+                }
+            >
+                <Button layout="small" onClick={openInNostrClient}>
+                    {i18n.t("settings.connections.open_in_nostr_client")}
+                </Button>
 
-            <Button layout="small" onClick={openInPrimal}>
-                {i18n.t("settings.connections.open_in_primal")}
-            </Button>
+                <Button layout="small" onClick={openInPrimal}>
+                    {i18n.t("settings.connections.open_in_primal")}
+                </Button>
+            </Show>
 
             <Button layout="small" onClick={confirmDelete}>
                 {i18n.t("settings.connections.delete_connection")}
@@ -292,7 +302,7 @@ function Nwc() {
                 <SettingsCard
                     title={i18n.t("settings.connections.manage_connections")}
                 >
-                    <For each={nwcProfiles()}>
+                    <For each={nwcProfiles()?.filter(p => p.tag !== "Gift")}>
                         {(profile) => (
                             <Collapser
                                 title={profile.name}

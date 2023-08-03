@@ -564,7 +564,8 @@ export const AmountEditable: ParentComponent<{
         }
     }
 
-    function handleClose() {
+    function handleClose(e: SubmitEvent | MouseEvent | KeyboardEvent) {
+        e.preventDefault();
         props.setAmountSats(BigInt(props.initialAmountSats));
         setIsOpen(false);
         setLocalSats(props.initialAmountSats);
@@ -576,6 +577,7 @@ export const AmountEditable: ParentComponent<{
             )
         );
         props.exitRoute && navigate(props.exitRoute);
+        return false;
     }
 
     // What we're all here for in the first place: returning a value
@@ -586,6 +588,7 @@ export const AmountEditable: ParentComponent<{
             satsToFiat(state.price, Number(localSats()) || 0, state.fiat)
         );
         setIsOpen(false);
+        return false;
     }
 
     function handleSatsInput(e: InputEvent) {
@@ -706,6 +709,7 @@ export const AmountEditable: ParentComponent<{
                         <div class="flex w-full justify-end">
                             <button
                                 onClick={handleClose}
+                                type="button"
                                 class="h-8 w-8 rounded-lg hover:bg-white/10 active:bg-m-blue"
                             >
                                 <img src={close} alt="Close" />

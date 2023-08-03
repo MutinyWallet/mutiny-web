@@ -10,7 +10,7 @@ import { useI18n } from "~/i18n/context";
 import { ReceiveFlavor } from "~/routes/Receive";
 import { useCopy } from "~/utils";
 
-function KindIndicator(props: { kind: ReceiveFlavor }) {
+function KindIndicator(props: { kind: ReceiveFlavor | "gift" }) {
     const i18n = useI18n();
     return (
         <div class="flex flex-col items-end text-black">
@@ -25,6 +25,13 @@ function KindIndicator(props: { kind: ReceiveFlavor }) {
                 <Match when={props.kind === "lightning"}>
                     <h3 class="font-semibold">
                         {i18n.t("receive.integrated_qr.lightning")}
+                    </h3>
+                    <img src={boltBlack} alt="bolt" />
+                </Match>
+
+                <Match when={props.kind === "gift"}>
+                    <h3 class="font-semibold">
+                        {i18n.t("receive.integrated_qr.gift")}
                     </h3>
                     <img src={boltBlack} alt="bolt" />
                 </Match>
@@ -62,7 +69,7 @@ async function share(receiveString: string) {
 export function IntegratedQr(props: {
     value: string;
     amountSats: string;
-    kind: ReceiveFlavor;
+    kind: ReceiveFlavor | "gift";
 }) {
     const i18n = useI18n();
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });

@@ -89,7 +89,8 @@ export default {
         integrated_qr: {
             onchain: "On-chain",
             lightning: "Lightning",
-            unified: "Unified"
+            unified: "Unified",
+            gift: "Lightning Gift"
         },
         remember_choice: "Remember my choice next time"
     },
@@ -269,6 +270,7 @@ export default {
             error_budget_zero: "Budget must be greater than zero",
             add_connection: "Add Connection",
             manage_connections: "Manage Connections",
+            manage_gifts: "Manage Gifts",
             delete_connection: "Delete",
             new_connection: "New Connection",
             edit_connection: "Edit Connection",
@@ -292,7 +294,9 @@ export default {
                 "Be careful where you share this connection! Requests within budget will paid automatically.",
             spent: "Spent",
             remaining: "Remaining",
-            confirm_delete: "Are you sure you want to delete this connection?"
+            confirm_delete: "Are you sure you want to delete this connection?",
+            budget: "Budget",
+            resets_every: "Resets every"
         },
         emergency_kit: {
             title: "Emergency Kit",
@@ -448,6 +452,41 @@ export default {
             npub_label: "Nostr npub",
             npub_required: "Npub can't be blank",
             sync: "Sync"
+        },
+        gift: {
+            give_sats_link: "Give sats as a gift",
+            title: "Gifting",
+            receive_too_small:
+                "Your first receive needs to be {{amount}} SATS or greater.",
+            setup_fee_lightning:
+                "A lightning setup fee will be charged to receive this gift.",
+            already_claimed: "This gift has already been claimed",
+            sender_is_poor:
+                "The sender doesn't have enough balance to pay this gift.",
+            sender_generic_error: "Sender sent error: {{error}}",
+            receive_header: "You've been gifted some sats!",
+            receive_description:
+                "You must be pretty special. To claim your money just hit the big button. Funds will be added to your balance the next time your gifter is online.",
+            receive_claimed:
+                "Gift claimed! You should see the gift hit your balance shortly.",
+            receive_cta: "Claim Gift",
+            send_header: "Create Gift",
+            send_explainer:
+                "Give the gift of sats. Create a Mutiny gift URL that can be claimed by anyone with a web browser.",
+            send_name_required: "This is for your records",
+            send_name_label: "Recepient Name",
+            send_header_claimed: "Gift Received!",
+            send_claimed: "Your gift has been claimed. Thanks for sharing.",
+            send_sharable_header: "Sharable URL",
+            send_instructions:
+                "Copy this gift URL to your recipient, or ask them to scan this QR code with their wallet.",
+            send_another: "Create Another",
+            send_small_warning:
+                "A brand new Mutiny user won't be able to redeem fewer than 50k sats.",
+            send_cta: "Create a gift",
+            send_delete_button: "Delete Gift",
+            send_delete_confirm:
+                "Are you sure you want to delete this gift? Is this your rugpull moment?"
         }
     },
     swap: {
