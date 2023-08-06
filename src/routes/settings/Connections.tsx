@@ -53,8 +53,7 @@ function Nwc() {
                 return;
             }
             const profile = await state.mutiny_wallet?.create_nwc_profile(
-                formName(),
-                10000n
+                formName()
             );
 
             if (!profile) {
