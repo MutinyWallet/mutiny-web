@@ -59,7 +59,7 @@ jobs:
         env:
           VITE_NETWORK: bitcoin
           VITE_PROXY: wss://p.mutinywallet.com
-          VITE_ESPLORA: https://mempool.space/api
+          VITE_ESPLORA: https://mutiny.mempool.space/api
           VITE_LSP: https://lsp.voltageapi.com
           VITE_RGS: https://rapidsync.lightningdevkit.org/snapshot/
           VITE_AUTH: https://auth.mutinywallet.com
