@@ -495,9 +495,7 @@ export default {
             restore_from_backup:
                 "If you've used Mutiny before you can restore from a backup. Otherwise you can skip this and enjoy your new wallet!",
             not_available: "We don't do that yet",
-            secure_your_funds: "Secure your funds",
-            make_backup:
-                "You have money stored in this browser. Let's make sure you have a backup."
+            secure_your_funds: "Secure your funds"
         },
         beta_warning: {
             title: "Warning: beta software",

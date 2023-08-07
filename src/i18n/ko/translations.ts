@@ -481,9 +481,7 @@ export default {
             restore_from_backup:
                 "이미 Mutiny를 사용한 적이 있으시다면 백업에서 복원할 수 있습니다. 그렇지 않다면 이 단계를 건너뛰고 새로운 지갑을 즐기실 수 있습니다!",
             not_available: "아직 이 기능은 지원하지 않습니다",
-            secure_your_funds: "자금을 안전하게 보호하세요",
-            make_backup:
-                "이 브라우저에 자금이 저장되어 있습니다. 백업이 되어 있는지 확인해 봅시다."
+            secure_your_funds: "자금을 안전하게 보호하세요"
         },
         beta_warning: {
             title: "경고: 베타 버전 소프트웨어",

@@ -150,7 +150,7 @@ export default function Encrypt() {
                                 </Button>
                             </VStack>
                         </Form>
-                        <ButtonLink href="/settings" intent="green">
+                        <ButtonLink href="/" intent="green">
                             {i18n.t("settings.encrypt.skip")}
                         </ButtonLink>
                     </VStack>
