@@ -308,7 +308,7 @@ export default {
         encrypt: {
             header: "Encrypt your seed words",
             hot_wallet_warning:
-                "Mutiny is a &rdquo;hot wallet&rdquo; so it needs your seed word to operate, but you can optionally encrypt those words with a password.",
+                'Mutiny is a "hot wallet" so it needs your seed word to operate, but you can optionally encrypt those words with a password.',
             password_tip:
                 "That way, if someone gets access to your browser, they still won't have access to your funds.",
             optional: "(optional)",
@@ -428,7 +428,7 @@ export default {
             oh_no: "Oh no!",
             never_should_happen: "This never should've happened",
             try_reloading:
-                "Try reloading this page or clicking the &rdquo;Dangit&rdquo; button. If you keep having problems,",
+                'Try reloading this page or clicking the "Dangit" button. If you keep having problems,',
             support_link: "reach out to us for support.",
             getting_desperate: "Getting desperate? Try the"
         },
@@ -461,7 +461,7 @@ export default {
                 description:
                     "Mutiny requires a modern browser that supports WebAssembly, LocalStorage, and IndexedDB. Some browsers disable these features in private mode.",
                 try_different_browser:
-                    "Please make sure your browser supports all these features, or consider trying another browser. You might also try disabling certain extensions or &rdquo;shields&rdquo; that block these features.",
+                    'Please make sure your browser supports all these features, or consider trying another browser. You might also try disabling certain extensions or "shields" that block these features.',
                 browser_storage:
                     "(We'd love to support more private browsers, but we have to save your wallet data to browser storage or else you will lose funds.)",
                 browsers_link: "Supported Browsers"
