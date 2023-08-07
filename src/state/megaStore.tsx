@@ -43,7 +43,6 @@ export type MegaStore = [
         last_sync?: number;
         price: number;
         has_backed_up: boolean;
-        dismissed_restore_prompt: boolean;
         wallet_loading: boolean;
         setup_error?: Error;
         is_pwa: boolean;
@@ -59,7 +58,6 @@ export type MegaStore = [
         deleteMutinyWallet(): Promise<void>;
         setScanResult(scan_result: ParsedParams | undefined): void;
         sync(): Promise<void>;
-        dismissRestorePrompt(): void;
         setHasBackedUp(): void;
         listTags(): Promise<MutinyTagItem[]>;
         checkBrowserCompat(): Promise<boolean>;
@@ -77,8 +75,6 @@ export const Provider: ParentComponent = (props) => {
         balance: undefined as MutinyBalance | undefined,
         last_sync: undefined as number | undefined,
         is_syncing: false,
-        dismissed_restore_prompt:
-            localStorage.getItem("dismissed_restore_prompt") === "true",
         wallet_loading: true,
         setup_error: undefined as Error | undefined,
         is_pwa: window.matchMedia("(display-mode: standalone)").matches,
@@ -233,10 +229,6 @@ export const Provider: ParentComponent = (props) => {
         setHasBackedUp() {
             localStorage.setItem("has_backed_up", "true");
             setState({ has_backed_up: true });
-        },
-        dismissRestorePrompt() {
-            localStorage.setItem("dismissed_restore_prompt", "true");
-            setState({ dismissed_restore_prompt: true });
         },
         async listTags(): Promise<MutinyTagItem[]> {
             try {
