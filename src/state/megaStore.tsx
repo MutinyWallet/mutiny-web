@@ -23,6 +23,7 @@ import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import eify from "~/utils/eify";
 import { timeout } from "~/utils/timeout";
 import { ParsedParams } from "~/logic/waila";
+import { subscriptionValid } from "~/utils/subscriptions";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -81,13 +82,8 @@ export const Provider: ParentComponent = (props) => {
         existing_tab_detected: false,
         subscription_timestamp: undefined as number | undefined,
         get mutiny_plus(): boolean {
-            // No subscription
-            if (!state.subscription_timestamp) return false;
-
-            // Expired
-            if (state.subscription_timestamp < Math.ceil(Date.now() / 1000))
-                return false;
-            else return true;
+            // Make sure the subscription hasn't expired
+            return subscriptionValid(state.subscription_timestamp);
         },
         needs_password: false,
         load_stage: "fresh" as LoadStage,
