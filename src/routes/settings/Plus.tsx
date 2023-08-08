@@ -27,6 +27,7 @@ import eify from "~/utils/eify";
 import party from "~/assets/party.gif";
 import { LoadingShimmer } from "~/components/BalanceBox";
 import { useI18n } from "~/i18n/context";
+import { subscriptionValid } from "~/utils/subscriptions";
 
 function Perks(props: { alreadySubbed?: boolean }) {
     const i18n = useI18n();
@@ -114,10 +115,7 @@ function PlusCTA() {
                 );
             }
 
-            if (
-                state.subscription_timestamp &&
-                state.subscription_timestamp < Math.ceil(Date.now() / 1000)
-            ) {
+            if (!subscriptionValid(state.subscription_timestamp)) {
                 setError(
                     new Error(
                         i18n.t("settings.plus.error_expired_subscription")
