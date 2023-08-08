@@ -358,6 +358,8 @@ export default {
             error_no_plan: "No plans found",
             error_failure: "Couldn't subscribe",
             error_no_subscription: "No existing subscription found",
+            error_expired_subscription:
+                "Your subscription has expired, click join to renew",
             satisfaction: "Smug satisfaction",
             gifting: "Gifting",
             multi_device: "Multi-device access",
