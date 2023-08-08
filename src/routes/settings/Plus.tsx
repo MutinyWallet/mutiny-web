@@ -113,6 +113,17 @@ function PlusCTA() {
                     new Error(i18n.t("settings.plus.error_no_subscription"))
                 );
             }
+
+            if (
+                state.subscription_timestamp &&
+                state.subscription_timestamp < Math.ceil(Date.now() / 1000)
+            ) {
+                setError(
+                    new Error(
+                        i18n.t("settings.plus.error_expired_subscription")
+                    )
+                );
+            }
         } catch (e) {
             console.error(e);
             setError(eify(e));
