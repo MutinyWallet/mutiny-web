@@ -143,6 +143,7 @@ export default {
     activity: {
         title: "Activity",
         mutiny: "Mutiny",
+        wallet: "Wallet",
         nostr: "Nostr",
         view_all: "View all",
         receive_some_sats_to_get_started: "Receive some sats to get started",
@@ -411,6 +412,12 @@ export default {
                 "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy.",
             error_lsp: "That doesn't look like a URL",
             save: "Save"
+        },
+        nostr_contacts: {
+            title: "Nostr Contacts",
+            npub_label: "Nostr npub",
+            npub_required: "Npub can't be blank",
+            sync: "Sync"
         }
     },
     swap: {

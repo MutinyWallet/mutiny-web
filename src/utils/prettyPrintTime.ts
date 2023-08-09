@@ -10,7 +10,11 @@ export function prettyPrintTime(ts: number) {
     return new Date(ts * 1000).toLocaleString("en-US", options);
 }
 
-export function timeAgo(ts?: number | bigint): string {
+// Rerender signal is a silly way to force timeAgo to recalculate even though the timestamp is static
+export function timeAgo(
+    ts?: number | bigint,
+    _rerenderSignal?: number
+): string {
     if (!ts || ts === 0) return "Pending";
     const timestamp = Number(ts) * 1000;
     const now = Date.now();

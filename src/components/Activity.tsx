@@ -149,7 +149,8 @@ export function CombinedActivity(props: { limit?: number }) {
                     </For>
                 </Match>
             </Switch>
-            <Show when={props.limit && activity.latest.length > 0}>
+            {/* Only show on the home screen */}
+            <Show when={props.limit}>
                 <A
                     href="/activity"
                     class="self-center font-semibold text-m-red no-underline active:text-m-red/80"

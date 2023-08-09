@@ -52,6 +52,7 @@ export type MegaStore = [
         load_stage: LoadStage;
         settings?: MutinyWalletSettingStrings;
         safe_mode?: boolean;
+        npub?: string;
     },
     {
         setup(password?: string): Promise<void>;
@@ -61,6 +62,7 @@ export type MegaStore = [
         setHasBackedUp(): void;
         listTags(): Promise<MutinyTagItem[]>;
         checkForSubscription(justPaid?: boolean): Promise<void>;
+        saveNpub(npub: string): void;
     }
 ];
 
@@ -88,7 +90,8 @@ export const Provider: ParentComponent = (props) => {
         needs_password: false,
         load_stage: "fresh" as LoadStage,
         settings: undefined as MutinyWalletSettingStrings | undefined,
-        safe_mode: searchParams.safe_mode === "true"
+        safe_mode: searchParams.safe_mode === "true",
+        npub: localStorage.getItem("npub") || undefined
     });
 
     const actions = {
@@ -235,6 +238,10 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
                 return [];
             }
+        },
+        saveNpub(npub: string) {
+            localStorage.setItem("npub", npub);
+            setState({ npub });
         }
     };
 

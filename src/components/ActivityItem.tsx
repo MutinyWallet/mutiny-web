@@ -110,6 +110,8 @@ export function ActivityItem(props: {
     const firstContact = () =>
         props.contacts?.length ? props.contacts[0] : null;
 
+    // TODO: pass a value to the timeago function that will cause it to recalculate on sync
+
     return (
         <div
             onClick={() => props.onClick && props.onClick()}

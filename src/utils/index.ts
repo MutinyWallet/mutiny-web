@@ -14,3 +14,4 @@ export * from "./timeout";
 export * from "./typescript";
 export * from "./useCopy";
 export * from "./words";
+export * from "./fetchZaps";

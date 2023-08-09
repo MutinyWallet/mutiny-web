@@ -11,6 +11,15 @@ import {
 } from "~/components/layout";
 import { useI18n } from "~/i18n/context";
 
+export function SimpleErrorDisplay(props: { error: Error }) {
+    return (
+        <p class="rounded-xl bg-white/10 p-4 font-mono">
+            <span class="font-bold">{props.error.name}</span>:{" "}
+            {props.error.message}
+        </p>
+    );
+}
+
 export function ErrorDisplay(props: { error: Error }) {
     const i18n = useI18n();
     return (
@@ -21,10 +30,7 @@ export function ErrorDisplay(props: { error: Error }) {
                 <SmallHeader>
                     {i18n.t("error.general.never_should_happen")}
                 </SmallHeader>
-                <p class="rounded-xl bg-white/10 p-4 font-mono">
-                    <span class="font-bold">{props.error.name}</span>:{" "}
-                    {props.error.message}
-                </p>
+                <SimpleErrorDisplay error={props.error} />
                 <NiceP>
                     {i18n.t("error.general.try_reloading")}{" "}
                     <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">

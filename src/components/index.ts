@@ -41,3 +41,5 @@ export * from "./SetupErrorDisplay";
 export * from "./ShareCard";
 export * from "./TagEditor";
 export * from "./Toaster";
+export * from "./NostrActivity";
+export * from "./SyncContactsForm";
