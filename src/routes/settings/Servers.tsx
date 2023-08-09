@@ -15,7 +15,7 @@ import {
 } from "~/components/layout";
 import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
-import { ExternalLink } from "~/components/layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { BackLink } from "~/components/layout/BackLink";
 import NavBar from "~/components/NavBar";
 import { useI18n } from "~/i18n/context";

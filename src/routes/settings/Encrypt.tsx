@@ -1,12 +1,12 @@
 import {
     Button,
+    ButtonLink,
     DefaultMain,
     LargeHeader,
     NiceP,
     MutinyWalletGuard,
     SafeArea,
-    VStack,
-    ButtonLink
+    VStack
 } from "~/components/layout";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";

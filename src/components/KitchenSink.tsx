@@ -16,7 +16,7 @@ import eify from "~/utils/eify";
 import { ConfirmDialog } from "~/components/Dialog";
 import { showToast } from "~/components/Toaster";
 import { Network } from "~/logic/mutinyWalletSetup";
-import { ExternalLink } from "./layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { Restart } from "./Restart";
 import { ResyncOnchain } from "./ResyncOnchain";
 import { ResetRouter } from "./ResetRouter";

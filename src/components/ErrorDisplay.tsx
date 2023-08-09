@@ -7,7 +7,7 @@ import {
     SafeArea,
     SmallHeader
 } from "~/components/layout";
-import { ExternalLink } from "./layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
 
 export default function ErrorDisplay(props: { error: Error }) {

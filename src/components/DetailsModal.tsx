@@ -28,7 +28,7 @@ import { useCopy } from "~/utils/useCopy";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { AmountSmall } from "./Amount";
-import { ExternalLink } from "./layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { InfoBox } from "./InfoBox";
 import { useI18n } from "~/i18n/context";
 

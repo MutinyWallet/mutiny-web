@@ -6,7 +6,7 @@ import {
     SafeArea,
     SmallHeader
 } from "~/components/layout";
-import { ExternalLink } from "./layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { Match, Switch } from "solid-js";
 import { ImportExport } from "./ImportExport";
 import { Logs } from "./Logs";

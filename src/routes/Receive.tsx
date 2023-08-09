@@ -23,6 +23,7 @@ import {
     SafeArea,
     SimpleDialog
 } from "~/components/layout";
+import { ExternalLink } from "@mutinywallet/ui";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import { objectToSearchParams } from "~/utils/objectToSearchParams";
@@ -39,7 +40,6 @@ import { MutinyTagItem } from "~/utils/tags";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
 import { MegaCheck } from "~/components/successfail/MegaCheck";
-import { ExternalLink } from "~/components/layout/ExternalLink";
 import { InfoBox } from "~/components/InfoBox";
 import { FeesModal } from "~/components/MoreInfoModal";
 import { IntegratedQr } from "~/components/IntegratedQR";

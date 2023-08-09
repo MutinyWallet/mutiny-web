@@ -20,10 +20,10 @@ import {
     UtxoItem
 } from "~/components/Activity";
 import {
+    Button,
     Card,
     DefaultMain,
     LargeHeader,
-    LoadingSpinner,
     NiceP,
     MutinyWalletGuard,
     SafeArea,
@@ -31,13 +31,13 @@ import {
     SmallHeader,
     VStack
 } from "~/components/layout";
+import { LoadingSpinner } from "@mutinywallet/ui";
 import { BackLink } from "~/components/layout/BackLink";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import NavBar from "~/components/NavBar";
 import { useMegaStore } from "~/state/megaStore";
 import wave from "~/assets/wave.gif";
 import utxoIcon from "~/assets/icons/coin.svg";
-import { Button } from "~/components/layout/Button";
 import { ProgressBar } from "~/components/layout/ProgressBar";
 import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";

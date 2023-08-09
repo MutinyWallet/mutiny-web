@@ -32,7 +32,7 @@ import { InfoBox } from "~/components/InfoBox";
 import { useNavigate } from "solid-start";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
-import { ExternalLink } from "~/components/layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useI18n } from "~/i18n/context";
 import { AmountFiat } from "~/components/Amount";

@@ -12,7 +12,7 @@ import {
     VStack
 } from "~/components/layout";
 import { BackLink } from "~/components/layout/BackLink";
-import { ExternalLink } from "~/components/layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
 
 function EmergencyStack() {
