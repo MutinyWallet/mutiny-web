@@ -1,31 +1,121 @@
-import { TextField } from "@kobalte/core";
-import { createSignal } from "solid-js";
+import { createForm, required, SubmitHandler } from "@modular-forms/solid";
+import { createSignal, Match, Show, Switch } from "solid-js";
 
-import { NavBar } from "~/components";
 import {
+    BackLink,
     Button,
     DefaultMain,
-    InnerCard,
+    FancyCard,
+    InfoBox,
+    KeyValue,
     LargeHeader,
+    MiniStringShower,
     MutinyWalletGuard,
-    SafeArea
-} from "~/components/layout";
-import { BackLink } from "~/components/layout/BackLink";
+    NavBar,
+    SafeArea,
+    TextField,
+    VStack
+} from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
+import { eify } from "~/utils";
+
+type NostrContactsForm = {
+    npub: string;
+};
+
+const PRIMAL_API = import.meta.env.VITE_PRIMAL;
+
+export function SyncContactsForm() {
+    const i18n = useI18n();
+    const [state, actions] = useMegaStore();
+    const [error, setError] = createSignal<Error>();
+
+    const [feedbackForm, { Form, Field }] = createForm<NostrContactsForm>({
+        initialValues: {
+            npub: ""
+        }
+    });
+
+    const handleSubmit: SubmitHandler<NostrContactsForm> = async (
+        f: NostrContactsForm
+    ) => {
+        try {
+            const npub = f.npub.trim();
+            if (!PRIMAL_API) throw new Error("PRIMAL_API not set");
+            await state.mutiny_wallet?.sync_nostr_contacts(PRIMAL_API, npub);
+            actions.saveNpub(npub);
+        } catch (e) {
+            console.error(e);
+            setError(eify(e));
+        }
+    };
+
+    return (
+        <Form onSubmit={handleSubmit}>
+            <VStack>
+                <Field
+                    name="npub"
+                    validate={[
+                        required(
+                            i18n.t("settings.nostr_contacts.npub_required")
+                        )
+                    ]}
+                >
+                    {(field, props) => (
+                        <TextField
+                            {...props}
+                            value={field.value}
+                            error={field.error}
+                            label={i18n.t("settings.nostr_contacts.npub_label")}
+                            placeholder="npub..."
+                        />
+                    )}
+                </Field>
+                <Show when={error()}>
+                    <InfoBox accent="red">{error()?.message}</InfoBox>
+                </Show>
+                <Button
+                    loading={feedbackForm.submitting}
+                    disabled={
+                        !feedbackForm.dirty ||
+                        feedbackForm.submitting ||
+                        feedbackForm.invalid
+                    }
+                    intent="blue"
+                    type="submit"
+                >
+                    {i18n.t("settings.nostr_contacts.sync")}
+                </Button>
+            </VStack>
+        </Form>
+    );
+}
 
 export default function SyncNostrContacts() {
-    const [state, _] = useMegaStore();
+    const [state, actions] = useMegaStore();
+    const [loading, setLoading] = createSignal(false);
+    const [error, setError] = createSignal<Error>();
 
-    const [value, setValue] = createSignal("");
+    function clearNpub() {
+        actions.saveNpub("");
+    }
 
-    const onSubmit = async (e: SubmitEvent) => {
-        e.preventDefault();
-
-        const npub = value().trim();
-        await state.mutiny_wallet?.sync_nostr_contacts(npub);
-
-        setValue("");
-    };
+    async function resync() {
+        setError(undefined);
+        setLoading(true);
+        try {
+            if (!PRIMAL_API) throw new Error("PRIMAL_API not set");
+            await state.mutiny_wallet?.sync_nostr_contacts(
+                PRIMAL_API,
+                // We can only see the resync button if there's an npub set
+                state.npub!
+            );
+        } catch (e) {
+            console.error(e);
+        }
+        setLoading(false);
+    }
 
     return (
         <MutinyWalletGuard>
@@ -33,29 +123,42 @@ export default function SyncNostrContacts() {
                 <DefaultMain>
                     <BackLink href="/settings" title="Settings" />
                     <LargeHeader>Sync Nostr Contacts</LargeHeader>
-                    <InnerCard>
-                        <form class="flex flex-col gap-4" onSubmit={onSubmit}>
-                            <TextField.Root
-                                value={value()}
-                                onChange={setValue}
-                                class="flex flex-col gap-4"
-                            >
-                                <TextField.Label class="text-sm font-semibold uppercase">
-                                    Sync Nostr Contacts
-                                </TextField.Label>
-                                <TextField.Input
-                                    class="w-full rounded-lg p-2 text-black"
-                                    // placeholder="LNURL..."
-                                />
-                                <TextField.ErrorMessage class="text-red-500">
-                                    Doesn't look right...
-                                </TextField.ErrorMessage>
-                            </TextField.Root>
-                            <Button layout="small" type="submit">
-                                Sync
-                            </Button>
-                        </form>
-                    </InnerCard>
+                    <Switch>
+                        <Match when={state.npub}>
+                            <VStack>
+                                <Show when={error()}>
+                                    <InfoBox accent="red">
+                                        {error()?.message}
+                                    </InfoBox>
+                                </Show>
+                                <FancyCard>
+                                    <VStack>
+                                        <KeyValue key="Npub">
+                                            <MiniStringShower
+                                                text={state.npub || ""}
+                                            />
+                                        </KeyValue>
+                                        <Button
+                                            intent="blue"
+                                            onClick={resync}
+                                            loading={loading()}
+                                        >
+                                            Resync
+                                        </Button>
+                                        <Button
+                                            intent="red"
+                                            onClick={clearNpub}
+                                        >
+                                            Remove
+                                        </Button>
+                                    </VStack>
+                                </FancyCard>
+                            </VStack>
+                        </Match>
+                        <Match when={!state.npub}>
+                            <SyncContactsForm />
+                        </Match>
+                    </Switch>
                 </DefaultMain>
                 <NavBar activeTab="settings" />
             </SafeArea>

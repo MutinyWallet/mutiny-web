@@ -1,10 +1,18 @@
 import { Tabs } from "@kobalte/core";
 import { Contact } from "@mutinywallet/mutiny-wasm";
-import { createResource, For, Show, Suspense } from "solid-js";
+import {
+    createEffect,
+    createResource,
+    ErrorBoundary,
+    For,
+    Match,
+    Show,
+    Suspense,
+    Switch
+} from "solid-js";
 
 import {
     BackLink,
-    Button,
     Card,
     CombinedActivity,
     ContactEditor,
@@ -16,8 +24,11 @@ import {
     MutinyWalletGuard,
     NavBar,
     NiceP,
+    NostrActivity,
     SafeArea,
     showToast,
+    SimpleErrorDisplay,
+    SyncContactsForm,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -35,6 +46,13 @@ function ContactRow() {
         } catch (e) {
             console.error(e);
             return [];
+        }
+    });
+
+    // If the user sets an npub we should refetch the contacts list
+    createEffect(() => {
+        if (state.npub) {
+            refetch();
         }
     });
     const [gradients] = createResource(contacts, gradientsPerContact);
@@ -92,15 +110,15 @@ export default function Activity() {
                     <ContactRow />
                     <Tabs.Root defaultValue="mutiny">
                         <Tabs.List class="relative mb-8 mt-4 flex justify-around gap-1 rounded-xl bg-neutral-950 p-1">
-                            <Tabs.Trigger value="mutiny" class={TAB}>
-                                {i18n.t("activity.mutiny")}
+                            <Tabs.Trigger value="wallet" class={TAB}>
+                                {i18n.t("activity.wallet")}
                             </Tabs.Trigger>
                             <Tabs.Trigger value="nostr" class={TAB}>
                                 {i18n.t("activity.nostr")}
                             </Tabs.Trigger>
                             {/* <Tabs.Indicator class="absolute bg-m-blue transition-all bottom-[-1px] h-[2px]" /> */}
                         </Tabs.List>
-                        <Tabs.Content value="mutiny">
+                        <Tabs.Content value="wallet">
                             {/* <MutinyActivity /> */}
                             <Card title={i18n.t("activity.title")}>
                                 <div class="p-1" />
@@ -117,16 +135,27 @@ export default function Activity() {
                             </Card>
                         </Tabs.Content>
                         <Tabs.Content value="nostr">
-                            <VStack>
-                                <div class="mx-auto my-8 flex max-w-[20rem] flex-col items-center gap-4 text-center">
-                                    <NiceP>
-                                        {i18n.t("activity.import_contacts")}
-                                    </NiceP>
-                                    <Button disabled intent="blue">
-                                        {i18n.t("activity.coming_soon")}
-                                    </Button>
-                                </div>
-                            </VStack>
+                            <Switch>
+                                <Match when={state.npub}>
+                                    <ErrorBoundary
+                                        fallback={(e) => (
+                                            <SimpleErrorDisplay error={e} />
+                                        )}
+                                    >
+                                        <Suspense fallback={<LoadingShimmer />}>
+                                            <NostrActivity />
+                                        </Suspense>
+                                    </ErrorBoundary>
+                                </Match>
+                                <Match when={!state.npub}>
+                                    <VStack>
+                                        <NiceP>
+                                            {i18n.t("activity.import_contacts")}
+                                        </NiceP>
+                                        <SyncContactsForm />
+                                    </VStack>
+                                </Match>
+                            </Switch>
                         </Tabs.Content>
                     </Tabs.Root>
                 </DefaultMain>

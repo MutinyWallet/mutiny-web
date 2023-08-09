@@ -72,3 +72,13 @@ select {
 strong {
     @apply font-semibold text-m-red;
 }
+
+.slide-fade-enter-active,
+.slide-fade-exit-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-enter,
+.slide-fade-exit-to {
+  transform: translateX(10px);
+  opacity: 0;
+}

@@ -60,13 +60,14 @@ export default defineConfig({
             "@solid-primitives/upload",
             "i18next",
             "i18next-browser-languagedetector",
+            "@mutinywallet/barcode-scanner",
+            "@nostr-dev-kit/ndk",
             "@capacitor/clipboard",
             "@capacitor/core",
             "@capacitor/filesystem",
             "@capacitor/toast",
-            "@mutinywallet/barcode-scanner",
             "@capacitor/app",
-            "@capacitor/browser"
+            "@capacitor/browser",
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
         exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
