@@ -20,7 +20,7 @@ import {
     VStack
 } from "~/components/layout";
 import { BackPop } from "~/components/layout/BackPop";
-import { ExternalLink } from "~/components/layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import { TextField } from "~/components/layout/TextField";
 import feedback from "~/assets/icons/feedback.svg";

@@ -1,6 +1,7 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
 import { formatExpiration } from "~/utils/prettyPrintTime";
-import { Card, LoadingSpinner, VStack } from "./layout";
+import { Card, VStack } from "./layout";
+import { LoadingSpinner } from "@mutinywallet/ui";
 import bolt from "~/assets/icons/bolt.svg";
 import {
     For,

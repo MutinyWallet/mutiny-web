@@ -40,7 +40,7 @@ import { MutinyTagItem } from "~/utils/tags";
 import { BackButton } from "~/components/layout/BackButton";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { SuccessModal } from "~/components/successfail/SuccessModal";
-import { ExternalLink } from "~/components/layout/ExternalLink";
+import { ExternalLink } from "@mutinywallet/ui";
 import { InfoBox } from "~/components/InfoBox";
 import { useI18n } from "~/i18n/context";
 import { ParsedParams, toParsedParams } from "~/logic/waila";

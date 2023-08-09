@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "solid-start dev",
         "host": "solid-start dev --host",
-        "build": "solid-start build && node insertHead.js",
+        "build-submodules": "turbo run build --filter='./packages/*'",
+        "build": "pnpm run build-submodules && solid-start build && node insertHead.js",
         "start": "solid-start start",
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
@@ -48,6 +49,7 @@
         "@modular-forms/solid": "^0.18.1",
         "@mutinywallet/barcode-scanner": "5.0.0-beta.3",
         "@mutinywallet/mutiny-wasm": "0.4.12",
+        "@mutinywallet/ui": "workspace:*",
         "@mutinywallet/waila-wasm": "^0.2.1",
         "@solid-primitives/upload": "^0.0.111",
         "@thisbeyond/solid-select": "^0.14.0",
@@ -58,6 +60,7 @@
         "solid-js": "^1.7.8",
         "solid-qr-code": "^0.0.8",
         "solid-start": "^0.2.29",
+        "turbo": "^1.10.12",
         "undici": "^5.22.1"
     },
     "engines": {
