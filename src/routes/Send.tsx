@@ -496,6 +496,7 @@ export default function Send() {
                     firstNode,
                     lnurlp()!,
                     amountSats(),
+                    undefined, // zap_npub
                     tags
                 );
 
