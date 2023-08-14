@@ -4,7 +4,8 @@ import {
     Suspense,
     Switch,
     createResource,
-    createSignal
+    createSignal,
+    onMount
 } from "solid-js";
 import { A } from "solid-start";
 import { ConfirmDialog } from "~/components/Dialog";
@@ -134,6 +135,17 @@ function PlusCTA() {
         if (!planDetails()) return false;
         return (state.balance?.lightning || 0n) > planDetails().amount_sat;
     };
+
+    // Refresh our subscription status on mount if we already are subscribed
+    onMount(async () => {
+        if (state.subscription_timestamp) {
+            try {
+                await actions.checkForSubscription();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    });
 
     return (
         <Show when={planDetails()}>
