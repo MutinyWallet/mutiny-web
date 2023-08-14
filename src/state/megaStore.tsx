@@ -257,41 +257,32 @@ export const Provider: ParentComponent = (props) => {
             });
     });
 
-    // Fetch status from remote on load
     onMount(() => {
-        function handleExisting() {
-            if (state.existing_tab_detected) {
-                setState({
-                    setup_error: new Error(
-                        "Existing tab detected, aborting setup"
-                    )
-                });
-            } else {
-                console.log("running setup node manager...");
-
-                actions
-                    .setup()
-                    .then(() => console.log("node manager setup done"));
-
-                // Setup an event listener to stop the mutiny wallet when the page unloads
-                window.onunload = async (_e) => {
-                    console.log("stopping mutiny_wallet");
-                    await state.mutiny_wallet?.stop();
-                    console.log("mutiny_wallet stopped");
-                    sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
-                };
-            }
-        }
-
-        function handleGoodBrowser() {
-            console.log("checking if any other tabs are open");
-            // 500ms should hopefully be enough time for any tabs to reply
-            timeout(500).then(handleExisting);
-        }
-
         if (!state.mutiny_wallet && !state.deleting) {
             console.log("checking for browser compatibility...");
-            actions.checkBrowserCompat().then(handleGoodBrowser);
+            actions.checkBrowserCompat().then(() => {
+                if (state.existing_tab_detected) {
+                    setState({
+                        setup_error: new Error(
+                            "Existing tab detected, aborting setup"
+                        )
+                    });
+                } else {
+                    console.log("running setup node manager...");
+
+                    actions
+                        .setup()
+                        .then(() => console.log("node manager setup done"));
+
+                    // Setup an event listener to stop the mutiny wallet when the page unloads
+                    window.onunload = async (_e) => {
+                        console.log("stopping mutiny_wallet");
+                        await state.mutiny_wallet?.stop();
+                        console.log("mutiny_wallet stopped");
+                        sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
+                    };
+                }
+            });
         }
     });
 
