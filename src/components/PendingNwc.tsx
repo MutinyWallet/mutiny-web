@@ -79,6 +79,14 @@ export function PendingNwc() {
         }
     }
 
+    async function approveAll() {
+        // clone the list so it doesn't update in place
+        const toApprove = [...pendingRequests()!];
+        for (const item of toApprove) {
+            await payItem(item);
+        }
+    }
+
     async function rejectItem(item: PendingItem) {
         try {
             setPaying(item.id);
@@ -180,12 +188,22 @@ export function PendingNwc() {
                         )}
                     </For>
                 </VStack>
-                <A
-                    href="/settings/connections"
-                    class="self-center font-semibold text-m-red no-underline active:text-m-red/80"
-                >
-                    {i18n.t("settings.connections.pending_nwc.configure_link")}
-                </A>
+                <div class="flex w-full justify-around">
+                    <button
+                        class="font-semibold text-m-green active:text-m-red/80"
+                        onClick={approveAll}
+                    >
+                        {i18n.t("settings.connections.pending_nwc.approve_all")}
+                    </button>
+                    <A
+                        href="/settings/connections"
+                        class="self-center font-semibold text-m-red no-underline active:text-m-red/80"
+                    >
+                        {i18n.t(
+                            "settings.connections.pending_nwc.configure_link"
+                        )}
+                    </A>
+                </div>
             </Card>
         </Show>
     );
