@@ -208,6 +208,7 @@ export default function Send() {
 
     // These can be derived from the "destination" signal or set by the user
     const [amountSats, setAmountSats] = createSignal(0n);
+    const [isAmtEditable, setIsAmtEditable] = createSignal(true);
     const [source, setSource] = createSignal<SendSource>("lightning");
 
     // These can only be derived from the "destination" signal
@@ -232,6 +233,7 @@ export default function Send() {
     function clearAll() {
         setDestination(undefined);
         setAmountSats(0n);
+        setIsAmtEditable(true);
         setSource("lightning");
         setInvoice(undefined);
         setAddress(undefined);
@@ -320,8 +322,10 @@ export default function Send() {
                 state.mutiny_wallet
                     ?.decode_invoice(source.invoice)
                     .then((invoice) => {
-                        if (invoice?.amount_sats)
+                        if (invoice?.amount_sats) {
                             setAmountSats(invoice.amount_sats);
+                            setIsAmtEditable(false);
+                        }
                         setInvoice(invoice);
                         setSource("lightning");
                     });
@@ -334,7 +338,12 @@ export default function Send() {
                     ?.decode_lnurl(source.lnurl)
                     .then((lnurlParams) => {
                         if (lnurlParams.tag === "payRequest") {
-                            setAmountSats(source.amount_sats || 0n);
+                            if (lnurlParams.min == lnurlParams.max) {
+                                setAmountSats(lnurlParams.min / 1000n);
+                                setIsAmtEditable(false);
+                            } else {
+                                setAmountSats(source.amount_sats || 0n);
+                            }
                             setLnurlp(source.lnurl);
                             setSource("lightning");
                         }
@@ -690,7 +699,7 @@ export default function Send() {
                                     amountSats={amountSats().toString()}
                                     setAmountSats={setAmountSats}
                                     fee={feeEstimate()?.toString()}
-                                    isAmountEditable={!invoice()?.amount_sats}
+                                    isAmountEditable={isAmtEditable()}
                                     maxAmountSats={maxAmountSats()}
                                     skipWarnings={true}
                                 />
