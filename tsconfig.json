@@ -8,7 +8,7 @@
         "jsxImportSource": "solid-js",
         "jsx": "preserve",
         "strict": true,
-        "types": ["solid-start/env", "node"],
+        "types": ["solid-start/env", "node", "vite-plugin-pwa/client"],
         "baseUrl": "./",
         "paths": {
             "~/*": ["./src/*"]
