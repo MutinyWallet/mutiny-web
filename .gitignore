@@ -30,3 +30,5 @@ dev-dist
 /tests-examples/
 /playwright-report/
 /playwright/.cache/
+
+.env
