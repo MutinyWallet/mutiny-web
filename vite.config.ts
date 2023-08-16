@@ -2,8 +2,10 @@ import solid from "solid-start/vite";
 import { defineConfig } from "vite";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 import wasm from "vite-plugin-wasm";
+import autoprefixer from "autoprefixer";
+import tailwindcss from "tailwindcss";
 
-import * as path from 'path'
+import * as path from "path";
 
 const pwaOptions: Partial<VitePWAOptions> = {
     base: "/",
@@ -62,5 +64,10 @@ export default defineConfig({
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
         exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
+    },
+    css: {
+        postcss: {
+            plugins: [autoprefixer(), tailwindcss()]
+        }
     }
 });
