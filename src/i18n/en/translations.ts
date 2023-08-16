@@ -19,7 +19,9 @@ export default {
         why: "Why?",
         private_tags: "Private tags",
         view_transaction: "View Transaction",
-        pending: "Pending"
+        pending: "Pending",
+        error_safe_mode:
+            "Mutiny is running in safe mode. Lightning is disabled."
     },
     contacts: {
         new: "new",
@@ -479,7 +481,10 @@ export default {
                     "If you have any questions on what these buttons do, please",
                 support_link: "reach out to us for support.",
                 services_down:
-                    "It looks like one of Mutiny's services is down. Please try again later."
+                    "It looks like one of Mutiny's services is down. Please try again later.",
+                in_the_meantime:
+                    "In the meantime if you want to access your on-chain funds you can load Mutiny in",
+                safe_mode: "Safe Mode"
             }
         }
     },

@@ -1,10 +1,11 @@
-import { Show } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 import { Button, FancyCard, Indicator } from "~/components/layout";
 import { useMegaStore } from "~/state/megaStore";
 import { AmountSats, AmountFiat } from "./Amount";
 import { A, useNavigate } from "solid-start";
 import shuffle from "~/assets/icons/shuffle.svg";
 import { useI18n } from "~/i18n/context";
+import { InfoBox } from "./InfoBox";
 
 export function LoadingShimmer() {
     return (
@@ -43,22 +44,38 @@ export default function BalanceBox(props: { loading?: boolean }) {
         <>
             <FancyCard>
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
-                    <div class="flex flex-col gap-1">
-                        <div class="text-2xl">
-                            <AmountSats
-                                amountSats={state.balance?.lightning || 0}
-                                icon="lightning"
-                                denominationSize="lg"
-                            />
-                        </div>
-                        <div class="text-lg text-white/70">
-                            <AmountFiat
-                                amountSats={state.balance?.lightning || 0}
-                                denominationSize="sm"
-                            />
-                        </div>
-                    </div>
+                    <Switch>
+                        <Match when={state.safe_mode}>
+                            <div class="flex flex-col gap-1">
+                                <InfoBox accent="red">
+                                    {i18n.t("common.error_safe_mode")}
+                                </InfoBox>
+                            </div>
+                        </Match>
+                        <Match when={true}>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-2xl">
+                                    <AmountSats
+                                        amountSats={
+                                            state.balance?.lightning || 0
+                                        }
+                                        icon="lightning"
+                                        denominationSize="lg"
+                                    />
+                                </div>
+                                <div class="text-lg text-white/70">
+                                    <AmountFiat
+                                        amountSats={
+                                            state.balance?.lightning || 0
+                                        }
+                                        denominationSize="sm"
+                                    />
+                                </div>
+                            </div>
+                        </Match>
+                    </Switch>
                 </Show>
+
                 <hr class="my-2 border-m-grey-750" />
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
                     <div class="flex justify-between">
