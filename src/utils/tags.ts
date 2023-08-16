@@ -25,8 +25,21 @@ export function tagsToIds(tags?: MutinyTagItem[]): string[] {
 }
 
 export function tagToMutinyTag(tag: TagItem): MutinyTagItem {
-    // @ts-expect-error: FIXME: make typescript less mad about this
-    return tag as MutinyTagItem;
+    let kind: MutinyTagItem["kind"];
+
+    switch (tag.kind) {
+        case 0: {
+            kind = "Label";
+            break;
+        }
+        case 1:
+        default: {
+            kind = "Contact";
+            break;
+        }
+    }
+
+    return { ...tag, kind };
 }
 
 export function sortByLastUsed(a: MutinyTagItem, b: MutinyTagItem) {
