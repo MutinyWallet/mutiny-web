@@ -69,7 +69,7 @@ function PeerItem(props: { peer: MutinyPeer }) {
                         {JSON.stringify(props.peer, null, 2)}
                     </pre>
                     <Button
-                        intent="glowy"
+                        intent="red"
                         layout="xs"
                         onClick={handleDisconnectPeer}
                     >
@@ -226,21 +226,21 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
                         {i18n.t("common.view_transaction")}
                     </ExternalLink>
                     <Button
-                        intent="glowy"
+                        intent="red"
                         layout="xs"
                         onClick={() => setPendingChannelAction("close")}
                     >
                         {i18n.t("settings.admin.kitchen_sink.close_channel")}
                     </Button>
                     <Button
-                        intent="glowy"
+                        intent="red"
                         layout="xs"
                         onClick={() => setPendingChannelAction("force_close")}
                     >
                         {i18n.t("settings.admin.kitchen_sink.force_close")}
                     </Button>
                     <Button
-                        intent="glowy"
+                        intent="red"
                         layout="xs"
                         onClick={() => setPendingChannelAction("abandon")}
                     >

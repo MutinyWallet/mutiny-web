@@ -89,7 +89,7 @@ export const Collapser: ParentComponent<{
     activityLight?: "on" | "off";
 }> = (props) => {
     return (
-        <Collapsible.Root class="collapsible">
+        <Collapsible.Root defaultOpen={props.defaultOpen} class="collapsible">
             <Collapsible.Trigger class="flex w-full justify-between px-4 py-2 hover:bg-m-grey-750 active:bg-m-grey-900">
                 <div class="flex items-center gap-2">
                     <Switch>

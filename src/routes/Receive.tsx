@@ -40,7 +40,8 @@ import {
     SimpleDialog,
     StyledRadioGroup,
     SuccessModal,
-    TagEditor
+    TagEditor,
+    VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { matchError } from "~/logic/errorDispatch";
@@ -388,15 +389,16 @@ export default function Receive() {
                                 </Card>
 
                                 <div class="flex-1" />
-                                <Button
-                                    class="w-full flex-grow-0"
-                                    disabled={!amount()}
-                                    intent="green"
-                                    onClick={onSubmit}
-                                    loading={loading()}
-                                >
-                                    {i18n.t("common.continue")}
-                                </Button>
+                                <VStack>
+                                    <Button
+                                        disabled={!amount()}
+                                        intent="green"
+                                        onClick={onSubmit}
+                                        loading={loading()}
+                                    >
+                                        {i18n.t("common.continue")}
+                                    </Button>
+                                </VStack>
                             </div>
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>

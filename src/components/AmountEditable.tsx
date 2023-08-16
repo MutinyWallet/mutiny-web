@@ -15,7 +15,7 @@ import { useNavigate } from "solid-start";
 import close from "~/assets/icons/close.svg";
 import currencySwap from "~/assets/icons/currency-swap.svg";
 import pencil from "~/assets/icons/pencil.svg";
-import { Button, FeesModal, InfoBox, InlineAmount } from "~/components";
+import { Button, FeesModal, InfoBox, InlineAmount, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
@@ -577,13 +577,13 @@ export const AmountEditable: ParentComponent<{
                                     )}
                                 </For>
                             </div>
-                            <Button
-                                intent="green"
-                                class="w-full flex-none"
-                                onClick={handleSubmit}
-                            >
-                                {i18n.t("receive.amount_editable.set_amount")}
-                            </Button>
+                            <VStack>
+                                <Button intent="green" onClick={handleSubmit}>
+                                    {i18n.t(
+                                        "receive.amount_editable.set_amount"
+                                    )}
+                                </Button>
+                            </VStack>
                         </div>
                     </Dialog.Content>
                 </div>
