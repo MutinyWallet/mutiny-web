@@ -69,7 +69,7 @@ export default function App() {
                 </Show>
                 <BalanceBox loading={state.wallet_loading} />
                 <Suspense>
-                    <Show when={!state.wallet_loading}>
+                    <Show when={!state.wallet_loading && !state.safe_mode}>
                         <PendingNwc />
                     </Show>
                 </Suspense>

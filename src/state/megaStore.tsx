@@ -24,6 +24,7 @@ import eify from "~/utils/eify";
 import { timeout } from "~/utils/timeout";
 import { ParsedParams } from "~/logic/waila";
 import { subscriptionValid } from "~/utils/subscriptions";
+import { useSearchParams } from "solid-start";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -53,6 +54,7 @@ export type MegaStore = [
         needs_password: boolean;
         load_stage: LoadStage;
         settings?: MutinyWalletSettingStrings;
+        safe_mode?: boolean;
     },
     {
         setup(password?: string): Promise<void>;
@@ -67,6 +69,8 @@ export type MegaStore = [
 ];
 
 export const Provider: ParentComponent = (props) => {
+    const [searchParams] = useSearchParams();
+
     const [state, setState] = createStore({
         mutiny_wallet: undefined as MutinyWallet | undefined,
         deleting: false,
@@ -87,7 +91,8 @@ export const Provider: ParentComponent = (props) => {
         },
         needs_password: false,
         load_stage: "fresh" as LoadStage,
-        settings: undefined as MutinyWalletSettingStrings | undefined
+        settings: undefined as MutinyWalletSettingStrings | undefined,
+        safe_mode: searchParams.safe_mode === "true"
     });
 
     const actions = {
@@ -132,7 +137,8 @@ export const Provider: ParentComponent = (props) => {
 
                 const mutinyWallet = await setupMutinyWallet(
                     settings,
-                    password
+                    password,
+                    state.safe_mode
                 );
 
                 // Give other components access to settings via the store

@@ -163,7 +163,8 @@ export async function initializeWasm() {
 
 export async function setupMutinyWallet(
     settings: MutinyWalletSettingStrings,
-    password?: string
+    password?: string,
+    safeMode?: boolean
 ): Promise<MutinyWallet> {
     console.log("Starting setup...");
 
@@ -189,6 +190,7 @@ export async function setupMutinyWallet(
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
     console.log("Using scorer address", scorer);
+    console.log(safeMode ? "Safe mode enabled" : "Safe mode disabled");
 
     const mutinyWallet = await new MutinyWallet(
         // Password
@@ -207,7 +209,9 @@ export async function setupMutinyWallet(
         // Do not connect peers
         undefined,
         // Do not skip device lock
-        undefined
+        undefined,
+        // Safe mode
+        safeMode || undefined
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
