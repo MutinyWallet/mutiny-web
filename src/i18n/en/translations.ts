@@ -477,7 +477,9 @@ export default {
                     "If your wallet seems broken, here are some tools to try to debug and repair it.",
                 questions:
                     "If you have any questions on what these buttons do, please",
-                support_link: "reach out to us for support."
+                support_link: "reach out to us for support.",
+                services_down:
+                    "It looks like one of Mutiny's services is down. Please try again later."
             }
         }
     },
