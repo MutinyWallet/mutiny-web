@@ -33,6 +33,37 @@ export default function SetupErrorDisplay(props: { initialError: Error }) {
     return (
         <SafeArea>
             <Switch>
+                <Match
+                    when={error.message.startsWith("Network connection closed")}
+                >
+                    <DefaultMain>
+                        <LargeHeader>
+                            {i18n.t("error.on_boot.loading_failed.header")}
+                        </LargeHeader>
+                        <p class="bg-white/10 rounded-xl p-4 font-mono">
+                            <span class="font-bold">{error.name}</span>:{" "}
+                            {error.message}
+                        </p>
+                        <NiceP>
+                            {i18n.t(
+                                "error.on_boot.loading_failed.services_down"
+                            )}
+                        </NiceP>
+                        <NiceP>
+                            Follow us on{" "}
+                            <ExternalLink href="https://primal.net/p/npub1mutnyacc9uc4t5mmxvpprwsauj5p2qxq95v4a9j0jxl8wnkfvuyque23vg">
+                                Nostr
+                            </ExternalLink>{" "}
+                            or{" "}
+                            <ExternalLink href="https://twitter.com/MutinyWallet">
+                                Twitter
+                            </ExternalLink>{" "}
+                            for updates.
+                        </NiceP>
+
+                        <ErrorFooter />
+                    </DefaultMain>
+                </Match>
                 <Match when={error.message.startsWith("Existing tab")}>
                     <Title>{i18n.t("error.on_boot.existing_tab.title")}</Title>
                     <DefaultMain>
