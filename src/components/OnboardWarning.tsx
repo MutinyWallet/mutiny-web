@@ -25,7 +25,6 @@ export function OnboardWarning() {
                         <ButtonLink
                             intent="blue"
                             layout="xs"
-                            class="self-auto"
                             href="/settings/backup"
                         >
                             {i18n.t("settings.backup.title")}

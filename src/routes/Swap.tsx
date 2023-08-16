@@ -443,15 +443,16 @@ export default function Swap() {
                         </Show>
                     </VStack>
                     <div class="flex-1" />
-                    <Button
-                        class="w-full flex-grow-0"
-                        disabled={!canSwap()}
-                        intent="blue"
-                        onClick={handleSwap}
-                        loading={loading()}
-                    >
-                        {i18n.t("swap.confirm_swap")}
-                    </Button>
+                    <VStack>
+                        <Button
+                            disabled={!canSwap()}
+                            intent="blue"
+                            onClick={handleSwap}
+                            loading={loading()}
+                        >
+                            {i18n.t("swap.confirm_swap")}
+                        </Button>
+                    </VStack>
                 </DefaultMain>
                 <NavBar activeTab="none" />
             </SafeArea>

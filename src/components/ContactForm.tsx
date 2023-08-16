@@ -49,9 +49,11 @@ export function ContactForm(props: {
                     </Field> */}
                 </VStack>
             </div>
-            <Button type="submit" intent="blue" class="w-full flex-none">
-                {props.cta}
-            </Button>
+            <VStack>
+                <Button type="submit" intent="blue">
+                    {props.cta}
+                </Button>
+            </VStack>
         </Form>
     );
 }

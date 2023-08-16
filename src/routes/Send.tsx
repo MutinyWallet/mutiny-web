@@ -715,17 +715,18 @@ export default function Send() {
                             </Match>
                         </Switch>
                         <Show when={destination()}>
-                            <Button
-                                class="w-full flex-grow-0"
-                                disabled={sendButtonDisabled()}
-                                intent="blue"
-                                onClick={handleSend}
-                                loading={sending()}
-                            >
-                                {sending()
-                                    ? i18n.t("send.sending")
-                                    : i18n.t("send.confirm_send")}
-                            </Button>
+                            <VStack>
+                                <Button
+                                    disabled={sendButtonDisabled()}
+                                    intent="blue"
+                                    onClick={handleSend}
+                                    loading={sending()}
+                                >
+                                    {sending()
+                                        ? i18n.t("send.sending")
+                                        : i18n.t("send.confirm_send")}
+                                </Button>
+                            </VStack>
                         </Show>
                         <FeedbackLink />
                     </VStack>
