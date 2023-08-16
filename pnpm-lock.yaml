@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@capacitor/android':
     specifier: ^5.2.2
@@ -23,8 +27,8 @@ dependencies:
     specifier: 5.0.0-beta.3
     version: 5.0.0-beta.3(@capacitor/core@5.2.2)
   '@mutinywallet/mutiny-wasm':
-    specifier: 0.4.11
-    version: 0.4.11
+    specifier: 0.4.12
+    version: 0.4.12
   '@mutinywallet/waila-wasm':
     specifier: ^0.2.1
     version: 0.2.1
@@ -2075,8 +2079,8 @@ packages:
       '@capacitor/core': 5.2.2
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.4.11:
-    resolution: {integrity: sha512-H/MQnwqBhtodJC7HbNWXvYWoUjCnu1pLcGKfJ3F5XwcNgx3LrvWzrB9oHngMSgyEx3x12BFd3Cl/hyoWIG+r8g==}
+  /@mutinywallet/mutiny-wasm@0.4.12:
+    resolution: {integrity: sha512-2PmIsRMDNHM6VikSj1PR9utHtIbHGYCSDtbZ0MpRcc3p8oCLDr7AXTPmE8vJ+5jOqZ3t/hP6NMXB7GI5rJdbrw==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.2.1:
@@ -8119,7 +8123,3 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
