@@ -402,6 +402,14 @@ export default {
             lsp_caption:
                 "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy.",
             error_lsp: "That doesn't look like a URL",
+            lsp_connection_string_label: "LSP Connection String",
+            lsp_connection_string_caption:
+                "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Using LSP specification.",
+            error_lsp_connection_string: "That doesn't look like node connection string",
+            lsp_token_label: "LSP Token",
+            lsp_token_caption:
+                "LSP Token.  Used to identify what wallet is connecting to the LSP",
+            error_lsp_token: "That doesn't look like a valid token",
             save: "Save"
         }
     },

@@ -17,6 +17,9 @@ importers:
       '@capacitor/core':
         specifier: ^5.2.2
         version: 5.2.2
+      '@johncantrell97/mutiny-wasm':
+        specifier: 0.4.12
+        version: 0.4.12
       '@kobalte/core':
         specifier: ^0.9.8
         version: 0.9.8(solid-js@1.7.8)
@@ -29,9 +32,6 @@ importers:
       '@mutinywallet/barcode-scanner':
         specifier: 5.0.0-beta.3
         version: 5.0.0-beta.3(@capacitor/core@5.2.2)
-      '@mutinywallet/mutiny-wasm':
-        specifier: 0.4.12
-        version: 0.4.12
       '@mutinywallet/ui':
         specifier: workspace:*
         version: link:packages/ui
@@ -2327,6 +2327,10 @@ packages:
       chalk: 4.1.2
     dev: true
 
+  /@johncantrell97/mutiny-wasm@0.4.12:
+    resolution: {integrity: sha512-Xmyd4h4nLtbG7zTkVCJSa3OC/LWHH+mGpp47NFnnN3WF8IrjpfqzeMFeEDzrrTAvEqXDfWTXqI2G8FczB3yagA==}
+    dev: false
+
   /@jridgewell/gen-mapping@0.3.3:
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
     engines: {node: '>=6.0.0'}
@@ -2455,10 +2459,6 @@ packages:
       '@capacitor/core': ^5.0.0
     dependencies:
       '@capacitor/core': 5.2.2
-    dev: false
-
-  /@mutinywallet/mutiny-wasm@0.4.12:
-    resolution: {integrity: sha512-2PmIsRMDNHM6VikSj1PR9utHtIbHGYCSDtbZ0MpRcc3p8oCLDr7AXTPmE8vJ+5jOqZ3t/hP6NMXB7GI5rJdbrw==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.2.1:

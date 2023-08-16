@@ -1,5 +1,5 @@
 import { Dialog } from "@kobalte/core";
-import { MutinyChannel, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { MutinyChannel, MutinyInvoice } from "@johncantrell97/mutiny-wasm";
 import { ExternalLink } from "@mutinywallet/ui";
 import {
     createEffect,

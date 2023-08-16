@@ -1,6 +1,6 @@
 /* @refresh reload */
 
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import initMutinyWallet, { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 
@@ -10,6 +10,8 @@ export type MutinyWalletSettingStrings = {
     esplora?: string;
     rgs?: string;
     lsp?: string;
+    lsp_connection_string?: string;
+    lsp_token?: string;
     auth?: string;
     subscriptions?: string;
     storage?: string;
@@ -30,7 +32,7 @@ const SETTINGS_KEYS = [
     {
         name: "esplora",
         storageKey: "USER_SETTINGS_esplora",
-        default: import.meta.env.VITE_ESPLORA
+        default: "https://mempool.space/signet/api"
     },
     {
         name: "rgs",
@@ -40,7 +42,18 @@ const SETTINGS_KEYS = [
     {
         name: "lsp",
         storageKey: "USER_SETTINGS_lsp",
-        default: import.meta.env.VITE_LSP
+        default: ""
+    },
+    {
+        name: "lsp_connection_string",
+        storageKey: "USER_SETTINGS_lsp_connection_string",
+        default:
+            "021c88ca495fc43a9e36f4d98ac316c112d6e3878d6c47fda8fb182ddf7503baac@3.209.126.167:39735"
+    },
+    {
+        name: "lsp_token",
+        storageKey: "USER_SETTINGS_lsp_token",
+        default: "cequals21jit"
     },
     {
         name: "auth",
@@ -174,6 +187,8 @@ export async function setupMutinyWallet(
         esplora,
         rgs,
         lsp,
+        lsp_connection_string,
+        lsp_token,
         auth,
         subscriptions,
         storage,
@@ -186,6 +201,8 @@ export async function setupMutinyWallet(
     console.log("Using esplora address", esplora);
     console.log("Using rgs address", rgs);
     console.log("Using lsp address", lsp);
+    console.log("Using lsp connection string", lsp_connection_string);
+    console.log("Using lsp token", lsp_token);
     console.log("Using auth address", auth);
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
@@ -202,6 +219,8 @@ export async function setupMutinyWallet(
         esplora,
         rgs,
         lsp,
+        lsp_connection_string,
+        lsp_token,
         auth,
         subscriptions,
         storage,

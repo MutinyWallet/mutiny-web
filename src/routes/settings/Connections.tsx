@@ -1,4 +1,4 @@
-import { NwcProfile } from "@mutinywallet/mutiny-wasm";
+import { NwcProfile } from "@johncantrell97/mutiny-wasm";
 import { createResource, createSignal, For, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 

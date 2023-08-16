@@ -2,7 +2,7 @@ import {
     Contact,
     MutinyBip21RawMaterials,
     MutinyInvoice
-} from "@mutinywallet/mutiny-wasm";
+} from "@johncantrell97/mutiny-wasm";
 import { ExternalLink } from "@mutinywallet/ui";
 import {
     createEffect,

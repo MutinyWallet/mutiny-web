@@ -1,4 +1,4 @@
-import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
+import { MutinyChannel } from "@johncantrell97/mutiny-wasm";
 import { LoadingSpinner } from "@mutinywallet/ui";
 import {
     createEffect,

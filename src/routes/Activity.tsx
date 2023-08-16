@@ -1,5 +1,5 @@
 import { Tabs } from "@kobalte/core";
-import { Contact } from "@mutinywallet/mutiny-wasm";
+import { Contact } from "@johncantrell97/mutiny-wasm";
 import { createResource, For, Show, Suspense } from "solid-js";
 
 import {

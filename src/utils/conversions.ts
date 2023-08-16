@@ -1,4 +1,4 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 
 export function satsToUsd(
     amount: number | undefined,

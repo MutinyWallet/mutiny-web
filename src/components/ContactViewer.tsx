@@ -1,6 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import { SubmitHandler } from "@modular-forms/solid";
-import { Contact } from "@mutinywallet/mutiny-wasm";
+import { Contact } from "@johncantrell97/mutiny-wasm";
 import { createSignal, Match, Switch } from "solid-js";
 
 import close from "~/assets/icons/close.svg";

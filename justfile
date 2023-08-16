@@ -4,10 +4,10 @@ dev:
     pnpm run dev
 
 local:
-    pnpm link --global "@mutinywallet/mutiny-wasm"
+    pnpm link --global "@johncantrell97/mutiny-wasm"
 
 remote:
-    pnpm unlink "@mutinywallet/mutiny-wasm" && pnpm install
+    pnpm unlink "@johncantrell97/mutiny-wasm" && pnpm install
 
 test:
     pnpm exec playwright test

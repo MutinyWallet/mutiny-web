@@ -1,4 +1,4 @@
-import { Contact } from "@mutinywallet/mutiny-wasm";
+import { Contact } from "@johncantrell97/mutiny-wasm";
 import { createResource, Match, ParentComponent, Switch } from "solid-js";
 
 import bolt from "~/assets/icons/bolt.svg";

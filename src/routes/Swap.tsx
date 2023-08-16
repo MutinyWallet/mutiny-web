@@ -1,5 +1,5 @@
 import { createForm, required } from "@modular-forms/solid";
-import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
+import { MutinyChannel, MutinyPeer } from "@johncantrell97/mutiny-wasm";
 import { ExternalLink } from "@mutinywallet/ui";
 import {
     createMemo,

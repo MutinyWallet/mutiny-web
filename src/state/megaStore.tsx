@@ -1,7 +1,7 @@
 /* @refresh reload */
 
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
-import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { MutinyBalance, MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import {
     createContext,
     onCleanup,

@@ -1,4 +1,4 @@
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import initMutinyWallet, { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import { createSignal } from "solid-js";
 
 import { Button, ConfirmDialog, showToast } from "~/components";

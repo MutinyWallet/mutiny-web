@@ -1,6 +1,6 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
-import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { Contact, MutinyInvoice } from "@johncantrell97/mutiny-wasm";
 import { ExternalLink } from "@mutinywallet/ui";
 import {
     createEffect,
