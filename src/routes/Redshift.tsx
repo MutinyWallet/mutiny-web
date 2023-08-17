@@ -31,7 +31,7 @@ import {
     SmallHeader,
     VStack
 } from "~/components/layout";
-import { LoadingSpinner } from "@mutinywallet/ui";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { BackLink } from "~/components/layout/BackLink";
 import { StyledRadioGroup } from "~/components/layout/Radio";
 import NavBar from "~/components/NavBar";

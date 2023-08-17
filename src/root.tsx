@@ -12,8 +12,7 @@ import {
     Scripts,
     Title
 } from "solid-start";
-// eslint-disable-next-line
-import "@mutinywallet/ui/style.css";
+import "./index.css";
 import { Provider as MegaStoreProvider } from "~/state/megaStore";
 import { Toaster } from "~/components/Toaster";
 import ErrorDisplay from "./components/ErrorDisplay";

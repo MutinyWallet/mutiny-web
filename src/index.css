@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply text-white;
+    overscroll-behavior-y: none;
+    min-height: 100.3%;
+}
+
+html {
+    @apply bg-neutral-900;
+}
+
+#mutiny-logo {
+    image-rendering: pixelated;
+}
+
+.bg-gradient {
+    @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b];
+}
+
+.bg-gray {
+    @apply bg-fixed bg-no-repeat bg-gradient-to-b from-[hsl(224,5%,5%)] to-[hsl(224,5%,20%)];
+}
+
+.react-modal-sheet-container {
+    @apply !bg-[#262626];
+}
+
+a {
+    @apply underline decoration-light-text hover:decoration-white;
+}
+
+p {
+    @apply font-light;
+}
+
+p:not(:last-child) {
+    @apply mb-2;
+}
+
+#video-container {
+    position: relative;
+    width: max-content;
+    height: max-content;
+    overflow: hidden;
+    @apply bg-transparent;
+}
+
+#video-container .scan-region-highlight {
+    border-radius: 30px;
+    outline: rgba(0, 0, 0, 0.25) solid 50vmax;
+}
+
+#video-container .scan-region-highlight-svg {
+    display: none;
+}
+
+select {
+    @apply appearance-none;
+    @apply block;
+    @apply border-[2px] focus:outline-none focus:ring-2 focus:ring-offset-2 ring-offset-black;
+    @apply font-light text-lg;
+    @apply py-4 pl-4 pr-8;
+    background-image: url("data:image/svg+xml,%3Csvg aria-hidden='true' class='w-4 h-4 ml-1' fill='white' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+}
+
+strong {
+    @apply font-semibold text-m-red;
+}

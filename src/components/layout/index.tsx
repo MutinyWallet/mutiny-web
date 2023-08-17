@@ -25,7 +25,7 @@ import { A } from "solid-start";
 import down from "~/assets/icons/down.svg";
 import { DecryptDialog } from "../DecryptDialog";
 import { LoadingIndicator } from "~/components/LoadingIndicator";
-import { LoadingSpinner } from "@mutinywallet/ui";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 import { useI18n } from "~/i18n/context";
 
 export { Button, ButtonLink, Linkify };
