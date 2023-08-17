@@ -4,7 +4,6 @@
 import {
     ParentComponent,
     createContext,
-    createEffect,
     onCleanup,
     onMount,
     useContext
@@ -21,7 +20,6 @@ import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { MutinyTagItem } from "~/utils/tags";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import eify from "~/utils/eify";
-import { timeout } from "~/utils/timeout";
 import { ParsedParams } from "~/logic/waila";
 import { subscriptionValid } from "~/utils/subscriptions";
 import { useSearchParams } from "solid-start";
@@ -63,7 +61,6 @@ export type MegaStore = [
         sync(): Promise<void>;
         setHasBackedUp(): void;
         listTags(): Promise<MutinyTagItem[]>;
-        checkBrowserCompat(): Promise<boolean>;
         checkForSubscription(justPaid?: boolean): Promise<void>;
     }
 ];
@@ -239,14 +236,6 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
                 return [];
             }
-        },
-        async checkBrowserCompat(): Promise<boolean> {
-            try {
-                return await checkBrowserCompatibility();
-            } catch (e) {
-                setState({ setup_error: eify(e) });
-                return false;
-            }
         }
     };
 
@@ -263,46 +252,8 @@ export const Provider: ParentComponent = (props) => {
             });
     });
 
-    onMount(() => {
-        if (!state.mutiny_wallet && !state.deleting) {
-            console.log("checking for browser compatibility...");
-            actions.checkBrowserCompat().then(() => {
-                if (state.existing_tab_detected) {
-                    setState({
-                        setup_error: new Error(
-                            "Existing tab detected, aborting setup"
-                        )
-                    });
-                } else {
-                    console.log("running setup node manager...");
-
-                    actions
-                        .setup()
-                        .then(() => console.log("node manager setup done"));
-
-                    // Setup an event listener to stop the mutiny wallet when the page unloads
-                    window.onunload = async (_e) => {
-                        console.log("stopping mutiny_wallet");
-                        await state.mutiny_wallet?.stop();
-                        console.log("mutiny_wallet stopped");
-                        sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
-                    };
-                }
-            });
-        }
-    });
-
-    createEffect(() => {
-        const interval = setInterval(async () => {
-            await actions.sync();
-        }, 3 * 1000); // Poll every 3 seconds
-
-        onCleanup(() => {
-            clearInterval(interval);
-        });
-    });
-
-    onMount(() => {
+    onMount(async () => {
+        // Set up existing tab detector
         const channel = new BroadcastChannel("tab-detector");
 
         // First we let everyone know we exist
@@ -312,7 +263,13 @@ export const Provider: ParentComponent = (props) => {
             // If any tabs reply, we know there's an existing tab so abort setup
             if (e.data.type === "EXISTING_TAB") {
                 console.debug("there's an existing tab");
-                setState({ existing_tab_detected: true });
+                setState({
+                    existing_tab_detected: true,
+                    setup_error: new Error(
+                        "Existing tab detected, aborting setup"
+                    )
+                });
+                return;
             }
 
             // If we get notified of a new tab, we let it know we exist
@@ -322,9 +279,41 @@ export const Provider: ParentComponent = (props) => {
             }
         };
 
-        onCleanup(() => {
-            channel.close();
-        });
+        console.log("checking for browser compatibility");
+        try {
+            await checkBrowserCompatibility();
+        } catch (e) {
+            setState({ setup_error: eify(e) });
+            return;
+        }
+
+        // Setup catches its own errors and sets state itself
+        console.log("running setup node manager");
+        if (
+            !state.mutiny_wallet &&
+            !state.deleting &&
+            !state.setup_error &&
+            !state.existing_tab_detected
+        ) {
+            await actions.setup();
+        } else {
+            console.warn("setup aborted");
+        }
+
+        console.log("node manager setup done");
+
+        // Setup an event listener to stop the mutiny wallet when the page unloads
+        window.onunload = async (_e) => {
+            console.log("stopping mutiny_wallet");
+            await state.mutiny_wallet?.stop();
+            console.log("mutiny_wallet stopped");
+            sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
+        };
+
+        // Set up syncing
+        setInterval(async () => {
+            await actions.sync();
+        }, 3 * 1000); // Poll every 3 seconds
     });
 
     const store = [state, actions] as MegaStore;

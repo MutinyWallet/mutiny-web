@@ -60,7 +60,9 @@ export default defineConfig({
             "@kobalte/core",
             "@solid-primitives/upload",
             "i18next",
-            "i18next-browser-languagedetector"
+            "i18next-browser-languagedetector",
+            "@capacitor/clipboard",
+            "@capacitor/core"
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
         exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
