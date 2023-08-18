@@ -93,6 +93,15 @@ function Nwc() {
         return;
     }
 
+    function openInNostrClient(uri: string) {
+        window.open(uri, "_blank");
+    }
+
+    function openInPrimal(uri: string) {
+        const connectString = uri.replace("nostr+walletconnect", "primal");
+        window.open(connectString, "_blank");
+    }
+
     return (
         <VStack biggap>
             <Button intent="blue" onClick={() => setDialogOpen(true)}>
@@ -126,6 +135,25 @@ function Nwc() {
                                         />
                                     </div>
                                     <ShareCard text={profile.nwc_uri || ""} />
+
+                                    <Button
+                                        layout="small"
+                                        onClick={() =>
+                                            openInNostrClient(profile.nwc_uri)
+                                        }
+                                    >
+                                        Open in Nostr Client
+                                    </Button>
+
+                                    <Button
+                                        layout="small"
+                                        onClick={() =>
+                                            openInPrimal(profile.nwc_uri)
+                                        }
+                                    >
+                                        Open in Primal
+                                    </Button>
+
                                     <Button
                                         layout="small"
                                         onClick={() => toggleEnabled(profile)}
