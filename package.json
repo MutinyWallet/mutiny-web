@@ -12,13 +12,14 @@
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
         "lint": "pnpm run eslint && pnpm run check-types",
-        "format": "npx prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
-        "check-format": "npx prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
+        "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
+        "check-format": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
     },
     "type": "module",
     "devDependencies": {
         "@capacitor/assets": "^2.0.4",
         "@capacitor/cli": "^5.2.2",
+        "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
         "@playwright/test": "^1.36.2",
         "@types/node": "^18.17.1",
         "@typescript-eslint/eslint-plugin": "^6.2.0",
@@ -31,7 +32,8 @@
         "eslint-plugin-prettier": "4.2.1",
         "eslint-plugin-solid": "0.11.0",
         "postcss": "^8.4.27",
-        "prettier": "^2.8.8",
+        "prettier": "^3.0.2",
+        "prettier-plugin-tailwindcss": "^0.5.3",
         "solid-start-node": "^0.2.29",
         "tailwindcss": "^3.3.3",
         "typescript": "^5.1.6",
