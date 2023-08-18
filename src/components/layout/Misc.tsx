@@ -23,8 +23,7 @@ import down from "~/assets/icons/down.svg";
 import { DecryptDialog, LoadingIndicator } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { generateGradient } from "~/utils/gradientHash";
-import { MutinyTagItem } from "~/utils/tags";
+import { generateGradient, MutinyTagItem } from "~/utils";
 
 export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
     return (

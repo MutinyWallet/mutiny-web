@@ -9,8 +9,7 @@ import on from "~/assets/icons/upload-channel.svg";
 import { AmountFiat, AmountSats } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { generateGradient } from "~/utils/gradientHash";
-import { timeAgo } from "~/utils/prettyPrintTime";
+import { generateGradient, timeAgo } from "~/utils";
 
 export const ActivityAmount: ParentComponent<{
     amount: string;

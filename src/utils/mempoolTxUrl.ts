@@ -1,6 +1,6 @@
 import { Network } from "~/logic/mutinyWalletSetup";
 
-export default function mempoolTxUrl(txid?: string, network?: Network) {
+export function mempoolTxUrl(txid?: string, network?: Network) {
     if (!txid || !network) {
         console.error("Problem creating the mempool url");
         return "#";

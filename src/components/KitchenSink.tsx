@@ -26,8 +26,7 @@ import {
 import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { eify, mempoolTxUrl } from "~/utils";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (

@@ -7,7 +7,7 @@ import shareBlack from "~/assets/icons/share-black.svg";
 import shareIcon from "~/assets/icons/share.svg";
 import { Card, JsonModal, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { useCopy } from "~/utils/useCopy";
+import { useCopy } from "~/utils";
 
 const STYLE =
     "px-4 py-2 rounded-xl border-2 border-white flex gap-2 items-center font-semibold hover:text-m-blue transition-colors";

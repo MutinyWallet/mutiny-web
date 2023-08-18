@@ -20,7 +20,7 @@ import {
     setSettings
 } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
+import { eify } from "~/utils";
 
 export function SettingsStringsEditor() {
     const i18n = useI18n();

@@ -3,7 +3,7 @@ import { createMemo, Match, ParentComponent, Show, Switch } from "solid-js";
 import { AmountEditable, Card, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { satsToUsd } from "~/utils/conversions";
+import { satsToUsd } from "~/utils";
 
 const noop = () => {
     // do nothing

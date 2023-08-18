@@ -46,9 +46,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { MutinyTagItem } from "~/utils/tags";
+import { eify, mempoolTxUrl, MutinyTagItem } from "~/utils";
 
 import { FeedbackLink } from "./Feedback";
 

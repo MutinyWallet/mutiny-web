@@ -4,7 +4,7 @@ import { A } from "solid-start";
 import { Button, InfoBox, SimpleDialog, TextField } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
+import { eify } from "~/utils";
 
 export function DecryptDialog() {
     const i18n = useI18n();

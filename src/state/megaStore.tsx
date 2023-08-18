@@ -21,9 +21,7 @@ import {
     setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
 import { ParsedParams } from "~/logic/waila";
-import eify from "~/utils/eify";
-import { subscriptionValid } from "~/utils/subscriptions";
-import { MutinyTagItem } from "~/utils/tags";
+import { eify, MutinyTagItem, subscriptionValid } from "~/utils";
 
 const MegaStoreContext = createContext<MegaStore>();
 

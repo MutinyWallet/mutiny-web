@@ -20,7 +20,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
-import { satsToUsd, usdToSats } from "~/utils/conversions";
+import { satsToUsd, usdToSats } from "~/utils";
 
 function fiatInputSanitizer(input: string): string {
     // Make sure only numbers and a single decimal point are allowed

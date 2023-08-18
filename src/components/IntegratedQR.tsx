@@ -8,7 +8,7 @@ import shareBlack from "~/assets/icons/share-black.svg";
 import { AmountFiat, AmountSats, TruncateMiddle } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { ReceiveFlavor } from "~/routes/Receive";
-import { useCopy } from "~/utils/useCopy";
+import { useCopy } from "~/utils";
 
 function KindIndicator(props: { kind: ReceiveFlavor }) {
     const i18n = useI18n();

@@ -23,7 +23,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
+import { eify } from "~/utils";
 
 function Nwc() {
     const i18n = useI18n();
