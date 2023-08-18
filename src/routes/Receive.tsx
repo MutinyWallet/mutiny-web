@@ -46,10 +46,12 @@ import { useI18n } from "~/i18n/context";
 import { matchError } from "~/logic/errorDispatch";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { objectToSearchParams } from "~/utils/objectToSearchParams";
-import { MutinyTagItem } from "~/utils/tags";
+import {
+    eify,
+    mempoolTxUrl,
+    MutinyTagItem,
+    objectToSearchParams
+} from "~/utils";
 
 type OnChainTx = {
     transaction: {

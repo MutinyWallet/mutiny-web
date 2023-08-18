@@ -22,7 +22,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { gradientsPerContact } from "~/utils/gradientHash";
+import { gradientsPerContact } from "~/utils";
 
 function ContactRow() {
     const i18n = useI18n();

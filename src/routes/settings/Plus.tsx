@@ -27,8 +27,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
-import { subscriptionValid } from "~/utils/subscriptions";
+import { eify, subscriptionValid } from "~/utils";
 
 function Perks(props: { alreadySubbed?: boolean }) {
     const i18n = useI18n();

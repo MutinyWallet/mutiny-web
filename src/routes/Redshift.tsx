@@ -41,8 +41,7 @@ import {
 import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
-import { getRedshifted, setRedshifted } from "~/utils/fakeLabels";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { getRedshifted, mempoolTxUrl, setRedshifted } from "~/utils";
 
 type ShiftOption = "utxo" | "lightning";
 

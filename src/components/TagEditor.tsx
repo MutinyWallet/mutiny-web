@@ -6,7 +6,7 @@ import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 
 import { TinyButton } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
-import { MutinyTagItem, sortByLastUsed } from "~/utils/tags";
+import { MutinyTagItem, sortByLastUsed } from "~/utils";
 
 const createLabelValue = (label: string): Partial<MutinyTagItem> => {
     return { name: label, kind: "Contact" };

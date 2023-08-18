@@ -15,8 +15,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { downloadTextFile } from "~/utils/download";
-import eify from "~/utils/eify";
+import { downloadTextFile, eify } from "~/utils";
 
 export function ImportExport(props: { emergency?: boolean }) {
     const i18n = useI18n();

@@ -26,7 +26,7 @@ import {
     VStack
 } from "~/components/layout";
 import { useI18n } from "~/i18n/context";
-import eify from "~/utils/eify";
+import { eify } from "~/utils";
 
 const FEEDBACK_API = import.meta.env.VITE_FEEDBACK;
 

@@ -32,10 +32,13 @@ import {
 import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { prettyPrintTime } from "~/utils/prettyPrintTime";
-import { MutinyTagItem, tagToMutinyTag } from "~/utils/tags";
-import { useCopy } from "~/utils/useCopy";
+import {
+    mempoolTxUrl,
+    MutinyTagItem,
+    prettyPrintTime,
+    tagToMutinyTag,
+    useCopy
+} from "~/utils";
 
 interface ChannelClosure {
     channel_id: string;

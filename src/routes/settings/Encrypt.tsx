@@ -17,8 +17,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
-import { timeout } from "~/utils/timeout";
+import { eify, timeout } from "~/utils";
 
 type EncryptPasswordForm = {
     existingPassword: string;

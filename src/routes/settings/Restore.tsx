@@ -29,8 +29,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import eify from "~/utils/eify";
-import { WORDS_EN } from "~/utils/words";
+import { eify, WORDS_EN } from "~/utils";
 
 type SeedWordsForm = {
     words: string[];

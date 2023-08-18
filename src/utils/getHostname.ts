@@ -1,4 +1,4 @@
-export default function getHostname(url: string): string {
+export function getHostname(url: string): string {
     // Check if the URL begins with "ws://" or "wss://"
     if (url.startsWith("ws://")) {
         // If it does, remove "ws://" from the URL
