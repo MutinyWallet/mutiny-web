@@ -13,7 +13,12 @@ import {
     Show,
     Switch
 } from "solid-js";
+import { useMegaStore } from "~/state/megaStore";
+import { objectToSearchParams } from "~/utils/objectToSearchParams";
+import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { useNavigate } from "solid-start";
 import {
+    Fee,
     Button,
     Card,
     DefaultMain,
@@ -21,33 +26,29 @@ import {
     LargeHeader,
     MutinyWalletGuard,
     SafeArea,
-    SimpleDialog
-} from "~/components/layout";
+    SimpleDialog,
+    NavBar,
+    AmountSats,
+    AmountFiat,
+    BackLink,
+    TagEditor,
+    StyledRadioGroup,
+    showToast,
+    AmountCard,
+    BackButton,
+    SuccessModal,
+    MegaCheck,
+    InfoBox,
+    FeesModal,
+    IntegratedQr
+} from "~/components";
 import { ExternalLink } from "@mutinywallet/ui";
-import NavBar from "~/components/NavBar";
-import { useMegaStore } from "~/state/megaStore";
-import { objectToSearchParams } from "~/utils/objectToSearchParams";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { AmountSats, AmountFiat } from "~/components/Amount";
-import { BackLink } from "~/components/layout/BackLink";
-import { TagEditor } from "~/components/TagEditor";
-import { StyledRadioGroup } from "~/components/layout/Radio";
-import { showToast } from "~/components/Toaster";
-import { useNavigate } from "solid-start";
-import { AmountCard } from "~/components/AmountCard";
-import { BackButton } from "~/components/layout/BackButton";
 import { MutinyTagItem } from "~/utils/tags";
 import { Network } from "~/logic/mutinyWalletSetup";
-import { SuccessModal } from "~/components/successfail/SuccessModal";
-import { MegaCheck } from "~/components/successfail/MegaCheck";
-import { InfoBox } from "~/components/InfoBox";
-import { FeesModal } from "~/components/MoreInfoModal";
-import { IntegratedQr } from "~/components/IntegratedQR";
 import side2side from "~/assets/icons/side-to-side.svg";
 import eify from "~/utils/eify";
 import { matchError } from "~/logic/errorDispatch";
 import { useI18n } from "~/i18n/context";
-import { Fee } from "~/components/Fee";
 
 type OnChainTx = {
     transaction: {

@@ -1,11 +1,16 @@
 import { Match, Show, Switch } from "solid-js";
-import { Button, FancyCard, Indicator } from "~/components/layout";
+import {
+    Button,
+    FancyCard,
+    Indicator,
+    AmountSats,
+    AmountFiat,
+    InfoBox
+} from "~/components";
 import { useMegaStore } from "~/state/megaStore";
-import { AmountSats, AmountFiat } from "./Amount";
 import { A, useNavigate } from "solid-start";
 import shuffle from "~/assets/icons/shuffle.svg";
 import { useI18n } from "~/i18n/context";
-import { InfoBox } from "./InfoBox";
 
 export function LoadingShimmer() {
     return (
@@ -23,7 +28,7 @@ export function LoadingShimmer() {
 const STYLE =
     "px-2 py-1 rounded-xl text-sm flex gap-2 items-center font-semibold";
 
-export default function BalanceBox(props: { loading?: boolean }) {
+export function BalanceBox(props: { loading?: boolean }) {
     const [state, _actions] = useMegaStore();
     const i18n = useI18n();
 

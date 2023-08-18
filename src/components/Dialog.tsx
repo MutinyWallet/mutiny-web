@@ -1,6 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import { ParentComponent } from "solid-js";
-import { Button, SmallHeader } from "./layout";
+import { Button, SmallHeader } from "~/components";
 import { useI18n } from "~/i18n/context";
 
 const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm";

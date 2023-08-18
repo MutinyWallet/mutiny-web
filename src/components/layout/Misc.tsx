@@ -8,8 +8,6 @@ import {
     createResource,
     createSignal
 } from "solid-js";
-import Linkify from "./Linkify";
-import { Button, ButtonLink } from "./Button";
 import {
     Collapsible,
     Checkbox as KCheckbox,
@@ -23,12 +21,9 @@ import { generateGradient } from "~/utils/gradientHash";
 import close from "~/assets/icons/close.svg";
 import { A } from "solid-start";
 import down from "~/assets/icons/down.svg";
-import { DecryptDialog } from "../DecryptDialog";
-import { LoadingIndicator } from "~/components/LoadingIndicator";
+import { LoadingIndicator, DecryptDialog } from "~/components";
 import { LoadingSpinner } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
-
-export { Button, ButtonLink, Linkify };
 
 export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
     return (

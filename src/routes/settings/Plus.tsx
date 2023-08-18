@@ -7,10 +7,10 @@ import {
     createSignal
 } from "solid-js";
 import { A } from "solid-start";
-import { ConfirmDialog } from "~/components/Dialog";
-import { InfoBox } from "~/components/InfoBox";
-import NavBar from "~/components/NavBar";
 import {
+    ConfirmDialog,
+    InfoBox,
+    NavBar,
     Button,
     DefaultMain,
     FancyCard,
@@ -19,13 +19,13 @@ import {
     NiceP,
     SafeArea,
     TinyText,
-    VStack
-} from "~/components/layout";
-import { BackLink } from "~/components/layout/BackLink";
+    VStack,
+    BackLink,
+    LoadingShimmer
+} from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 import party from "~/assets/party.gif";
-import { LoadingShimmer } from "~/components/BalanceBox";
 import { useI18n } from "~/i18n/context";
 import { subscriptionValid } from "~/utils/subscriptions";
 

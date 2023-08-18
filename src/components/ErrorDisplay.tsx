@@ -10,7 +10,7 @@ import {
 import { ExternalLink } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
 
-export default function ErrorDisplay(props: { error: Error }) {
+export function ErrorDisplay(props: { error: Error }) {
     const i18n = useI18n();
     return (
         <SafeArea>

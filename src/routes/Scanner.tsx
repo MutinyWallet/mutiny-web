@@ -1,8 +1,6 @@
-import Reader from "~/components/Reader";
 import { createEffect, createSignal } from "solid-js";
 import { useNavigate } from "solid-start";
-import { Button } from "~/components/layout";
-import { showToast } from "~/components/Toaster";
+import { Button, Scanner as Reader, showToast } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { toParsedParams } from "~/logic/waila";
 import { Clipboard } from "@capacitor/clipboard";

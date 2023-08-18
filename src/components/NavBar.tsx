@@ -39,7 +39,7 @@ function NavBarItem(props: {
     );
 }
 
-export default function NavBar(props: { activeTab: ActiveTab }) {
+export function NavBar(props: { activeTab: ActiveTab }) {
     return (
         <nav class="hidden md:block fixed shadow-none z-40 safe-bottom top-0 bottom-auto left-0 h-full">
             <ul class="flex flex-col justify-start gap-4 px-4 mt-4">

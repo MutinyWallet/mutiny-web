@@ -9,11 +9,11 @@ import {
     SafeArea,
     SmallHeader,
     TinyText,
-    VStack
-} from "~/components/layout";
-import { AmountSmall } from "~/components/Amount";
-import { BackLink } from "~/components/layout/BackLink";
-import NavBar from "~/components/NavBar";
+    VStack,
+    AmountSmall,
+    BackLink,
+    NavBar
+} from "~/components";
 import { useI18n } from "~/i18n/context";
 
 function BalanceBar(props: { inbound: number; outbound: number }) {

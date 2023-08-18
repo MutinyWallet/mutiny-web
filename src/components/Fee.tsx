@@ -1,6 +1,5 @@
 import { useI18n } from "~/i18n/context";
-import { AmountFiat, AmountSats } from "~/components/Amount";
-import { FeesModal } from "~/components/MoreInfoModal";
+import { AmountFiat, AmountSats, FeesModal } from "~/components";
 
 export function Fee(props: { amountSats?: bigint | number }) {
     const i18n = useI18n();

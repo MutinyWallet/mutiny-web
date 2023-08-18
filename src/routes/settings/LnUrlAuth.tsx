@@ -1,15 +1,15 @@
 import { TextField } from "@kobalte/core";
 import { createSignal } from "solid-js";
-import NavBar from "~/components/NavBar";
 import {
     Button,
+    NavBar,
     DefaultMain,
     InnerCard,
     LargeHeader,
     MutinyWalletGuard,
-    SafeArea
-} from "~/components/layout";
-import { BackLink } from "~/components/layout/BackLink";
+    SafeArea,
+    BackLink
+} from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { useI18n } from "~/i18n/context";
 

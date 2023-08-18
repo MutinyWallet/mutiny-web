@@ -9,18 +9,15 @@ import {
     Switch,
     Match
 } from "solid-js";
-import { Button } from "~/components/layout";
+import { Button, InlineAmount, InfoBox, FeesModal } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd, usdToSats } from "~/utils/conversions";
 import { Dialog } from "@kobalte/core";
 import close from "~/assets/icons/close.svg";
 import pencil from "~/assets/icons/pencil.svg";
 import currencySwap from "~/assets/icons/currency-swap.svg";
-import { InlineAmount } from "./AmountCard";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
-import { InfoBox } from "./InfoBox";
 import { Network } from "~/logic/mutinyWalletSetup";
-import { FeesModal } from "./MoreInfoModal";
 import { useI18n } from "~/i18n/context";
 import { useNavigate } from "solid-start";
 

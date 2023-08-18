@@ -1,11 +1,6 @@
 import { Title } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
-import {
-    ButtonLink,
-    DefaultMain,
-    LargeHeader,
-    SafeArea
-} from "~/components/layout";
+import { ButtonLink, DefaultMain, LargeHeader, SafeArea } from "~/components";
 import { useI18n } from "~/i18n/context";
 
 export default function NotFound() {

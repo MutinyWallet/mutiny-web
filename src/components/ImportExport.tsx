@@ -4,17 +4,17 @@ import {
     InnerCard,
     NiceP,
     SimpleDialog,
-    VStack
-} from "~/components/layout";
+    VStack,
+    ConfirmDialog,
+    showToast,
+    InfoBox,
+    TextField
+} from "~/components";
 import { Show, createSignal } from "solid-js";
 import eify from "~/utils/eify";
-import { showToast } from "./Toaster";
 import { downloadTextFile } from "~/utils/download";
 import { createFileUploader } from "@solid-primitives/upload";
-import { ConfirmDialog } from "./Dialog";
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
-import { InfoBox } from "./InfoBox";
-import { TextField } from "./layout/TextField";
 import { useI18n } from "~/i18n/context";
 
 export function ImportExport(props: { emergency?: boolean }) {

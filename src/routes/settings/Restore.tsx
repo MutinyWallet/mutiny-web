@@ -4,10 +4,14 @@ import {
     LargeHeader,
     NiceP,
     SafeArea,
-    VStack
-} from "~/components/layout";
-import { BackLink } from "~/components/layout/BackLink";
-import NavBar from "~/components/NavBar";
+    VStack,
+    BackLink,
+    NavBar,
+    TextFieldProps,
+    showToast,
+    ConfirmDialog,
+    InfoBox
+} from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { For, Show, createSignal, splitProps } from "solid-js";
 import pasteIcon from "~/assets/icons/paste.svg";
@@ -20,13 +24,9 @@ import {
     validate
 } from "@modular-forms/solid";
 import { TextField as KTextField } from "@kobalte/core";
-import { TextFieldProps } from "~/components/layout/TextField";
-import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
-import { ConfirmDialog } from "~/components/Dialog";
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { WORDS_EN } from "~/utils/words";
-import { InfoBox } from "~/components/InfoBox";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
 import { useI18n } from "~/i18n/context";

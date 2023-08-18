@@ -6,17 +6,17 @@ import {
     NiceP,
     MutinyWalletGuard,
     SafeArea,
-    VStack
-} from "~/components/layout";
-import NavBar from "~/components/NavBar";
+    VStack,
+    NavBar,
+    BackLink,
+    TextField,
+    InfoBox
+} from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { Show, createSignal } from "solid-js";
-import { BackLink } from "~/components/layout/BackLink";
 import { createForm } from "@modular-forms/solid";
-import { TextField } from "~/components/layout/TextField";
 import { timeout } from "~/utils/timeout";
 import eify from "~/utils/eify";
-import { InfoBox } from "~/components/InfoBox";
 import { useI18n } from "~/i18n/context";
 
 type EncryptPasswordForm = {

@@ -1,8 +1,7 @@
 import { Match, ParentComponent, Show, Switch, createMemo } from "solid-js";
-import { Card, VStack } from "~/components/layout";
+import { Card, VStack, AmountEditable } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
-import { AmountEditable } from "./AmountEditable";
 import { useI18n } from "~/i18n/context";
 
 const noop = () => {

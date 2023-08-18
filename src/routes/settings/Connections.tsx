@@ -1,11 +1,12 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
 import { For, Show, createResource, createSignal } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { KeyValue, MiniStringShower } from "~/components/DetailsModal";
-import { InfoBox } from "~/components/InfoBox";
-import NavBar from "~/components/NavBar";
-import { ShareCard } from "~/components/ShareCard";
 import {
+    KeyValue,
+    MiniStringShower,
+    InfoBox,
+    NavBar,
+    ShareCard,
     Button,
     Collapser,
     DefaultMain,
@@ -15,10 +16,10 @@ import {
     SafeArea,
     SettingsCard,
     SimpleDialog,
-    VStack
-} from "~/components/layout";
-import { BackLink } from "~/components/layout/BackLink";
-import { TextField } from "~/components/layout/TextField";
+    VStack,
+    BackLink,
+    TextField
+} from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 import { useI18n } from "~/i18n/context";

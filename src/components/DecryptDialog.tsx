@@ -1,7 +1,5 @@
 import { Show, createSignal } from "solid-js";
-import { Button, SimpleDialog } from "~/components/layout";
-import { TextField } from "~/components/layout/TextField";
-import { InfoBox } from "~/components/InfoBox";
+import { Button, SimpleDialog, TextField, InfoBox } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
 import { A } from "solid-start";

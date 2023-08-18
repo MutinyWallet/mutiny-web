@@ -1,5 +1,5 @@
 import { ParentComponent, Show, createResource } from "solid-js";
-import { I18nContext } from "../i18n/context";
+import { I18nContext } from "~/i18n/context";
 import i18next from "i18next";
 import i18nConfig from "~/i18n/config";
 
