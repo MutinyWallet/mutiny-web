@@ -8,7 +8,6 @@ import {
 } from "@modular-forms/solid";
 import { Match, Show, Switch, createSignal } from "solid-js";
 import { A, useLocation } from "solid-start";
-import NavBar from "~/components/NavBar";
 import {
     Button,
     ButtonLink,
@@ -17,17 +16,16 @@ import {
     LargeHeader,
     NiceP,
     SafeArea,
-    VStack
+    VStack,
+    BackPop,
+    StyledRadioGroup,
+    TextField
 } from "~/components/layout";
-import { BackPop } from "~/components/layout/BackPop";
 import { ExternalLink } from "@mutinywallet/ui";
-import { StyledRadioGroup } from "~/components/layout/Radio";
-import { TextField } from "~/components/layout/TextField";
 import feedback from "~/assets/icons/feedback.svg";
-import { InfoBox } from "~/components/InfoBox";
 import eify from "~/utils/eify";
-import { MegaCheck } from "~/components/successfail/MegaCheck";
 import { useI18n } from "~/i18n/context";
+import { InfoBox, MegaCheck, NavBar } from "~/components";
 
 const FEEDBACK_API = import.meta.env.VITE_FEEDBACK;
 

@@ -1,8 +1,8 @@
 import { Progress } from "@kobalte/core";
-import { SmallHeader } from ".";
+import { SmallHeader } from "~/components";
 import { useI18n } from "~/i18n/context";
 
-export default function formatNumber(num: number) {
+export function formatNumber(num: number) {
     const map = [
         { suffix: "T", threshold: 1e12 },
         { suffix: "B", threshold: 1e9 },

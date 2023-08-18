@@ -1,10 +1,15 @@
 import { Match, Switch, createSignal } from "solid-js";
-import { Button, Card, NiceP, SmallHeader } from "~/components/layout";
+import {
+    Button,
+    Card,
+    NiceP,
+    SmallHeader,
+    ContactForm,
+    showToast
+} from "~/components";
 import { Dialog } from "@kobalte/core";
 import close from "~/assets/icons/close.svg";
 import { SubmitHandler } from "@modular-forms/solid";
-import { ContactForm } from "./ContactForm";
-import { showToast } from "./Toaster";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { useI18n } from "~/i18n/context";

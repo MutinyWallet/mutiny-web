@@ -1,5 +1,4 @@
 import { useMegaStore } from "~/state/megaStore";
-import { Hr, Button, InnerCard, VStack } from "~/components/layout";
 import {
     For,
     Match,
@@ -13,14 +12,20 @@ import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import { Collapsible, TextField } from "@kobalte/core";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import eify from "~/utils/eify";
-import { ConfirmDialog } from "~/components/Dialog";
-import { showToast } from "~/components/Toaster";
+import {
+    ConfirmDialog,
+    Hr,
+    Button,
+    InnerCard,
+    VStack,
+    showToast,
+    Restart,
+    ResyncOnchain,
+    ResetRouter,
+    MiniStringShower
+} from "~/components";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { ExternalLink } from "@mutinywallet/ui";
-import { Restart } from "./Restart";
-import { ResyncOnchain } from "./ResyncOnchain";
-import { ResetRouter } from "./ResetRouter";
-import { MiniStringShower } from "./DetailsModal";
 import { useI18n } from "~/i18n/context";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
@@ -451,7 +456,7 @@ function ListNodes() {
     );
 }
 
-export default function KitchenSink() {
+export function KitchenSink() {
     return (
         <>
             <ListNodes />

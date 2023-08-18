@@ -10,7 +10,7 @@ import { generateGradient } from "~/utils/gradientHash";
 import { useMegaStore } from "~/state/megaStore";
 import { Contact } from "@mutinywallet/mutiny-wasm";
 import { useI18n } from "~/i18n/context";
-import { AmountFiat, AmountSats } from "~/components/Amount";
+import { AmountFiat, AmountSats } from "~/components";
 
 export const ActivityAmount: ParentComponent<{
     amount: string;

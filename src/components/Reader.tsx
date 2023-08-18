@@ -8,7 +8,7 @@ import {
 import QrScanner from "qr-scanner";
 import { Capacitor } from "@capacitor/core";
 
-export default function Scanner(props: { onResult: (result: string) => void }) {
+export function Scanner(props: { onResult: (result: string) => void }) {
     let container: HTMLVideoElement | undefined;
     let scanner: QrScanner | undefined;
 

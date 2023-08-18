@@ -1,17 +1,17 @@
-import { DeleteEverything } from "~/components/DeleteEverything";
-import { ImportExport } from "~/components/ImportExport";
-import { LoadingIndicator } from "~/components/LoadingIndicator";
-import { Logs } from "~/components/Logs";
-import NavBar from "~/components/NavBar";
 import {
+    DeleteEverything,
+    ImportExport,
+    LoadingIndicator,
+    Logs,
+    NavBar,
     DefaultMain,
     LargeHeader,
     NiceP,
     SafeArea,
     SmallHeader,
-    VStack
-} from "~/components/layout";
-import { BackLink } from "~/components/layout/BackLink";
+    VStack,
+    BackLink
+} from "~/components";
 import { ExternalLink } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
 

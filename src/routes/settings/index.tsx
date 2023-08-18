@@ -3,10 +3,10 @@ import {
     LargeHeader,
     SafeArea,
     SettingsCard,
-    VStack
-} from "~/components/layout";
-import { BackLink } from "~/components/layout/BackLink";
-import NavBar from "~/components/NavBar";
+    VStack,
+    BackLink,
+    NavBar
+} from "~/components";
 import { A } from "solid-start";
 import { For, Show } from "solid-js";
 import forward from "~/assets/icons/forward.svg";

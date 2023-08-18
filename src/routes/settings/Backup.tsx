@@ -6,14 +6,14 @@ import {
     MutinyWalletGuard,
     SafeArea,
     VStack,
-    Checkbox
-} from "~/components/layout";
-import NavBar from "~/components/NavBar";
+    Checkbox,
+    NavBar,
+    SeedWords,
+    BackLink
+} from "~/components";
 import { useNavigate } from "solid-start";
-import { SeedWords } from "~/components/SeedWords";
 import { useMegaStore } from "~/state/megaStore";
 import { Show, createEffect, createSignal } from "solid-js";
-import { BackLink } from "~/components/layout/BackLink";
 import { useI18n } from "~/i18n/context";
 
 function Quiz(props: { setHasCheckedAll: (hasChecked: boolean) => void }) {

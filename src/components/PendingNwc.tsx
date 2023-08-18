@@ -1,6 +1,6 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
 import { formatExpiration } from "~/utils/prettyPrintTime";
-import { Card, VStack } from "./layout";
+import { Card, VStack, ActivityAmount, InfoBox } from "~/components";
 import { LoadingSpinner } from "@mutinywallet/ui";
 import bolt from "~/assets/icons/bolt.svg";
 import {
@@ -16,8 +16,6 @@ import { useMegaStore } from "~/state/megaStore";
 
 import greenCheck from "~/assets/icons/green-check.svg";
 import redClose from "~/assets/icons/red-close.svg";
-import { ActivityAmount } from "./ActivityItem";
-import { InfoBox } from "./InfoBox";
 import eify from "~/utils/eify";
 import { A } from "solid-start";
 import { createDeepSignal } from "~/utils/deepSignal";

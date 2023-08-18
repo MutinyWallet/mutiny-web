@@ -1,6 +1,6 @@
 import { TextField as KTextField } from "@kobalte/core";
 import { type JSX, Show, splitProps } from "solid-js";
-import { TinyText } from ".";
+import { TinyText } from "~/components";
 
 export type TextFieldProps = {
     name: string;

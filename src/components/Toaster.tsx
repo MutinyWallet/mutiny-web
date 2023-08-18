@@ -1,7 +1,7 @@
 import { Toast, toaster } from "@kobalte/core";
 import { Portal } from "solid-js/web";
 import close from "~/assets/icons/close.svg";
-import { SmallHeader } from "./layout";
+import { SmallHeader } from "~/components";
 
 export function Toaster() {
     return (

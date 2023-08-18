@@ -4,13 +4,13 @@ import {
     LargeHeader,
     NiceP,
     SafeArea,
-    SmallHeader
-} from "~/components/layout";
+    SmallHeader,
+    ImportExport,
+    Logs,
+    DeleteEverything
+} from "~/components";
 import { ExternalLink } from "@mutinywallet/ui";
 import { Match, Switch } from "solid-js";
-import { ImportExport } from "./ImportExport";
-import { Logs } from "./Logs";
-import { DeleteEverything } from "./DeleteEverything";
 import { FeedbackLink } from "~/routes/Feedback";
 import { useI18n } from "~/i18n/context";
 
@@ -25,7 +25,7 @@ function ErrorFooter() {
     );
 }
 
-export default function SetupErrorDisplay(props: { initialError: Error }) {
+export function SetupErrorDisplay(props: { initialError: Error }) {
     // Error shouldn't be reactive, so we assign to it so it just gets rendered with the first value
     const i18n = useI18n();
     const error = props.initialError;

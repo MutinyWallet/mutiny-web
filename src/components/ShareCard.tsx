@@ -1,4 +1,4 @@
-import { Card, VStack } from "~/components/layout";
+import { Card, VStack, JsonModal } from "~/components";
 import { useCopy } from "~/utils/useCopy";
 import copyIcon from "~/assets/icons/copy.svg";
 import copyBlack from "~/assets/icons/copy-black.svg";
@@ -6,7 +6,6 @@ import shareIcon from "~/assets/icons/share.svg";
 import shareBlack from "~/assets/icons/share-black.svg";
 import eyeIcon from "~/assets/icons/eye.svg";
 import { Show, createSignal } from "solid-js";
-import { JsonModal } from "./JsonModal";
 import { useI18n } from "~/i18n/context";
 
 const STYLE =

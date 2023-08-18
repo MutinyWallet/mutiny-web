@@ -7,9 +7,10 @@ import {
     createSignal,
     onMount
 } from "solid-js";
-import { AmountSats, AmountFiat } from "~/components/Amount";
-import NavBar from "~/components/NavBar";
 import {
+    NavBar,
+    AmountSats,
+    AmountFiat,
     Button,
     ButtonLink,
     Card,
@@ -19,35 +20,35 @@ import {
     MutinyWalletGuard,
     SafeArea,
     SmallHeader,
-    VStack
-} from "~/components/layout";
+    VStack,
+    StyledRadioGroup,
+    showToast,
+    MegaCheck,
+    MegaEx,
+    BackLink,
+    TagEditor,
+    StringShower,
+    AmountCard,
+    BackButton,
+    SuccessModal,
+    InfoBox,
+    Fee
+} from "~/components";
+import { ExternalLink } from "@mutinywallet/ui";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import { useMegaStore } from "~/state/megaStore";
 import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { StyledRadioGroup } from "~/components/layout/Radio";
-import { showToast } from "~/components/Toaster";
 import eify from "~/utils/eify";
-import { MegaCheck } from "~/components/successfail/MegaCheck";
-import { MegaEx } from "~/components/successfail/MegaEx";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { BackLink } from "~/components/layout/BackLink";
 import { useNavigate } from "solid-start";
-import { TagEditor } from "~/components/TagEditor";
-import { StringShower } from "~/components/ShareCard";
-import { AmountCard } from "~/components/AmountCard";
 import { MutinyTagItem } from "~/utils/tags";
-import { BackButton } from "~/components/layout/BackButton";
 import { Network } from "~/logic/mutinyWalletSetup";
-import { SuccessModal } from "~/components/successfail/SuccessModal";
-import { ExternalLink } from "@mutinywallet/ui";
-import { InfoBox } from "~/components/InfoBox";
 import { useI18n } from "~/i18n/context";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
 import { FeedbackLink } from "./Feedback";
-import { Fee } from "~/components/Fee";
 
 export type SendSource = "lightning" | "onchain";
 

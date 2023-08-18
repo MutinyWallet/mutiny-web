@@ -1,7 +1,12 @@
 import { Dialog } from "@kobalte/core";
 import { ParentComponent, createSignal, JSXElement } from "solid-js";
-import { DIALOG_CONTENT, DIALOG_POSITIONER, OVERLAY } from "./DetailsModal";
-import { ModalCloseButton, SmallHeader } from "./layout";
+import {
+    DIALOG_CONTENT,
+    DIALOG_POSITIONER,
+    OVERLAY,
+    ModalCloseButton,
+    SmallHeader
+} from "~/components";
 import { ExternalLink } from "@mutinywallet/ui";
 import help from "~/assets/icons/help.svg";
 import { useI18n } from "~/i18n/context";

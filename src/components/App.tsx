@@ -1,23 +1,29 @@
-import { DefaultMain, SafeArea, VStack, Card } from "~/components/layout";
-import BalanceBox, { LoadingShimmer } from "~/components/BalanceBox";
-import NavBar from "~/components/NavBar";
-import ReloadPrompt from "~/components/Reload";
+import {
+    DefaultMain,
+    SafeArea,
+    VStack,
+    Card,
+    LoadingShimmer,
+    BalanceBox,
+    ReloadPrompt,
+    NavBar,
+    OnboardWarning,
+    CombinedActivity,
+    BetaWarningModal,
+    PendingNwc,
+    DecryptDialog,
+    LoadingIndicator
+} from "~/components";
 import { A } from "solid-start";
-import { OnboardWarning } from "~/components/OnboardWarning";
-import { CombinedActivity } from "./Activity";
 import { useMegaStore } from "~/state/megaStore";
 import { Match, Show, Suspense, Switch } from "solid-js";
-import { BetaWarningModal } from "~/components/BetaWarningModal";
 import settings from "~/assets/icons/settings.svg";
 import pixelLogo from "~/assets/mutiny-pixel-logo.png";
 import plusLogo from "~/assets/mutiny-plus-logo.png";
-import { PendingNwc } from "./PendingNwc";
-import { DecryptDialog } from "./DecryptDialog";
-import { LoadingIndicator } from "./LoadingIndicator";
 import { FeedbackLink } from "~/routes/Feedback";
 import { useI18n } from "~/i18n/context";
 
-export default function App() {
+export function App() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 

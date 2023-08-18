@@ -1,9 +1,8 @@
-import type { Component } from "solid-js";
 import { Show } from "solid-js";
 // eslint-disable-next-line import/no-unresolved
 import { useRegisterSW } from "virtual:pwa-register/solid";
 
-const ReloadPrompt: Component = () => {
+export function ReloadPrompt() {
     const {
         offlineReady: [offlineReady, _setOfflineReady],
         needRefresh: [needRefresh, _setNeedRefresh],
@@ -41,6 +40,4 @@ const ReloadPrompt: Component = () => {
             </Card> */}
         </Show>
     );
-};
-
-export default ReloadPrompt;
+}

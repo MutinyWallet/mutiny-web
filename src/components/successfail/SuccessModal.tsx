@@ -1,6 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import { JSX } from "solid-js";
-import { Button } from "~/components/layout";
+import { Button } from "~/components";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { useI18n } from "~/i18n/context";
 

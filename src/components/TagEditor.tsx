@@ -1,7 +1,7 @@
 import { Select, createOptions } from "@thisbeyond/solid-select";
 import "~/styles/solid-select.css";
 import { For, Show, createMemo, createSignal, onMount } from "solid-js";
-import { TinyButton } from "./layout";
+import { TinyButton } from "~/components";
 import { MutinyTagItem, sortByLastUsed } from "~/utils/tags";
 import { useMegaStore } from "~/state/megaStore";
 

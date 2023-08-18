@@ -1,4 +1,4 @@
-import { Button, InnerCard, NiceP, VStack } from "~/components/layout";
+import { Button, InnerCard, NiceP, VStack } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { useI18n } from "~/i18n/context";
 

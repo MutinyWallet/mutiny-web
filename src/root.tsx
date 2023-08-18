@@ -15,9 +15,7 @@ import {
 // eslint-disable-next-line
 import "@mutinywallet/ui/style.css";
 import { Provider as MegaStoreProvider } from "~/state/megaStore";
-import { Toaster } from "~/components/Toaster";
-import ErrorDisplay from "./components/ErrorDisplay";
-import { I18nProvider } from "./components/I18nProvider";
+import { Toaster, ErrorDisplay, I18nProvider } from "~/components";
 
 export default function Root() {
     return (

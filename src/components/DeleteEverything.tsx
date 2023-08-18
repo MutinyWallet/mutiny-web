@@ -1,8 +1,6 @@
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { createSignal } from "solid-js";
-import { ConfirmDialog } from "~/components/Dialog";
-import { Button } from "~/components/layout";
-import { showToast } from "~/components/Toaster";
+import { ConfirmDialog, Button, showToast } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";

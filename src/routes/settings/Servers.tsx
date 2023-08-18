@@ -1,5 +1,4 @@
 import { createForm, url } from "@modular-forms/solid";
-import { TextField } from "~/components/layout/TextField";
 import {
     MutinyWalletSettingStrings,
     setSettings
@@ -8,16 +7,17 @@ import {
     Button,
     Card,
     DefaultMain,
+    TextField,
     LargeHeader,
     MutinyWalletGuard,
     NiceP,
-    SafeArea
-} from "~/components/layout";
-import { showToast } from "~/components/Toaster";
+    SafeArea,
+    showToast,
+    BackLink,
+    NavBar
+} from "~/components";
 import eify from "~/utils/eify";
 import { ExternalLink } from "@mutinywallet/ui";
-import { BackLink } from "~/components/layout/BackLink";
-import NavBar from "~/components/NavBar";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
