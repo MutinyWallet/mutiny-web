@@ -1,9 +1,10 @@
-import { Show, createSignal } from "solid-js";
-import { Button, SimpleDialog, TextField, InfoBox } from "~/components";
+import { createSignal, Show } from "solid-js";
+import { A } from "solid-start";
+
+import { Button, InfoBox, SimpleDialog, TextField } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
-import { A } from "solid-start";
-import { useI18n } from "~/i18n/context";
 
 export function DecryptDialog() {
     const i18n = useI18n();

@@ -3,6 +3,7 @@ import {
     MutinyBip21RawMaterials,
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
+import { ExternalLink } from "@mutinywallet/ui";
 import {
     createEffect,
     createMemo,
@@ -13,42 +14,42 @@ import {
     Show,
     Switch
 } from "solid-js";
-import { useMegaStore } from "~/state/megaStore";
-import { objectToSearchParams } from "~/utils/objectToSearchParams";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
 import { useNavigate } from "solid-start";
+
+import side2side from "~/assets/icons/side-to-side.svg";
 import {
-    Fee,
+    AmountCard,
+    AmountFiat,
+    AmountSats,
+    BackButton,
+    BackLink,
     Button,
     Card,
     DefaultMain,
-    Indicator,
-    LargeHeader,
-    MutinyWalletGuard,
-    SafeArea,
-    SimpleDialog,
-    NavBar,
-    AmountSats,
-    AmountFiat,
-    BackLink,
-    TagEditor,
-    StyledRadioGroup,
-    showToast,
-    AmountCard,
-    BackButton,
-    SuccessModal,
-    MegaCheck,
-    InfoBox,
+    Fee,
     FeesModal,
-    IntegratedQr
+    Indicator,
+    InfoBox,
+    IntegratedQr,
+    LargeHeader,
+    MegaCheck,
+    MutinyWalletGuard,
+    NavBar,
+    SafeArea,
+    showToast,
+    SimpleDialog,
+    StyledRadioGroup,
+    SuccessModal,
+    TagEditor
 } from "~/components";
-import { ExternalLink } from "@mutinywallet/ui";
-import { MutinyTagItem } from "~/utils/tags";
-import { Network } from "~/logic/mutinyWalletSetup";
-import side2side from "~/assets/icons/side-to-side.svg";
-import eify from "~/utils/eify";
-import { matchError } from "~/logic/errorDispatch";
 import { useI18n } from "~/i18n/context";
+import { matchError } from "~/logic/errorDispatch";
+import { Network } from "~/logic/mutinyWalletSetup";
+import { useMegaStore } from "~/state/megaStore";
+import eify from "~/utils/eify";
+import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { objectToSearchParams } from "~/utils/objectToSearchParams";
+import { MutinyTagItem } from "~/utils/tags";
 
 type OnChainTx = {
     transaction: {
@@ -290,9 +291,8 @@ export default function Receive() {
             try {
                 // Lightning invoice might be blank
                 if (lightning) {
-                    const invoice = await state.mutiny_wallet?.get_invoice(
-                        lightning
-                    );
+                    const invoice =
+                        await state.mutiny_wallet?.get_invoice(lightning);
 
                     // If the invoice has a fees amount that's probably the LSP fee
                     if (invoice?.fees_paid) {
@@ -368,7 +368,7 @@ export default function Receive() {
                     </LargeHeader>
                     <Switch>
                         <Match when={!unified() || receiveState() === "edit"}>
-                            <div class="flex flex-col flex-1 gap-8">
+                            <div class="flex flex-1 flex-col gap-8">
                                 <AmountCard
                                     initialOpen={shouldShowAmountEditor()}
                                     amountSats={amount() || "0"}
@@ -406,19 +406,19 @@ export default function Receive() {
                                 amountSats={amount() || "0"}
                                 kind={flavor()}
                             />
-                            <p class="text-neutral-400 text-center">
+                            <p class="text-center text-neutral-400">
                                 {i18n.t("receive.keep_mutiny_open")}
                             </p>
                             {/* Only show method chooser when we have an invoice */}
                             <Show when={bip21Raw()?.invoice}>
                                 <button
-                                    class="font-bold text-m-grey-400 flex gap-2 p-2 items-center mx-auto"
+                                    class="mx-auto flex items-center gap-2 p-2 font-bold text-m-grey-400"
                                     onClick={() => setMethodChooserOpen(true)}
                                 >
                                     <span>
                                         {i18n.t("receive.choose_format")}
                                     </span>
-                                    <img class="w-4 h-4" src={side2side} />
+                                    <img class="h-4 w-4" src={side2side} />
                                 </button>
                                 <SimpleDialog
                                     title={i18n.t(
@@ -451,13 +451,13 @@ export default function Receive() {
                                 }}
                             >
                                 <MegaCheck />
-                                <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
+                                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
                                     {receiveState() === "paid" &&
                                     paidState() === "lightning_paid"
                                         ? i18n.t("receive.payment_received")
                                         : i18n.t("receive.payment_initiated")}
                                 </h1>
-                                <div class="flex flex-col gap-1 items-center">
+                                <div class="flex flex-col items-center gap-1">
                                     <div class="text-xl">
                                         <AmountSats
                                             amountSats={

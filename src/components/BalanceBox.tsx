@@ -1,25 +1,26 @@
 import { Match, Show, Switch } from "solid-js";
+import { A, useNavigate } from "solid-start";
+
+import shuffle from "~/assets/icons/shuffle.svg";
 import {
+    AmountFiat,
+    AmountSats,
     Button,
     FancyCard,
     Indicator,
-    AmountSats,
-    AmountFiat,
     InfoBox
 } from "~/components";
-import { useMegaStore } from "~/state/megaStore";
-import { A, useNavigate } from "solid-start";
-import shuffle from "~/assets/icons/shuffle.svg";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 export function LoadingShimmer() {
     return (
-        <div class="flex flex-col gap-2 animate-pulse">
+        <div class="flex animate-pulse flex-col gap-2">
             <h1 class="text-4xl font-light">
-                <div class="w-[12rem] rounded bg-neutral-700 h-[2.5rem]" />
+                <div class="h-[2.5rem] w-[12rem] rounded bg-neutral-700" />
             </h1>
             <h2 class="text-xl font-light text-white/70">
-                <div class="w-[8rem] rounded bg-neutral-700 h-[1.75rem]" />
+                <div class="h-[1.75rem] w-[8rem] rounded bg-neutral-700" />
             </h2>
         </div>
     );
@@ -99,7 +100,7 @@ export function BalanceBox(props: { loading?: boolean }) {
                                 />
                             </div>
                         </div>
-                        <div class="flex flex-col items-end gap-1 justify-between">
+                        <div class="flex flex-col items-end justify-between gap-1">
                             <Show when={state.balance?.unconfirmed != 0n}>
                                 <Indicator>
                                     {i18n.t("common.pending")}

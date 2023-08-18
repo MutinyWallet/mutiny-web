@@ -1,25 +1,26 @@
 import { createForm, url } from "@modular-forms/solid";
+import { ExternalLink } from "@mutinywallet/ui";
+
+import {
+    BackLink,
+    Button,
+    Card,
+    DefaultMain,
+    LargeHeader,
+    MutinyWalletGuard,
+    NavBar,
+    NiceP,
+    SafeArea,
+    showToast,
+    TextField
+} from "~/components";
+import { useI18n } from "~/i18n/context";
 import {
     MutinyWalletSettingStrings,
     setSettings
 } from "~/logic/mutinyWalletSetup";
-import {
-    Button,
-    Card,
-    DefaultMain,
-    TextField,
-    LargeHeader,
-    MutinyWalletGuard,
-    NiceP,
-    SafeArea,
-    showToast,
-    BackLink,
-    NavBar
-} from "~/components";
-import eify from "~/utils/eify";
-import { ExternalLink } from "@mutinywallet/ui";
-import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
+import eify from "~/utils/eify";
 
 export function SettingsStringsEditor() {
     const i18n = useI18n();

@@ -1,10 +1,11 @@
-import { SubmitHandler, createForm, required } from "@modular-forms/solid";
+import { createForm, required, SubmitHandler } from "@modular-forms/solid";
+
 import {
     Button,
+    ContactFormValues,
     LargeHeader,
-    VStack,
     TextField,
-    ContactFormValues
+    VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 
@@ -22,7 +23,7 @@ export function ContactForm(props: {
     return (
         <Form
             onSubmit={props.handleSubmit}
-            class="flex flex-col flex-1 justify-around gap-4 max-w-[400px] mx-auto w-full"
+            class="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-around gap-4"
         >
             <div>
                 <LargeHeader>{props.title}</LargeHeader>

@@ -1,12 +1,12 @@
-import { onCleanup, onMount } from "solid-js";
+import { Capacitor } from "@capacitor/core";
 import {
-    BarcodeScanner,
     BarcodeFormat,
+    BarcodeScanner,
     PermissionStates,
     ScanResult
 } from "@mutinywallet/barcode-scanner";
 import QrScanner from "qr-scanner";
-import { Capacitor } from "@capacitor/core";
+import { onCleanup, onMount } from "solid-js";
 
 export function Scanner(props: { onResult: (result: string) => void }) {
     let container: HTMLVideoElement | undefined;
@@ -80,7 +80,7 @@ export function Scanner(props: { onResult: (result: string) => void }) {
             <div id="video-container">
                 <video
                     ref={container}
-                    class="w-full h-full fixed object-cover bg-transparent"
+                    class="fixed h-full w-full bg-transparent object-cover"
                 />
             </div>
         </>

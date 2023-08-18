@@ -1,18 +1,19 @@
-import { Match, Switch, createSignal } from "solid-js";
+import { Dialog } from "@kobalte/core";
+import { SubmitHandler } from "@modular-forms/solid";
+import { Contact } from "@mutinywallet/mutiny-wasm";
+import { createSignal, Match, Switch } from "solid-js";
+
+import close from "~/assets/icons/close.svg";
 import {
     Button,
     Card,
-    NiceP,
-    SmallHeader,
     ContactForm,
-    showToast
+    NiceP,
+    showToast,
+    SmallHeader
 } from "~/components";
-import { Dialog } from "@kobalte/core";
-import close from "~/assets/icons/close.svg";
-import { SubmitHandler } from "@modular-forms/solid";
-import { Contact } from "@mutinywallet/mutiny-wasm";
-import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { useI18n } from "~/i18n/context";
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 
 export type ContactFormValues = {
     name: string;
@@ -42,15 +43,15 @@ export function ContactViewer(props: {
         <Dialog.Root open={isOpen()}>
             <button
                 onClick={() => setIsOpen(true)}
-                class="flex flex-col items-center gap-2 w-16 flex-shrink-0 overflow-x-hidden"
+                class="flex w-16 flex-shrink-0 flex-col items-center gap-2 overflow-x-hidden"
             >
                 <div
-                    class="flex-none h-16 w-16 rounded-full flex items-center justify-center text-4xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+                    class="flex h-16 w-16 flex-none items-center justify-center rounded-full border-b border-t border-b-white/10 border-t-white/50 text-4xl uppercase"
                     style={{ background: props.gradient }}
                 >
                     {props.contact.name[0]}
                 </div>
-                <SmallHeader class="overflow-ellipsis w-16 text-center overflow-hidden h-4">
+                <SmallHeader class="h-4 w-16 overflow-hidden overflow-ellipsis text-center">
                     {props.contact.name}
                 </SmallHeader>
             </button>
@@ -63,14 +64,14 @@ export function ContactViewer(props: {
                             setIsEditing(false);
                         }}
                     >
-                        <div class="w-full flex justify-end">
+                        <div class="flex w-full justify-end">
                             <button
                                 tabindex="-1"
                                 onClick={() => {
                                     setIsOpen(false);
                                     setIsEditing(false);
                                 }}
-                                class="hover:bg-white/10 rounded-lg active:bg-m-blue"
+                                class="rounded-lg hover:bg-white/10 active:bg-m-blue"
                             >
                                 <img src={close} alt="Close" />
                             </button>
@@ -85,17 +86,17 @@ export function ContactViewer(props: {
                                 />
                             </Match>
                             <Match when={!isEditing()}>
-                                <div class="flex flex-col flex-1 justify-around items-center gap-4 max-w-[400px] mx-auto w-full">
-                                    <div class="flex flex-col items-center w-full">
+                                <div class="mx-auto flex w-full max-w-[400px] flex-1 flex-col items-center justify-around gap-4">
+                                    <div class="flex w-full flex-col items-center">
                                         <div
-                                            class="flex-none h-32 w-32 rounded-full flex items-center justify-center text-8xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+                                            class="flex h-32 w-32 flex-none items-center justify-center rounded-full border-b border-t border-b-white/10 border-t-white/50 text-8xl uppercase"
                                             style={{
                                                 background: props.gradient
                                             }}
                                         >
                                             {props.contact.name[0]}
                                         </div>
-                                        <h1 class="text-2xl font-semibold uppercase mt-2 mb-4">
+                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
                                             {props.contact.name}
                                         </h1>
                                         <Card

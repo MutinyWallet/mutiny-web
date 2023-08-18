@@ -1,9 +1,12 @@
-import { Select, createOptions } from "@thisbeyond/solid-select";
+import { createOptions, Select } from "@thisbeyond/solid-select";
+
 import "~/styles/solid-select.css";
-import { For, Show, createMemo, createSignal, onMount } from "solid-js";
+
+import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+
 import { TinyButton } from "~/components";
-import { MutinyTagItem, sortByLastUsed } from "~/utils/tags";
 import { useMegaStore } from "~/state/megaStore";
+import { MutinyTagItem, sortByLastUsed } from "~/utils/tags";
 
 const createLabelValue = (label: string): Partial<MutinyTagItem> => {
     return { name: label, kind: "Contact" };
@@ -57,7 +60,7 @@ export function TagEditor(props: {
     };
 
     return (
-        <div class="flex flex-col gap-2 flex-shrink flex-1">
+        <div class="flex flex-1 flex-shrink flex-col gap-2">
             <Select
                 multiple
                 initialValue={props.selectedValues}
@@ -65,7 +68,7 @@ export function TagEditor(props: {
                 onChange={onChange}
                 {...selectProps()}
             />
-            <div class="flex gap-2 flex-wrap">
+            <div class="flex flex-wrap gap-2">
                 <Show when={availableTags() && availableTags()!.length > 0}>
                     <For each={availableTags()!.slice(0, 3)}>
                         {(tag) => (

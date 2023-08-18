@@ -1,35 +1,36 @@
+import { Clipboard } from "@capacitor/clipboard";
+import { Capacitor } from "@capacitor/core";
+import { TextField as KTextField } from "@kobalte/core";
 import {
-    Button,
-    DefaultMain,
-    LargeHeader,
-    NiceP,
-    SafeArea,
-    VStack,
-    BackLink,
-    NavBar,
-    TextFieldProps,
-    showToast,
-    ConfirmDialog,
-    InfoBox
-} from "~/components";
-import { useMegaStore } from "~/state/megaStore";
-import { For, Show, createSignal, splitProps } from "solid-js";
-import pasteIcon from "~/assets/icons/paste.svg";
-import {
-    SubmitHandler,
     createForm,
     custom,
     required,
     setValues,
+    SubmitHandler,
     validate
 } from "@modular-forms/solid";
-import { TextField as KTextField } from "@kobalte/core";
-import eify from "~/utils/eify";
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
-import { WORDS_EN } from "~/utils/words";
-import { Clipboard } from "@capacitor/clipboard";
-import { Capacitor } from "@capacitor/core";
+import { createSignal, For, Show, splitProps } from "solid-js";
+
+import pasteIcon from "~/assets/icons/paste.svg";
+import {
+    BackLink,
+    Button,
+    ConfirmDialog,
+    DefaultMain,
+    InfoBox,
+    LargeHeader,
+    NavBar,
+    NiceP,
+    SafeArea,
+    showToast,
+    TextFieldProps,
+    VStack
+} from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import eify from "~/utils/eify";
+import { WORDS_EN } from "~/utils/words";
 
 type SeedWordsForm = {
     words: string[];
@@ -67,7 +68,7 @@ export function SeedTextField(props: TextFieldProps) {
                 autocorrect="off"
                 autocomplete="off"
                 type={props.type}
-                class="w-full p-2 rounded-lg border bg-m-grey-750 placeholder-neutral-400"
+                class="w-full rounded-lg border bg-m-grey-750 p-2 placeholder-neutral-400"
                 classList={{
                     "border-m-grey-750": !props.error && !props.value,
                     "border-m-red": !!props.error,
@@ -170,16 +171,16 @@ function TwelveWordsEntry() {
     return (
         <>
             <Form onSubmit={onSubmit} class="flex flex-col gap-4">
-                <div class="flex flex-col gap-4 bg-m-grey-800 p-4 rounded-xl overflow-hidden">
+                <div class="flex flex-col gap-4 overflow-hidden rounded-xl bg-m-grey-800 p-4">
                     <Show when={error()}>
                         <InfoBox accent="red">{error()?.message}</InfoBox>
                     </Show>
-                    <ul class="overflow-hidden columns-2 w-full list-none pt-2 pr-2">
+                    <ul class="w-full list-none columns-2 overflow-hidden pr-2 pt-2">
                         <FieldArray name="words">
                             {(fieldArray) => (
                                 <For each={fieldArray.items}>
                                     {(_, index) => (
-                                        <div class="flex items-center gap-1 mb-2">
+                                        <div class="mb-2 flex items-center gap-1">
                                             <pre class="w-[2rem] text-right">
                                                 {index() + 1}
                                                 {"."}
@@ -217,7 +218,7 @@ function TwelveWordsEntry() {
                     <div class="flex w-full justify-center">
                         <button
                             onClick={handlePaste}
-                            class="bg-white/10 hover:bg-white/20 py-2 px-4 rounded-lg"
+                            class="rounded-lg bg-white/10 px-4 py-2 hover:bg-white/20"
                             type="button"
                         >
                             <div class="flex items-center gap-2">
@@ -225,7 +226,7 @@ function TwelveWordsEntry() {
                                 <img
                                     src={pasteIcon}
                                     alt="paste"
-                                    class="w-4 h-4"
+                                    class="h-4 w-4"
                                 />
                             </div>
                         </button>

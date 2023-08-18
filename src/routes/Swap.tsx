@@ -1,41 +1,42 @@
 import { createForm, required } from "@modular-forms/solid";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
+import { ExternalLink } from "@mutinywallet/ui";
 import {
+    createMemo,
+    createResource,
+    createSignal,
     For,
     Match,
     Show,
-    Switch,
-    createMemo,
-    createResource,
-    createSignal
+    Switch
 } from "solid-js";
+import { useNavigate } from "solid-start";
+
 import {
     AmountCard,
-    NavBar,
-    showToast,
+    AmountFiat,
+    BackLink,
     Button,
     Card,
     DefaultMain,
+    InfoBox,
     LargeHeader,
-    MutinyWalletGuard,
-    SafeArea,
-    BackLink,
-    TextField,
-    VStack,
     MegaCheck,
     MegaEx,
-    InfoBox,
+    MutinyWalletGuard,
+    NavBar,
+    SafeArea,
+    showToast,
     SuccessModal,
-    AmountFiat
+    TextField,
+    VStack
 } from "~/components";
+import { useI18n } from "~/i18n/context";
+import { Network } from "~/logic/mutinyWalletSetup";
 import { MethodChooser, SendSource } from "~/routes/Send";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
-import { useNavigate } from "solid-start";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { ExternalLink } from "@mutinywallet/ui";
-import { Network } from "~/logic/mutinyWalletSetup";
-import { useI18n } from "~/i18n/context";
 
 const CHANNEL_FEE_ESTIMATE_ADDRESS =
     "bc1qf7546vg73ddsjznzq57z3e8jdn6gtw6au576j07kt6d9j7nz8mzsyn6lgf";
@@ -282,7 +283,7 @@ export default function Swap() {
                         <Switch>
                             <Match when={channelOpenResult()?.failure_reason}>
                                 <MegaEx />
-                                <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
+                                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
                                     {channelOpenResult()?.failure_reason
                                         ? channelOpenResult()?.failure_reason
                                               ?.message
@@ -293,10 +294,10 @@ export default function Swap() {
                             <Match when={channelOpenResult()?.channel}>
                                 <MegaCheck />
                                 <div class="flex flex-col justify-center">
-                                    <h1 class="w-full mt-4 mb-2 justify-center text-2xl font-semibold text-center md:text-3xl">
+                                    <h1 class="mb-2 mt-4 w-full justify-center text-center text-2xl font-semibold md:text-3xl">
                                         {i18n.t("swap.initiated")}
                                     </h1>
-                                    <p class="text-xl text-center">
+                                    <p class="text-center text-xl">
                                         {i18n.t("swap.sats_added", {
                                             amount: (
                                                 Number(
@@ -310,7 +311,7 @@ export default function Swap() {
                                             ).toLocaleString()
                                         })}
                                     </p>
-                                    <div class="text-sm text-center text-white/70">
+                                    <div class="text-center text-sm text-white/70">
                                         <AmountFiat
                                             amountSats={
                                                 Number(
@@ -356,16 +357,16 @@ export default function Swap() {
                             <Show when={!hasLsp()}>
                                 <Card>
                                     <VStack>
-                                        <div class="w-full flex flex-col gap-2">
+                                        <div class="flex w-full flex-col gap-2">
                                             <label
                                                 for="peerselect"
-                                                class="uppercase font-semibold text-sm"
+                                                class="text-sm font-semibold uppercase"
                                             >
                                                 {i18n.t("swap.use_existing")}
                                             </label>
                                             <select
                                                 name="peerselect"
-                                                class="bg-black px-4 py-2 rounded truncate w-full"
+                                                class="w-full truncate rounded bg-black px-4 py-2"
                                                 onChange={handlePeerSelect}
                                                 value={selectedPeer()}
                                             >

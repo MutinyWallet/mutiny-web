@@ -1,9 +1,10 @@
 import { Show } from "solid-js";
-import { useMegaStore } from "~/state/megaStore";
-import { satsToUsd } from "~/utils/conversions";
+
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { satsToUsd } from "~/utils/conversions";
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
@@ -20,14 +21,14 @@ export function AmountSats(props: {
 }) {
     const i18n = useI18n();
     return (
-        <div class="flex gap-2 items-center">
+        <div class="flex items-center gap-2">
             <Show when={props.icon === "lightning"}>
                 <img src={bolt} alt="lightning" class="h-[18px]" />
             </Show>
             <Show when={props.icon === "chain"}>
                 <img src={chain} alt="chain" class="h-[18px]" />
             </Show>
-            <h1 class="font-light text-right">
+            <h1 class="text-right font-light">
                 <Show when={props.icon === "plus"}>
                     <span>+</span>
                 </Show>
@@ -37,7 +38,7 @@ export function AmountSats(props: {
                 {props.loading ? "..." : prettyPrintAmount(props.amountSats)}
                 &nbsp;
                 <span
-                    class="font-light text-base"
+                    class="text-base font-light"
                     classList={{
                         "text-sm": props.denominationSize === "sm",
                         "text-lg": props.denominationSize === "lg",

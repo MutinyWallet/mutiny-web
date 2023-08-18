@@ -1,27 +1,28 @@
-import { For, Show, Suspense, createResource } from "solid-js";
+import { Tabs } from "@kobalte/core";
+import { Contact } from "@mutinywallet/mutiny-wasm";
+import { createResource, For, Show, Suspense } from "solid-js";
+
 import {
+    BackLink,
     Button,
     Card,
-    DefaultMain,
-    LargeHeader,
-    NiceP,
-    MutinyWalletGuard,
-    SafeArea,
-    VStack,
-    NavBar,
-    BackLink,
     CombinedActivity,
     ContactEditor,
     ContactFormValues,
     ContactViewer,
+    DefaultMain,
+    LargeHeader,
+    LoadingShimmer,
+    MutinyWalletGuard,
+    NavBar,
+    NiceP,
+    SafeArea,
     showToast,
-    LoadingShimmer
+    VStack
 } from "~/components";
-import { Tabs } from "@kobalte/core";
-import { gradientsPerContact } from "~/utils/gradientHash";
-import { useMegaStore } from "~/state/megaStore";
-import { Contact } from "@mutinywallet/mutiny-wasm";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { gradientsPerContact } from "~/utils/gradientHash";
 
 function ContactRow() {
     const i18n = useI18n();
@@ -67,7 +68,7 @@ function ContactRow() {
         <div class="flex gap-4">
             <ContactEditor list createContact={createContact} />
             <Show when={contacts()}>
-                <div class="flex gap-4 flex-1 overflow-x-scroll disable-scrollbars">
+                <div class="flex flex-1 gap-4 overflow-x-scroll disable-scrollbars">
                     <For each={contacts()}>
                         {(contact) => (
                             <ContactViewer
@@ -97,7 +98,7 @@ export default function Activity() {
                     <LargeHeader>{i18n.t("activity.title")}</LargeHeader>
                     <ContactRow />
                     <Tabs.Root defaultValue="mutiny">
-                        <Tabs.List class="relative flex justify-around mt-4 mb-8 gap-1 bg-neutral-950 p-1 rounded-xl">
+                        <Tabs.List class="relative mb-8 mt-4 flex justify-around gap-1 rounded-xl bg-neutral-950 p-1">
                             <Tabs.Trigger value="mutiny" class={TAB}>
                                 {i18n.t("activity.mutiny")}
                             </Tabs.Trigger>
@@ -124,7 +125,7 @@ export default function Activity() {
                         </Tabs.Content>
                         <Tabs.Content value="nostr">
                             <VStack>
-                                <div class="my-8 flex flex-col items-center gap-4 text-center max-w-[20rem] mx-auto">
+                                <div class="mx-auto my-8 flex max-w-[20rem] flex-col items-center gap-4 text-center">
                                     <NiceP>
                                         {i18n.t("activity.import_contacts")}
                                     </NiceP>

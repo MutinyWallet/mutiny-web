@@ -1,7 +1,8 @@
-import { For, Match, Switch, createMemo, createSignal } from "solid-js";
-import { useCopy } from "~/utils/useCopy";
+import { createMemo, createSignal, For, Match, Switch } from "solid-js";
+
 import copyIcon from "~/assets/icons/copy.svg";
 import { useI18n } from "~/i18n/context";
+import { useCopy } from "~/utils/useCopy";
 
 export function SeedWords(props: {
     words: string;
@@ -25,11 +26,11 @@ export function SeedWords(props: {
     }
 
     return (
-        <div class="flex flex-col gap-4 bg-m-red p-4 rounded-xl overflow-hidden">
+        <div class="flex flex-col gap-4 overflow-hidden rounded-xl bg-m-red p-4">
             <Switch>
                 <Match when={!shouldShow()}>
                     <div
-                        class="cursor-pointer flex w-full justify-center"
+                        class="flex w-full cursor-pointer justify-center"
                         onClick={toggleShow}
                     >
                         <code class="text-red">
@@ -41,17 +42,17 @@ export function SeedWords(props: {
                 <Match when={shouldShow()}>
                     <>
                         <div
-                            class="cursor-pointer flex w-full justify-center"
+                            class="flex w-full cursor-pointer justify-center"
                             onClick={toggleShow}
                         >
                             <code class="text-red">
                                 {i18n.t("settings.backup.seed_words.hide")}
                             </code>
                         </div>
-                        <ol class="overflow-hidden columns-2 w-full list-decimal list-inside">
+                        <ol class="w-full list-inside list-decimal columns-2 overflow-hidden">
                             <For each={splitWords()}>
                                 {(word) => (
-                                    <li class="font-mono text-left min-w-fit bg">
+                                    <li class="bg min-w-fit text-left font-mono">
                                         {word}
                                     </li>
                                 )}
@@ -60,7 +61,7 @@ export function SeedWords(props: {
                         <div class="flex w-full justify-center">
                             <button
                                 onClick={dangerouslyCopy}
-                                class="bg-white/10 hover:bg-white/20 p-2 rounded-lg"
+                                class="rounded-lg bg-white/10 p-2 hover:bg-white/20"
                             >
                                 <div class="flex items-center gap-2">
                                     <span>
@@ -75,7 +76,7 @@ export function SeedWords(props: {
                                     <img
                                         src={copyIcon}
                                         alt="copy"
-                                        class="w-4 h-4"
+                                        class="h-4 w-4"
                                     />
                                 </div>
                             </button>

@@ -2,9 +2,10 @@ import { use } from "i18next";
 // FIXME: this doesn't work when deployed
 // import HttpApi from 'i18next-http-backend';
 import LanguageDetector from "i18next-browser-languagedetector";
+
 import en from "~/i18n/en/translations";
-import pt from "~/i18n/pt/translations";
 import ko from "~/i18n/ko/translations";
+import pt from "~/i18n/pt/translations";
 
 export const resources = {
     en: {

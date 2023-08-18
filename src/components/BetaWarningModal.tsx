@@ -1,15 +1,16 @@
 import { Dialog } from "@kobalte/core";
-import { ParentComponent, createSignal } from "solid-js";
+import { ExternalLink } from "@mutinywallet/ui";
+import { createSignal, ParentComponent } from "solid-js";
+
 import {
     DIALOG_CONTENT,
     DIALOG_POSITIONER,
-    OVERLAY,
     ModalCloseButton,
+    OVERLAY,
     SmallHeader
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { ExternalLink } from "@mutinywallet/ui";
 
 export function BetaWarningModal() {
     const i18n = useI18n();
@@ -57,7 +58,7 @@ export const WarningModal: ParentComponent<{
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
-                        <Dialog.Title class="flex justify-between mb-2 items-center">
+                        <Dialog.Title class="mb-2 flex items-center justify-between">
                             <SmallHeader>{props.title}</SmallHeader>
                             <Dialog.CloseButton>
                                 <ModalCloseButton />

@@ -1,15 +1,16 @@
+import { For, Show } from "solid-js";
+import { A } from "solid-start";
+
+import forward from "~/assets/icons/forward.svg";
 import {
+    BackLink,
     DefaultMain,
     LargeHeader,
+    NavBar,
     SafeArea,
     SettingsCard,
-    VStack,
-    BackLink,
-    NavBar
+    VStack
 } from "~/components";
-import { A } from "solid-start";
-import { For, Show } from "solid-js";
-import forward from "~/assets/icons/forward.svg";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
@@ -29,7 +30,7 @@ function SettingsLinkList(props: {
                 {(link) => (
                     <A
                         href={link.href}
-                        class="no-underline flex w-full flex-col gap-1 py-2 hover:bg-m-grey-750 active:bg-m-grey-900 px-4"
+                        class="flex w-full flex-col gap-1 px-4 py-2 no-underline hover:bg-m-grey-750 active:bg-m-grey-900"
                         classList={{
                             "opacity-50 cursor pointer-events-none grayscale":
                                 link.disabled

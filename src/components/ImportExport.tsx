@@ -1,21 +1,22 @@
-import { useMegaStore } from "~/state/megaStore";
+import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { createFileUploader } from "@solid-primitives/upload";
+import { createSignal, Show } from "solid-js";
+
 import {
     Button,
+    ConfirmDialog,
+    InfoBox,
     InnerCard,
     NiceP,
-    SimpleDialog,
-    VStack,
-    ConfirmDialog,
     showToast,
-    InfoBox,
-    TextField
+    SimpleDialog,
+    TextField,
+    VStack
 } from "~/components";
-import { Show, createSignal } from "solid-js";
-import eify from "~/utils/eify";
-import { downloadTextFile } from "~/utils/download";
-import { createFileUploader } from "@solid-primitives/upload";
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { downloadTextFile } from "~/utils/download";
+import eify from "~/utils/eify";
 
 export function ImportExport(props: { emergency?: boolean }) {
     const i18n = useI18n();

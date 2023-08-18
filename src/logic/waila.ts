@@ -1,4 +1,5 @@
 import initWaila, { PaymentParams } from "@mutinywallet/waila-wasm";
+
 import { Result } from "~/utils/typescript";
 
 // Make sure we've initialzied waila before we try to use it

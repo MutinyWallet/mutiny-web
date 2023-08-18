@@ -1,8 +1,9 @@
 import { Dialog } from "@kobalte/core";
 import { JSX } from "solid-js";
+
 import { Button } from "~/components";
-import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { useI18n } from "~/i18n/context";
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 
 type SuccessModalProps = {
     open: boolean;
@@ -24,10 +25,10 @@ export function SuccessModal(props: SuccessModalProps) {
             <Dialog.Portal>
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
-                        <Dialog.Description class="flex flex-col items-center justify-center gap-6 h-full w-full max-w-[400px] mx-auto">
+                        <Dialog.Description class="mx-auto flex h-full w-full max-w-[400px] flex-col items-center justify-center gap-6">
                             {props.children}
                         </Dialog.Description>
-                        <div class="w-full flex max-w-[300px] mx-auto">
+                        <div class="mx-auto flex w-full max-w-[300px]">
                             <Button onClick={onNice} intent="inactive">
                                 {props.confirmText ??
                                     `${i18n.t("common.nice")}`}

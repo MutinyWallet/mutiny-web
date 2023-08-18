@@ -1,24 +1,25 @@
+import { Contact } from "@mutinywallet/mutiny-wasm";
 import {
+    createEffect,
+    createResource,
+    createSignal,
     For,
     Match,
     Show,
-    Switch,
-    createEffect,
-    createResource,
-    createSignal
+    Switch
 } from "solid-js";
-import { useMegaStore } from "~/state/megaStore";
-import { useI18n } from "~/i18n/context";
-import { Contact } from "@mutinywallet/mutiny-wasm";
 import { A } from "solid-start";
-import { createDeepSignal } from "~/utils/deepSignal";
+
 import {
-    NiceP,
-    DetailsIdModal,
-    LoadingShimmer,
     ActivityItem,
-    HackActivityType
+    DetailsIdModal,
+    HackActivityType,
+    LoadingShimmer,
+    NiceP
 } from "~/components";
+import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { createDeepSignal } from "~/utils/deepSignal";
 
 export const THREE_COLUMNS =
     "grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0";
@@ -117,7 +118,7 @@ export function CombinedActivity(props: { limit?: number }) {
             </Show>
             <Switch>
                 <Match when={activity.latest.length === 0}>
-                    <div class="w-full text-center pb-4">
+                    <div class="w-full pb-4 text-center">
                         <NiceP>
                             {i18n.t(
                                 "activity.receive_some_sats_to_get_started"
@@ -151,7 +152,7 @@ export function CombinedActivity(props: { limit?: number }) {
             <Show when={props.limit && activity.latest.length > 0}>
                 <A
                     href="/activity"
-                    class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
+                    class="self-center font-semibold text-m-red no-underline active:text-m-red/80"
                 >
                     {i18n.t("activity.view_all")}
                 </A>

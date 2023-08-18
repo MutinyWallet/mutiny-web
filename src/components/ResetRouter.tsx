@@ -1,6 +1,6 @@
 import { Button, InnerCard, NiceP, VStack } from "~/components";
-import { useMegaStore } from "~/state/megaStore";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 export function ResetRouter() {
     const i18n = useI18n();

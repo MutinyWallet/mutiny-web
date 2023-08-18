@@ -1,13 +1,14 @@
 import { Toast, toaster } from "@kobalte/core";
 import { Portal } from "solid-js/web";
+
 import close from "~/assets/icons/close.svg";
 import { SmallHeader } from "~/components";
 
 export function Toaster() {
     return (
         <Portal>
-            <Toast.Region class="z-[9999] top-0 fixed flex gap-4 w-full justify-center safe-top safe-left safe-right safe-bottom">
-                <Toast.List class="max-w-[100vw] w-[400px] mt-8 flex flex-col gap-4" />
+            <Toast.Region class="fixed top-0 z-[9999] flex w-full justify-center gap-4 safe-top safe-left safe-right safe-bottom">
+                <Toast.List class="mt-8 flex w-[400px] max-w-[100vw] flex-col gap-4" />
             </Toast.Region>
         </Portal>
     );
@@ -45,11 +46,11 @@ export function ToastItem(props: {
     return (
         <Toast.Root
             toastId={props.toastId}
-            class={`w-[80vw] max-w-[400px] mx-auto p-4 bg-neutral-900/80 backdrop-blur-md shadow-xl rounded-xl border ${
+            class={`mx-auto w-[80vw] max-w-[400px] rounded-xl border bg-neutral-900/80 p-4 shadow-xl backdrop-blur-md ${
                 props.isError ? "border-m-red/50" : "border-white/10"
             } `}
         >
-            <div class="flex gap-4 w-full justify-between items-start">
+            <div class="flex w-full items-start justify-between gap-4">
                 <div class="flex-1">
                     <Toast.Title>
                         <SmallHeader>{props.title}</SmallHeader>
@@ -58,7 +59,7 @@ export function ToastItem(props: {
                         <p>{props.description}</p>
                     </Toast.Description>
                 </div>
-                <Toast.CloseButton class="hover:bg-white/10 rounded-lg active:bg-m-blue flex-0 w-8 h-8">
+                <Toast.CloseButton class="flex-0 h-8 w-8 rounded-lg hover:bg-white/10 active:bg-m-blue">
                     <img src={close} alt="Close" />
                 </Toast.CloseButton>
             </div>

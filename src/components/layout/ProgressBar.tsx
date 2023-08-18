@@ -1,4 +1,5 @@
 import { Progress } from "@kobalte/core";
+
 import { SmallHeader } from "~/components";
 import { useI18n } from "~/i18n/context";
 
@@ -35,7 +36,7 @@ export function ProgressBar(props: { value: number; max: number }) {
                     "send.progress_bar.sats_sent"
                 )}`
             }
-            class="w-full flex flex-col gap-2"
+            class="flex w-full flex-col gap-2"
         >
             <div class="flex justify-between">
                 <Progress.Label>
@@ -43,8 +44,8 @@ export function ProgressBar(props: { value: number; max: number }) {
                 </Progress.Label>
                 <Progress.ValueLabel class="text-sm font-semibold uppercase" />
             </div>
-            <Progress.Track class="h-6  bg-white/10 rounded">
-                <Progress.Fill class="bg-m-red rounded h-full w-[var(--kb-progress-fill-width)] transition-[width]" />
+            <Progress.Track class="h-6  rounded bg-white/10">
+                <Progress.Fill class="h-full w-[var(--kb-progress-fill-width)] rounded bg-m-red transition-[width]" />
             </Progress.Track>
         </Progress.Root>
     );

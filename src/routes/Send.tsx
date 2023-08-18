@@ -1,53 +1,55 @@
+import { Clipboard } from "@capacitor/clipboard";
+import { Capacitor } from "@capacitor/core";
+import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { ExternalLink } from "@mutinywallet/ui";
 import {
-    Match,
-    Show,
-    Switch,
     createEffect,
     createMemo,
     createSignal,
-    onMount
+    Match,
+    onMount,
+    Show,
+    Switch
 } from "solid-js";
+import { useNavigate } from "solid-start";
+
+import { Paste } from "~/assets/svg/Paste";
+import { Scan } from "~/assets/svg/Scan";
 import {
-    NavBar,
-    AmountSats,
+    AmountCard,
     AmountFiat,
+    AmountSats,
+    BackButton,
+    BackLink,
     Button,
     ButtonLink,
     Card,
     DefaultMain,
+    Fee,
     HStack,
+    InfoBox,
     LargeHeader,
-    MutinyWalletGuard,
-    SafeArea,
-    SmallHeader,
-    VStack,
-    StyledRadioGroup,
-    showToast,
     MegaCheck,
     MegaEx,
-    BackLink,
-    TagEditor,
+    MutinyWalletGuard,
+    NavBar,
+    SafeArea,
+    showToast,
+    SmallHeader,
     StringShower,
-    AmountCard,
-    BackButton,
+    StyledRadioGroup,
     SuccessModal,
-    InfoBox,
-    Fee
+    TagEditor,
+    VStack
 } from "~/components";
-import { ExternalLink } from "@mutinywallet/ui";
-import { Paste } from "~/assets/svg/Paste";
-import { Scan } from "~/assets/svg/Scan";
+import { useI18n } from "~/i18n/context";
+import { Network } from "~/logic/mutinyWalletSetup";
+import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
-import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import eify from "~/utils/eify";
 import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { useNavigate } from "solid-start";
 import { MutinyTagItem } from "~/utils/tags";
-import { Network } from "~/logic/mutinyWalletSetup";
-import { useI18n } from "~/i18n/context";
-import { ParsedParams, toParsedParams } from "~/logic/waila";
-import { Clipboard } from "@capacitor/clipboard";
-import { Capacitor } from "@capacitor/core";
+
 import { FeedbackLink } from "./Feedback";
 
 export type SendSource = "lightning" | "onchain";
@@ -144,7 +146,7 @@ function DestinationInput(props: {
                     props.setFieldDestination(trim);
                 }}
                 placeholder="bitcoin:..."
-                class="p-2 rounded-lg bg-white/10 placeholder-neutral-400"
+                class="rounded-lg bg-white/10 p-2 placeholder-neutral-400"
             />
             <Button
                 disabled={!props.fieldDestination}
@@ -155,13 +157,13 @@ function DestinationInput(props: {
             </Button>
             <HStack>
                 <Button onClick={props.handlePaste}>
-                    <div class="flex flex-col gap-2 items-center">
+                    <div class="flex flex-col items-center gap-2">
                         <Paste />
                         <span>{i18n.t("send.paste")}</span>
                     </div>
                 </Button>
                 <ButtonLink href="/scanner">
-                    <div class="flex flex-col gap-2 items-center">
+                    <div class="flex flex-col items-center gap-2">
                         <Scan />
                         <span>{i18n.t("send.scan_qr")}</span>
                     </div>
@@ -604,7 +606,7 @@ export default function Send() {
                         <Switch>
                             <Match when={sentDetails()?.failure_reason}>
                                 <MegaEx />
-                                <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
+                                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
                                     {sentDetails()?.amount
                                         ? source() === "onchain"
                                             ? i18n.t("send.payment_initiated")
@@ -615,14 +617,14 @@ export default function Send() {
                             </Match>
                             <Match when={true}>
                                 <MegaCheck />
-                                <h1 class="w-full mt-4 mb-2 text-2xl font-semibold text-center md:text-3xl">
+                                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
                                     {sentDetails()?.amount
                                         ? source() === "onchain"
                                             ? i18n.t("send.payment_initiated")
                                             : i18n.t("send.payment_sent")
                                         : sentDetails()?.failure_reason}
                                 </h1>
-                                <div class="flex flex-col gap-1 items-center">
+                                <div class="flex flex-col items-center gap-1">
                                     <div class="text-xl">
                                         <AmountSats
                                             amountSats={sentDetails()?.amount}

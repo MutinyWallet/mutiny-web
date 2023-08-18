@@ -1,4 +1,5 @@
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+
 import { Button, InnerCard, NiceP, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { downloadTextFile } from "~/utils/download";

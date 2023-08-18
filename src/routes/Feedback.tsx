@@ -1,14 +1,19 @@
 import {
-    SubmitHandler,
     createForm,
     email,
     getValue,
     required,
-    setValue
+    setValue,
+    SubmitHandler
 } from "@modular-forms/solid";
-import { Match, Show, Switch, createSignal } from "solid-js";
+import { ExternalLink } from "@mutinywallet/ui";
+import { createSignal, Match, Show, Switch } from "solid-js";
 import { A, useLocation } from "solid-start";
+
+import feedback from "~/assets/icons/feedback.svg";
+import { InfoBox, MegaCheck, NavBar } from "~/components";
 import {
+    BackPop,
     Button,
     ButtonLink,
     Checkbox,
@@ -16,16 +21,12 @@ import {
     LargeHeader,
     NiceP,
     SafeArea,
-    VStack,
-    BackPop,
     StyledRadioGroup,
-    TextField
+    TextField,
+    VStack
 } from "~/components/layout";
-import { ExternalLink } from "@mutinywallet/ui";
-import feedback from "~/assets/icons/feedback.svg";
-import eify from "~/utils/eify";
 import { useI18n } from "~/i18n/context";
-import { InfoBox, MegaCheck, NavBar } from "~/components";
+import eify from "~/utils/eify";
 
 const FEEDBACK_API = import.meta.env.VITE_FEEDBACK;
 
@@ -34,7 +35,7 @@ export function FeedbackLink(props: { setupError?: boolean }) {
     const location = useLocation();
     return (
         <A
-            class="font-semibold no-underline text-m-grey-350 flex gap-2 items-center"
+            class="flex items-center gap-2 font-semibold text-m-grey-350 no-underline"
             state={{
                 previous: location.pathname,
                 // If we're coming from an error page we want to know that so we can hide the navbar
@@ -303,7 +304,7 @@ export default function Feedback() {
 
                 <Switch>
                     <Match when={submitted()}>
-                        <div class="flex flex-col gap-4 items-center h-full">
+                        <div class="flex h-full flex-col items-center gap-4">
                             <MegaCheck />
                             <LargeHeader centered>
                                 {i18n.t("feedback.received")}
