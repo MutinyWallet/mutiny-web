@@ -1,20 +1,21 @@
+import { createEffect, createSignal, Show } from "solid-js";
+import { useNavigate } from "solid-start";
+
 import {
+    BackLink,
     Button,
+    Checkbox,
     DefaultMain,
     LargeHeader,
-    NiceP,
     MutinyWalletGuard,
-    SafeArea,
-    VStack,
-    Checkbox,
     NavBar,
+    NiceP,
+    SafeArea,
     SeedWords,
-    BackLink
+    VStack
 } from "~/components";
-import { useNavigate } from "solid-start";
-import { useMegaStore } from "~/state/megaStore";
-import { Show, createEffect, createSignal } from "solid-js";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 function Quiz(props: { setHasCheckedAll: (hasChecked: boolean) => void }) {
     const i18n = useI18n();

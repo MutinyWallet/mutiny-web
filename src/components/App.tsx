@@ -1,27 +1,28 @@
-import {
-    DefaultMain,
-    SafeArea,
-    VStack,
-    Card,
-    LoadingShimmer,
-    BalanceBox,
-    ReloadPrompt,
-    NavBar,
-    OnboardWarning,
-    CombinedActivity,
-    BetaWarningModal,
-    PendingNwc,
-    DecryptDialog,
-    LoadingIndicator
-} from "~/components";
-import { A } from "solid-start";
-import { useMegaStore } from "~/state/megaStore";
 import { Match, Show, Suspense, Switch } from "solid-js";
+import { A } from "solid-start";
+
 import settings from "~/assets/icons/settings.svg";
 import pixelLogo from "~/assets/mutiny-pixel-logo.png";
 import plusLogo from "~/assets/mutiny-plus-logo.png";
-import { FeedbackLink } from "~/routes/Feedback";
+import {
+    BalanceBox,
+    BetaWarningModal,
+    Card,
+    CombinedActivity,
+    DecryptDialog,
+    DefaultMain,
+    LoadingIndicator,
+    LoadingShimmer,
+    NavBar,
+    OnboardWarning,
+    PendingNwc,
+    ReloadPrompt,
+    SafeArea,
+    VStack
+} from "~/components";
 import { useI18n } from "~/i18n/context";
+import { FeedbackLink } from "~/routes/Feedback";
+import { useMegaStore } from "~/state/megaStore";
 
 export function App() {
     const i18n = useI18n();
@@ -31,7 +32,7 @@ export function App() {
         <SafeArea>
             <DefaultMain>
                 <LoadingIndicator />
-                <header class="w-full flex justify-between items-center mt-4 mb-2">
+                <header class="mb-2 mt-4 flex w-full items-center justify-between">
                     <div class="flex items-center gap-2">
                         <Switch>
                             <Match when={state.mutiny_plus}>
@@ -57,13 +58,13 @@ export function App() {
                                 state.mutiny_wallet?.get_network() !== "bitcoin"
                             }
                         >
-                            <div class="box-border px-2 py-1 -my-1 text-white-400 bg-neutral-800 rounded text-xs uppercase  w-fit">
+                            <div class="text-white-400 -my-1 box-border w-fit rounded bg-neutral-800 px-2 py-1 text-xs  uppercase">
                                 {state.mutiny_wallet?.get_network()}
                             </div>
                         </Show>
                     </div>
                     <A
-                        class="md:hidden p-2 hover:bg-white/5 rounded-lg active:bg-m-blue"
+                        class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
                         href="/settings"
                     >
                         <img src={settings} alt="Settings" class="h-6 w-6" />
@@ -92,7 +93,7 @@ export function App() {
                         </Suspense>
                     </VStack>
                 </Card>
-                <div class="self-center mt-4">
+                <div class="mt-4 self-center">
                     <FeedbackLink />
                 </div>
             </DefaultMain>

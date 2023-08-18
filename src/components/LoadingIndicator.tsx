@@ -1,5 +1,6 @@
 import { Progress } from "@kobalte/core";
 import { Show } from "solid-js";
+
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
@@ -29,11 +30,11 @@ export function LoadingBar(props: { value: number; max: number }) {
             getValueLabel={({ value }) =>
                 i18n.t("modals.loading.loading", { stage: valueToStage(value) })
             }
-            class="w-full flex flex-col gap-2"
+            class="flex w-full flex-col gap-2"
         >
             <Progress.ValueLabel class="text-sm text-m-grey-400" />
-            <Progress.Track class="h-6  bg-white/10 rounded">
-                <Progress.Fill class="bg-m-blue rounded h-full w-[var(--kb-progress-fill-width)] transition-[width]" />
+            <Progress.Track class="h-6  rounded bg-white/10">
+                <Progress.Fill class="h-full w-[var(--kb-progress-fill-width)] rounded bg-m-blue transition-[width]" />
             </Progress.Track>
         </Progress.Root>
     );

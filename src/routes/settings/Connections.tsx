@@ -1,28 +1,29 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
-import { For, Show, createResource, createSignal } from "solid-js";
+import { createResource, createSignal, For, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
+
 import {
-    KeyValue,
-    MiniStringShower,
-    InfoBox,
-    NavBar,
-    ShareCard,
+    BackLink,
     Button,
     Collapser,
     DefaultMain,
+    InfoBox,
+    KeyValue,
     LargeHeader,
+    MiniStringShower,
     MutinyWalletGuard,
+    NavBar,
     NiceP,
     SafeArea,
     SettingsCard,
+    ShareCard,
     SimpleDialog,
-    VStack,
-    BackLink,
-    TextField
+    TextField,
+    VStack
 } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
-import { useI18n } from "~/i18n/context";
 
 function Nwc() {
     const i18n = useI18n();
@@ -118,10 +119,10 @@ function Nwc() {
                                         />
                                     </KeyValue>
 
-                                    <div class="w-full bg-white rounded-xl">
+                                    <div class="w-full rounded-xl bg-white">
                                         <QRCodeSVG
                                             value={profile.nwc_uri}
-                                            class="w-full h-full p-8 max-h-[320px]"
+                                            class="h-full max-h-[320px] w-full p-8"
                                         />
                                     </div>
                                     <ShareCard text={profile.nwc_uri || ""} />

@@ -1,11 +1,12 @@
-import { createEffect, createSignal } from "solid-js";
-import { useNavigate } from "solid-start";
-import { Button, Scanner as Reader, showToast } from "~/components";
-import { useMegaStore } from "~/state/megaStore";
-import { toParsedParams } from "~/logic/waila";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import { createEffect, createSignal } from "solid-js";
+import { useNavigate } from "solid-start";
+
+import { Button, Scanner as Reader, showToast } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { toParsedParams } from "~/logic/waila";
+import { useMegaStore } from "~/state/megaStore";
 
 export default function Scanner() {
     const i18n = useI18n();
@@ -63,10 +64,10 @@ export default function Scanner() {
     });
 
     return (
-        <div class="safe-top safe-left safe-right safe-bottom h-full">
+        <div class="h-full safe-top safe-left safe-right safe-bottom">
             <Reader onResult={onResult} />
-            <div class="w-full flex flex-col items-center fixed bottom-[2rem] gap-8 px-8">
-                <div class="w-full max-w-[800px] flex flex-col gap-2">
+            <div class="fixed bottom-[2rem] flex w-full flex-col items-center gap-8 px-8">
+                <div class="flex w-full max-w-[800px] flex-col gap-2">
                     <Button intent="blue" onClick={handlePaste}>
                         {i18n.t("scanner.paste")}
                     </Button>

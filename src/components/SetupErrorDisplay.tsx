@@ -1,24 +1,25 @@
-import { Title } from "solid-start";
-import {
-    DefaultMain,
-    LargeHeader,
-    NiceP,
-    SafeArea,
-    SmallHeader,
-    ImportExport,
-    Logs,
-    DeleteEverything
-} from "~/components";
 import { ExternalLink } from "@mutinywallet/ui";
 import { Match, Switch } from "solid-js";
-import { FeedbackLink } from "~/routes/Feedback";
+import { Title } from "solid-start";
+
+import {
+    DefaultMain,
+    DeleteEverything,
+    ImportExport,
+    LargeHeader,
+    Logs,
+    NiceP,
+    SafeArea,
+    SmallHeader
+} from "~/components";
 import { useI18n } from "~/i18n/context";
+import { FeedbackLink } from "~/routes/Feedback";
 
 function ErrorFooter() {
     return (
         <>
             <div class="h-full" />
-            <div class="self-center mt-4">
+            <div class="mt-4 self-center">
                 <FeedbackLink setupError={true} />
             </div>
         </>
@@ -40,7 +41,7 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                         <LargeHeader>
                             {i18n.t("error.on_boot.loading_failed.header")}
                         </LargeHeader>
-                        <p class="bg-white/10 rounded-xl p-4 font-mono">
+                        <p class="rounded-xl bg-white/10 p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
                         </p>
@@ -82,7 +83,7 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                         <LargeHeader>
                             {i18n.t("error.on_boot.existing_tab.title")}
                         </LargeHeader>
-                        <p class="bg-white/10 rounded-xl p-4 font-mono">
+                        <p class="rounded-xl bg-white/10 p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
                         </p>
@@ -102,7 +103,7 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                                 "error.on_boot.incompatible_browser.header"
                             )}
                         </LargeHeader>
-                        <p class="bg-white/10 rounded-xl p-4 font-mono">
+                        <p class="rounded-xl bg-white/10 p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
                         </p>
@@ -138,7 +139,7 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                         <LargeHeader>
                             {i18n.t("error.on_boot.loading_failed.header")}
                         </LargeHeader>
-                        <p class="bg-white/10 rounded-xl p-4 font-mono">
+                        <p class="rounded-xl bg-white/10 p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
                         </p>
@@ -160,7 +161,7 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                         </NiceP>
                         <ImportExport emergency />
                         <Logs />
-                        <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red">
+                        <div class="flex flex-col gap-2 rounded-xl bg-m-red p-4">
                             <SmallHeader>
                                 {i18n.t("settings.danger_zone")}
                             </SmallHeader>

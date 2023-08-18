@@ -5,7 +5,7 @@ export function MegaCheck() {
         <img
             src={megacheck}
             alt="success"
-            class="w-1/2 mx-auto max-w-[50vh] flex-shrink"
+            class="mx-auto w-1/2 max-w-[50vh] flex-shrink"
         />
     );
 }

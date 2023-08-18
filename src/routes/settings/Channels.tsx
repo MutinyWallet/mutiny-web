@@ -1,20 +1,21 @@
-import { Match, Switch, createResource } from "solid-js";
-import { useMegaStore } from "~/state/megaStore";
+import { createResource, Match, Switch } from "solid-js";
+
 import {
+    AmountSmall,
+    BackLink,
     Card,
     DefaultMain,
     LargeHeader,
     MutinyWalletGuard,
+    NavBar,
     NiceP,
     SafeArea,
     SmallHeader,
     TinyText,
-    VStack,
-    AmountSmall,
-    BackLink,
-    NavBar
+    VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 function BalanceBar(props: { inbound: number; outbound: number }) {
     const i18n = useI18n();
@@ -26,9 +27,9 @@ function BalanceBar(props: { inbound: number; outbound: number }) {
                 </SmallHeader>
                 <SmallHeader>{i18n.t("settings.channels.inbound")}</SmallHeader>
             </div>
-            <div class="flex gap-1 w-full">
+            <div class="flex w-full gap-1">
                 <div
-                    class="bg-m-green p-2 rounded-l-xl min-w-fit"
+                    class="min-w-fit rounded-l-xl bg-m-green p-2"
                     style={{
                         "flex-grow": props.outbound || 1
                     }}
@@ -36,7 +37,7 @@ function BalanceBar(props: { inbound: number; outbound: number }) {
                     <AmountSmall amountSats={props.outbound} />
                 </div>
                 <div
-                    class="bg-m-blue p-2 rounded-r-xl min-w-fit"
+                    class="min-w-fit rounded-r-xl bg-m-blue p-2"
                     style={{
                         "flex-grow": props.inbound || 1
                     }}

@@ -1,8 +1,9 @@
 import { Show } from "solid-js";
-import { ButtonLink, SmallHeader } from "~/components";
-import { useMegaStore } from "~/state/megaStore";
+
 import save from "~/assets/icons/save.svg";
+import { ButtonLink, SmallHeader } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 export function OnboardWarning() {
     const i18n = useI18n();
@@ -11,9 +12,9 @@ export function OnboardWarning() {
     return (
         <>
             <Show when={!state.has_backed_up}>
-                <div class="grid grid-cols-[auto_minmax(0,_1fr)_auto] rounded-xl p-4 gap-4 bg-neutral-950/50">
+                <div class="grid grid-cols-[auto_minmax(0,_1fr)_auto] gap-4 rounded-xl bg-neutral-950/50 p-4">
                     <div class="self-center">
-                        <img src={save} alt="backup" class="w-8 h-8" />
+                        <img src={save} alt="backup" class="h-8 w-8" />
                     </div>
                     <div class="flex flex-col justify-center">
                         <SmallHeader>

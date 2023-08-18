@@ -1,17 +1,18 @@
 import { TextField } from "@kobalte/core";
 import { createSignal } from "solid-js";
+
 import {
+    BackLink,
     Button,
-    NavBar,
     DefaultMain,
     InnerCard,
     LargeHeader,
     MutinyWalletGuard,
-    SafeArea,
-    BackLink
+    NavBar,
+    SafeArea
 } from "~/components";
-import { useMegaStore } from "~/state/megaStore";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 export default function LnUrlAuth() {
     const i18n = useI18n();
@@ -56,7 +57,7 @@ export default function LnUrlAuth() {
                                     {i18n.t("settings.lnurl_auth.title")}
                                 </TextField.Label>
                                 <TextField.Input
-                                    class="w-full p-2 rounded-lg text-black"
+                                    class="w-full rounded-lg p-2 text-black"
                                     placeholder="LNURL..."
                                 />
                                 <TextField.ErrorMessage class="text-red-500">

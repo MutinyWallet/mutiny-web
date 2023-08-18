@@ -1,25 +1,26 @@
+import { Dialog } from "@kobalte/core";
 import {
-    For,
-    ParentComponent,
-    Show,
     createResource,
     createSignal,
-    onMount,
+    For,
+    Match,
     onCleanup,
-    Switch,
-    Match
+    onMount,
+    ParentComponent,
+    Show,
+    Switch
 } from "solid-js";
-import { Button, InlineAmount, InfoBox, FeesModal } from "~/components";
-import { useMegaStore } from "~/state/megaStore";
-import { satsToUsd, usdToSats } from "~/utils/conversions";
-import { Dialog } from "@kobalte/core";
-import close from "~/assets/icons/close.svg";
-import pencil from "~/assets/icons/pencil.svg";
-import currencySwap from "~/assets/icons/currency-swap.svg";
-import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
-import { Network } from "~/logic/mutinyWalletSetup";
-import { useI18n } from "~/i18n/context";
 import { useNavigate } from "solid-start";
+
+import close from "~/assets/icons/close.svg";
+import currencySwap from "~/assets/icons/currency-swap.svg";
+import pencil from "~/assets/icons/pencil.svg";
+import { Button, FeesModal, InfoBox, InlineAmount } from "~/components";
+import { useI18n } from "~/i18n/context";
+import { Network } from "~/logic/mutinyWalletSetup";
+import { useMegaStore } from "~/state/megaStore";
+import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
+import { satsToUsd, usdToSats } from "~/utils/conversions";
 
 function fiatInputSanitizer(input: string): string {
     // Make sure only numbers and a single decimal point are allowed
@@ -90,7 +91,7 @@ function SingleDigitButton(props: {
             fallback={<div />}
         >
             <button
-                class="disabled:opacity-50 flex justify-center items-center p-2 rounded-lg md:hover:bg-white/10 active:bg-m-blue text-white text-4xl font-semi font-inter"
+                class="font-semi font-inter flex items-center justify-center rounded-lg p-2 text-4xl text-white active:bg-m-blue disabled:opacity-50 md:hover:bg-white/10"
                 onMouseDown={onHold}
                 onMouseUp={endHold}
                 onMouseLeave={endHold}
@@ -108,7 +109,7 @@ function BigScalingText(props: { text: string; fiat: boolean }) {
 
     return (
         <h1
-            class="font-light px-2 text-center transition-transform ease-out duration-300 text-4xl"
+            class="px-2 text-center text-4xl font-light transition-transform duration-300 ease-out"
             classList={{
                 "scale-90": chars() >= 11,
                 "scale-95": chars() === 10,
@@ -136,7 +137,7 @@ function SmallSubtleAmount(props: { text: string; fiat: boolean }) {
                 {props.fiat ? i18n.t("common.usd") : i18n.t("common.sats")}
             </span>
             <img
-                class={"pl-[4px] pb-[4px] hover:cursor-pointer"}
+                class={"pb-[4px] pl-[4px] hover:cursor-pointer"}
                 src={currencySwap}
                 height={24}
                 width={24}
@@ -438,7 +439,7 @@ export const AmountEditable: ParentComponent<{
         <Dialog.Root open={isOpen()}>
             <button
                 onClick={() => setIsOpen(true)}
-                class="px-4 py-2 rounded-xl border-2 border-m-blue flex gap-2 items-center"
+                class="flex items-center gap-2 rounded-xl border-2 border-m-blue px-4 py-2"
             >
                 <Show
                     when={localSats() !== "0"}
@@ -461,10 +462,10 @@ export const AmountEditable: ParentComponent<{
                         onEscapeKeyDown={handleClose}
                     >
                         {/* TODO: figure out how to submit on enter */}
-                        <div class="w-full flex justify-end">
+                        <div class="flex w-full justify-end">
                             <button
                                 onClick={handleClose}
-                                class="hover:bg-white/10 rounded-lg active:bg-m-blue w-8 h-8"
+                                class="h-8 w-8 rounded-lg hover:bg-white/10 active:bg-m-blue"
                             >
                                 <img src={close} alt="Close" />
                             </button>
@@ -472,7 +473,7 @@ export const AmountEditable: ParentComponent<{
                         {/* <form onSubmit={handleSubmit} class="text-black"> */}
                         <form
                             onSubmit={handleSubmit}
-                            class="opacity-0 absolute -z-10"
+                            class="absolute -z-10 opacity-0"
                         >
                             <input
                                 ref={(el) => (satsInputRef = el)}
@@ -492,10 +493,10 @@ export const AmountEditable: ParentComponent<{
                             />
                         </form>
 
-                        <div class="flex flex-col flex-1 justify-around gap-2 max-w-[400px] mx-auto w-full">
+                        <div class="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-around gap-2">
                             <div class="flex justify-center">
                                 <div
-                                    class="p-4 flex flex-col gap-4 w-max items-center justify-center"
+                                    class="flex w-max flex-col items-center justify-center gap-4 p-4"
                                     onClick={toggle}
                                 >
                                     <BigScalingText
@@ -530,7 +531,7 @@ export const AmountEditable: ParentComponent<{
                                     </InfoBox>
                                 </Match>
                             </Switch>
-                            <div class="flex justify-center gap-4 my-2">
+                            <div class="my-2 flex justify-center gap-4">
                                 <For
                                     each={
                                         mode() === "fiat"
@@ -544,7 +545,7 @@ export const AmountEditable: ParentComponent<{
                                                 setFixedAmount(amount.amount);
                                                 focus();
                                             }}
-                                            class="py-2 px-4 rounded-lg bg-white/10"
+                                            class="rounded-lg bg-white/10 px-4 py-2"
                                         >
                                             {amount.label}
                                         </button>
@@ -558,13 +559,13 @@ export const AmountEditable: ParentComponent<{
                                             );
                                             focus();
                                         }}
-                                        class="py-2 px-4 rounded-lg bg-white/10"
+                                        class="rounded-lg bg-white/10 px-4 py-2"
                                     >
                                         {i18n.t("receive.amount_editable.max")}
                                     </button>
                                 </Show>
                             </div>
-                            <div class="grid grid-cols-3 w-full flex-none">
+                            <div class="grid w-full flex-none grid-cols-3">
                                 <For each={CHARACTERS}>
                                     {(character) => (
                                         <SingleDigitButton

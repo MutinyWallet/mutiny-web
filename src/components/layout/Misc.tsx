@@ -1,29 +1,30 @@
 import {
+    Collapsible,
+    Dialog,
+    Checkbox as KCheckbox,
+    Separator
+} from "@kobalte/core";
+import { LoadingSpinner } from "@mutinywallet/ui";
+import {
+    createResource,
+    createSignal,
     JSX,
     Match,
     ParentComponent,
     Show,
     Suspense,
-    Switch,
-    createResource,
-    createSignal
+    Switch
 } from "solid-js";
-import {
-    Collapsible,
-    Checkbox as KCheckbox,
-    Dialog,
-    Separator
-} from "@kobalte/core";
-import { useMegaStore } from "~/state/megaStore";
-import check from "~/assets/icons/check.svg";
-import { MutinyTagItem } from "~/utils/tags";
-import { generateGradient } from "~/utils/gradientHash";
-import close from "~/assets/icons/close.svg";
 import { A } from "solid-start";
+
+import check from "~/assets/icons/check.svg";
+import close from "~/assets/icons/close.svg";
 import down from "~/assets/icons/down.svg";
-import { LoadingIndicator, DecryptDialog } from "~/components";
-import { LoadingSpinner } from "@mutinywallet/ui";
+import { DecryptDialog, LoadingIndicator } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { generateGradient } from "~/utils/gradientHash";
+import { MutinyTagItem } from "~/utils/tags";
 
 export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
     return (
@@ -38,7 +39,7 @@ export const Card: ParentComponent<{
     titleElement?: JSX.Element;
 }> = (props) => {
     return (
-        <div class="rounded-xl p-4 flex flex-col gap-2 bg-neutral-950/50 w-full">
+        <div class="flex w-full flex-col gap-2 rounded-xl bg-neutral-950/50 p-4">
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.titleElement && props.titleElement}
             {props.children}
@@ -48,7 +49,7 @@ export const Card: ParentComponent<{
 
 export const InnerCard: ParentComponent<{ title?: string }> = (props) => {
     return (
-        <div class="rounded-xl p-4 flex flex-col gap-2 border border-white/10 bg-[rgba(255,255,255,0.05)]">
+        <div class="flex flex-col gap-2 rounded-xl border border-white/10 bg-[rgba(255,255,255,0.05)] p-4">
             {props.title && <SmallHeader>{props.title}</SmallHeader>}
             {props.children}
         </div>
@@ -61,7 +62,7 @@ export const FancyCard: ParentComponent<{
     tag?: JSX.Element;
 }> = (props) => {
     return (
-        <div class="border border-black/50 rounded-xl border-b-4 p-4 flex flex-col gap-2 bg-m-grey-800 shadow-fancy-card">
+        <div class="flex flex-col gap-2 rounded-xl border border-b-4 border-black/50 bg-m-grey-800 p-4 shadow-fancy-card">
             {props.children}
         </div>
     );
@@ -75,7 +76,7 @@ export const SettingsCard: ParentComponent<{
             <div class="mt-2 pl-4">
                 <SmallHeader>{props.title}</SmallHeader>
             </div>
-            <div class="rounded-xl py-4 flex flex-col gap-2 bg-m-grey-800 w-full">
+            <div class="flex w-full flex-col gap-2 rounded-xl bg-m-grey-800 py-4">
                 {props.children}
             </div>
         </VStack>
@@ -89,14 +90,14 @@ export const Collapser: ParentComponent<{
 }> = (props) => {
     return (
         <Collapsible.Root class="collapsible">
-            <Collapsible.Trigger class="flex w-full justify-between py-2 hover:bg-m-grey-750 active:bg-m-grey-900 px-4">
+            <Collapsible.Trigger class="flex w-full justify-between px-4 py-2 hover:bg-m-grey-750 active:bg-m-grey-900">
                 <div class="flex items-center gap-2">
                     <Switch>
                         <Match when={props.activityLight === "on"}>
-                            <div class="w-2 h-2 rounded-full bg-m-green" />
+                            <div class="h-2 w-2 rounded-full bg-m-green" />
                         </Match>
                         <Match when={props.activityLight === "off"}>
-                            <div class="w-2 h-2 rounded-full bg-m-red" />
+                            <div class="h-2 w-2 rounded-full bg-m-red" />
                         </Match>
                     </Switch>
                     <span>{props.title}</span>
@@ -107,7 +108,7 @@ export const Collapser: ParentComponent<{
                     class="collapsible__trigger-icon"
                 />
             </Collapsible.Trigger>
-            <Collapsible.Content class="p-4 bg-m-grey-900 shadow-inner">
+            <Collapsible.Content class="bg-m-grey-900 p-4 shadow-inner">
                 {props.children}
             </Collapsible.Content>
         </Collapsible.Root>
@@ -126,7 +127,7 @@ export const SafeArea: ParentComponent = (props) => {
 
 export const DefaultMain: ParentComponent = (props) => {
     return (
-        <main class="w-full max-w-[600px] flex flex-col gap-4 mx-auto p-4 h-full">
+        <main class="mx-auto flex h-full w-full max-w-[600px] flex-col gap-4 p-4">
             {props.children}
             {/* CSS is hard sometimes */}
             <div class="py-4" />
@@ -143,7 +144,7 @@ export const FullscreenLoader = () => {
     }, 10000);
 
     return (
-        <div class="w-full h-[100dvh] flex flex-col gap-4 justify-center items-center">
+        <div class="flex h-[100dvh] w-full flex-col items-center justify-center gap-4">
             <LoadingSpinner wide />
             <Show when={waitedTooLong()}>
                 <p class="max-w-[20rem] text-neutral-400">
@@ -186,7 +187,7 @@ export const LargeHeader: ParentComponent<{
 }> = (props) => {
     return (
         <header
-            class="w-full flex justify-between items-center mt-4 mb-2"
+            class="mb-2 mt-4 flex w-full items-center justify-between"
             classList={{
                 "justify-between": !props.centered,
                 "justify-center": props.centered
@@ -236,7 +237,7 @@ export const SmallAmount: ParentComponent<{
     sign?: string;
 }> = (props) => {
     return (
-        <h2 class="font-light text-lg">
+        <h2 class="text-lg font-light">
             {props.sign ? `${props.sign} ` : ""}
             {props.amount.toLocaleString()} <span class="text-sm">SATS</span>
         </h2>
@@ -248,7 +249,7 @@ export const NiceP: ParentComponent = (props) => {
 };
 
 export const TinyText: ParentComponent = (props) => {
-    return <p class="text-neutral-400 text-sm">{props.children}</p>;
+    return <p class="text-sm text-neutral-400">{props.children}</p>;
 };
 
 export const TinyButton: ParentComponent<{
@@ -267,7 +268,7 @@ export const TinyButton: ParentComponent<{
 
     return (
         <button
-            class="py-1 px-2 rounded-lg bg-white/10"
+            class="rounded-lg bg-white/10 px-2 py-1"
             onClick={() => props.onClick()}
             style={{ background: bg() }}
         >
@@ -278,7 +279,7 @@ export const TinyButton: ParentComponent<{
 
 export const Indicator: ParentComponent = (props) => {
     return (
-        <div class="box-border animate-pulse px-2 py-1 -my-1 bg-white/70 rounded text-xs uppercase text-black">
+        <div class="-my-1 box-border animate-pulse rounded bg-white/70 px-2 py-1 text-xs uppercase text-black">
             {props.children}
         </div>
     );
@@ -301,12 +302,12 @@ export function Checkbox(props: {
             onChange={props.onChange}
         >
             <KCheckbox.Input class="" />
-            <KCheckbox.Control class="flex-0 w-8 h-8 rounded-lg border-2 border-white bg-neutral-800 ui-checked:bg-m-red">
+            <KCheckbox.Control class="flex-0 h-8 w-8 rounded-lg border-2 border-white bg-neutral-800 ui-checked:bg-m-red">
                 <KCheckbox.Indicator>
-                    <img src={check} class="w-8 h-8" alt="check" />
+                    <img src={check} class="h-8 w-8" alt="check" />
                 </KCheckbox.Indicator>
             </KCheckbox.Control>
-            <KCheckbox.Label class="flex-1 text-xl font-light flex flex-col gap-1">
+            <KCheckbox.Label class="flex flex-1 flex-col gap-1 text-xl font-light">
                 {props.label}
                 <Show when={props.caption}>
                     <TinyText>{props.caption}</TinyText>
@@ -318,8 +319,8 @@ export function Checkbox(props: {
 
 export function ModalCloseButton() {
     return (
-        <button class="self-center justify-self-center hover:bg-white/10 rounded-lg active:bg-m-blue">
-            <img src={close} alt="Close" class="w-8 h-8" />
+        <button class="self-center justify-self-center rounded-lg hover:bg-white/10 active:bg-m-blue">
+            <img src={close} alt="Close" class="h-8 w-8" />
         </button>
     );
 }
@@ -344,7 +345,7 @@ export const SimpleDialog: ParentComponent<{
                 <Dialog.Overlay class={SIMPLE_OVERLAY} />
                 <div class={SIMPLE_DIALOG_POSITIONER}>
                     <Dialog.Content class={SIMPLE_DIALOG_CONTENT}>
-                        <div class="flex justify-between mb-2 items-center">
+                        <div class="mb-2 flex items-center justify-between">
                             <Dialog.Title>
                                 <SmallHeader>{props.title}</SmallHeader>
                             </Dialog.Title>

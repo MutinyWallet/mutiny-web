@@ -10,7 +10,7 @@ export function BackButton(props: {
     return (
         <button
             onClick={() => props.onClick()}
-            class="text-m-red active:text-m-red/80 text-xl font-semibold no-underline md:hidden flex items-center"
+            class="flex items-center text-xl font-semibold text-m-red no-underline active:text-m-red/80 md:hidden"
             classList={{ "md:!flex": props.showOnDesktop }}
         >
             <Back />

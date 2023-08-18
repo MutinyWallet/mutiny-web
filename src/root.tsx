@@ -12,10 +12,12 @@ import {
     Scripts,
     Title
 } from "solid-start";
+
 // eslint-disable-next-line
 import "@mutinywallet/ui/style.css";
+
+import { ErrorDisplay, I18nProvider, Toaster } from "~/components";
 import { Provider as MegaStoreProvider } from "~/state/megaStore";
-import { Toaster, ErrorDisplay, I18nProvider } from "~/components";
 
 export default function Root() {
     return (

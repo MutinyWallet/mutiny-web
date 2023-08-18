@@ -1,3 +1,5 @@
+import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
+import { LoadingSpinner } from "@mutinywallet/ui";
 import {
     createEffect,
     createMemo,
@@ -11,37 +13,36 @@ import {
     Suspense,
     Switch
 } from "solid-js";
+
+import utxoIcon from "~/assets/icons/coin.svg";
+import wave from "~/assets/wave.gif";
 import {
-    CENTER_COLUMN,
-    MISSING_LABEL,
-    REDSHIFT_LABEL,
-    RIGHT_COLUMN,
-    THREE_COLUMNS,
+    AmountSats,
+    BackLink,
+    Button,
     Card,
+    CENTER_COLUMN,
     DefaultMain,
     LargeHeader,
-    NiceP,
+    MISSING_LABEL,
     MutinyWalletGuard,
+    NavBar,
+    NiceP,
+    ProgressBar,
+    REDSHIFT_LABEL,
+    RIGHT_COLUMN,
     SafeArea,
     SmallAmount,
     SmallHeader,
-    VStack,
-    BackLink,
     StyledRadioGroup,
-    NavBar,
-    Button,
-    ProgressBar,
-    AmountSats
+    THREE_COLUMNS,
+    VStack
 } from "~/components";
-import { LoadingSpinner } from "@mutinywallet/ui";
-import { useMegaStore } from "~/state/megaStore";
-import wave from "~/assets/wave.gif";
-import utxoIcon from "~/assets/icons/coin.svg";
-import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { useI18n } from "~/i18n/context";
+import { Network } from "~/logic/mutinyWalletSetup";
+import { useMegaStore } from "~/state/megaStore";
 import { getRedshifted, setRedshifted } from "~/utils/fakeLabels";
+import mempoolTxUrl from "~/utils/mempoolTxUrl";
 
 type ShiftOption = "utxo" | "lightning";
 
@@ -462,7 +463,7 @@ export default function Redshift() {
                         {i18n.t("redshift.title")}{" "}
                         {i18n.t("common.coming_soon")}
                     </LargeHeader>
-                    <div class="relative filter grayscale pointer-events-none opacity-75">
+                    <div class="pointer-events-none relative opacity-75 grayscale filter">
                         <VStack biggap>
                             {/* <pre>{JSON.stringify(redshiftResource(), null, 2)}</pre> */}
                             <Switch>

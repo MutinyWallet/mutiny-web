@@ -1,15 +1,15 @@
 import {
+    BackLink,
+    DefaultMain,
     DeleteEverything,
     KitchenSink,
-    NavBar,
-    DefaultMain,
     LargeHeader,
     MutinyWalletGuard,
+    NavBar,
     NiceP,
     SafeArea,
     SmallHeader,
-    VStack,
-    BackLink
+    VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 
@@ -28,7 +28,7 @@ export default function Admin() {
                         <NiceP>{i18n.t("settings.admin.warning_one")}</NiceP>
                         <NiceP>{i18n.t("settings.admin.warning_two")}</NiceP>
                         <KitchenSink />
-                        <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red overflow-x-hidden">
+                        <div class="flex flex-col gap-2 overflow-x-hidden rounded-xl bg-m-red p-4">
                             <SmallHeader>
                                 {i18n.t("settings.danger_zone")}
                             </SmallHeader>

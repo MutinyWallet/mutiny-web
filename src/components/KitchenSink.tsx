@@ -1,32 +1,33 @@
-import { useMegaStore } from "~/state/megaStore";
+import { Collapsible, TextField } from "@kobalte/core";
+import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
+import { ExternalLink } from "@mutinywallet/ui";
 import {
+    createResource,
+    createSignal,
     For,
     Match,
     Show,
     Suspense,
-    Switch,
-    createResource,
-    createSignal
+    Switch
 } from "solid-js";
-import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
-import { Collapsible, TextField } from "@kobalte/core";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import eify from "~/utils/eify";
+
 import {
+    Button,
     ConfirmDialog,
     Hr,
-    Button,
     InnerCard,
-    VStack,
-    showToast,
+    MiniStringShower,
+    ResetRouter,
     Restart,
     ResyncOnchain,
-    ResetRouter,
-    MiniStringShower
+    showToast,
+    VStack
 } from "~/components";
-import { Network } from "~/logic/mutinyWalletSetup";
-import { ExternalLink } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
+import { Network } from "~/logic/mutinyWalletSetup";
+import { useMegaStore } from "~/state/megaStore";
+import eify from "~/utils/eify";
+import mempoolTxUrl from "~/utils/mempoolTxUrl";
 
 // TODO: hopefully I don't have to maintain this type forever but I don't know how to pass it around otherwise
 type RefetchPeersType = (
@@ -57,7 +58,7 @@ function PeerItem(props: { peer: MutinyPeer }) {
     return (
         <Collapsible.Root>
             <Collapsible.Trigger class="w-full">
-                <h2 class="truncate text-start text-lg font-mono bg-neutral-200 text-black rounded px-4 py-2">
+                <h2 class="truncate rounded bg-neutral-200 px-4 py-2 text-start font-mono text-lg text-black">
                     {">"}{" "}
                     {props.peer.alias ? props.peer.alias : props.peer.pubkey}
                 </h2>
@@ -157,7 +158,7 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
                         {i18n.t("settings.admin.kitchen_sink.connect_peer")}
                     </TextField.Label>
                     <TextField.Input
-                        class="w-full p-2 rounded-lg text-black"
+                        class="w-full rounded-lg p-2 text-black"
                         placeholder="028241..."
                     />
                     <TextField.ErrorMessage class="text-red-500">
@@ -207,7 +208,7 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
     return (
         <Collapsible.Root>
             <Collapsible.Trigger class="w-full">
-                <h2 class="truncate text-start text-lg font-mono bg-neutral-200 text-black rounded px-4 py-2">
+                <h2 class="truncate rounded bg-neutral-200 px-4 py-2 text-start font-mono text-lg text-black">
                     {">"} {props.channel.peer}
                 </h2>
             </Collapsible.Trigger>
@@ -386,7 +387,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                         <TextField.Label class="text-sm font-semibold uppercase">
                             {i18n.t("settings.admin.kitchen_sink.pubkey")}
                         </TextField.Label>
-                        <TextField.Input class="w-full p-2 rounded-lg text-black" />
+                        <TextField.Input class="w-full rounded-lg p-2 text-black" />
                     </TextField.Root>
                     <TextField.Root
                         value={amount()}
@@ -398,7 +399,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                         </TextField.Label>
                         <TextField.Input
                             type="number"
-                            class="w-full p-2 rounded-lg text-black"
+                            class="w-full rounded-lg p-2 text-black"
                         />
                     </TextField.Root>
                     <Button layout="small" type="submit">

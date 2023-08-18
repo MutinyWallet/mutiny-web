@@ -1,13 +1,13 @@
 import {
     AmountCard,
-    Fee,
-    NavBar,
-    OnboardWarning,
     Button,
     DefaultMain,
-    ShareCard,
+    Fee,
     LargeHeader,
+    NavBar,
+    OnboardWarning,
     SafeArea,
+    ShareCard,
     VStack
 } from "~/components";
 

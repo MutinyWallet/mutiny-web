@@ -1,16 +1,16 @@
-import { Match, ParentComponent, Switch, createResource } from "solid-js";
+import { Contact } from "@mutinywallet/mutiny-wasm";
+import { createResource, Match, ParentComponent, Switch } from "solid-js";
+
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
+import off from "~/assets/icons/download-channel.svg";
 import shuffle from "~/assets/icons/shuffle.svg";
 import on from "~/assets/icons/upload-channel.svg";
-import off from "~/assets/icons/download-channel.svg";
-import { timeAgo } from "~/utils/prettyPrintTime";
-
-import { generateGradient } from "~/utils/gradientHash";
-import { useMegaStore } from "~/state/megaStore";
-import { Contact } from "@mutinywallet/mutiny-wasm";
-import { useI18n } from "~/i18n/context";
 import { AmountFiat, AmountSats } from "~/components";
+import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { generateGradient } from "~/utils/gradientHash";
+import { timeAgo } from "~/utils/prettyPrintTime";
 
 export const ActivityAmount: ParentComponent<{
     amount: string;
@@ -69,7 +69,7 @@ function LabelCircle(props: {
 
     return (
         <div
-            class="flex-none h-[3rem] w-[3rem] rounded-full bg-neutral-700 flex items-center justify-center text-3xl uppercase border-t border-b border-t-white/50 border-b-white/10"
+            class="flex h-[3rem] w-[3rem] flex-none items-center justify-center rounded-full border-b border-t border-b-white/10 border-t-white/50 bg-neutral-700 text-3xl uppercase"
             style={{ background: bg() }}
         >
             <Switch>
@@ -110,10 +110,10 @@ export function ActivityItem(props: {
     return (
         <div
             onClick={() => props.onClick && props.onClick()}
-            class="grid grid-cols-[auto_minmax(0,_1fr)_minmax(0,_max-content)] pb-4 gap-4 border-b border-neutral-800 last:border-b-0"
+            class="grid grid-cols-[auto_minmax(0,_1fr)_minmax(0,_max-content)] gap-4 border-b border-neutral-800 pb-4 last:border-b-0"
             classList={{ "cursor-pointer": !!props.onClick }}
         >
-            <div class="flex gap-2 md:gap-4 items-center">
+            <div class="flex items-center gap-2 md:gap-4">
                 <div class="">
                     <Switch>
                         <Match when={props.kind === "Lightning"}>
@@ -154,12 +154,12 @@ export function ActivityItem(props: {
                         </span>{" "}
                     </Match>
                     <Match when={firstContact()?.name}>
-                        <span class="text-base font-semibold truncate">
+                        <span class="truncate text-base font-semibold">
                             {firstContact()?.name}
                         </span>
                     </Match>
                     <Match when={props.labels.length > 0}>
-                        <span class="text-base font-semibold truncate">
+                        <span class="truncate text-base font-semibold">
                             {props.labels[0]}
                         </span>
                     </Match>

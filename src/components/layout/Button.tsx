@@ -1,8 +1,8 @@
+import { LoadingSpinner } from "@mutinywallet/ui";
 import { cva, VariantProps } from "class-variance-authority";
 import { children, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
-import { LoadingSpinner } from "@mutinywallet/ui";
 
 const button = cva(
     "p-3 rounded-xl font-semibold transition disabled:bg-neutral-400/10 disabled:text-white/20 disabled:shadow-inner-button-disabled",

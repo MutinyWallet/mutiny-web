@@ -1,42 +1,41 @@
 import { Dialog } from "@kobalte/core";
+import { MutinyChannel, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { ExternalLink } from "@mutinywallet/ui";
 import {
+    createEffect,
+    createMemo,
+    createResource,
     For,
     Match,
     ParentComponent,
     Show,
     Suspense,
-    Switch,
-    createEffect,
-    createMemo,
-    createResource
+    Switch
 } from "solid-js";
-import {
-    InfoBox,
-    Hr,
-    ModalCloseButton,
-    TinyButton,
-    VStack,
-    ActivityAmount,
-    HackActivityType,
-    CopyButton,
-    TruncateMiddle,
-    AmountSmall
-} from "~/components";
-import { MutinyChannel, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 
 import bolt from "~/assets/icons/bolt-black.svg";
 import chain from "~/assets/icons/chain-black.svg";
 import copyIcon from "~/assets/icons/copy.svg";
 import shuffle from "~/assets/icons/shuffle-black.svg";
-
-import { prettyPrintTime } from "~/utils/prettyPrintTime";
+import {
+    ActivityAmount,
+    AmountSmall,
+    CopyButton,
+    HackActivityType,
+    Hr,
+    InfoBox,
+    ModalCloseButton,
+    TinyButton,
+    TruncateMiddle,
+    VStack
+} from "~/components";
+import { useI18n } from "~/i18n/context";
+import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
+import mempoolTxUrl from "~/utils/mempoolTxUrl";
+import { prettyPrintTime } from "~/utils/prettyPrintTime";
 import { MutinyTagItem, tagToMutinyTag } from "~/utils/tags";
 import { useCopy } from "~/utils/useCopy";
-import mempoolTxUrl from "~/utils/mempoolTxUrl";
-import { Network } from "~/logic/mutinyWalletSetup";
-import { ExternalLink } from "@mutinywallet/ui";
-import { useI18n } from "~/i18n/context";
 
 interface ChannelClosure {
     channel_id: string;
@@ -74,10 +73,10 @@ function LightningHeader(props: {
 
     return (
         <div class="flex flex-col items-center gap-4">
-            <div class="p-4 bg-neutral-100 rounded-full">
-                <img src={bolt} alt="lightning bolt" class="w-8 h-8" />
+            <div class="rounded-full bg-neutral-100 p-4">
+                <img src={bolt} alt="lightning bolt" class="h-8 w-8" />
             </div>
-            <h1 class="uppercase font-semibold">
+            <h1 class="font-semibold uppercase">
                 {props.info.inbound
                     ? i18n.t("modals.transaction_details.lightning_receive")
                     : i18n.t("modals.transaction_details.lightning_send")}
@@ -126,7 +125,7 @@ function OnchainHeader(props: {
 
     return (
         <div class="flex flex-col items-center gap-4">
-            <div class="p-4 bg-neutral-100 rounded-full">
+            <div class="rounded-full bg-neutral-100 p-4">
                 <Switch>
                     <Match
                         when={
@@ -134,14 +133,14 @@ function OnchainHeader(props: {
                             props.kind === "ChannelClose"
                         }
                     >
-                        <img src={shuffle} alt="swap" class="w-8 h-8" />
+                        <img src={shuffle} alt="swap" class="h-8 w-8" />
                     </Match>
                     <Match when={true}>
-                        <img src={chain} alt="blockchain" class="w-8 h-8" />
+                        <img src={chain} alt="blockchain" class="h-8 w-8" />
                     </Match>
                 </Switch>
             </div>
-            <h1 class="uppercase font-semibold">
+            <h1 class="font-semibold uppercase">
                 {props.kind === "ChannelOpen"
                     ? i18n.t("modals.transaction_details.channel_open")
                     : props.kind === "ChannelClose"
@@ -176,8 +175,8 @@ function OnchainHeader(props: {
 
 export const KeyValue: ParentComponent<{ key: string }> = (props) => {
     return (
-        <li class="flex justify-between items-center gap-4">
-            <span class="uppercase font-semibold whitespace-nowrap text-sm">
+        <li class="flex items-center justify-between gap-4">
+            <span class="whitespace-nowrap text-sm font-semibold uppercase">
                 {props.key}
             </span>
             <span class="font-light">{props.children}</span>
@@ -189,7 +188,7 @@ export function MiniStringShower(props: { text: string }) {
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     return (
-        <div class="w-full grid gap-1 grid-cols-[minmax(0,_1fr)_auto]">
+        <div class="grid w-full grid-cols-[minmax(0,_1fr)_auto] gap-1">
             <TruncateMiddle text={props.text} />
             {/* <pre class="truncate text-neutral-300 font-light">{props.text}</pre> */}
             <button
@@ -197,7 +196,7 @@ export function MiniStringShower(props: { text: string }) {
                 classList={{ "bg-m-green rounded": copied() }}
                 onClick={() => copy(props.text)}
             >
-                <img src={copyIcon} alt="copy" class="w-4 h-4" />
+                <img src={copyIcon} alt="copy" class="h-4 w-4" />
             </button>
         </div>
     );
@@ -224,7 +223,7 @@ function LightningDetails(props: { info: MutinyInvoice }) {
                     <KeyValue
                         key={i18n.t("modals.transaction_details.description")}
                     >
-                        <span class="text-neutral-300 truncate">
+                        <span class="truncate text-neutral-300">
                             {props.info.description}
                         </span>
                     </KeyValue>
@@ -268,8 +267,8 @@ function OnchainDetails(props: { info: OnChainTx; kind?: HackActivityType }) {
                     await (state.mutiny_wallet?.list_channels() as Promise<
                         MutinyChannel[]
                     >);
-                const channel = channels.find((channel) =>
-                    channel.outpoint?.startsWith(props.info.txid)
+                const channel = channels.find(
+                    (channel) => channel.outpoint?.startsWith(props.info.txid)
                 );
                 return channel;
             } catch (e) {
@@ -375,7 +374,7 @@ function ChannelCloseDetails(props: { info: ChannelClosure }) {
                     </KeyValue>
                 </Show>
                 <KeyValue key={i18n.t("modals.transaction_details.reason")}>
-                    <p class="text-neutral-300 text-right">
+                    <p class="text-right text-neutral-300">
                         {props.info.reason ?? ""}
                     </p>
                 </KeyValue>
@@ -458,7 +457,7 @@ export function DetailsIdModal(props: {
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
                         <Suspense>
-                            <div class="flex justify-between mb-2">
+                            <div class="mb-2 flex justify-between">
                                 <div />
                                 <Dialog.CloseButton>
                                     <ModalCloseButton />

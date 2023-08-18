@@ -1,4 +1,6 @@
+import { ExternalLink } from "@mutinywallet/ui";
 import { A, Title } from "solid-start";
+
 import {
     Button,
     DefaultMain,
@@ -7,7 +9,6 @@ import {
     SafeArea,
     SmallHeader
 } from "~/components/layout";
-import { ExternalLink } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
 
 export function ErrorDisplay(props: { error: Error }) {
@@ -20,7 +21,7 @@ export function ErrorDisplay(props: { error: Error }) {
                 <SmallHeader>
                     {i18n.t("error.general.never_should_happen")}
                 </SmallHeader>
-                <p class="bg-white/10 rounded-xl p-4 font-mono">
+                <p class="rounded-xl bg-white/10 p-4 font-mono">
                     <span class="font-bold">{props.error.name}</span>:{" "}
                     {props.error.message}
                 </p>

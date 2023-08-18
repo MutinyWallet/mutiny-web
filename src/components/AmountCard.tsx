@@ -1,8 +1,9 @@
-import { Match, ParentComponent, Show, Switch, createMemo } from "solid-js";
-import { Card, VStack, AmountEditable } from "~/components";
+import { createMemo, Match, ParentComponent, Show, Switch } from "solid-js";
+
+import { AmountEditable, Card, VStack } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToUsd } from "~/utils/conversions";
-import { useI18n } from "~/i18n/context";
 
 const noop = () => {
     // do nothing
@@ -11,7 +12,7 @@ const noop = () => {
 const KeyValue: ParentComponent<{ key: string; gray?: boolean }> = (props) => {
     return (
         <div
-            class="flex justify-between items-center"
+            class="flex items-center justify-between"
             classList={{ "text-neutral-400": props.gray }}
         >
             <div class="font-semibold uppercase">{props.key}</div>

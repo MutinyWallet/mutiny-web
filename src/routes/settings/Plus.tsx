@@ -1,38 +1,39 @@
 import {
+    createResource,
+    createSignal,
     Match,
     Show,
     Suspense,
-    Switch,
-    createResource,
-    createSignal
+    Switch
 } from "solid-js";
 import { A } from "solid-start";
+
+import party from "~/assets/party.gif";
 import {
-    ConfirmDialog,
-    InfoBox,
-    NavBar,
+    BackLink,
     Button,
+    ConfirmDialog,
     DefaultMain,
     FancyCard,
+    InfoBox,
     LargeHeader,
+    LoadingShimmer,
     MutinyWalletGuard,
+    NavBar,
     NiceP,
     SafeArea,
     TinyText,
-    VStack,
-    BackLink,
-    LoadingShimmer
+    VStack
 } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import eify from "~/utils/eify";
-import party from "~/assets/party.gif";
-import { useI18n } from "~/i18n/context";
 import { subscriptionValid } from "~/utils/subscriptions";
 
 function Perks(props: { alreadySubbed?: boolean }) {
     const i18n = useI18n();
     return (
-        <ul class="list-disc ml-8 font-light text-lg">
+        <ul class="ml-8 list-disc text-lg font-light">
             <Show when={props.alreadySubbed}>
                 <li>{i18n.t("settings.plus.satisfaction")}</li>
             </Show>
@@ -214,7 +215,7 @@ export default function Plus() {
                     <VStack>
                         <Switch>
                             <Match when={state.mutiny_plus}>
-                                <img src={party} class="w-1/2 mx-auto" />
+                                <img src={party} class="mx-auto w-1/2" />
                                 <NiceP>{i18n.t("settings.plus.thanks")}</NiceP>
                                 <Perks alreadySubbed />
                                 <NiceP>

@@ -1,5 +1,6 @@
 import { TextField as KTextField } from "@kobalte/core";
-import { type JSX, Show, splitProps } from "solid-js";
+import { Show, splitProps, type JSX } from "solid-js";
+
 import { TinyText } from "~/components";
 
 export type TextFieldProps = {
@@ -41,7 +42,7 @@ export function TextField(props: TextFieldProps) {
             required={props.required}
         >
             <Show when={props.label}>
-                <KTextField.Label class="text-sm uppercase font-semibold">
+                <KTextField.Label class="text-sm font-semibold uppercase">
                     {props.label}
                 </KTextField.Label>
             </Show>
@@ -51,14 +52,14 @@ export function TextField(props: TextFieldProps) {
                     <KTextField.Input
                         {...fieldProps}
                         type={props.type}
-                        class="w-full p-2 rounded-lg bg-white/10 placeholder-neutral-400"
+                        class="w-full rounded-lg bg-white/10 p-2 placeholder-neutral-400"
                     />
                 }
             >
                 <KTextField.TextArea
                     {...fieldProps}
                     autoResize
-                    class="w-full p-2 rounded-lg bg-white/10 placeholder-neutral-400"
+                    class="w-full rounded-lg bg-white/10 p-2 placeholder-neutral-400"
                 />
             </Show>
             <KTextField.ErrorMessage class="text-m-red">

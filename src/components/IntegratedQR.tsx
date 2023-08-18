@@ -1,18 +1,19 @@
 import { Match, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { ReceiveFlavor } from "~/routes/Receive";
-import { useCopy } from "~/utils/useCopy";
-import { AmountSats, AmountFiat, TruncateMiddle } from "~/components";
+
+import boltBlack from "~/assets/icons/bolt-black.svg";
+import chainBlack from "~/assets/icons/chain-black.svg";
 import copyBlack from "~/assets/icons/copy-black.svg";
 import shareBlack from "~/assets/icons/share-black.svg";
-import chainBlack from "~/assets/icons/chain-black.svg";
-import boltBlack from "~/assets/icons/bolt-black.svg";
+import { AmountFiat, AmountSats, TruncateMiddle } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { ReceiveFlavor } from "~/routes/Receive";
+import { useCopy } from "~/utils/useCopy";
 
 function KindIndicator(props: { kind: ReceiveFlavor }) {
     const i18n = useI18n();
     return (
-        <div class="text-black flex flex-col items-end">
+        <div class="flex flex-col items-end text-black">
             <Switch>
                 <Match when={props.kind === "onchain"}>
                     <h3 class="font-semibold">
@@ -68,16 +69,16 @@ export function IntegratedQr(props: {
     return (
         <div
             id="qr"
-            class="w-full bg-white rounded-xl relative flex flex-col items-center px-4"
+            class="relative flex w-full flex-col items-center rounded-xl bg-white px-4"
             onClick={() => copy(props.value)}
         >
             <Show when={copied()}>
-                <div class="absolute w-full h-full bg-neutral-900/60 z-50 rounded-xl flex flex-col items-center justify-center transition-all">
+                <div class="absolute z-50 flex h-full w-full flex-col items-center justify-center rounded-xl bg-neutral-900/60 transition-all">
                     <p class="text-xl font-bold">{i18n.t("common.copied")}</p>
                 </div>
             </Show>
             <div
-                class="w-full flex items-center py-4 max-w-[256px]"
+                class="flex w-full max-w-[256px] items-center py-4"
                 classList={{
                     "justify-between": props.kind !== "onchain",
                     "justify-end": props.kind === "onchain"
@@ -88,7 +89,7 @@ export function IntegratedQr(props: {
                         <div class="text-black">
                             <AmountSats amountSats={Number(props.amountSats)} />
                         </div>
-                        <div class="text-black text-sm">
+                        <div class="text-sm text-black">
                             <AmountFiat amountSats={Number(props.amountSats)} />
                         </div>
                     </div>
@@ -98,10 +99,10 @@ export function IntegratedQr(props: {
 
             <QRCodeSVG
                 value={props.value}
-                class="w-full h-full max-h-[256px]"
+                class="h-full max-h-[256px] w-full"
             />
             <div
-                class="w-full grid gap-1 py-4 max-w-[256px] "
+                class="grid w-full max-w-[256px] gap-1 py-4 "
                 classList={{
                     "grid-cols-[2rem_minmax(0,1fr)_2rem]": !!navigator.share,
                     "grid-cols-[minmax(0,1fr)_2rem]": !navigator.share

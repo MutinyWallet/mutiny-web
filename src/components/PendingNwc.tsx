@@ -1,25 +1,25 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
-import { formatExpiration } from "~/utils/prettyPrintTime";
-import { Card, VStack, ActivityAmount, InfoBox } from "~/components";
 import { LoadingSpinner } from "@mutinywallet/ui";
-import bolt from "~/assets/icons/bolt.svg";
 import {
+    createEffect,
+    createResource,
+    createSignal,
     For,
     Match,
     Show,
-    Switch,
-    createEffect,
-    createResource,
-    createSignal
+    Switch
 } from "solid-js";
-import { useMegaStore } from "~/state/megaStore";
+import { A } from "solid-start";
 
+import bolt from "~/assets/icons/bolt.svg";
 import greenCheck from "~/assets/icons/green-check.svg";
 import redClose from "~/assets/icons/red-close.svg";
-import eify from "~/utils/eify";
-import { A } from "solid-start";
-import { createDeepSignal } from "~/utils/deepSignal";
+import { ActivityAmount, Card, InfoBox, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { createDeepSignal } from "~/utils/deepSignal";
+import eify from "~/utils/eify";
+import { formatExpiration } from "~/utils/prettyPrintTime";
 
 type PendingItem = {
     id: string;
@@ -118,14 +118,14 @@ export function PendingNwc() {
                     </Show>
                     <For each={pendingRequests()}>
                         {(pendingItem) => (
-                            <div class="grid grid-cols-[auto_minmax(0,_1fr)_minmax(0,_max-content)_auto] items-center pb-4 gap-4 border-b border-neutral-800 last:border-b-0">
+                            <div class="grid grid-cols-[auto_minmax(0,_1fr)_minmax(0,_max-content)_auto] items-center gap-4 border-b border-neutral-800 pb-4 last:border-b-0">
                                 <img
                                     class="w-[1rem]"
                                     src={bolt}
                                     alt="onchain"
                                 />
                                 <div class="flex flex-col">
-                                    <span class="text-base font-semibold truncate">
+                                    <span class="truncate text-base font-semibold">
                                         {pendingItem.name_of_connection}
                                     </span>
                                     <time class="text-sm text-neutral-500">
@@ -141,7 +141,7 @@ export function PendingNwc() {
                                         price={state.price}
                                     />
                                 </div>
-                                <div class="flex gap-2 w-[5rem]">
+                                <div class="flex w-[5rem] gap-2">
                                     <Switch>
                                         <Match
                                             when={paying() !== pendingItem.id}
@@ -182,7 +182,7 @@ export function PendingNwc() {
                 </VStack>
                 <A
                     href="/settings/connections"
-                    class="text-m-red active:text-m-red/80 font-semibold no-underline self-center"
+                    class="self-center font-semibold text-m-red no-underline active:text-m-red/80"
                 >
                     {i18n.t("settings.connections.pending_nwc.configure_link")}
                 </A>

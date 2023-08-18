@@ -1,8 +1,9 @@
 // Thanks you https://soorria.com/snippets/use-copy-solidjs
-import type { Accessor } from "solid-js";
-import { createSignal } from "solid-js";
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import type { Accessor } from "solid-js";
+import { createSignal } from "solid-js";
+
 export type UseCopyProps = {
     copiedTimeout?: number;
 };

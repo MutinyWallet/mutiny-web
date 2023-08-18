@@ -1,11 +1,11 @@
-import mutiny_m from "~/assets/icons/m.svg";
-import airplane from "~/assets/icons/airplane.svg";
-import settings from "~/assets/icons/settings.svg";
-import receive from "~/assets/icons/big-receive.svg";
-import redshift from "~/assets/icons/rs.svg";
-import userClock from "~/assets/icons/user-clock.svg";
-
 import { A } from "solid-start";
+
+import airplane from "~/assets/icons/airplane.svg";
+import receive from "~/assets/icons/big-receive.svg";
+import mutiny_m from "~/assets/icons/m.svg";
+import redshift from "~/assets/icons/rs.svg";
+import settings from "~/assets/icons/settings.svg";
+import userClock from "~/assets/icons/user-clock.svg";
 
 type ActiveTab =
     | "home"
@@ -41,8 +41,8 @@ function NavBarItem(props: {
 
 export function NavBar(props: { activeTab: ActiveTab }) {
     return (
-        <nav class="hidden md:block fixed shadow-none z-40 safe-bottom top-0 bottom-auto left-0 h-full">
-            <ul class="flex flex-col justify-start gap-4 px-4 mt-4">
+        <nav class="fixed bottom-auto left-0 top-0 z-40 hidden h-full shadow-none safe-bottom md:block">
+            <ul class="mt-4 flex flex-col justify-start gap-4 px-4">
                 <NavBarItem
                     href="/"
                     icon={mutiny_m}

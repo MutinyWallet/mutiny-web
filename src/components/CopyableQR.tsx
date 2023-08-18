@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
+
 import { useI18n } from "~/i18n/context";
 import { useCopy } from "~/utils/useCopy";
 
@@ -9,17 +10,17 @@ export function CopyableQR(props: { value: string }) {
     return (
         <div
             id="qr"
-            class="w-full bg-white rounded-xl relative"
+            class="relative w-full rounded-xl bg-white"
             onClick={() => copy(props.value)}
         >
             <Show when={copied()}>
-                <div class="absolute w-full h-full bg-neutral-900/60 z-50 rounded-xl flex flex-col items-center justify-center transition-all">
+                <div class="absolute z-50 flex h-full w-full flex-col items-center justify-center rounded-xl bg-neutral-900/60 transition-all">
                     <p class="text-xl font-bold">{i18n.t("common.copied")}</p>
                 </div>
             </Show>
             <QRCodeSVG
                 value={props.value}
-                class="w-full h-full p-8 max-h-[400px]"
+                class="h-full max-h-[400px] w-full p-8"
             />
         </div>
     );

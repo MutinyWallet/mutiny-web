@@ -7,12 +7,12 @@
 .solid-select-control[data-disabled="true"] {
 }
 .solid-select-control {
-    @apply w-full p-2 rounded-lg bg-white/10 placeholder-neutral-400;
+    @apply w-full rounded-lg bg-white/10 p-2 placeholder-neutral-400;
     @apply grid leading-6;
     grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 .solid-select-control[data-multiple="true"][data-has-value="true"] {
-    @apply flex items-stretch gap-1 flex-wrap;
+    @apply flex flex-wrap items-stretch gap-1;
 }
 
 .solid-select-placeholder {
@@ -23,16 +23,16 @@
     @apply col-start-1 row-start-1;
 }
 .solid-select-multi-value {
-    @apply flex bg-white/20 rounded items-center px-1;
+    @apply flex items-center rounded bg-white/20 px-1;
 }
 
 .solid-select-multi-value-remove {
     /* TODO: there's gotta be a better way to vertically center this */
-    @apply pl-2 pr-1 leading-3 -mt-2 text-2xl;
+    @apply -mt-2 pl-2 pr-1 text-2xl leading-3;
 }
 
 .solid-select-input {
-    @apply bg-transparent caret-transparent flex-grow flex-shrink;
+    @apply flex-shrink flex-grow bg-transparent caret-transparent;
     outline: 2px solid transparent;
     @apply col-start-1 row-start-1;
 }
@@ -47,17 +47,17 @@
 }
 
 .solid-select-list {
-    @apply max-h-[50vh] min-w-full overflow-y-auto absolute whitespace-nowrap z-10 bg-neutral-950 p-2 rounded-lg;
+    @apply absolute z-10 max-h-[50vh] min-w-full overflow-y-auto whitespace-nowrap rounded-lg bg-neutral-950 p-2;
 }
 
 .solid-select-option[data-focused="true"] {
 }
 
 .solid-select-option > mark {
-    @apply underline bg-white/10 text-white;
+    @apply bg-white/10 text-white underline;
 }
 .solid-select-option {
-    @apply cursor-default select-none p-1 hover:bg-neutral-800 rounded;
+    @apply cursor-default select-none rounded p-1 hover:bg-neutral-800;
 }
 .solid-select-option[data-disabled="true"] {
     @apply pointer-events-none opacity-50;

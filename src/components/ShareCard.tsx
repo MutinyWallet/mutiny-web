@@ -1,12 +1,13 @@
-import { Card, VStack, JsonModal } from "~/components";
-import { useCopy } from "~/utils/useCopy";
-import copyIcon from "~/assets/icons/copy.svg";
+import { createSignal, Show } from "solid-js";
+
 import copyBlack from "~/assets/icons/copy-black.svg";
-import shareIcon from "~/assets/icons/share.svg";
-import shareBlack from "~/assets/icons/share-black.svg";
+import copyIcon from "~/assets/icons/copy.svg";
 import eyeIcon from "~/assets/icons/eye.svg";
-import { Show, createSignal } from "solid-js";
+import shareBlack from "~/assets/icons/share-black.svg";
+import shareIcon from "~/assets/icons/share.svg";
+import { Card, JsonModal, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useCopy } from "~/utils/useCopy";
 
 const STYLE =
     "px-4 py-2 rounded-xl border-2 border-white flex gap-2 items-center font-semibold hover:text-m-blue transition-colors";
@@ -68,7 +69,7 @@ export function StringShower(props: { text: string }) {
                 title={i18n.t("modals.details")}
                 setOpen={setOpen}
             />
-            <div class="w-full grid grid-cols-[minmax(0,_1fr)_auto]">
+            <div class="grid w-full grid-cols-[minmax(0,_1fr)_auto]">
                 <TruncateMiddle text={props.text} />
                 <button class="w-[2rem]" onClick={() => setOpen(true)}>
                     <img src={eyeIcon} alt="eye" />
@@ -105,7 +106,7 @@ export function ShareCard(props: { text?: string }) {
         <Card>
             <StringShower text={props.text ?? ""} />
             <VStack>
-                <div class="flex gap-4 justify-center">
+                <div class="flex justify-center gap-4">
                     <CopyButton text={props.text ?? ""} />
                     <Show when={navigator.share}>
                         <ShareButton receiveString={props.text ?? ""} />

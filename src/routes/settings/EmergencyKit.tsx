@@ -1,18 +1,19 @@
+import { ExternalLink } from "@mutinywallet/ui";
+
 import {
+    BackLink,
+    DefaultMain,
     DeleteEverything,
     ImportExport,
+    LargeHeader,
     LoadingIndicator,
     Logs,
     NavBar,
-    DefaultMain,
-    LargeHeader,
     NiceP,
     SafeArea,
     SmallHeader,
-    VStack,
-    BackLink
+    VStack
 } from "~/components";
-import { ExternalLink } from "@mutinywallet/ui";
 import { useI18n } from "~/i18n/context";
 
 function EmergencyStack() {
@@ -21,7 +22,7 @@ function EmergencyStack() {
         <VStack>
             <ImportExport emergency />
             <Logs />
-            <div class="rounded-xl p-4 flex flex-col gap-2 bg-m-red overflow-x-hidden">
+            <div class="flex flex-col gap-2 overflow-x-hidden rounded-xl bg-m-red p-4">
                 <SmallHeader>{i18n.t("settings.danger_zone")}</SmallHeader>
                 <DeleteEverything emergency />
             </div>

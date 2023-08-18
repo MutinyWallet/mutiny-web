@@ -1,5 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import { ParentComponent } from "solid-js";
+
 import { Button, SmallHeader } from "~/components";
 import { useI18n } from "~/i18n/context";
 
@@ -22,7 +23,7 @@ export const ConfirmDialog: ParentComponent<{
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
-                        <div class="flex justify-between mb-2">
+                        <div class="mb-2 flex justify-between">
                             <Dialog.Title>
                                 <SmallHeader>
                                     {i18n.t(
@@ -33,7 +34,7 @@ export const ConfirmDialog: ParentComponent<{
                         </div>
                         <Dialog.Description class="flex flex-col gap-4">
                             {props.children}
-                            <div class="flex gap-4 w-full justify-end">
+                            <div class="flex w-full justify-end gap-4">
                                 <Button onClick={props.onCancel}>
                                     {i18n.t("modals.confirm_dialog.cancel")}
                                 </Button>

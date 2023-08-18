@@ -1,14 +1,15 @@
 import { Dialog } from "@kobalte/core";
-import { ParentComponent, createSignal, JSXElement } from "solid-js";
+import { ExternalLink } from "@mutinywallet/ui";
+import { createSignal, JSXElement, ParentComponent } from "solid-js";
+
+import help from "~/assets/icons/help.svg";
 import {
     DIALOG_CONTENT,
     DIALOG_POSITIONER,
-    OVERLAY,
     ModalCloseButton,
+    OVERLAY,
     SmallHeader
 } from "~/components";
-import { ExternalLink } from "@mutinywallet/ui";
-import help from "~/assets/icons/help.svg";
 import { useI18n } from "~/i18n/context";
 
 export function FeesModal(props: { icon?: boolean }) {
@@ -18,7 +19,7 @@ export function FeesModal(props: { icon?: boolean }) {
             title={i18n.t("modals.more_info.whats_with_the_fees")}
             linkText={
                 props.icon ? (
-                    <img src={help} alt="help" class="w-4 h-4 cursor-pointer" />
+                    <img src={help} alt="help" class="h-4 w-4 cursor-pointer" />
                 ) : (
                     i18n.t("common.why")
                 )
@@ -44,7 +45,7 @@ export const MoreInfoModal: ParentComponent<{
     return (
         <Dialog.Root open={open()} onOpenChange={setOpen}>
             <Dialog.Trigger>
-                <button class="underline decoration-light-text hover:decoration-white font-semibold">
+                <button class="font-semibold underline decoration-light-text hover:decoration-white">
                     {props.linkText}
                 </button>
             </Dialog.Trigger>
@@ -52,7 +53,7 @@ export const MoreInfoModal: ParentComponent<{
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
-                        <Dialog.Title class="flex justify-between mb-2 items-center">
+                        <Dialog.Title class="mb-2 flex items-center justify-between">
                             <SmallHeader>{props.title}</SmallHeader>
                             <Dialog.CloseButton>
                                 <ModalCloseButton />
