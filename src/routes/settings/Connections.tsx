@@ -40,8 +40,10 @@ function Nwc() {
         }
     });
 
-    const [dialogOpen, setDialogOpen] = createSignal(false);
-    const [formName, setFormName] = createSignal("");
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryName = urlParams.get("name");
+    const [formName, setFormName] = createSignal(queryName || "");
+    const [dialogOpen, setDialogOpen] = createSignal(!!queryName);
     const [createLoading, setCreateLoading] = createSignal(false);
     const [error, setError] = createSignal("");
 
@@ -63,6 +65,15 @@ function Nwc() {
                 return;
             } else {
                 refetch();
+            }
+
+            const callbackUriScheme = getCallbackQueryParam();
+            if (callbackUriScheme) {
+                const fullURI = profile.nwc_uri.replace(
+                    "nostr+walletconnect://",
+                    `${getCallbackQueryParam()}://`
+                );
+                window.open(fullURI, "_blank");
             }
 
             setFormName("");
@@ -100,6 +111,11 @@ function Nwc() {
     function openInPrimal(uri: string) {
         const connectString = uri.replace("nostr+walletconnect", "primal");
         window.open(connectString, "_blank");
+    }
+
+    function getCallbackQueryParam() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("callbackUri");
     }
 
     return (
