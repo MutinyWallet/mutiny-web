@@ -17,6 +17,7 @@ const stripCSSImport = () => {
 
 export default withSolid({
   input: "src/index.tsx",
+  cache: false,
   plugins: [
     image(),
     css({ output: "style.css" }),

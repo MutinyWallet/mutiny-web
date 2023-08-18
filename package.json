@@ -4,9 +4,9 @@
     "license": "MIT",
     "packageManager": "pnpm@8.6.6",
     "scripts": {
-        "dev": "solid-start dev",
+        "dev": "pnpm run build-submodules && solid-start dev",
         "host": "solid-start dev --host",
-        "build-submodules": "turbo run build --filter='./packages/*'",
+        "build-submodules": "turbo run build",
         "build": "pnpm run build-submodules && solid-start build && node insertHead.js",
         "start": "solid-start start",
         "check-types": "tsc --noemit",
