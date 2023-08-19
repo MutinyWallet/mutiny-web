@@ -109,6 +109,8 @@ export default {
         },
         error_low_balance:
             "We do not have enough balance to pay the given amount.",
+        error_invoice_match:
+            "Amount requested, {{amount}} SATS, does not equal amount set.",
         error_clipboard: "Clipboard not supported",
         error_keysend: "Keysend failed",
         error_LNURL: "LNURL Pay failed"

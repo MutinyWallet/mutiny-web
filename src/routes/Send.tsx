@@ -257,14 +257,25 @@ export default function Send() {
         }
     };
 
-    const insufficientFunds = () => {
-        if (source() === "onchain") {
-            return maxOnchain() < amountSats();
+    const amountError = () => {
+        setError("");
+        if (source() === "onchain" && maxOnchain() < amountSats()) {
+            return setError(i18n.t("send.error_low_balance"));
         }
-        if (source() === "lightning") {
-            return (
-                (state.balance?.lightning ?? 0n) <= amountSats() &&
-                setError(i18n.t("send.error_low_balance"))
+        if (
+            source() === "lightning" &&
+            (state.balance?.lightning ?? 0n) <= amountSats()
+        ) {
+            return setError(i18n.t("send.error_low_balance"));
+        } else if (
+            source() === "lightning" &&
+            !!invoice()?.amount_sats &&
+            amountSats() !== invoice()?.amount_sats
+        ) {
+            return setError(
+                i18n.t("send.error_invoice_match", {
+                    amount: invoice()?.amount_sats?.toLocaleString()
+                })
             );
         }
     };
@@ -559,7 +570,7 @@ export default function Send() {
             !destination() ||
             sending() ||
             amountSats() === 0n ||
-            !!insufficientFunds() ||
+            !!amountError() ||
             !!error()
         );
     });
