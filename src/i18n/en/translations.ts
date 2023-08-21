@@ -263,6 +263,9 @@ export default {
             new_connection_label: "Name",
             new_connection_placeholder: "My favorite nostr client...",
             create_connection: "Create Connection",
+            open_app: "Open App",
+            open_in_nostr_client: "Open in Nostr Client",
+            open_in_primal: "Open in Primal",
             relay: "Relay",
             authorize:
                 "Authorize external services to request payments from your wallet. Pairs great with Nostr clients.",

@@ -168,7 +168,9 @@ function Nwc() {
                                             openInNostrClient(profile.nwc_uri)
                                         }
                                     >
-                                        Open in Nostr Client
+                                        {i18n.t(
+                                            "settings.connections.open_in_nostr_client"
+                                        )}
                                     </Button>
 
                                     <Button
@@ -177,7 +179,9 @@ function Nwc() {
                                             openInPrimal(profile.nwc_uri)
                                         }
                                     >
-                                        Open in Primal
+                                        {i18n.t(
+                                            "settings.connections.open_in_primal"
+                                        )}
                                     </Button>
 
                                     <Button
@@ -235,10 +239,11 @@ function Nwc() {
             <SimpleDialog
                 open={callbackDialogOpen()}
                 setOpen={setCallbackDialogOpen}
-                title={"Open in App"}
+                title={i18n.t("settings.connections.open_app")}
             >
-                <p>Click the button below to open in the app.</p>
-                <Button onClick={openCallbackUri}>Open in App</Button>
+                <Button onClick={openCallbackUri}>
+                    {i18n.t("settings.connections.open_app")}
+                </Button>
             </SimpleDialog>
         </VStack>
     );
