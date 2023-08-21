@@ -46,6 +46,8 @@ function Nwc() {
     const [dialogOpen, setDialogOpen] = createSignal(!!queryName);
     const [createLoading, setCreateLoading] = createSignal(false);
     const [error, setError] = createSignal("");
+    const [callbackDialogOpen, setCallbackDialogOpen] = createSignal(false);
+    const [callbackUri, setCallbackUri] = createSignal<string | null>(null);
 
     async function createConnection() {
         try {
@@ -67,22 +69,30 @@ function Nwc() {
                 refetch();
             }
 
+            setFormName("");
+            setDialogOpen(false);
+
             const callbackUriScheme = getCallbackQueryParam();
             if (callbackUriScheme) {
                 const fullURI = profile.nwc_uri.replace(
                     "nostr+walletconnect://",
                     `${getCallbackQueryParam()}://`
                 );
-                window.open(fullURI, "_blank");
+                setCallbackUri(fullURI);
+                setCallbackDialogOpen(true);
             }
-
-            setFormName("");
-            setDialogOpen(false);
         } catch (e) {
             setError(eify(e).message);
             console.error(e);
         } finally {
             setCreateLoading(false);
+        }
+    }
+
+    function openCallbackUri() {
+        if (callbackUri()) {
+            window.open(callbackUri() as string, "_blank");
+            setCallbackDialogOpen(false);
         }
     }
 
@@ -221,6 +231,14 @@ function Nwc() {
                 >
                     {i18n.t("settings.connections.create_connection")}
                 </Button>
+            </SimpleDialog>
+            <SimpleDialog
+                open={callbackDialogOpen()}
+                setOpen={setCallbackDialogOpen}
+                title={"Open in App"}
+            >
+                <p>Click the button below to open in the app.</p>
+                <Button onClick={openCallbackUri}>Open in App</Button>
             </SimpleDialog>
         </VStack>
     );
