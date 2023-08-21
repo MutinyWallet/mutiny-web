@@ -92,9 +92,8 @@ function SingleDigitButton(props: {
         >
             <button
                 class="font-semi font-inter flex items-center justify-center rounded-lg p-2 text-4xl text-white active:bg-m-blue disabled:opacity-50 md:hover:bg-white/10"
-                onMouseDown={onHold}
-                onMouseUp={endHold}
-                onMouseLeave={endHold}
+                onPointerDown={onHold}
+                onPointerUp={endHold}
                 onClick={onClick}
             >
                 {props.character}
