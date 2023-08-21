@@ -253,9 +253,9 @@ export default {
             new_connection_label: "이름",
             new_connection_placeholder: "내가 좋아하는 nostr 클라이언트...",
             create_connection: "연결 생성",
-            open_app: "Open App",
-            open_in_nostr_client: "Open in Nostr Client",
-            open_in_primal: "Open in Primal",
+            open_app: "앱 열기",
+            open_in_nostr_client: "Nostr 클라이언트에서 열기",
+            open_in_primal: "Primal에서 열기",
             authorize:
                 "외부 서비스가 지갑에서 결제를 요청할 수 있도록 인증합니다. nostr 클라이언트와 잘 맞습니다.",
             pending_nwc: {
