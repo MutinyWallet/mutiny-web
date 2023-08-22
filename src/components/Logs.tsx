@@ -10,7 +10,7 @@ export function Logs() {
         try {
             const logs = await MutinyWallet.get_logs();
 
-            downloadTextFile(
+            await downloadTextFile(
                 logs.join("") || "",
                 "mutiny-logs.txt",
                 "text/plain"

@@ -47,6 +47,7 @@
         "@capacitor/clipboard": "^5.0.6",
         "@capacitor/core": "^5.2.2",
         "@capacitor/filesystem": "^5.1.1",
+        "@capacitor/toast": "^5.0.6",
         "@kobalte/core": "^0.9.8",
         "@kobalte/tailwindcss": "^0.5.0",
         "@modular-forms/solid": "^0.18.1",

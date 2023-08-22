@@ -30,7 +30,7 @@ export function ImportExport(props: { emergency?: boolean }) {
         try {
             setError(undefined);
             const json = await MutinyWallet.export_json();
-            downloadTextFile(json || "", "mutiny-state.json");
+            await downloadTextFile(json || "", "mutiny-state.json");
         } catch (e) {
             console.error(e);
             const err = eify(e);
@@ -54,7 +54,7 @@ export function ImportExport(props: { emergency?: boolean }) {
                 );
             }
             const json = await MutinyWallet.export_json(password());
-            downloadTextFile(json || "", "mutiny-state.json");
+            await downloadTextFile(json || "", "mutiny-state.json");
         } catch (e) {
             console.error(e);
             setError(eify(e));
