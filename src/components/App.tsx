@@ -1,4 +1,6 @@
-import { Match, Show, Suspense, Switch } from "solid-js";
+import { App as CapacitorApp } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
+import { Match, onCleanup, Show, Suspense, Switch } from "solid-js";
 import { A } from "solid-start";
 
 import settings from "~/assets/icons/settings.svg";
@@ -27,6 +29,25 @@ import { useMegaStore } from "~/state/megaStore";
 export function App() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
+
+    // Check if the platform is Android to handle back
+    if (Capacitor.getPlatform() === "android") {
+        const { remove } = CapacitorApp.addListener(
+            "backButton",
+            ({ canGoBack }) => {
+                if (!canGoBack) {
+                    CapacitorApp.exitApp();
+                } else {
+                    window.history.back();
+                }
+            }
+        );
+
+        // Ensure the listener is cleaned up when the component is destroyed
+        onCleanup(() => {
+            remove();
+        });
+    }
 
     return (
         <SafeArea>
