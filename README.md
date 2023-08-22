@@ -62,7 +62,7 @@ just remote
 ### How to test locally
 
 ```
-pnpm build && npx cap sync
+just native
 ```
 
 Now open up the `android` directory in android studio and run the build

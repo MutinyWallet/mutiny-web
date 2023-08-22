@@ -9,6 +9,9 @@ local:
 remote:
     pnpm unlink --filter "@mutinywallet/mutiny-wasm" && pnpm install
 
+native:
+    pnpm install && pnpm build && npx cap sync
+
 test:
     pnpm exec playwright test
     
