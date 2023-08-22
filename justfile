@@ -7,7 +7,7 @@ local:
     pnpm link --global "@mutinywallet/mutiny-wasm"
 
 remote:
-    pnpm unlink "@mutinywallet/mutiny-wasm" && pnpm install
+    pnpm unlink --filter "@mutinywallet/mutiny-wasm" && pnpm install
 
 test:
     pnpm exec playwright test
