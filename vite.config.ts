@@ -65,7 +65,8 @@ export default defineConfig({
             "@capacitor/core",
             "@capacitor/filesystem",
             "@capacitor/toast",
-            "@mutinywallet/barcode-scanner"
+            "@mutinywallet/barcode-scanner",
+            "@capacitor/app"
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
         exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
