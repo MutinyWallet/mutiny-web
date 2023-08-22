@@ -16,6 +16,9 @@ importers:
       '@capacitor/filesystem':
         specifier: ^5.1.1
         version: 5.1.1(@capacitor/core@5.2.2)
+      '@capacitor/toast':
+        specifier: ^5.0.6
+        version: 5.0.6(@capacitor/core@5.2.2)
       '@kobalte/core':
         specifier: ^0.9.8
         version: 0.9.8(solid-js@1.7.8)
@@ -1571,6 +1574,14 @@ packages:
     resolution: {integrity: sha512-wq55joyYocsYI0f0UNoDE9TPxI0n4fx+PmejGR5JOYFzrnU8DqcSJ9EREAYAkkoOrmQHrB1vuN9F79XC0PuADw==}
     peerDependencies:
       '@capacitor/core': ^5.1.1
+    dependencies:
+      '@capacitor/core': 5.2.2
+    dev: false
+
+  /@capacitor/toast@5.0.6(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-djkRHVT8YtLJC1vvOnDU3EfAHfQYqAD7LYEXmSmhYuTnXRIggX93m/NkazwLnnpr95kDbs2VVPM/J6dqqYuJng==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
     dependencies:
       '@capacitor/core': 5.2.2
     dev: false
