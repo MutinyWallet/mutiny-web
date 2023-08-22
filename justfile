@@ -4,7 +4,7 @@ dev:
     pnpm run dev
 
 local:
-    pnpm link --global "@mutinywallet/mutiny-wasm"
+    pnpm install && pnpm link --global "@mutinywallet/mutiny-wasm"
 
 remote:
     pnpm unlink --filter "@mutinywallet/mutiny-wasm" && pnpm install
