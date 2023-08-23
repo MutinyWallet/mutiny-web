@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.mutinywallet.mutinywallet",
+    "sha256_cert_fingerprints":
+    ["F8:20:46:16:9B:79:AA:D1:2A:77:CA:D6:1F:0E:F6:A4:D7:72:3A:5E:DE:C6:70:18:E9:9E:B4:DA:0B:44:17:60"]
+  }
+}]
