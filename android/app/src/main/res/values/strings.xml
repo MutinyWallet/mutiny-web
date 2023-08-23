@@ -3,5 +3,5 @@
     <string name="app_name">Mutiny Wallet</string>
     <string name="title_activity_main">Mutiny Wallet</string>
     <string name="package_name">com.mutinywallet.mutinywallet</string>
-    <string name="custom_url_scheme">com.mutinywallet.mutinywallet</string>
+    <string name="custom_url_scheme">mutiny</string>
 </resources>

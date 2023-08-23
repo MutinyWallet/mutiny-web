@@ -1,6 +1,8 @@
+import { Browser } from "@capacitor/browser";
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
 import { createResource, createSignal, For, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
+import { useSearchParams } from "solid-start";
 
 import {
     BackLink,
@@ -40,8 +42,8 @@ function Nwc() {
         }
     });
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const queryName = urlParams.get("name");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const queryName = searchParams.name;
     const [formName, setFormName] = createSignal(queryName || "");
     const [dialogOpen, setDialogOpen] = createSignal(!!queryName);
     const [createLoading, setCreateLoading] = createSignal(false);
@@ -69,14 +71,14 @@ function Nwc() {
                 refetch();
             }
 
-            setFormName("");
+            setSearchParams({ name: "" });
             setDialogOpen(false);
 
-            const callbackUriScheme = getCallbackQueryParam();
+            const callbackUriScheme = searchParams.callbackUri;
             if (callbackUriScheme) {
                 const fullURI = profile.nwc_uri.replace(
                     "nostr+walletconnect://",
-                    `${getCallbackQueryParam()}://`
+                    `${callbackUriScheme}://`
                 );
                 setCallbackUri(fullURI);
                 setCallbackDialogOpen(true);
@@ -91,7 +93,8 @@ function Nwc() {
 
     function openCallbackUri() {
         if (callbackUri()) {
-            window.open(callbackUri() as string, "_blank");
+            Browser.open({ url: callbackUri() as string });
+            setSearchParams({ callbackUri: "" });
             setCallbackDialogOpen(false);
         }
     }
@@ -115,17 +118,12 @@ function Nwc() {
     }
 
     function openInNostrClient(uri: string) {
-        window.open(uri, "_blank");
+        Browser.open({ url: uri });
     }
 
     function openInPrimal(uri: string) {
         const connectString = uri.replace("nostr+walletconnect", "primal");
-        window.open(connectString, "_blank");
-    }
-
-    function getCallbackQueryParam() {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get("callbackUri");
+        Browser.open({ url: connectString });
     }
 
     return (
