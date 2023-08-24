@@ -543,7 +543,7 @@ export default {
             reserve: "Reserve",
             peer: "Peer",
             channel_id: "Channel ID",
-            reason: "Reasson",
+            reason: "Reason",
             confirmed: "Confirmed",
             unconfirmed: "Unconfirmed",
             no_details:
