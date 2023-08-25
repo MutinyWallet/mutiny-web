@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, Match, Switch } from "solid-js";
+import { createMemo, createSignal, For, Show } from "solid-js";
 
 import copyIcon from "~/assets/icons/copy.svg";
 import { useI18n } from "~/i18n/context";
@@ -26,64 +26,47 @@ export function SeedWords(props: {
     }
 
     return (
-        <div class="flex flex-col gap-4 overflow-hidden rounded-xl bg-m-red p-4">
-            <Switch>
-                <Match when={!shouldShow()}>
-                    <div
-                        class="flex w-full cursor-pointer justify-center"
-                        onClick={toggleShow}
-                    >
-                        <code class="text-red">
-                            {i18n.t("settings.backup.seed_words.reveal")}
-                        </code>
-                    </div>
-                </Match>
+        <div class="flex flex-col overflow-hidden rounded-xl bg-m-red shadow-inner-button">
+            <div
+                class="flex w-full cursor-pointer justify-center rounded-xl p-4 text-white text-shadow-button hover:bg-m-red-dark"
+                classList={{ "shadow-inner-button": !shouldShow() }}
+                onClick={toggleShow}
+            >
+                <code>
+                    {!shouldShow()
+                        ? i18n.t("settings.backup.seed_words.reveal")
+                        : i18n.t("settings.backup.seed_words.hide")}
+                </code>
+            </div>
 
-                <Match when={shouldShow()}>
-                    <>
-                        <div
-                            class="flex w-full cursor-pointer justify-center"
-                            onClick={toggleShow}
-                        >
-                            <code class="text-red">
-                                {i18n.t("settings.backup.seed_words.hide")}
-                            </code>
+            <Show when={shouldShow()}>
+                <ol class="w-full list-inside list-decimal columns-2 overflow-hidden px-4">
+                    <For each={splitWords()}>
+                        {(word) => (
+                            <li class="bg min-w-fit text-left font-mono">
+                                {word}
+                            </li>
+                        )}
+                    </For>
+                </ol>
+                <div class="flex w-full justify-center p-4">
+                    <button
+                        onClick={dangerouslyCopy}
+                        class="rounded-lg bg-white/10 p-2 hover:bg-white/20"
+                    >
+                        <div class="flex items-center gap-2">
+                            <span>
+                                {copied()
+                                    ? i18n.t(
+                                          "settings.backup.seed_words.copied"
+                                      )
+                                    : i18n.t("settings.backup.seed_words.copy")}
+                            </span>
+                            <img src={copyIcon} alt="copy" class="h-4 w-4" />
                         </div>
-                        <ol class="w-full list-inside list-decimal columns-2 overflow-hidden">
-                            <For each={splitWords()}>
-                                {(word) => (
-                                    <li class="bg min-w-fit text-left font-mono">
-                                        {word}
-                                    </li>
-                                )}
-                            </For>
-                        </ol>
-                        <div class="flex w-full justify-center">
-                            <button
-                                onClick={dangerouslyCopy}
-                                class="rounded-lg bg-white/10 p-2 hover:bg-white/20"
-                            >
-                                <div class="flex items-center gap-2">
-                                    <span>
-                                        {copied()
-                                            ? i18n.t(
-                                                  "settings.backup.seed_words.copied"
-                                              )
-                                            : i18n.t(
-                                                  "settings.backup.seed_words.copy"
-                                              )}
-                                    </span>
-                                    <img
-                                        src={copyIcon}
-                                        alt="copy"
-                                        class="h-4 w-4"
-                                    />
-                                </div>
-                            </button>
-                        </div>
-                    </>
-                </Match>
-            </Switch>
+                    </button>
+                </div>
+            </Show>
         </div>
     );
 }
