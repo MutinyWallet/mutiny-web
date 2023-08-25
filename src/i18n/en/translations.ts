@@ -345,7 +345,9 @@ export default {
             confirm_password_placeholder: "Enter the same password",
             encrypt: "Encrypt",
             skip: "Skip",
-            error_match: "Passwords do not match"
+            error_match: "Passwords do not match",
+            error_same_as_existingpassword:
+                "New password must not match existing password"
         },
         decrypt: {
             title: "Enter your password",

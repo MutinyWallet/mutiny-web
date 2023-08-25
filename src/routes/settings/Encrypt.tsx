@@ -1,5 +1,5 @@
 import { createForm } from "@modular-forms/solid";
-import { createSignal, Show } from "solid-js";
+import { createMemo, createSignal, Show } from "solid-js";
 
 import {
     BackLink,
@@ -31,7 +31,7 @@ export default function Encrypt() {
     const [error, setError] = createSignal<Error>();
     const [loading, setLoading] = createSignal(false);
 
-    const [_encryptPasswordForm, { Form, Field }] =
+    const [encryptPasswordForm, { Form, Field }] =
         createForm<EncryptPasswordForm>({
             initialValues: {
                 existingPassword: "",
@@ -39,10 +39,15 @@ export default function Encrypt() {
                 confirmPassword: ""
             },
             validate: (values) => {
+                setError(undefined);
                 const errors: Record<string, string> = {};
                 if (values.password !== values.confirmPassword) {
                     errors.confirmPassword = i18n.t(
                         "settings.encrypt.error_match"
+                    );
+                } else if (values.password === values.existingPassword) {
+                    errors.password = i18n.t(
+                        "settings.encrypt.error_same_as_existingpassword"
                     );
                 }
                 return errors;
@@ -65,6 +70,14 @@ export default function Encrypt() {
             setLoading(false);
         }
     };
+
+    const encryptButtonDisabled = createMemo(() => {
+        return (
+            !encryptPasswordForm.dirty ||
+            encryptPasswordForm.invalid ||
+            !!error()
+        );
+    });
 
     return (
         <MutinyWalletGuard>
@@ -145,7 +158,11 @@ export default function Encrypt() {
                                     </InfoBox>
                                 </Show>
                                 <div />
-                                <Button intent="blue" loading={loading()}>
+                                <Button
+                                    intent="blue"
+                                    disabled={encryptButtonDisabled()}
+                                    loading={loading()}
+                                >
                                     {i18n.t("settings.encrypt.encrypt")}
                                 </Button>
                             </VStack>
