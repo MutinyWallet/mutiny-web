@@ -246,6 +246,15 @@ export default function Send() {
         setFieldDestination("");
     }
 
+    // If we got here from a scan result we want to set the destination and clean up that scan result
+    onMount(() => {
+        if (state.scan_result) {
+            setDestination(state.scan_result);
+            actions.setScanResult(undefined);
+        }
+    });
+
+    // Three suspiciously similar "max" values we want to compute
     const maxOnchain = createMemo(() => {
         return (
             (state.balance?.confirmed ?? 0n) +
@@ -253,49 +262,52 @@ export default function Send() {
         );
     });
 
-    const isMax = () => {
+    const maxAmountSats = createMemo(() => {
+        return source() === "onchain" ? maxOnchain() : undefined;
+    });
+
+    const isMax = createMemo(() => {
         if (source() === "onchain") {
             return amountSats() === maxOnchain();
         }
-    };
+    });
 
-    const amountError = () => {
-        setError("");
+    // Rerun every time the source or amount changes to check for amount errors
+    createEffect(() => {
+        setError(undefined);
         if (source() === "onchain" && maxOnchain() < amountSats()) {
-            return setError(i18n.t("send.error_low_balance"));
+            setError(i18n.t("send.error_low_balance"));
+            return;
         }
         if (
             source() === "lightning" &&
             (state.balance?.lightning ?? 0n) <= amountSats()
         ) {
-            return setError(i18n.t("send.error_low_balance"));
-        } else if (
+            setError(i18n.t("send.error_low_balance"));
+            return;
+        }
+        if (
             source() === "lightning" &&
             !!invoice()?.amount_sats &&
             amountSats() !== invoice()?.amount_sats
         ) {
-            return setError(
+            setError(
                 i18n.t("send.error_invoice_match", {
                     amount: invoice()?.amount_sats?.toLocaleString()
                 })
             );
+            return;
         }
-    };
+    });
 
-    const feeEstimate = () => {
-        if (source() === "lightning") {
-            setError(undefined);
-            return undefined;
-        }
-
+    // Rerun every time the amount changes if we're onchain
+    const feeEstimate = createMemo(() => {
         if (
             source() === "onchain" &&
             amountSats() &&
             amountSats() > 0n &&
             address()
         ) {
-            setError(undefined);
-
             try {
                 // If max we want to use the sweep fee estimator
                 if (isMax()) {
@@ -313,21 +325,13 @@ export default function Send() {
                 setError(eify(e).message);
             }
         }
-
         return undefined;
-    };
-
-    onMount(() => {
-        if (state.scan_result) {
-            setDestination(state.scan_result);
-            actions.setScanResult(undefined);
-        }
     });
 
     // Rerun every time the destination changes
     createEffect(() => {
         const source = destination();
-        if (!source) return undefined;
+        if (!source) return;
         try {
             if (source.address) setAddress(source.address);
             if (source.memo) setDescription(source.memo);
@@ -371,13 +375,6 @@ export default function Send() {
         } catch (e) {
             console.error("error", e);
             clearAll();
-        }
-    });
-
-    // Rerun every time the source changes
-    createEffect(() => {
-        if (source() === "lightning") {
-            setError(undefined);
         }
     });
 
@@ -568,20 +565,10 @@ export default function Send() {
     }
 
     const sendButtonDisabled = createMemo(() => {
-        return (
-            !destination() ||
-            sending() ||
-            amountSats() === 0n ||
-            !!amountError() ||
-            !!error()
-        );
+        return !destination() || sending() || amountSats() === 0n || !!error();
     });
 
     const network = state.mutiny_wallet?.get_network() as Network;
-
-    const maxAmountSats = createMemo(() => {
-        return source() === "onchain" ? maxOnchain() : undefined;
-    });
 
     return (
         <MutinyWalletGuard>
