@@ -273,6 +273,8 @@ export default function Send() {
     // Rerun every time the source or amount changes to check for amount errors
     createEffect(() => {
         setError(undefined);
+        // Don't recompute if sending
+        if (sending()) return;
         if (source() === "onchain" && maxOnchain() < amountSats()) {
             setError(i18n.t("send.error_low_balance"));
             return;
