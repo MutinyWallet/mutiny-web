@@ -29,16 +29,9 @@ function ContactRow() {
     const [state, _actions] = useMegaStore();
     const [contacts, { refetch }] = createResource(async () => {
         try {
-            const contacts = state.mutiny_wallet?.get_contacts();
-
-            // FIXME: this is just types shenanigans I believe
-            const c: Contact[] = [];
-            if (contacts) {
-                for (const contact in contacts) {
-                    c.push(contacts[contact]);
-                }
-            }
-            return c || [];
+            const contacts: Contact[] =
+                state.mutiny_wallet?.get_contacts_sorted();
+            return contacts || [];
         } catch (e) {
             console.error(e);
             return [];
