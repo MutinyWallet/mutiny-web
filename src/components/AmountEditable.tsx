@@ -663,6 +663,7 @@ export const AmountEditable: ParentComponent<{
     return (
         <Dialog.Root open={isOpen()}>
             <button
+                type="button"
                 onClick={() => setIsOpen(true)}
                 class="flex items-center gap-2 rounded-xl border-2 border-m-blue px-4 py-2"
             >

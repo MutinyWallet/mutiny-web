@@ -260,14 +260,17 @@ export default {
             title: "Wallet Connections",
             error_name: "Name cannot be empty",
             error_connection: "Failed to create Wallet Connection",
+            error_budget_zero: "Budget must be greater than zero",
             add_connection: "Add Connection",
             manage_connections: "Manage Connections",
-            disable_connection: "Disable",
-            enable_connection: "Enable",
+            delete_connection: "Delete",
             new_connection: "New Connection",
+            edit_connection: "Edit Connection",
             new_connection_label: "Name",
             new_connection_placeholder: "My favorite nostr client...",
             create_connection: "Create Connection",
+            save_connection: "Save Changes",
+            edit_budget: "Edit Budget",
             open_app: "Open App",
             open_in_nostr_client: "Open in Nostr Client",
             open_in_primal: "Open in Primal",
@@ -280,7 +283,9 @@ export default {
                 approve_all: "Approve All"
             },
             careful:
-                "Be careful where you share this connection! Requests within budget will paid automatically."
+                "Be careful where you share this connection! Requests within budget will paid automatically.",
+            spent: "Spent",
+            remaining: "Remaining",
         },
         emergency_kit: {
             title: "Emergency Kit",

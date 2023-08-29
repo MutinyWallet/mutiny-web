@@ -13,6 +13,7 @@ export type TextFieldProps = {
     error: string;
     required?: boolean;
     multiline?: boolean;
+    disabled?: boolean;
     ref: (element: HTMLInputElement | HTMLTextAreaElement) => void;
     onInput: JSX.EventHandler<
         HTMLInputElement | HTMLTextAreaElement,
@@ -40,6 +41,7 @@ export function TextField(props: TextFieldProps) {
             value={props.value}
             validationState={props.error ? "invalid" : "valid"}
             required={props.required}
+            disabled={props.disabled}
         >
             <Show when={props.label}>
                 <KTextField.Label class="text-sm font-semibold uppercase">
@@ -52,7 +54,7 @@ export function TextField(props: TextFieldProps) {
                     <KTextField.Input
                         {...fieldProps}
                         type={props.type}
-                        class="w-full rounded-lg bg-white/10 p-2 placeholder-neutral-400"
+                        class="w-full rounded-lg bg-white/10 p-2 placeholder-m-grey-400 disabled:text-m-grey-400"
                     />
                 }
             >
@@ -62,7 +64,7 @@ export function TextField(props: TextFieldProps) {
                     class="w-full rounded-lg bg-white/10 p-2 placeholder-neutral-400"
                 />
             </Show>
-            <KTextField.ErrorMessage class="text-m-red">
+            <KTextField.ErrorMessage class="text-sm text-m-red">
                 {props.error}
             </KTextField.ErrorMessage>
             <Show when={props.caption}>

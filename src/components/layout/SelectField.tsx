@@ -2,11 +2,15 @@ import { Select as KSelect } from "@kobalte/core";
 import { JSX, Show, splitProps } from "solid-js";
 
 import check from "~/assets/icons/check.svg";
+import upDown from "~/assets/icons/up-down.svg";
 
-import { Currency } from "../ChooseCurrency";
+interface IOption {
+    value: string;
+    label: string;
+}
 
 type SelectProps = {
-    options: Currency[];
+    options: IOption[];
     multiple?: boolean;
     size?: string | number;
     caption?: string;
@@ -68,13 +72,15 @@ export function SelectField(props: SelectProps) {
                 </Show>
                 <KSelect.HiddenSelect {...selectProps} />
                 <KSelect.Trigger
-                    class="flex w-full justify-between rounded-lg bg-white/10 p-2 text-base font-normal text-neutral-400"
+                    class="flex w-full justify-between rounded-lg bg-m-grey-750 px-4 py-2 text-base font-normal text-white"
                     aria-label="selectField"
                 >
-                    <KSelect.Value<Currency>>
+                    <KSelect.Value<IOption>>
                         {(state) => state.selectedOption().label}
                     </KSelect.Value>
-                    <KSelect.Icon class="text-white" />
+                    <KSelect.Icon class="ml-2 self-center">
+                        <img src={upDown} alt="upDown" height={20} width={20} />
+                    </KSelect.Icon>
                 </KSelect.Trigger>
                 <Show when={props.caption}>
                     <KSelect.Description class="text-sm font-normal text-neutral-400">
