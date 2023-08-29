@@ -106,7 +106,7 @@ export const Collapser: ParentComponent<{
                     class="collapsible__trigger-icon"
                 />
             </Collapsible.Trigger>
-            <Collapsible.Content class="bg-m-grey-900 p-4 shadow-inner">
+            <Collapsible.Content class="bg-m-grey-950 p-4 shadow-inner">
                 {props.children}
             </Collapsible.Content>
         </Collapsible.Root>
@@ -305,7 +305,7 @@ export function Checkbox(props: {
                     <img src={check} class="h-8 w-8" alt="check" />
                 </KCheckbox.Indicator>
             </KCheckbox.Control>
-            <KCheckbox.Label class="flex flex-1 flex-col gap-1 text-xl font-light">
+            <KCheckbox.Label class="flex flex-1 flex-col gap-1 font-semibold">
                 {props.label}
                 <Show when={props.caption}>
                     <TinyText>{props.caption}</TinyText>

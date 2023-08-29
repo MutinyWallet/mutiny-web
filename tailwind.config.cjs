@@ -35,7 +35,8 @@ module.exports = {
                 "m-grey-700": "hsla(0, 0%, 25%, 1)",
                 "m-grey-750": "hsla(0, 0%, 17%, 1)",
                 "m-grey-800": "hsla(0, 0%, 12%, 1)",
-                "m-grey-900": "hsla(0, 0%, 9%, 1)"
+                "m-grey-900": "hsla(0, 0%, 9%, 1)",
+                "m-grey-950": "hsla(0, 0%, 8%, 1)",
             },
             backgroundImage: {
                 "fade-to-blue":
