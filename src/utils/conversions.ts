@@ -1,9 +1,18 @@
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 
-export function satsToUsd(
+import { Currency } from "~/components/ChooseCurrency";
+
+/** satsToFiat
+ *  returns a toLocaleString() based on the bitcoin price in the chosen currency
+ *  @param {number} amount - Takes a number as a string to parse the formatted value
+ *  @param {number} price - Finds the Price from the megaStore state
+ *  @param {Currency} fiat - Takes {@link Currency} object options to determine how to format the amount input
+ */
+
+export function satsToFiat(
     amount: number | undefined,
     price: number,
-    formatted: boolean
+    fiat: Currency
 ): string {
     if (typeof amount !== "number" || isNaN(amount)) {
         return "";
@@ -12,21 +21,16 @@ export function satsToUsd(
         const btc = MutinyWallet.convert_sats_to_btc(
             BigInt(Math.floor(amount))
         );
-        const usd = btc * price;
-
-        if (formatted) {
-            return usd.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD"
-            });
+        const fiatPrice = btc * price;
+        const roundedFiat = Math.round(fiatPrice);
+        if (
+            (fiat.value !== "BTC" &&
+                roundedFiat * 100 === Math.round(fiatPrice * 100)) ||
+            fiatPrice === 0
+        ) {
+            return fiatPrice.toFixed(0);
         } else {
-            // Some float fighting shenaningans
-            const roundedUsd = Math.round(usd);
-            if (roundedUsd * 100 === Math.round(usd * 100)) {
-                return usd.toFixed(0);
-            } else {
-                return usd.toFixed(2);
-            }
+            return fiatPrice.toFixed(fiat.maxFractionalDigits);
         }
     } catch (e) {
         console.error(e);
@@ -34,7 +38,51 @@ export function satsToUsd(
     }
 }
 
-export function usdToSats(
+/** satsToFormattedFiat
+ *  returns a toLocaleString() based on the bitcoin price in the chosen currency with its appropriate currency prefix
+ *  @param {number} amount - Takes a number as a string to parse the formatted value
+ *  @param {number} price - Finds the Price from the megaStore state
+ *  @param {Currency} fiat - Takes {@link Currency} object options to determine how to format the amount input
+ */
+
+export function satsToFormattedFiat(
+    amount: number | undefined,
+    price: number,
+    fiat: Currency
+): string {
+    if (typeof amount !== "number" || isNaN(amount)) {
+        return "";
+    }
+    try {
+        const btc = MutinyWallet.convert_sats_to_btc(
+            BigInt(Math.floor(amount))
+        );
+        const fiatPrice = btc * price;
+        //Handles currencies not supported by .toLocaleString() like BTC
+        //Returns a string with a currency symbol and a number with decimals equal to the maxFractionalDigits
+        if (fiat.hasSymbol) {
+            return (
+                fiat.hasSymbol +
+                fiatPrice.toLocaleString(navigator.languages[0] || "en-US", {
+                    minimumFractionDigits:
+                        fiatPrice === 0 ? 0 : fiat.maxFractionalDigits,
+                    maximumFractionDigits: fiat.maxFractionalDigits
+                })
+            );
+            //Handles currencies with no symbol only an ISO code
+        } else {
+            return fiatPrice.toLocaleString(navigator.languages[0], {
+                minimumFractionDigits:
+                    fiatPrice === 0 ? 0 : fiat.maxFractionalDigits
+            });
+        }
+    } catch (e) {
+        console.error(e);
+        return "";
+    }
+}
+
+export function fiatToSats(
     amount: number | undefined,
     price: number,
     formatted: boolean

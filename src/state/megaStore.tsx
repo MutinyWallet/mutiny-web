@@ -12,6 +12,7 @@ import {
 import { createStore } from "solid-js/store";
 import { useSearchParams } from "solid-start";
 
+import { Currency, FIAT_OPTIONS } from "~/components/ChooseCurrency";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import {
     doubleInitDefense,
@@ -41,6 +42,7 @@ export type MegaStore = [
         is_syncing?: boolean;
         last_sync?: number;
         price: number;
+        fiat: Currency;
         has_backed_up: boolean;
         wallet_loading: boolean;
         setup_error?: Error;
@@ -74,6 +76,9 @@ export const Provider: ParentComponent = (props) => {
         deleting: false,
         scan_result: undefined as ParsedParams | undefined,
         price: 0,
+        fiat: localStorage.getItem("fiat_currency")
+            ? (JSON.parse(localStorage.getItem("fiat_currency")!) as Currency)
+            : FIAT_OPTIONS[1],
         has_backed_up: localStorage.getItem("has_backed_up") === "true",
         balance: undefined as MutinyBalance | undefined,
         last_sync: undefined as number | undefined,
@@ -209,14 +214,37 @@ export const Provider: ParentComponent = (props) => {
             try {
                 if (state.mutiny_wallet && !state.is_syncing) {
                     setState({ is_syncing: true });
+                    let price: number;
                     const newBalance = await state.mutiny_wallet?.get_balance();
-                    const price =
-                        await state.mutiny_wallet?.get_bitcoin_price();
-                    setState({
-                        balance: newBalance,
-                        last_sync: Date.now(),
-                        price: price || 0
-                    });
+                    if (state.fiat.value === "BTC") {
+                        setState({
+                            balance: newBalance,
+                            last_sync: Date.now(),
+                            price: 1,
+                            fiat: state.fiat
+                        });
+                    } else {
+                        try {
+                            price =
+                                await state.mutiny_wallet?.get_bitcoin_price(
+                                    state.fiat.value.toLowerCase() || "usd"
+                                );
+                            setState({
+                                balance: newBalance,
+                                last_sync: Date.now(),
+                                price: price || 0,
+                                fiat: state.fiat
+                            });
+                        } catch (e) {
+                            price = 1;
+                            setState({
+                                balance: newBalance,
+                                last_sync: Date.now(),
+                                price: price,
+                                fiat: FIAT_OPTIONS[0]
+                            });
+                        }
+                    }
                 }
             } catch (e) {
                 console.error(e);

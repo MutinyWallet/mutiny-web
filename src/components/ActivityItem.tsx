@@ -17,6 +17,7 @@ export const ActivityAmount: ParentComponent<{
     positive?: boolean;
     center?: boolean;
 }> = (props) => {
+    const [state, _actions] = useMegaStore();
     return (
         <div
             class="flex flex-col gap-1"
@@ -38,6 +39,7 @@ export const ActivityAmount: ParentComponent<{
                 <AmountFiat
                     amountSats={Number(props.amount)}
                     denominationSize="sm"
+                    loading={state.price === 0}
                 />
             </div>
         </div>

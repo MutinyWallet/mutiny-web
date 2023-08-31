@@ -1,5 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import {
+    createEffect,
     createResource,
     createSignal,
     For,
@@ -20,24 +21,52 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
-import { satsToUsd, usdToSats } from "~/utils";
+import { fiatToSats, satsToFiat } from "~/utils";
 
-function fiatInputSanitizer(input: string): string {
-    // Make sure only numbers and a single decimal point are allowed
-    const numeric = input.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
+import { Currency } from "./ChooseCurrency";
+
+// Checks the users locale to determine if decimals should be a "." or a ","
+const decimalDigitDivider = Number(1.0)
+    .toLocaleString(navigator.languages[0], { minimumFractionDigits: 1 })
+    .substring(1, 2);
+
+function btcFloatRounding(localValue: string): string {
+    return (
+        (parseFloat(localValue) -
+            parseFloat(localValue.charAt(localValue.length - 1)) / 100000000) /
+        10
+    ).toFixed(8);
+}
+
+function fiatInputSanitizer(input: string, maxDecimals: number): string {
+    // Make sure only numbers and a single decimal point are allowed if decimals are allowed
+    let allowDecimalRegex;
+    if (maxDecimals !== 0) {
+        allowDecimalRegex = new RegExp("[^0-9.]", "g");
+    } else {
+        allowDecimalRegex = new RegExp("[^0-9]", "g");
+    }
+    const numeric = input
+        .replace(allowDecimalRegex, "")
+        .replace(/(\..*)\./g, "$1");
 
     // Remove leading zeros if not a decimal, add 0 if starts with a decimal
     const cleaned = numeric.replace(/^0([^.]|$)/g, "$1").replace(/^\./g, "0.");
 
-    // If there are three characters after the decimal, shift the decimal
-    const shifted = cleaned.match(/(\.[0-9]{3}).*/g)
-        ? (parseFloat(cleaned) * 10).toFixed(2)
+    // If there are more characters after the decimal than allowed, shift the decimal
+    const shiftRegex = new RegExp(
+        "(\\.[0-9]{" + (maxDecimals + 1) + "}).*",
+        "g"
+    );
+    const shifted = cleaned.match(shiftRegex)
+        ? (parseFloat(cleaned) * 10).toFixed(maxDecimals)
         : cleaned;
 
-    // Truncate any numbers two past the decimal
-    const twoDecimals = shifted.replace(/(\.[0-9]{2}).*/g, "$1");
+    // Truncate any numbers past the maxDecimal for the currency
+    const decimalRegex = new RegExp("(\\.[0-9]{" + maxDecimals + "}).*", "g");
+    const decimals = shifted.replace(decimalRegex, "$1");
 
-    return twoDecimals;
+    return decimals;
 }
 
 function satsInputSanitizer(input: string): string {
@@ -53,9 +82,10 @@ function SingleDigitButton(props: {
     character: string;
     onClick: (c: string) => void;
     onClear: () => void;
-    fiat: boolean;
+    fiat?: Currency;
 }) {
     const i18n = useI18n();
+
     let holdTimer: ReturnType<typeof setTimeout> | undefined;
     const holdThreshold = 500;
 
@@ -85,9 +115,14 @@ function SingleDigitButton(props: {
     });
 
     return (
-        // Skip the "." if it's fiat
+        // Skip the "." if it's sats or a fiat with no decimal option
         <Show
-            when={props.fiat || !(props.character === ".")}
+            when={
+                (props.fiat &&
+                    props.fiat?.maxFractionalDigits !== 0 &&
+                    props.fiat?.value !== "BTC") ||
+                !(props.character === "." || props.character === ",")
+            }
             fallback={<div />}
         >
             <button
@@ -102,7 +137,12 @@ function SingleDigitButton(props: {
     );
 }
 
-function BigScalingText(props: { text: string; fiat: boolean }) {
+function BigScalingText(props: {
+    text: string;
+    fiat?: Currency;
+    mode: "fiat" | "sats";
+    loading: boolean;
+}) {
     const chars = () => props.text.length;
     const i18n = useI18n();
 
@@ -119,53 +159,102 @@ function BigScalingText(props: { text: string; fiat: boolean }) {
                 "scale-150": chars() <= 4
             }}
         >
-            {props.text}&nbsp;
-            <span class="text-xl">
-                {props.fiat ? i18n.t("common.usd") : i18n.t("common.sats")}
-            </span>
+            <Show when={!props.loading || props.mode === "sats"} fallback="…">
+                {!props.loading && props.mode === "sats"}
+                {props.mode === "fiat" &&
+                    //adds only the symbol
+                    props.fiat?.hasSymbol}
+                {props.text}&nbsp;
+                <span class="text-xl">
+                    {props.fiat ? props.fiat.value : i18n.t("common.sats")}
+                </span>
+            </Show>
         </h1>
     );
 }
 
-function SmallSubtleAmount(props: { text: string; fiat: boolean }) {
+function SmallSubtleAmount(props: {
+    text: string;
+    fiat?: Currency;
+    mode: "fiat" | "sats";
+    loading: boolean;
+}) {
     const i18n = useI18n();
+
     return (
         <h2 class="flex flex-row items-end text-xl font-light text-neutral-400">
-            ~{props.text}&nbsp;
-            <span class="text-base">
-                {props.fiat ? i18n.t("common.usd") : i18n.t("common.sats")}
-            </span>
-            <img
-                class={"pb-[4px] pl-[4px] hover:cursor-pointer"}
-                src={currencySwap}
-                height={24}
-                width={24}
-                alt="Swap currencies"
-            />
+            <Show when={!props.loading || props.mode === "fiat"} fallback="…">
+                {props.fiat?.value !== "BTC" && props.mode === "sats" && "~"}
+                {props.mode === "sats" &&
+                    //adds only the symbol
+                    props.fiat?.hasSymbol}
+                {props.text}&nbsp;
+                <span class="text-base">
+                    {props.fiat ? props.fiat.value : i18n.t("common.sats")}
+                </span>
+                <img
+                    class={"pb-[4px] pl-[4px] hover:cursor-pointer"}
+                    src={currencySwap}
+                    height={24}
+                    width={24}
+                    alt="Swap currencies"
+                />
+            </Show>
         </h2>
     );
 }
 
-function toDisplayHandleNaN(input: string, _fiat: boolean): string {
+function toDisplayHandleNaN(input: string, fiat?: Currency): string {
     const parsed = Number(input);
 
     //handle decimals so the user can always see the accurate amount
     if (isNaN(parsed)) {
         return "0";
     } else if (parsed === Math.trunc(parsed) && input.endsWith(".")) {
-        return parsed.toLocaleString() + ".";
+        return (
+            parsed.toLocaleString(navigator.languages[0]) + decimalDigitDivider
+        );
+        /* To avoid having logic to handle every number up to 8 decimals 
+        any custom currency pair that has more than 3 decimals will always show all decimals*/
+    } else if (fiat?.maxFractionalDigits && fiat.maxFractionalDigits > 3) {
+        return parsed.toLocaleString(navigator.languages[0], {
+            minimumFractionDigits: parsed === 0 ? 0 : fiat.maxFractionalDigits,
+            maximumFractionDigits: fiat.maxFractionalDigits
+        });
     } else if (parsed === Math.trunc(parsed) && input.endsWith(".0")) {
-        return parsed.toFixed(1);
+        return parsed.toLocaleString(navigator.languages[0], {
+            minimumFractionDigits: 1
+        });
     } else if (parsed === Math.trunc(parsed) && input.endsWith(".00")) {
-        return parsed.toFixed(2);
+        return parsed.toLocaleString(navigator.languages[0], {
+            minimumFractionDigits: 2
+        });
+    } else if (parsed === Math.trunc(parsed) && input.endsWith(".000")) {
+        return parsed.toLocaleString(navigator.languages[0], {
+            minimumFractionDigits: 3
+        });
     } else if (
         parsed !== Math.trunc(parsed) &&
-        input.endsWith("0") &&
+        // matches strings that have 3 total digits after the decimal and ends with 0
+        input.match(/\.\d{2}0$/) &&
+        input.includes(".", input.length - 4)
+    ) {
+        return parsed.toLocaleString(navigator.languages[0], {
+            minimumFractionDigits: 3
+        });
+    } else if (
+        parsed !== Math.trunc(parsed) &&
+        // matches strings that have 2 total digits after the decimal and ends with 0
+        input.match(/\.\d{1}0$/) &&
         input.includes(".", input.length - 3)
     ) {
-        return parsed.toFixed(2);
+        return parsed.toLocaleString(navigator.languages[0], {
+            minimumFractionDigits: 2
+        });
     } else {
-        return parsed.toLocaleString();
+        return parsed.toLocaleString(navigator.languages[0], {
+            maximumFractionDigits: 3
+        });
     }
 }
 
@@ -187,12 +276,40 @@ export const AmountEditable: ParentComponent<{
         props.initialAmountSats || "0"
     );
     const [localFiat, setLocalFiat] = createSignal(
-        satsToUsd(
+        satsToFiat(
             state.price,
             parseInt(props.initialAmountSats || "0") || 0,
-            false
+            state.fiat
         )
     );
+
+    /** FixedAmounts allows for the user to choose 3 amount options approximately equal to ~$1, ~$10, ~$100
+     *  This is done by fetching the price and reducing it such that the amounts all end up around the same value
+     *
+     *  price = ~261,508.89
+     *  roundedPrice = "261508"
+     *  priceLength = 6
+     *
+     *  input - {@link multipler}: 1, 10, 100
+     *  fixedAmount - (10 ** (6 - 5)) * {@link multiplier}
+     *  result - 10, 100, 1000
+     */
+
+    const fixedAmount = (multiplier: number, label: boolean) => {
+        const roundedPrice = Math.round(state.price);
+        const priceLength = roundedPrice.toString().length;
+        //This returns a stringified number based on the price range of the chosen currency as compared to BTC
+        if (!label) {
+            return Number(10 ** (priceLength - 5) * multiplier).toString();
+            // Handle labels with a currency identifier inserted in front/back
+        } else {
+            return `${state.fiat?.hasSymbol ?? ""}${Number(
+                10 ** (priceLength - 5) * multiplier
+            ).toLocaleString(navigator.languages[0], {
+                maximumFractionDigits: state.fiat.maxFractionalDigits
+            })} ${!state.fiat?.hasSymbol ? state.fiat?.value : ""}`;
+        }
+    };
 
     const FIXED_AMOUNTS_SATS = [
         {
@@ -209,11 +326,28 @@ export const AmountEditable: ParentComponent<{
         }
     ];
 
-    const FIXED_AMOUNTS_USD = [
-        { label: "$1", amount: "1" },
-        { label: "$10", amount: "10" },
-        { label: "$100", amount: "100" }
-    ];
+    // Wait to set fiat amounts until we have a price when loading the page
+    let FIXED_AMOUNTS_FIAT;
+
+    createEffect(() => {
+        // set FIXED_AMOUNTS_FIAT once we have a price
+        if (state.price !== 0) {
+            FIXED_AMOUNTS_FIAT = [
+                {
+                    label: fixedAmount(1, true),
+                    amount: fixedAmount(1, false)
+                },
+                {
+                    label: fixedAmount(10, true),
+                    amount: fixedAmount(10, false)
+                },
+                {
+                    label: fixedAmount(100, true),
+                    amount: fixedAmount(100, false)
+                }
+            ];
+        }
+    });
 
     const CHARACTERS = [
         "1",
@@ -225,13 +359,14 @@ export const AmountEditable: ParentComponent<{
         "7",
         "8",
         "9",
-        ".",
+        decimalDigitDivider,
         "0",
         i18n.t("receive.amount_editable.del")
     ];
 
-    const displaySats = () => toDisplayHandleNaN(localSats(), false);
-    const displayFiat = () => `$${toDisplayHandleNaN(localFiat(), true)}`;
+    const displaySats = () => toDisplayHandleNaN(localSats());
+    const displayFiat = () =>
+        state.price !== 0 ? toDisplayHandleNaN(localFiat(), state.fiat) : "…";
 
     let satsInputRef!: HTMLInputElement;
     let fiatInputRef!: HTMLInputElement;
@@ -293,11 +428,33 @@ export const AmountEditable: ParentComponent<{
         }
     };
 
-    function handleCharacterInput(character: string) {
+    /** Handling character inputs gives our virtual keyboard full functionality to add and remove digits in a UX friendly way
+     *  When the input is dealing with sats there is no allowed decimals
+     *
+     *  Special logic is required for BTC as we want to start from the 8th decimal
+     *  if state.fiat.value === "BTC"
+     *  input - 000123
+     *  result - 0.00000123
+     *
+     *  input - 11"DEL"11
+     *  result - 0.00000111
+     *
+     *  for other currencies the inputSanitizer seeks to limit the maximum decimal digits
+     *
+     *  if state.fiat.value === "KWD"
+     *  input - 123.456666
+     *  result - 123456.666
+     */
+
+    function handleCharacterInput(characterInput: string) {
         const isFiatMode = mode() === "fiat";
-        const inputSanitizer = isFiatMode
-            ? fiatInputSanitizer
-            : satsInputSanitizer;
+        const character = characterInput === "," ? "." : characterInput;
+        let inputSanitizer;
+        if (isFiatMode) {
+            inputSanitizer = fiatInputSanitizer;
+        } else {
+            inputSanitizer = satsInputSanitizer;
+        }
         const localValue = isFiatMode ? localFiat : localSats;
 
         let sane;
@@ -306,27 +463,57 @@ export const AmountEditable: ParentComponent<{
             character === "DEL" ||
             character === i18n.t("receive.amount_editable.del")
         ) {
-            if (localValue().length <= 1) {
+            if (
+                localValue().length === 1 ||
+                (state.fiat.maxFractionalDigits === 0 &&
+                    localValue().startsWith("0"))
+            ) {
                 sane = "0";
+            } else if (
+                state.fiat.value === "BTC" &&
+                isFiatMode &&
+                localValue() !== "0"
+            ) {
+                // This allows us to handle the backspace key and fight float rounding
+                sane = inputSanitizer(
+                    btcFloatRounding(localValue()),
+                    state.fiat.maxFractionalDigits
+                );
             } else {
-                sane = inputSanitizer(localValue().slice(0, -1));
+                sane = inputSanitizer(
+                    localValue().slice(0, -1),
+                    state.fiat.maxFractionalDigits
+                );
             }
         } else {
-            if (localValue() === "0") {
-                sane = inputSanitizer(character);
+            if (localValue() === "0" && state.fiat.value !== "BTC") {
+                sane = inputSanitizer(
+                    character,
+                    state.fiat.maxFractionalDigits
+                );
+            } else if (state.fiat.value === "BTC" && isFiatMode) {
+                sane = inputSanitizer(
+                    Number(localValue()).toFixed(8) + character,
+                    state.fiat.maxFractionalDigits
+                );
             } else {
-                sane = inputSanitizer(localValue() + character);
+                sane = inputSanitizer(
+                    localValue() + character,
+                    state.fiat.maxFractionalDigits
+                );
             }
         }
 
         if (isFiatMode) {
             setLocalFiat(sane);
             setLocalSats(
-                usdToSats(state.price, parseFloat(sane || "0") || 0, false)
+                fiatToSats(state.price, parseFloat(sane || "0") || 0, false)
             );
         } else {
             setLocalSats(sane);
-            setLocalFiat(satsToUsd(state.price, Number(sane) || 0, false));
+            setLocalFiat(
+                satsToFiat(state.price, Number(sane) || 0, state.fiat)
+            );
         }
 
         // After a button press make sure we re-focus the input
@@ -338,10 +525,10 @@ export const AmountEditable: ParentComponent<{
 
         if (isFiatMode) {
             setLocalFiat("0");
-            setLocalSats(usdToSats(state.price, parseFloat("0") || 0, false));
+            setLocalSats(fiatToSats(state.price, parseFloat("0") || 0, false));
         } else {
             setLocalSats("0");
-            setLocalFiat(satsToUsd(state.price, Number("0") || 0, false));
+            setLocalFiat(satsToFiat(state.price, Number("0") || 0, state.fiat));
         }
 
         // After a button press make sure we re-focus the input
@@ -352,11 +539,13 @@ export const AmountEditable: ParentComponent<{
         if (mode() === "fiat") {
             setLocalFiat(amount);
             setLocalSats(
-                usdToSats(state.price, parseFloat(amount || "0") || 0, false)
+                fiatToSats(state.price, parseFloat(amount || "0") || 0, false)
             );
         } else {
             setLocalSats(amount);
-            setLocalFiat(satsToUsd(state.price, Number(amount) || 0, false));
+            setLocalFiat(
+                satsToFiat(state.price, Number(amount) || 0, state.fiat)
+            );
         }
     }
 
@@ -365,10 +554,10 @@ export const AmountEditable: ParentComponent<{
         setIsOpen(false);
         setLocalSats(props.initialAmountSats);
         setLocalFiat(
-            satsToUsd(
+            satsToFiat(
                 state.price,
                 parseInt(props.initialAmountSats || "0") || 0,
-                false
+                state.fiat
             )
         );
         props.exitRoute && navigate(props.exitRoute);
@@ -378,7 +567,9 @@ export const AmountEditable: ParentComponent<{
     function handleSubmit(e: SubmitEvent | MouseEvent) {
         e.preventDefault();
         props.setAmountSats(BigInt(localSats()));
-        setLocalFiat(satsToUsd(state.price, Number(localSats()) || 0, false));
+        setLocalFiat(
+            satsToFiat(state.price, Number(localSats()) || 0, state.fiat)
+        );
         setIsOpen(false);
     }
 
@@ -386,20 +577,55 @@ export const AmountEditable: ParentComponent<{
         const { value } = e.target as HTMLInputElement;
         const sane = satsInputSanitizer(value);
         setLocalSats(sane);
-        setLocalFiat(satsToUsd(state.price, Number(sane) || 0, false));
+        setLocalFiat(satsToFiat(state.price, Number(sane) || 0, state.fiat));
     }
 
     function handleFiatInput(e: InputEvent) {
-        const { value } = e.target as HTMLInputElement;
-        const sane = fiatInputSanitizer(value);
+        const { value } = e.currentTarget as HTMLInputElement;
+        let sane;
+
+        /** This behaves the same as handleCharacterInput but allows for the keyboard to be used instead of the virtual keypad
+         *
+         *  if state.fiat.value === "BTC"
+         *  tracking e.data is required as the string is not created from just normal sequencing numbers
+         *  input - 12345
+         *  result - 0.00012345
+         *
+         *  if state.fiat.value !== "BTC"
+         *  Otherwise we need to account for the user inputting decimals
+         *  input - 123,45
+         *  result - 123.45
+         */
+
+        if (state.fiat.value === "BTC") {
+            if (e.data !== null) {
+                sane = fiatInputSanitizer(
+                    Number(localFiat()).toFixed(8) + e.data,
+                    state.fiat.maxFractionalDigits
+                );
+            } else {
+                sane = fiatInputSanitizer(
+                    // This allows us to handle the backspace key and fight float rounding
+                    btcFloatRounding(localFiat()),
+                    state.fiat.maxFractionalDigits
+                );
+            }
+        } else {
+            sane = fiatInputSanitizer(
+                value.replace(",", "."),
+                state.fiat.maxFractionalDigits
+            );
+        }
         setLocalFiat(sane);
         setLocalSats(
-            usdToSats(state.price, parseFloat(sane || "0") || 0, false)
+            fiatToSats(state.price, parseFloat(sane || "0") || 0, false)
         );
     }
 
-    function toggle() {
-        setMode((m) => (m === "sats" ? "fiat" : "sats"));
+    function toggle(disabled: boolean) {
+        if (!disabled) {
+            setMode((m) => (m === "sats" ? "fiat" : "sats"));
+        }
         focus();
     }
 
@@ -428,7 +654,7 @@ export const AmountEditable: ParentComponent<{
         ) {
             return (
                 Number(props.maxAmountSats) - Number(props.fee)
-            ).toLocaleString();
+            ).toLocaleString(navigator.languages[0]);
         } else {
             return localSats();
         }
@@ -496,7 +722,7 @@ export const AmountEditable: ParentComponent<{
                             <div class="flex justify-center">
                                 <div
                                     class="flex w-max flex-col items-center justify-center gap-4 p-4"
-                                    onClick={toggle}
+                                    onClick={() => toggle(state.price === 0)}
                                 >
                                     <BigScalingText
                                         text={
@@ -504,7 +730,13 @@ export const AmountEditable: ParentComponent<{
                                                 ? displayFiat()
                                                 : displaySats()
                                         }
-                                        fiat={mode() === "fiat"}
+                                        fiat={
+                                            mode() === "fiat"
+                                                ? state.fiat
+                                                : undefined
+                                        }
+                                        mode={mode()}
+                                        loading={state.price === 0}
                                     />
                                     <SmallSubtleAmount
                                         text={
@@ -512,7 +744,13 @@ export const AmountEditable: ParentComponent<{
                                                 ? displayFiat()
                                                 : displaySats()
                                         }
-                                        fiat={mode() !== "fiat"}
+                                        fiat={
+                                            mode() !== "fiat"
+                                                ? state.fiat
+                                                : undefined
+                                        }
+                                        mode={mode()}
+                                        loading={state.price === 0}
                                     />
                                 </div>
                             </div>
@@ -534,7 +772,7 @@ export const AmountEditable: ParentComponent<{
                                 <For
                                     each={
                                         mode() === "fiat"
-                                            ? FIXED_AMOUNTS_USD
+                                            ? FIXED_AMOUNTS_FIAT
                                             : FIXED_AMOUNTS_SATS
                                     }
                                 >
@@ -550,7 +788,11 @@ export const AmountEditable: ParentComponent<{
                                         </button>
                                     )}
                                 </For>
-                                <Show when={props.maxAmountSats}>
+                                <Show
+                                    when={
+                                        mode() === "sats" && props.maxAmountSats
+                                    }
+                                >
                                     <button
                                         onClick={() => {
                                             setFixedAmount(
@@ -568,7 +810,11 @@ export const AmountEditable: ParentComponent<{
                                 <For each={CHARACTERS}>
                                     {(character) => (
                                         <SingleDigitButton
-                                            fiat={mode() === "fiat"}
+                                            fiat={
+                                                mode() === "fiat"
+                                                    ? state.fiat
+                                                    : undefined
+                                            }
                                             character={character}
                                             onClick={handleCharacterInput}
                                             onClear={handleClear}
