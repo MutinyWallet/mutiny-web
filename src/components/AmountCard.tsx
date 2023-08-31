@@ -3,7 +3,7 @@ import { createMemo, Match, ParentComponent, Show, Switch } from "solid-js";
 import { AmountEditable, Card, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { satsToUsd } from "~/utils";
+import { satsToFormattedFiat } from "~/utils";
 
 const noop = () => {
     // do nothing
@@ -24,7 +24,6 @@ const KeyValue: ParentComponent<{ key: string; gray?: boolean }> = (props) => {
 export const InlineAmount: ParentComponent<{
     amount: string;
     sign?: string;
-    fiat?: boolean;
 }> = (props) => {
     const i18n = useI18n();
     const prettyPrint = createMemo(() => {
@@ -32,34 +31,34 @@ export const InlineAmount: ParentComponent<{
         if (isNaN(parsed)) {
             return props.amount;
         } else {
-            return parsed.toLocaleString();
+            return parsed.toLocaleString(navigator.languages[0]);
         }
     });
 
     return (
         <div class="inline-block text-lg">
             {props.sign ? `${props.sign} ` : ""}
-            {props.fiat ? "$" : ""}
-            {prettyPrint()}{" "}
-            <span class="text-sm">
-                {props.fiat ? i18n.t("common.usd") : i18n.t("common.sats")}
-            </span>
+            {prettyPrint()} <span class="text-sm">{i18n.t("common.sats")}</span>
         </div>
     );
 };
 
 function USDShower(props: { amountSats: string; fee?: string }) {
-    const i18n = useI18n();
     const [state, _] = useMegaStore();
-    const amountInUsd = () =>
-        satsToUsd(state.price, add(props.amountSats, props.fee), true);
+    const amountInFiat = () =>
+        (state.fiat.value === "BTC" ? "" : "~") +
+        satsToFormattedFiat(
+            state.price,
+            add(props.amountSats, props.fee),
+            state.fiat
+        );
 
     return (
         <Show when={!(props.amountSats === "0")}>
             <KeyValue gray key="">
                 <div class="self-end">
-                    ~{amountInUsd()}&nbsp;
-                    <span class="text-sm">{i18n.t("common.usd")}</span>
+                    {amountInFiat()}&nbsp;
+                    <span class="text-sm">{state.fiat.value}</span>
                 </div>
             </KeyValue>
         </Show>

@@ -6,6 +6,7 @@ export * from "./Linkify";
 export * from "./Misc";
 export * from "./ProgressBar";
 export * from "./Radio";
+export * from "./SelectField";
 export * from "./TextField";
 export * from "./ExternalLink";
 export * from "./LoadingSpinner";

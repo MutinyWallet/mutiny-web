@@ -9,6 +9,7 @@ export * from "./AmountEditable";
 export * from "./App";
 export * from "./BalanceBox";
 export * from "./BetaWarningModal";
+export * from "./ChooseCurrency";
 export * from "./ContactEditor";
 export * from "./ContactForm";
 export * from "./ContactViewer";

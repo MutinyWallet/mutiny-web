@@ -5,7 +5,6 @@ export default {
         home: "Home",
         sats: "SATS",
         sat: "SAT",
-        usd: "USD",
         fee: "Fee",
         send: "Send",
         receive: "Receive",
@@ -185,10 +184,10 @@ export default {
     settings: {
         header: "Settings",
         support: "Learn how to support Mutiny",
-        general: "GENERAL",
         beta_features: "BETA FEATURES",
         debug_tools: "DEBUG TOOLS",
         danger_zone: "Danger zone",
+        general: "General",
         admin: {
             title: "Admin Page",
             caption: "Our internal debug tools. Use wisely!",
@@ -344,6 +343,17 @@ export default {
             decrypt_wallet: "Decrypt Wallet",
             forgot_password_link: "Forgot Password?",
             error_wrong_password: "Invalid Password"
+        },
+        currency: {
+            title: "Currency",
+            caption: "Choose your preferred currency pair",
+            select_currency: "Select Currency",
+            select_currency_label: "Currency Pair",
+            select_currency_caption:
+                "Choosing a new currency will resync the wallet to fetch a price update",
+            request_currency_support_link:
+                "Request support for more currencies",
+            error_unsupported_currency: "Please Select a supported currency."
         },
         lnurl_auth: {
             title: "LNURL Auth",

@@ -82,6 +82,11 @@ export default function Settings() {
                         header={i18n.t("settings.general")}
                         links={[
                             {
+                                href: "/settings/currency",
+                                text: i18n.t("settings.currency.title"),
+                                caption: i18n.t("settings.currency.caption")
+                            },
+                            {
                                 href: "/settings/channels",
                                 text: i18n.t("settings.channels.title")
                             },

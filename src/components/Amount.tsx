@@ -4,13 +4,13 @@ import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { satsToUsd } from "~/utils";
+import { satsToFormattedFiat } from "~/utils";
 
 function prettyPrintAmount(n?: number | bigint): string {
     if (!n || n.valueOf() === 0) {
         return "0";
     }
-    return n.toLocaleString();
+    return n.toLocaleString(navigator.languages[0]);
 }
 
 export function AmountSats(props: {
@@ -35,7 +35,7 @@ export function AmountSats(props: {
                 <Show when={props.icon === "minus"}>
                     <span>-</span>
                 </Show>
-                {props.loading ? "..." : prettyPrintAmount(props.amountSats)}
+                {props.loading ? "…" : prettyPrintAmount(props.amountSats)}
                 &nbsp;
                 <span
                     class="text-base font-light"
@@ -72,15 +72,19 @@ export function AmountFiat(props: {
     loading?: boolean;
     denominationSize?: "sm" | "lg" | "xl";
 }) {
-    const i18n = useI18n();
     const [state, _] = useMegaStore();
 
-    const amountInUsd = () =>
-        satsToUsd(state.price, Number(props.amountSats) || 0, true);
+    const amountInFiat = () =>
+        (state.fiat.value === "BTC" ? "" : "~") +
+        satsToFormattedFiat(
+            state.price,
+            Number(props.amountSats) || 0,
+            state.fiat
+        );
 
     return (
         <h2 class="font-light">
-            ~{props.loading ? "..." : amountInUsd()}
+            {props.loading ? "…" : amountInFiat()}
             <span
                 classList={{
                     "text-sm": props.denominationSize === "sm",
@@ -88,7 +92,8 @@ export function AmountFiat(props: {
                     "text-xl": props.denominationSize === "xl"
                 }}
             >
-                &nbsp;{i18n.t("common.usd")}
+                &nbsp;
+                {props.loading ? "" : state.fiat.value}
             </span>
         </h2>
     );
