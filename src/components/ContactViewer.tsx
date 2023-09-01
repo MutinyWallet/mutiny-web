@@ -1,17 +1,18 @@
 import { Dialog } from "@kobalte/core";
 import { SubmitHandler } from "@modular-forms/solid";
 import { Contact } from "@mutinywallet/mutiny-wasm";
-import { createSignal, Match, Switch } from "solid-js";
+import { createSignal, Match, Show, Switch } from "solid-js";
 import { useNavigate } from "solid-start";
 
 import close from "~/assets/icons/close.svg";
 import {
     Button,
-    Card,
     ContactForm,
-    NiceP,
+    KeyValue,
+    MiniStringShower,
     showToast,
-    SmallHeader
+    SmallHeader,
+    VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { toParsedParams } from "~/logic/waila";
@@ -150,16 +151,41 @@ export function ContactViewer(props: {
                                         <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
                                             {props.contact.name}
                                         </h1>
-                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
-                                            {props.contact.npub}
-                                        </h1>
-                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
-                                            {props.contact.ln_address}
-                                        </h1>
-                                        <h1 class="mb-4 mt-2 text-2xl font-semibold uppercase">
-                                            {props.contact.lnurl}
-                                        </h1>
-                                        <Card
+
+                                        <div class="flex flex-1 flex-col justify-center">
+                                            <VStack>
+                                                <Show when={props.contact.npub}>
+                                                    <KeyValue key={"Npub"}>
+                                                        <MiniStringShower
+                                                            text={
+                                                                props.contact
+                                                                    .npub!
+                                                            }
+                                                        />
+                                                    </KeyValue>
+                                                </Show>
+                                                <Show
+                                                    when={
+                                                        props.contact.ln_address
+                                                    }
+                                                >
+                                                    <KeyValue
+                                                        key={
+                                                            "Lightning Address"
+                                                        }
+                                                    >
+                                                        <MiniStringShower
+                                                            text={
+                                                                props.contact
+                                                                    .ln_address!
+                                                            }
+                                                        />
+                                                    </KeyValue>
+                                                </Show>
+                                            </VStack>
+                                        </div>
+                                        {/* TODO: show payment history for a contact */}
+                                        {/* <Card
                                             title={i18n.t(
                                                 "contacts.payment_history"
                                             )}
@@ -170,10 +196,11 @@ export function ContactViewer(props: {
                                                     {props.contact.name}
                                                 </span>
                                             </NiceP>
-                                        </Card>
+                                        </Card> */}
                                     </div>
 
-                                    <div class="flex w-full gap-2">
+                                    {/* TODO: implement contact editing */}
+                                    {/* <div class="flex w-full gap-2">
                                         <Button
                                             layout="flex"
                                             intent="green"
@@ -181,6 +208,10 @@ export function ContactViewer(props: {
                                         >
                                             {i18n.t("contacts.edit")}
                                         </Button>
+
+                                    </div> */}
+
+                                    <div class="flex w-full">
                                         <Button
                                             intent="blue"
                                             disabled={
