@@ -245,11 +245,14 @@ export default {
             title: "Lightning Channels",
             outbound: "Outbound",
             inbound: "Inbound",
+            reserve: "Reserve",
             have_channels: "You have",
             have_channels_one: "lightning channel.",
             have_channels_many: "lightning channels.",
             inbound_outbound_tip:
                 "Outbound is the amount of money you can spend on lightning. Inbound is the amount you can receive without incurring a lightning service fee.",
+            reserve_tip:
+                "About 1% of your channel balance is reserved on lightning for fees.",
             no_channels:
                 "It looks like you don't have any channels yet. To get started, receive some sats over lightning, or swap some on-chain funds into a channel. Get your hands dirty!"
         },

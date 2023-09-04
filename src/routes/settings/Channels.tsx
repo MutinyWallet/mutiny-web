@@ -17,7 +17,11 @@ import {
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-function BalanceBar(props: { inbound: number; outbound: number }) {
+function BalanceBar(props: {
+    inbound: number;
+    reserve: number;
+    outbound: number;
+}) {
     const i18n = useI18n();
     return (
         <VStack smallgap>
@@ -25,6 +29,7 @@ function BalanceBar(props: { inbound: number; outbound: number }) {
                 <SmallHeader>
                     {i18n.t("settings.channels.outbound")}
                 </SmallHeader>
+                <SmallHeader>{i18n.t("settings.channels.reserve")}</SmallHeader>
                 <SmallHeader>{i18n.t("settings.channels.inbound")}</SmallHeader>
             </div>
             <div class="flex w-full gap-1">
@@ -35,6 +40,14 @@ function BalanceBar(props: { inbound: number; outbound: number }) {
                     }}
                 >
                     <AmountSmall amountSats={props.outbound} />
+                </div>
+                <div
+                    class="min-w-fit bg-m-grey-400 p-2"
+                    style={{
+                        "flex-grow": props.reserve
+                    }}
+                >
+                    <AmountSmall amountSats={props.reserve} />
                 </div>
                 <div
                     class="min-w-fit rounded-r-xl bg-m-blue p-2"
@@ -57,18 +70,20 @@ export function LiquidityMonitor() {
         try {
             const channels = await state.mutiny_wallet?.list_channels();
             let inbound = 0n;
+            let reserve = 0n;
 
             for (const channel of channels) {
                 inbound =
                     inbound +
                     BigInt(channel.size) -
                     BigInt(channel.balance + channel.reserve);
+                reserve = reserve + BigInt(channel.reserve);
             }
 
-            return { inbound, channelCount: channels?.length };
+            return { inbound, reserve, channelCount: channels?.length };
         } catch (e) {
             console.error(e);
-            return { inbound: 0, channelCount: 0 };
+            return { inbound: 0, reserve: 0, channelCount: 0 };
         }
     });
 
@@ -85,10 +100,14 @@ export function LiquidityMonitor() {
                     </NiceP>{" "}
                     <BalanceBar
                         inbound={Number(channelInfo()?.inbound) || 0}
+                        reserve={Number(channelInfo()?.reserve) || 0}
                         outbound={Number(state.balance?.lightning) || 0}
                     />
                     <TinyText>
                         {i18n.t("settings.channels.inbound_outbound_tip")}
+                    </TinyText>
+                    <TinyText>
+                        {i18n.t("settings.channels.reserve_tip")}
                     </TinyText>
                 </Card>
             </Match>
