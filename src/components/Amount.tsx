@@ -27,15 +27,14 @@ export function AmountSats(props: {
             <Show when={props.icon === "chain"}>
                 <img src={chain} alt="chain" class="h-[18px]" />
             </Show>
-            <h1 class="text-right font-light">
+            <h1 class="whitespace-nowrap text-right font-light">
                 <Show when={props.icon === "plus"}>
                     <span>+</span>
                 </Show>
                 <Show when={props.icon === "minus"}>
                     <span>-</span>
                 </Show>
-                {prettyPrintAmount(props.amountSats)}
-                &nbsp;
+                {`${prettyPrintAmount(props.amountSats)} `}
                 <span
                     class="text-base font-light"
                     classList={{
@@ -81,7 +80,7 @@ export function AmountFiat(props: {
         );
 
     return (
-        <h2 class="font-light">
+        <h2 class="whitespace-nowrap font-light">
             {amountInFiat()}
             <span
                 classList={{
@@ -90,8 +89,7 @@ export function AmountFiat(props: {
                     "text-xl": props.denominationSize === "xl"
                 }}
             >
-                &nbsp;
-                {state.fiat.value}
+                {`${state.fiat.value} `}
             </span>
         </h2>
     );
@@ -102,8 +100,8 @@ export function AmountSmall(props: {
 }) {
     const i18n = useI18n();
     return (
-        <span class="text-sm font-light md:text-base">
-            {prettyPrintAmount(props.amountSats)}&nbsp;
+        <span class="whitespace-nowrap text-sm font-light md:text-base">
+            {`${prettyPrintAmount(props.amountSats)} `}
             <span class="text-xs md:text-sm">
                 {props.amountSats === 1 || props.amountSats === 1n
                     ? i18n.t("common.sat")

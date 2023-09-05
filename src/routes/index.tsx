@@ -32,7 +32,7 @@ export default function App() {
         <SafeArea>
             <DefaultMain>
                 <LoadingIndicator />
-                <header class="mb-2 mt-4 flex w-full items-center justify-between">
+                <header class="mb-2 flex w-full items-center justify-between">
                     <div class="flex items-center gap-2">
                         <Logo />
                         <Show
@@ -93,7 +93,7 @@ export default function App() {
                         </Suspense>
                     </VStack>
                 </Card>
-                <div class="mt-4 self-center">
+                <div class="flex-shrink-0 self-center pb-8 pt-4">
                     <FeedbackLink />
                 </div>
             </DefaultMain>

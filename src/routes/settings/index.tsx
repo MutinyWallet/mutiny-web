@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import { For, Show } from "solid-js";
 import { A } from "solid-start";
 
@@ -77,13 +78,15 @@ export default function Settings() {
     // days are 1 indexed, months are 0 indexed
     const isChristmas = today.getDate() === 25 && today.getMonth() === 11;
 
+    const ios = Capacitor.getPlatform() === "ios";
+
     return (
         <SafeArea>
             <DefaultMain>
                 <BackLink />
                 <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
                 <VStack biggap>
-                    <Show when={!selfHosted}>
+                    <Show when={!selfHosted && !ios}>
                         <MutinyPlusCta />
                     </Show>
                     <SettingsLinkList
@@ -174,17 +177,17 @@ export default function Settings() {
                             }
                         ]}
                     />
+                    <div class="flex justify-center pb-8">
+                        <TinyText>
+                            {i18n.t("settings.version")} {RELEASE_VERSION}{" "}
+                            <ExternalLink
+                                href={`https://github.com/MutinyWallet/mutiny-web/commits/${COMMIT_HASH}`}
+                            >
+                                {COMMIT_HASH}
+                            </ExternalLink>
+                        </TinyText>
+                    </div>
                 </VStack>
-                <div class="flex justify-center">
-                    <TinyText>
-                        {i18n.t("settings.version")} {RELEASE_VERSION}{" "}
-                        <ExternalLink
-                            href={`https://github.com/MutinyWallet/mutiny-web/commits/${COMMIT_HASH}`}
-                        >
-                            {COMMIT_HASH}
-                        </ExternalLink>
-                    </TinyText>
-                </div>
             </DefaultMain>
             <NavBar activeTab="settings" />
         </SafeArea>

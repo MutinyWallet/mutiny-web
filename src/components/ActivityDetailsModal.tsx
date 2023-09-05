@@ -63,7 +63,7 @@ export const OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm";
 export const DIALOG_POSITIONER =
     "fixed inset-0 z-50 flex items-center justify-center";
 export const DIALOG_CONTENT =
-    "max-w-[500px] w-[90vw] max-h-[100dvh] overflow-y-scroll disable-scrollbars bg-neutral-900/80 backdrop-blur-md shadow-xl rounded-xl border border-white/10";
+    "max-w-[500px] w-[90vw] max-h-device overflow-y-scroll disable-scrollbars bg-neutral-900/80 backdrop-blur-md shadow-xl rounded-xl border border-white/10";
 
 function LightningHeader(props: { info: MutinyInvoice }) {
     const i18n = useI18n();
@@ -385,8 +385,7 @@ function OnchainDetails(props: {
                                     <span class="truncate">
                                         {props.info.txid}
                                     </span>
-                                    <span class="-ml-5">
-                                        &nbsp;&nbsp;
+                                    <span>
                                         {props.info.txid.length > 32
                                             ? props.info.txid.slice(-8)
                                             : ""}

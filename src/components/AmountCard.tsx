@@ -58,8 +58,8 @@ function USDShower(props: { amountSats: string; fee?: string }) {
     return (
         <Show when={!(props.amountSats === "0")}>
             <AmountKeyValue gray key="">
-                <div class="self-end">
-                    {amountInFiat()}&nbsp;
+                <div class="self-end whitespace-nowrap">
+                    {`${amountInFiat()} `}
                     <span class="text-sm">{state.fiat.value}</span>
                 </div>
             </AmountKeyValue>
