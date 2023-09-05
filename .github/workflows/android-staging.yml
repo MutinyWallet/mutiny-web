@@ -105,8 +105,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: ${{ format('build-{0}', github.run_number) }}
-          release_name: Prerelease ${{ format('build-{0}', github.run_number) }}
-          body: Signet preleases based on every push to master.
+          release_name: Prerelease test ${{ format('build-{0}', github.run_number) }}
+          body: Signet prelease test builds based on every push to master.
           draft: false
           prerelease: true
 
