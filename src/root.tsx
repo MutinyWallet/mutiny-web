@@ -13,9 +13,20 @@ import {
 
 import "./root.css";
 
+import { Capacitor } from "@capacitor/core";
+import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { ErrorDisplay, I18nProvider } from "~/components";
 import { Router } from "~/router";
 import { Provider as MegaStoreProvider } from "~/state/megaStore";
+
+const setStatusBarStyleDark = async () => {
+    await StatusBar.setStyle({ style: Style.Dark });
+};
+
+if (Capacitor.isNativePlatform()) {
+    await setStatusBarStyleDark();
+}
 
 export default function Root() {
     return (

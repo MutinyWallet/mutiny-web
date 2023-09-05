@@ -34,6 +34,7 @@ export function SuccessModal(props: SuccessModalProps) {
                                     `${i18n.t("common.nice")}`}
                             </Button>
                         </div>
+                        <div class="py-2" />
                     </Dialog.Content>
                 </div>
             </Dialog.Portal>

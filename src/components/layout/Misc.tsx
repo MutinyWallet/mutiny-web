@@ -120,7 +120,7 @@ export const Collapser: ParentComponent<{
 
 export const SafeArea: ParentComponent = (props) => {
     return (
-        <div class="h-[100dvh] safe-left safe-right">
+        <div class="safe-left safe-right h-device">
             {/* <div class="flex-1 disable-scrollbars overflow-y-scroll md:pl-[8rem] md:pr-[6rem]"> */}
             {props.children}
             {/* </div> */}
@@ -133,7 +133,7 @@ export const DefaultMain: ParentComponent = (props) => {
         <main class="mx-auto flex h-full w-full max-w-[600px] flex-col gap-4 p-4">
             {props.children}
             {/* CSS is hard sometimes */}
-            <div class="py-4" />
+            <div class="py-1" />
         </main>
     );
 };
@@ -147,7 +147,7 @@ export const FullscreenLoader = () => {
     }, 10000);
 
     return (
-        <div class="flex h-[100dvh] w-full flex-col items-center justify-center gap-4">
+        <div class="flex w-full flex-col items-center justify-center gap-4 h-device">
             <LoadingSpinner wide />
             <Show when={waitedTooLong()}>
                 <p class="max-w-[20rem] text-neutral-400">
@@ -343,7 +343,7 @@ export const SIMPLE_OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-lg";
 export const SIMPLE_DIALOG_POSITIONER =
     "fixed inset-0 z-50 flex items-center justify-center";
 export const SIMPLE_DIALOG_CONTENT =
-    "max-w-[500px] w-[90vw] max-h-[100dvh] overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/90 rounded-xl border border-white/10";
+    "max-w-[500px] w-[90vw] max-h-device overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/90 rounded-xl border border-white/10";
 
 export const SimpleDialog: ParentComponent<{
     title: string;

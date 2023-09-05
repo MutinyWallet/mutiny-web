@@ -1,3 +1,5 @@
+/* @refresh reload */
+
 import {
     Contact,
     MutinyBip21RawMaterials,
@@ -463,7 +465,7 @@ export default function Receive() {
                             {/* Only show method chooser when we have an invoice */}
                             <Show when={bip21Raw()?.invoice}>
                                 <button
-                                    class="mx-auto flex items-center gap-2 p-2 font-bold text-m-grey-400"
+                                    class="mx-auto flex items-center gap-2 pb-8 font-bold text-m-grey-400"
                                     onClick={() => setMethodChooserOpen(true)}
                                 >
                                     <span>

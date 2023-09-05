@@ -10,6 +10,12 @@ body {
 html {
     @apply h-[100dvh];
     @apply bg-neutral-900;
+    --ion-safe-area-top: env(safe-area-inset-top);
+    overscroll-behavior-y: none;
+}
+
+@media (prefers-color-scheme: light) {
+    /* we don't support this but I want the browser to know I care */
 }
 
 @media (prefers-color-scheme: light) {
