@@ -1,7 +1,6 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
 import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { ExternalLink } from "@mutinywallet/ui";
 import {
     createEffect,
     createMemo,
@@ -25,6 +24,7 @@ import {
     ButtonLink,
     Card,
     DefaultMain,
+    ExternalLink,
     Fee,
     HStack,
     InfoBox,

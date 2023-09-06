@@ -1,5 +1,4 @@
 import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
-import { LoadingSpinner } from "@mutinywallet/ui";
 import {
     createEffect,
     createMemo,
@@ -24,6 +23,7 @@ import {
     CENTER_COLUMN,
     DefaultMain,
     LargeHeader,
+    LoadingSpinner,
     MISSING_LABEL,
     MutinyWalletGuard,
     NavBar,

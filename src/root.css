@@ -17,11 +17,11 @@ html {
 }
 
 .bg-gradient {
-    @apply bg-fixed bg-no-repeat bg-gradient-to-b from-black to-[#0b215b];
+    @apply bg-gradient-to-b from-black to-[#0b215b] bg-fixed bg-no-repeat;
 }
 
 .bg-gray {
-    @apply bg-fixed bg-no-repeat bg-gradient-to-b from-[hsl(224,5%,5%)] to-[hsl(224,5%,20%)];
+    @apply bg-gradient-to-b from-[hsl(224,5%,5%)] to-[hsl(224,5%,20%)] bg-fixed bg-no-repeat;
 }
 
 .react-modal-sheet-container {
@@ -60,8 +60,8 @@ p:not(:last-child) {
 select {
     @apply appearance-none;
     @apply block;
-    @apply border-[2px] focus:outline-none focus:ring-2 focus:ring-offset-2 ring-offset-black;
-    @apply font-light text-lg;
+    @apply border-[2px] ring-offset-black focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply text-lg font-light;
     @apply py-4 pl-4 pr-8;
     background-image: url("data:image/svg+xml,%3Csvg aria-hidden='true' class='w-4 h-4 ml-1' fill='white' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
     background-position: right 0.75rem center;
@@ -71,14 +71,4 @@ select {
 
 strong {
     @apply font-semibold text-m-red;
-}
-
-.slide-fade-enter-active,
-.slide-fade-exit-active {
-  transition: all 0.3s ease;
-}
-.slide-fade-enter,
-.slide-fade-exit-to {
-  transform: translateX(10px);
-  opacity: 0;
 }

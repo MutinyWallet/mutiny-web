@@ -7,3 +7,5 @@ export * from "./Misc";
 export * from "./ProgressBar";
 export * from "./Radio";
 export * from "./TextField";
+export * from "./ExternalLink";
+export * from "./LoadingSpinner";

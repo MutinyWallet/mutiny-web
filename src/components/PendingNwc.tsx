@@ -1,5 +1,4 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
-import { LoadingSpinner } from "@mutinywallet/ui";
 import {
     createEffect,
     createResource,
@@ -14,7 +13,13 @@ import { A } from "solid-start";
 import bolt from "~/assets/icons/bolt.svg";
 import greenCheck from "~/assets/icons/green-check.svg";
 import redClose from "~/assets/icons/red-close.svg";
-import { ActivityAmount, Card, InfoBox, VStack } from "~/components";
+import {
+    ActivityAmount,
+    Card,
+    InfoBox,
+    LoadingSpinner,
+    VStack
+} from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { createDeepSignal, eify, formatExpiration } from "~/utils";

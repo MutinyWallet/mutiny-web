@@ -14,8 +14,7 @@ import {
     useNavigate
 } from "solid-start";
 
-// eslint-disable-next-line
-import "@mutinywallet/ui/style.css";
+import "./root.css";
 
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";

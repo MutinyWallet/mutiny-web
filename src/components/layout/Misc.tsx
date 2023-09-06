@@ -4,7 +4,6 @@ import {
     Checkbox as KCheckbox,
     Separator
 } from "@kobalte/core";
-import { LoadingSpinner } from "@mutinywallet/ui";
 import {
     createResource,
     createSignal,
@@ -20,7 +19,7 @@ import { A } from "solid-start";
 import check from "~/assets/icons/check.svg";
 import close from "~/assets/icons/close.svg";
 import down from "~/assets/icons/down.svg";
-import { DecryptDialog, LoadingIndicator } from "~/components";
+import { DecryptDialog, LoadingIndicator, LoadingSpinner } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { generateGradient, MutinyTagItem } from "~/utils";

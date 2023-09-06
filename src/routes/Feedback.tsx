@@ -6,12 +6,11 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { ExternalLink } from "@mutinywallet/ui";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import { A, useLocation } from "solid-start";
 
 import feedback from "~/assets/icons/feedback.svg";
-import { InfoBox, MegaCheck, NavBar } from "~/components";
+import { ExternalLink, InfoBox, MegaCheck, NavBar } from "~/components";
 import {
     BackPop,
     Button,

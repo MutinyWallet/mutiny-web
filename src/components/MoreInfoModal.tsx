@@ -1,11 +1,11 @@
 import { Dialog } from "@kobalte/core";
-import { ExternalLink } from "@mutinywallet/ui";
 import { createSignal, JSXElement, ParentComponent } from "solid-js";
 
 import help from "~/assets/icons/help.svg";
 import {
     DIALOG_CONTENT,
     DIALOG_POSITIONER,
+    ExternalLink,
     ModalCloseButton,
     OVERLAY,
     SmallHeader

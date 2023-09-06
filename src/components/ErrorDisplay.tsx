@@ -1,6 +1,6 @@
-import { ExternalLink } from "@mutinywallet/ui";
 import { A, Title } from "solid-start";
 
+import { ExternalLink } from "~/components";
 import {
     Button,
     DefaultMain,
