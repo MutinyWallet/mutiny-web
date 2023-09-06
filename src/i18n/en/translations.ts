@@ -307,7 +307,9 @@ export default {
                 title: "Download debug logs",
                 something_screwy:
                     "Something screwy going on? Check out the logs!",
-                download_logs: "Download Logs"
+                download_logs: "Download Logs",
+                password: "Enter your password to decrypt",
+                confirm_password_label: "Confirm Password"
             },
             delete_everything: {
                 delete: "Delete Everything",
