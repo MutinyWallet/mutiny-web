@@ -11,7 +11,7 @@
         "start": "solid-start start",
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
-        "lint": "pnpm run eslint && pnpm run check-types",
+        "pre-commit": "pnpm run eslint && pnpm run check-types && pnpm run format",
         "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
         "check-format": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
     },
