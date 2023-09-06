@@ -28,7 +28,7 @@
 
 .solid-select-multi-value-remove {
     /* TODO: there's gotta be a better way to vertically center this */
-    @apply -mt-2 pl-2 pr-1 text-2xl leading-3;
+    @apply -mt-[2px] pl-2 pr-1 text-2xl leading-3;
 }
 
 .solid-select-input {
