@@ -3,7 +3,6 @@ import {
     MutinyBip21RawMaterials,
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
-import { ExternalLink } from "@mutinywallet/ui";
 import {
     createEffect,
     createMemo,
@@ -26,6 +25,7 @@ import {
     Button,
     Card,
     DefaultMain,
+    ExternalLink,
     Fee,
     FeesModal,
     Indicator,

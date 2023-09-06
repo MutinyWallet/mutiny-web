@@ -1,9 +1,8 @@
-import { ExternalLink } from "@mutinywallet/ui";
-
 import {
     BackLink,
     DefaultMain,
     DeleteEverything,
+    ExternalLink,
     ImportExport,
     LargeHeader,
     LoadingIndicator,

@@ -1,11 +1,11 @@
 import { createForm, url } from "@modular-forms/solid";
-import { ExternalLink } from "@mutinywallet/ui";
 
 import {
     BackLink,
     Button,
     Card,
     DefaultMain,
+    ExternalLink,
     LargeHeader,
     MutinyWalletGuard,
     NavBar,

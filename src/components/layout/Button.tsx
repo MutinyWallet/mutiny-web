@@ -1,7 +1,8 @@
-import { LoadingSpinner } from "@mutinywallet/ui";
 import { JSX, ParentComponent, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { A } from "solid-start";
+
+import { LoadingSpinner } from "~/components";
 
 // Help from https://github.com/arpadgabor/credee/blob/main/packages/www/src/components/ui/button.tsx
 

@@ -1,6 +1,5 @@
 import { Dialog } from "@kobalte/core";
 import { MutinyChannel, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { ExternalLink } from "@mutinywallet/ui";
 import {
     createEffect,
     createMemo,
@@ -21,6 +20,7 @@ import {
     ActivityAmount,
     AmountSmall,
     CopyButton,
+    ExternalLink,
     HackActivityType,
     Hr,
     InfoBox,

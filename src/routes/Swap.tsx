@@ -1,6 +1,5 @@
 import { createForm, required } from "@modular-forms/solid";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
-import { ExternalLink } from "@mutinywallet/ui";
 import {
     createMemo,
     createResource,
@@ -19,6 +18,7 @@ import {
     Button,
     Card,
     DefaultMain,
+    ExternalLink,
     InfoBox,
     LargeHeader,
     MegaCheck,

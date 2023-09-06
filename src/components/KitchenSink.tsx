@@ -1,6 +1,5 @@
 import { Collapsible, TextField } from "@kobalte/core";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
-import { ExternalLink } from "@mutinywallet/ui";
 import {
     createResource,
     createSignal,
@@ -14,6 +13,7 @@ import {
 import {
     Button,
     ConfirmDialog,
+    ExternalLink,
     Hr,
     InnerCard,
     MiniStringShower,

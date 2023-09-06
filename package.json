@@ -4,10 +4,9 @@
     "license": "MIT",
     "packageManager": "pnpm@8.6.6",
     "scripts": {
-        "dev": "pnpm run build-submodules && solid-start dev",
+        "dev": "solid-start dev",
         "host": "solid-start dev --host",
-        "build-submodules": "turbo run build",
-        "build": "pnpm run build-submodules && solid-start build && node insertHead.js",
+        "build": "solid-start build && node insertHead.js",
         "start": "solid-start start",
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
@@ -55,7 +54,6 @@
         "@modular-forms/solid": "^0.18.1",
         "@mutinywallet/barcode-scanner": "5.0.0-beta.3",
         "@mutinywallet/mutiny-wasm": "0.4.16",
-        "@mutinywallet/ui": "workspace:*",
         "@mutinywallet/waila-wasm": "^0.2.1",
         "@nostr-dev-kit/ndk": "^0.8.11",
         "@solid-primitives/upload": "^0.0.111",
@@ -67,7 +65,6 @@
         "solid-js": "^1.7.8",
         "solid-qr-code": "^0.0.8",
         "solid-start": "^0.2.29",
-        "turbo": "^1.10.12",
         "undici": "^5.22.1"
     },
     "engines": {

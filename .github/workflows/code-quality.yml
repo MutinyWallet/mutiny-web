@@ -47,12 +47,9 @@ jobs:
       - name: Step One - Check Code Formatting
         run: pnpm run check-format
 
-      - name: Step Two - Build Submodules
-        run: pnpm run build-submodules
-
-      - name: Step Three - Check Lint Errors
+      - name: Step Two - Check Lint Errors
         run: pnpm run eslint
 
-      - name: Step Four - Check Type Check Errors
+      - name: Step Three - Check Type Check Errors
         run: pnpm run check-types
 

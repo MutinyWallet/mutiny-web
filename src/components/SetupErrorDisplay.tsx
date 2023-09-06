@@ -1,10 +1,10 @@
-import { ExternalLink } from "@mutinywallet/ui";
 import { Match, Switch } from "solid-js";
 import { Title } from "solid-start";
 
 import {
     DefaultMain,
     DeleteEverything,
+    ExternalLink,
     ImportExport,
     LargeHeader,
     Logs,
