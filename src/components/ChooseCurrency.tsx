@@ -1,5 +1,6 @@
 import { createForm } from "@modular-forms/solid";
 import { createSignal, Show } from "solid-js";
+import { useNavigate } from "solid-start";
 
 import {
     Button,
@@ -93,8 +94,9 @@ export const FIAT_OPTIONS: Currency[] = [
 export function ChooseCurrency() {
     const i18n = useI18n();
     const [error, setError] = createSignal<Error>();
-    const [state, _actions] = useMegaStore();
+    const [state, actions] = useMegaStore();
     const [loading, setLoading] = createSignal(false);
+    const navigate = useNavigate();
 
     function findCurrencyByValue(value: string) {
         return FIAT_OPTIONS.find((currency) => currency.value === value);
@@ -119,13 +121,12 @@ export function ChooseCurrency() {
     const handleFormSubmit = async (f: ChooseCurrencyForm) => {
         setLoading(true);
         try {
-            localStorage.setItem(
-                "fiat_currency",
-                JSON.stringify(findCurrencyByValue(f.fiatCurrency))
+            actions.saveFiat(
+                findCurrencyByValue(f.fiatCurrency) || FIAT_OPTIONS[1]
             );
 
             await timeout(1000);
-            window.location.href = "/";
+            navigate("/");
         } catch (e) {
             console.error(e);
             setError(eify(e));
@@ -152,9 +153,6 @@ export function ChooseCurrency() {
                                 options={FIAT_OPTIONS}
                                 label={i18n.t(
                                     "settings.currency.select_currency_label"
-                                )}
-                                caption={i18n.t(
-                                    "settings.currency.select_currency_caption"
                                 )}
                             />
                         )}

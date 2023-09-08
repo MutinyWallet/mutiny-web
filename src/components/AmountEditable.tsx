@@ -283,6 +283,19 @@ export const AmountEditable: ParentComponent<{
         )
     );
 
+    const setSecondaryAmount = () =>
+        mode() === "fiat"
+            ? setLocalSats(
+                  fiatToSats(
+                      state.price,
+                      parseFloat(localFiat() || "0") || 0,
+                      false
+                  )
+              )
+            : setLocalFiat(
+                  satsToFiat(state.price, Number(localSats()) || 0, state.fiat)
+              );
+
     /** FixedAmounts allows for the user to choose 3 amount options approximately equal to ~$1, ~$10, ~$100
      *  This is done by fetching the price and reducing it such that the amounts all end up around the same value
      *
@@ -330,8 +343,8 @@ export const AmountEditable: ParentComponent<{
     let FIXED_AMOUNTS_FIAT;
 
     createEffect(() => {
-        // set FIXED_AMOUNTS_FIAT once we have a price
         if (state.price !== 0) {
+            // set FIXED_AMOUNTS_FIAT once we have a price
             FIXED_AMOUNTS_FIAT = [
                 {
                     label: fixedAmount(1, true),
@@ -346,6 +359,8 @@ export const AmountEditable: ParentComponent<{
                     amount: fixedAmount(100, false)
                 }
             ];
+            // Update secondary amount when price changes
+            setSecondaryAmount();
         }
     });
 
@@ -580,22 +595,22 @@ export const AmountEditable: ParentComponent<{
         setLocalFiat(satsToFiat(state.price, Number(sane) || 0, state.fiat));
     }
 
+    /** This behaves the same as handleCharacterInput but allows for the keyboard to be used instead of the virtual keypad
+     *
+     *  if state.fiat.value === "BTC"
+     *  tracking e.data is required as the string is not created from just normal sequencing numbers
+     *  input - 12345
+     *  result - 0.00012345
+     *
+     *  if state.fiat.value !== "BTC"
+     *  Otherwise we need to account for the user inputting decimals
+     *  input - 123,45
+     *  result - 123.45
+     */
+
     function handleFiatInput(e: InputEvent) {
         const { value } = e.currentTarget as HTMLInputElement;
         let sane;
-
-        /** This behaves the same as handleCharacterInput but allows for the keyboard to be used instead of the virtual keypad
-         *
-         *  if state.fiat.value === "BTC"
-         *  tracking e.data is required as the string is not created from just normal sequencing numbers
-         *  input - 12345
-         *  result - 0.00012345
-         *
-         *  if state.fiat.value !== "BTC"
-         *  Otherwise we need to account for the user inputting decimals
-         *  input - 123,45
-         *  result - 123.45
-         */
 
         if (state.fiat.value === "BTC") {
             if (e.data !== null) {

@@ -64,6 +64,8 @@ export type MegaStore = [
         setHasBackedUp(): void;
         listTags(): Promise<MutinyTagItem[]>;
         checkForSubscription(justPaid?: boolean): Promise<void>;
+        fetchPrice(fiat: Currency): Promise<number>;
+        saveFiat(fiat: Currency): void;
         saveNpub(npub: string): void;
     }
 ];
@@ -214,42 +216,46 @@ export const Provider: ParentComponent = (props) => {
             try {
                 if (state.mutiny_wallet && !state.is_syncing) {
                     setState({ is_syncing: true });
-                    let price: number;
+                    let price;
                     const newBalance = await state.mutiny_wallet?.get_balance();
-                    if (state.fiat.value === "BTC") {
+                    try {
+                        price = await actions.fetchPrice(state.fiat);
+                        setState({
+                            balance: newBalance,
+                            last_sync: Date.now(),
+                            price: price || 0,
+                            fiat: state.fiat
+                        });
+                    } catch (e) {
                         setState({
                             balance: newBalance,
                             last_sync: Date.now(),
                             price: 1,
-                            fiat: state.fiat
+                            fiat: FIAT_OPTIONS[0]
                         });
-                    } else {
-                        try {
-                            price =
-                                await state.mutiny_wallet?.get_bitcoin_price(
-                                    state.fiat.value.toLowerCase() || "usd"
-                                );
-                            setState({
-                                balance: newBalance,
-                                last_sync: Date.now(),
-                                price: price || 0,
-                                fiat: state.fiat
-                            });
-                        } catch (e) {
-                            price = 1;
-                            setState({
-                                balance: newBalance,
-                                last_sync: Date.now(),
-                                price: price,
-                                fiat: FIAT_OPTIONS[0]
-                            });
-                        }
                     }
                 }
             } catch (e) {
                 console.error(e);
             } finally {
                 setState({ is_syncing: false });
+            }
+        },
+        async fetchPrice(fiat: Currency): Promise<number | undefined> {
+            let price;
+            if (fiat.value === "BTC") {
+                price = 1;
+                return price;
+            } else {
+                try {
+                    price = await state.mutiny_wallet?.get_bitcoin_price(
+                        fiat.value.toLowerCase() || "usd"
+                    );
+                    return price;
+                } catch (e) {
+                    console.error(e);
+                    throw e;
+                }
             }
         },
         setScanResult(scan_result: ParsedParams) {
@@ -266,6 +272,14 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
                 return [];
             }
+        },
+        async saveFiat(fiat: Currency) {
+            localStorage.setItem("fiat_currency", JSON.stringify(fiat));
+            const price = await actions.fetchPrice(fiat);
+            setState({
+                price: price,
+                fiat: fiat
+            });
         },
         saveNpub(npub: string) {
             localStorage.setItem("npub", npub);
