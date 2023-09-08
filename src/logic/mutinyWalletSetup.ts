@@ -32,7 +32,7 @@ const SETTINGS_KEYS = [
     {
         name: "esplora",
         storageKey: "USER_SETTINGS_esplora",
-        default: "https://mempool.space/signet/api"
+        default: import.meta.env.VITE_ESPLORA
     },
     {
         name: "rgs",
@@ -48,7 +48,7 @@ const SETTINGS_KEYS = [
         name: "lsp_connection_string",
         storageKey: "USER_SETTINGS_lsp_connection_string",
         default:
-            "021c88ca495fc43a9e36f4d98ac316c112d6e3878d6c47fda8fb182ddf7503baac@3.209.126.167:39735"
+            "0371d6fd7d75de2d0372d03ea00e8bacdacb50c27d0eaea0a76a0622eff1f5ef2b@3.84.56.108:39735"
     },
     {
         name: "lsp_token",
