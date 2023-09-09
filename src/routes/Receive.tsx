@@ -295,7 +295,7 @@ export default function Receive() {
                 // Lightning invoice might be blank
                 if (lightning) {
                     const invoice =
-                        await state.mutiny_wallet?.get_invoice(lightning);
+                        await state.mutiny_wallet?.get_invoice(lightning, bip21.operation_id);
 
                     // If the invoice has a fees amount that's probably the LSP fee
                     if (invoice?.fees_paid) {

@@ -206,6 +206,7 @@ export async function setupMutinyWallet(
         subscriptions,
         storage,
         scorer,
+        "fed11sxnl5zfjulmtfy3jlyucvj2rm4dg7xejg0hm4quwxnc3avmzx4uvjyq2exxkhh6k48vn2kp0jv22yqqcwaen5te0xgejuv3n8yhrydfwxycrjw3cxymngtau0mjlducdlak65rq3uv2eh867",
         // Do not connect peers
         undefined,
         // Do not skip device lock
