@@ -3,9 +3,9 @@ import { ParentComponent } from "solid-js";
 export const ExternalLink: ParentComponent<{ href: string }> = (props) => {
     return (
         <a target="_blank" rel="noopener noreferrer" href={props.href}>
-            {props.children}{" "}
+            {props.children}
             <svg
-                class="inline-block"
+                class="inline-block pl-0.5"
                 width="16"
                 height="16"
                 fill="none"

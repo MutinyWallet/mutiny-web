@@ -188,6 +188,7 @@ export default {
         debug_tools: "DEBUG TOOLS",
         danger_zone: "Danger zone",
         general: "General",
+        version: "Version:",
         admin: {
             title: "Admin Page",
             caption: "Our internal debug tools. Use wisely!",
