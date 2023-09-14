@@ -5,10 +5,12 @@ import forward from "~/assets/icons/forward.svg";
 import {
     BackLink,
     DefaultMain,
+    ExternalLink,
     LargeHeader,
     NavBar,
     SafeArea,
     SettingsCard,
+    TinyText,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -62,6 +64,12 @@ function SettingsLinkList(props: {
 export default function Settings() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const COMMIT_HASH = import.meta.env.__COMMIT_HASH__;
 
     return (
         <SafeArea>
@@ -151,6 +159,16 @@ export default function Settings() {
                         ]}
                     />
                 </VStack>
+                <div class="flex justify-center">
+                    <TinyText>
+                        {i18n.t("settings.version")} {RELEASE_VERSION}{" "}
+                        <ExternalLink
+                            href={`https://github.com/MutinyWallet/mutiny-web/commits/${COMMIT_HASH}`}
+                        >
+                            {COMMIT_HASH}
+                        </ExternalLink>
+                    </TinyText>
+                </div>
             </DefaultMain>
             <NavBar activeTab="settings" />
         </SafeArea>

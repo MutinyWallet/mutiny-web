@@ -6,6 +6,9 @@ import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
 
 import * as path from "path";
+import * as child from "child_process";
+
+const commitHash = child.execSync("git rev-parse --short HEAD").toString().trim();
 
 const pwaOptions: Partial<VitePWAOptions> = {
     base: "/",
@@ -49,6 +52,10 @@ export default defineConfig({
         }
     },
     plugins: [wasm(), solid({ ssr: false }), VitePWA(pwaOptions)],
+    define: {
+        "import.meta.env.__COMMIT_HASH__": JSON.stringify(commitHash),
+        "import.meta.env.__RELEASE_VERSION__": JSON.stringify(process.env.npm_package_version)
+    },
     resolve: {
         alias: [{ find: "~", replacement: path.resolve(__dirname, "./src") }]
     },
