@@ -1,11 +1,4 @@
-import {
-    createForm,
-    email,
-    getValue,
-    required,
-    setValue,
-    SubmitHandler
-} from "@modular-forms/solid";
+import { createForm, required, SubmitHandler } from "@modular-forms/solid";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import { A, useLocation } from "solid-start";
 
@@ -15,12 +8,10 @@ import {
     BackPop,
     Button,
     ButtonLink,
-    Checkbox,
     DefaultMain,
     LargeHeader,
     NiceP,
     SafeArea,
-    StyledRadioGroup,
     TextField,
     VStack
 } from "~/components/layout";
@@ -69,25 +60,6 @@ async function formDataFromFeedbackForm(f: FeedbackForm) {
         formData.append("contact", JSON.stringify(contact));
     }
 
-    // TODO: add back logs and image uploads
-
-    // if (f.include_logs) {
-    //     const logs = await MutinyWallet.get_logs();
-
-    //     console.log(logs);
-
-    //     // create a blob
-    //     const blob = new Blob([logs], { type: "text/plain" });
-    //     // add it to the form data
-    //     formData.append("log", blob);
-    // }
-
-    // if (f.images.length > 0) {
-    //     for (const image of f.images) {
-    //         formData.append("image", image);
-    //     }
-    // }
-
     if (f.include_contact) {
         const contact =
             f.user_type === "nostr"
@@ -105,19 +77,6 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
     const i18n = useI18n();
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<Error>();
-
-    const COMMUNICATION_METHODS = [
-        {
-            value: "nostr",
-            label: i18n.t("feedback.nostr"),
-            caption: i18n.t("feedback.nostr_caption")
-        },
-        {
-            value: "email",
-            label: i18n.t("feedback.email"),
-            caption: i18n.t("feedback.email_caption")
-        }
-    ];
 
     const [feedbackForm, { Form, Field }] = createForm<FeedbackForm>({
         initialValues: {
@@ -185,88 +144,6 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
                         />
                     )}
                 </Field>
-                <Field name="include_contact" type="boolean">
-                    {(field, _props) => (
-                        <Checkbox
-                            checked={field.value || false}
-                            label={i18n.t("feedback.info_label")}
-                            caption={i18n.t("feedback.info_caption")}
-                            onChange={(c) =>
-                                setValue(feedbackForm, "include_contact", c)
-                            }
-                        />
-                    )}
-                </Field>
-                <Show when={getValue(feedbackForm, "include_contact") === true}>
-                    <Field name="user_type">
-                        {(field, _props) => (
-                            // TODO: there's probably a "real" way to do this with modular-forms
-                            <StyledRadioGroup
-                                value={field.value || "nostr"}
-                                onValueChange={(newValue) =>
-                                    setValue(
-                                        feedbackForm,
-                                        "user_type",
-                                        newValue as "nostr" | "email"
-                                    )
-                                }
-                                choices={COMMUNICATION_METHODS}
-                            />
-                        )}
-                    </Field>
-                    <Switch>
-                        <Match
-                            when={
-                                getValue(feedbackForm, "user_type", {
-                                    shouldActive: false
-                                }) === "nostr"
-                            }
-                        >
-                            <Field
-                                name="id"
-                                validate={[
-                                    required(i18n.t("feedback.need_contact"))
-                                ]}
-                            >
-                                {(field, props) => (
-                                    <TextField
-                                        {...props}
-                                        value={field.value}
-                                        error={field.error}
-                                        label={i18n.t("feedback.nostr_label")}
-                                        placeholder="npub..."
-                                    />
-                                )}
-                            </Field>
-                        </Match>
-                        <Match
-                            when={
-                                getValue(feedbackForm, "user_type", {
-                                    shouldActive: false
-                                }) === "email"
-                            }
-                        >
-                            <Field
-                                name="id"
-                                validate={[
-                                    required(i18n.t("feedback.need_contact")),
-                                    email(i18n.t("feedback.invalid_email"))
-                                ]}
-                            >
-                                {(field, props) => (
-                                    <TextField
-                                        {...props}
-                                        value={field.value}
-                                        error={field.error}
-                                        type="email"
-                                        label={i18n.t("feedback.email")}
-                                        placeholder="email@nokycemail.com"
-                                    />
-                                )}
-                            </Field>
-                        </Match>
-                    </Switch>
-                </Show>
                 <Show when={error()}>
                     <InfoBox accent="red">{error()?.message}</InfoBox>
                 </Show>
