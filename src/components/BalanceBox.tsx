@@ -75,7 +75,6 @@ export function BalanceBox(props: { loading?: boolean }) {
                                             state.balance?.lightning || 0
                                         }
                                         denominationSize="sm"
-                                        loading={state.price === 0}
                                     />
                                 </div>
                             </div>
@@ -98,7 +97,6 @@ export function BalanceBox(props: { loading?: boolean }) {
                                 <AmountFiat
                                     amountSats={totalOnchain()}
                                     denominationSize="sm"
-                                    loading={state.price === 0}
                                 />
                             </div>
                         </div>

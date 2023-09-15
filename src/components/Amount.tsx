@@ -15,7 +15,6 @@ function prettyPrintAmount(n?: number | bigint): string {
 
 export function AmountSats(props: {
     amountSats: bigint | number | undefined;
-    loading?: boolean;
     icon?: "lightning" | "chain" | "plus" | "minus";
     denominationSize?: "sm" | "lg" | "xl";
 }) {
@@ -35,7 +34,7 @@ export function AmountSats(props: {
                 <Show when={props.icon === "minus"}>
                     <span>-</span>
                 </Show>
-                {props.loading ? "…" : prettyPrintAmount(props.amountSats)}
+                {prettyPrintAmount(props.amountSats)}
                 &nbsp;
                 <span
                     class="text-base font-light"
@@ -69,7 +68,6 @@ export function AmountSats(props: {
 
 export function AmountFiat(props: {
     amountSats: bigint | number | undefined;
-    loading?: boolean;
     denominationSize?: "sm" | "lg" | "xl";
 }) {
     const [state, _] = useMegaStore();
@@ -84,7 +82,7 @@ export function AmountFiat(props: {
 
     return (
         <h2 class="font-light">
-            {props.loading ? "…" : amountInFiat()}
+            {amountInFiat()}
             <span
                 classList={{
                     "text-sm": props.denominationSize === "sm",
@@ -93,7 +91,7 @@ export function AmountFiat(props: {
                 }}
             >
                 &nbsp;
-                {props.loading ? "" : state.fiat.value}
+                {state.fiat.value}
             </span>
         </h2>
     );
