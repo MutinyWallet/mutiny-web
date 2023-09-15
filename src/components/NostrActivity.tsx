@@ -6,9 +6,11 @@ import {
     Show,
     Switch
 } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 import rightArrow from "~/assets/icons/right-arrow.svg";
-import { AmountSats, VStack } from "~/components";
+import { AmountSats, TinyText, VStack } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { fetchZaps, getHexpubFromNpub } from "~/utils";
 import { timeAgo } from "~/utils/prettyPrintTime";
@@ -31,6 +33,7 @@ function formatProfileLink(hexpub: string): string {
 }
 
 export function NostrActivity() {
+    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const [data, { refetch }] = createResource(state.npub, fetchZaps);
@@ -93,10 +96,10 @@ export function NostrActivity() {
                                             </a>
                                         </Match>
                                         <Match when={zap.kind === "private"}>
-                                            Private
+                                            {i18n.t("activity.private")}
                                         </Match>
                                         <Match when={zap.kind === "anonymous"}>
-                                            Anonymous
+                                            {i18n.t("activity.anonymous")}
                                         </Match>
                                     </Switch>
                                 </span>
@@ -151,10 +154,36 @@ export function NostrActivity() {
                         </div>
                         <Show when={zap.content}>
                             <hr class="my-2 border-m-grey-750" />
-                            <p
-                                class="truncate text-center text-sm font-light text-neutral-200"
-                                textContent={zap.content}
-                            />
+                            <TinyText>
+                                <Dynamic
+                                    component={
+                                        zap.content?.includes("From:") ||
+                                        zap.content?.includes("://")
+                                            ? "a"
+                                            : "p"
+                                    }
+                                    href={
+                                        zap.content?.split("nostr:")[1]
+                                            ? formatProfileLink(
+                                                  getHexpubFromNpub(
+                                                      zap.content?.split(
+                                                          "nostr:"
+                                                      )[1]
+                                                  ) ?? ""
+                                              )
+                                            : zap.content
+                                    }
+                                    class="block truncate text-center text-sm font-light text-neutral-200"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {zap.content?.includes("From:")
+                                        ? `${i18n.t(
+                                              "activity.from"
+                                          )} ${zap.content?.split("nostr:")[1]}`
+                                        : zap.content}
+                                </Dynamic>
+                            </TinyText>
                         </Show>
                     </div>
                 )}

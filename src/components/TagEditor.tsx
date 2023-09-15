@@ -16,6 +16,7 @@ export function TagEditor(props: {
     selectedValues: Partial<MutinyTagItem>[];
     setSelectedValues: (value: Partial<MutinyTagItem>[]) => void;
     placeholder: string;
+    autoFillTag?: string | undefined;
 }) {
     const [_state, actions] = useMegaStore();
     const [availableTags, setAvailableTags] = createSignal<MutinyTagItem[]>([]);
@@ -28,12 +29,24 @@ export function TagEditor(props: {
                     .filter((tag) => tag.kind === "Contact")
                     .sort(sortByLastUsed)
             );
+            if (props.autoFillTag && availableTags()) {
+                const tagToAutoSelect = availableTags().find(
+                    (tag) => tag.name === props.autoFillTag
+                );
+                if (tagToAutoSelect) {
+                    props.setSelectedValues([
+                        ...props.selectedValues,
+                        tagToAutoSelect
+                    ]);
+                }
+            }
         }
     });
 
     const selectProps = createMemo(() => {
         return createOptions(availableTags() || [], {
             key: "name",
+            disable: (value) => props.selectedValues.includes(value),
             filterable: true, // Default
             createable: createLabelValue
         });
@@ -41,8 +54,6 @@ export function TagEditor(props: {
 
     const onChange = (selected: MutinyTagItem[]) => {
         props.setSelectedValues(selected);
-
-        console.log(selected);
 
         const lastValue = selected[selected.length - 1];
         if (
@@ -54,7 +65,6 @@ export function TagEditor(props: {
         }
     };
 
-    // FIXME: eslint is mad about reactivity
     const onTagTap = (tag: MutinyTagItem) => {
         props.setSelectedValues([...props.selectedValues!, tag]);
     };
@@ -70,10 +80,16 @@ export function TagEditor(props: {
             />
             <div class="flex flex-wrap gap-2">
                 <Show when={availableTags() && availableTags()!.length > 0}>
-                    <For each={availableTags()!.slice(0, 3)}>
+                    <For
+                        each={availableTags()!.slice(0, 3).sort(sortByLastUsed)}
+                    >
                         {(tag) => (
-                            // eslint-disable-next-line solid/reactivity
-                            <TinyButton tag={tag} onClick={() => onTagTap(tag)}>
+                            <TinyButton
+                                hidden={props.selectedValues.includes(tag)}
+                                tag={tag}
+                                // eslint-disable-next-line solid/reactivity
+                                onClick={() => onTagTap(tag)}
+                            >
                                 {tag.name}
                             </TinyButton>
                         )}

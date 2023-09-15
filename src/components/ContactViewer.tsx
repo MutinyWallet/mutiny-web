@@ -56,6 +56,7 @@ export function ContactViewer(props: {
                 showToast(result.error);
                 return;
             } else {
+                result.value.privateTag = props.contact.name;
                 if (
                     result.value?.address ||
                     result.value?.invoice ||
