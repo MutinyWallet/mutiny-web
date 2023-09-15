@@ -171,9 +171,9 @@ export function ContactViewer(props: {
                                                     }
                                                 >
                                                     <KeyValue
-                                                        key={
-                                                            "Lightning Address"
-                                                        }
+                                                        key={i18n.t(
+                                                            "contacts.lightning_address"
+                                                        )}
                                                     >
                                                         <MiniStringShower
                                                             text={

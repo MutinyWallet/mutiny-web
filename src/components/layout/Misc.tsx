@@ -184,6 +184,17 @@ export const MutinyWalletGuard: ParentComponent = (props) => {
 
 export const Hr = () => <Separator.Root class="my-4 border-m-grey-750" />;
 
+export const KeyValue: ParentComponent<{ key: string }> = (props) => {
+    return (
+        <li class="flex items-center justify-between gap-6">
+            <span class="min-w-max text-sm font-semibold uppercase text-m-grey-400">
+                {props.key}
+            </span>
+            <span class="truncate font-light">{props.children}</span>
+        </li>
+    );
+};
+
 export const LargeHeader: ParentComponent<{
     action?: JSX.Element;
     centered?: boolean;

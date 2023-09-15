@@ -17,7 +17,8 @@ export default {
         error_unimplemented: "Unimplemented",
         why: "Why?",
         private_tags: "Private tags",
-        view_transaction: "View Transaction",
+        view_transaction: "View transaction",
+        view_payment_details: "View payment details",
         pending: "Pending",
         error_safe_mode:
             "Mutiny is running in safe mode. Lightning is disabled.",
@@ -36,6 +37,7 @@ export default {
         pay: "Pay",
         name: "Name",
         placeholder: "Satoshi",
+        lightning_address: "Lightning Address",
         unimplemented: "Unimplemented",
         not_available: "We don't do that yet",
         error_name: "We at least need a name"
@@ -163,7 +165,40 @@ export default {
         coming_soon: "Coming soon",
         private: "Private",
         anonymous: "Anonymous",
-        from: "From:"
+        from: "From:",
+        transaction_details: {
+            lightning_receive: "Received via Lightning",
+            lightning_send: "Sent via Lightning",
+            channel_open: "Channel open",
+            channel_close: "Channel close",
+            onchain_receive: "On-chain receive",
+            onchain_send: "On-chain send",
+            paid: "Paid",
+            unpaid: "Unpaid",
+            status: "Status",
+            date: "Date",
+            tagged_to: "Tagged to",
+            description: "Description",
+            fee: "Fee",
+            onchain_fee: "On-chain Fee",
+            invoice: "Invoice",
+            payment_hash: "Payment Hash",
+            payment_preimage: "Preimage",
+            txid: "Txid",
+            total: "Amount Requested",
+            balance: "Balance",
+            reserve: "Reserve",
+            peer: "Peer",
+            channel_id: "Channel ID",
+            reason: "Reason",
+            confirmed: "Confirmed",
+            unconfirmed: "Unconfirmed",
+            sweep_delay:
+                "Funds may take a few days to be swept back into the wallet",
+            no_details:
+                "No channel details found, which means this channel has likely been closed.",
+            back_home: "back home"
+        }
     },
     redshift: {
         title: "Redshift",
@@ -624,34 +659,6 @@ export default {
             pretend_money:
                 "If you want to use pretend money to test out Mutiny without risk,",
             signet_link: "check out our Signet version."
-        },
-        transaction_details: {
-            lightning_receive: "Lightning receive",
-            lightning_send: "Lightning send",
-            channel_open: "Channel open",
-            channel_close: "Channel close",
-            onchain_receive: "On-chain receive",
-            onchain_send: "On-chain send",
-            paid: "Paid",
-            unpaid: "Unpaid",
-            status: "Status",
-            when: "When",
-            description: "Description",
-            fee: "Fee",
-            fees: "Fees",
-            bolt11: "Bolt11",
-            payment_hash: "Payment Hash",
-            preimage: "Preimage",
-            txid: "Txid",
-            balance: "Balance",
-            reserve: "Reserve",
-            peer: "Peer",
-            channel_id: "Channel ID",
-            reason: "Reason",
-            confirmed: "Confirmed",
-            unconfirmed: "Unconfirmed",
-            no_details:
-                "No channel details found, which means this channel has likely been closed."
         },
         more_info: {
             whats_with_the_fees: "What's with the fees?",

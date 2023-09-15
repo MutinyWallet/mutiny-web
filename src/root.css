@@ -29,7 +29,7 @@ html {
 }
 
 a {
-    @apply underline decoration-light-text hover:decoration-white;
+    @apply underline decoration-m-grey-400 hover:decoration-white;
 }
 
 p {

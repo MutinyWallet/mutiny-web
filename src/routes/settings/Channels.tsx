@@ -17,7 +17,7 @@ import {
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-function BalanceBar(props: {
+export function BalanceBar(props: {
     inbound: number;
     reserve: number;
     outbound: number;

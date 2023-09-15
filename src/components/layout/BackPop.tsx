@@ -21,7 +21,11 @@ export function BackPop() {
 
     return (
         <BackButton
-            title={i18n.t("common.back")}
+            title={
+                backPath() === "/"
+                    ? i18n.t("common.home")
+                    : i18n.t("common.back")
+            }
             onClick={() => navigate(backPath())}
             showOnDesktop
         />

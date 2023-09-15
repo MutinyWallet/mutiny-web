@@ -145,7 +145,35 @@ export default {
         unknown: "알 수 없음",
         import_contacts:
             "Nostr에서 연락처를 가져와 누가 체널을 열고 있는지 확인하세요.",
-        coming_soon: "곧 출시 예정"
+        coming_soon: "곧 출시 예정",
+        transaction_details: {
+            lightning_receive: "라이트닝 입금",
+            lightning_send: "라이트닝 송금",
+            channel_open: "채널 개설",
+            channel_close: "채널 종료",
+            onchain_receive: "체인상 입금",
+            onchain_send: "체인상 송금",
+            paid: "지불 완료",
+            unpaid: "미지불",
+            status: "상태",
+            when: "시간",
+            description: "설명",
+            fee: "수수료",
+            fees: "수수료",
+            bolt11: "Bolt11",
+            payment_hash: "지불 해시",
+            preimage: "사전 이미지",
+            txid: "거래 ID",
+            balance: "잔고",
+            reserve: "리저브",
+            peer: "피어",
+            channel_id: "채널 ID",
+            reason: "이유",
+            confirmed: "확인됨",
+            unconfirmed: "확인 대기",
+            no_details:
+                "채널 상세정보를 찾을 수 없습니다. 이는 해당 채널이 종료된 것으로 보입니다."
+        }
     },
     redshift: {
         title: "레드시프트",
@@ -496,34 +524,6 @@ export default {
             pretend_money:
                 "위험 없이 Mutiny를 테스트하려면 가상 자금을 사용하려면",
             signet_link: "Signet 버전을 확인하세요."
-        },
-        transaction_details: {
-            lightning_receive: "라이트닝 입금",
-            lightning_send: "라이트닝 송금",
-            channel_open: "채널 개설",
-            channel_close: "채널 종료",
-            onchain_receive: "체인상 입금",
-            onchain_send: "체인상 송금",
-            paid: "지불 완료",
-            unpaid: "미지불",
-            status: "상태",
-            when: "시간",
-            description: "설명",
-            fee: "수수료",
-            fees: "수수료",
-            bolt11: "Bolt11",
-            payment_hash: "지불 해시",
-            preimage: "사전 이미지",
-            txid: "거래 ID",
-            balance: "잔고",
-            reserve: "리저브",
-            peer: "피어",
-            channel_id: "채널 ID",
-            reason: "이유",
-            confirmed: "확인됨",
-            unconfirmed: "확인 대기",
-            no_details:
-                "채널 상세정보를 찾을 수 없습니다. 이는 해당 채널이 종료된 것으로 보입니다."
         },
         more_info: {
             whats_with_the_fees: "수수료는 어떻게 되나요?",

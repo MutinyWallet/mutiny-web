@@ -102,9 +102,9 @@ export function AmountSmall(props: {
 }) {
     const i18n = useI18n();
     return (
-        <span class="font-light">
+        <span class="text-sm font-light md:text-base">
             {prettyPrintAmount(props.amountSats)}&nbsp;
-            <span class="text-sm">
+            <span class="text-xs md:text-sm">
                 {props.amountSats === 1 || props.amountSats === 1n
                     ? i18n.t("common.sat")
                     : i18n.t("common.sats")}
