@@ -151,7 +151,10 @@ export default {
         unknown: "Unknown",
         import_contacts:
             "Import your contacts from nostr to see who they're zapping.",
-        coming_soon: "Coming soon"
+        coming_soon: "Coming soon",
+        private: "Private",
+        anonymous: "Anonymous",
+        from: "From:"
     },
     redshift: {
         title: "Redshift",

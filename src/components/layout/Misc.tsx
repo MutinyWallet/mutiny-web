@@ -253,6 +253,7 @@ export const TinyText: ParentComponent = (props) => {
 export const TinyButton: ParentComponent<{
     onClick: () => void;
     tag?: MutinyTagItem;
+    hidden?: boolean;
 }> = (props) => {
     // TODO: don't need to run this if it's not a contact
     const [gradient] = createResource(async () => {
@@ -267,6 +268,7 @@ export const TinyButton: ParentComponent<{
     return (
         <button
             class="rounded-lg bg-white/10 px-2 py-1"
+            classList={{ hidden: props.hidden }}
             onClick={() => props.onClick()}
             style={{ background: bg() }}
         >

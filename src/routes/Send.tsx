@@ -681,6 +681,9 @@ export default function Send() {
                                             {i18n.t("common.private_tags")}
                                         </SmallHeader>
                                         <TagEditor
+                                            autoFillTag={
+                                                destination()?.privateTag
+                                            }
                                             selectedValues={selectedContacts()}
                                             setSelectedValues={
                                                 setSelectedContacts

@@ -11,6 +11,7 @@ export type ParsedParams = {
     amount_sats?: bigint;
     network?: string;
     memo?: string;
+    privateTag?: string;
     node_pubkey?: string;
     lnurl?: string;
 };
