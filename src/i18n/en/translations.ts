@@ -121,8 +121,8 @@ export default {
         more: "Got more to say?",
         tracking:
             "Mutiny doesn't track or spy on your behavior, so your feedback is incredibly helpful.",
-        github: "If you're comfortable with GitHub you can also",
-        create_issue: "create an issue.",
+        github: "If you'd like support please",
+        create_issue: "create a GitHub issue.",
         link: "Feedback?",
         feedback_placeholder: "Bugs, feature requests, feedback, etc.",
         info_label: "Include contact info",
@@ -278,7 +278,9 @@ export default {
                 title: "Pending Requests",
                 configure_link: "Configure",
                 approve_all: "Approve All"
-            }
+            },
+            careful:
+                "Be careful where you share this connection! Requests within budget will paid automatically."
         },
         emergency_kit: {
             title: "Emergency Kit",
