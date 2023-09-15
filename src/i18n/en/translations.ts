@@ -285,7 +285,8 @@ export default {
             careful:
                 "Be careful where you share this connection! Requests within budget will paid automatically.",
             spent: "Spent",
-            remaining: "Remaining"
+            remaining: "Remaining",
+            confirm_delete: "Are you sure you want to delete this connection?"
         },
         emergency_kit: {
             title: "Emergency Kit",

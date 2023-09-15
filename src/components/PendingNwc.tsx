@@ -8,7 +8,6 @@ import {
     Show,
     Switch
 } from "solid-js";
-import { A } from "solid-start";
 
 import bolt from "~/assets/icons/bolt.svg";
 import greenCheck from "~/assets/icons/green-check.svg";

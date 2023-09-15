@@ -44,7 +44,9 @@ export function NWCBudgetEditor(props: {
                 : false,
             budget_amount:
                 props.initialProfile?.budget_amount?.toString() || "0",
-            interval: "Day"
+            interval:
+                (props.initialProfile
+                    ?.budget_period as BudgetForm["interval"]) || "Day"
         },
         validate: (values) => {
             const errors: Record<string, string> = {};
@@ -107,6 +109,7 @@ export function NWCBudgetEditor(props: {
                                 {(field, _fieldProps) => (
                                     <div class="flex flex-col items-end gap-2">
                                         <AmountEditable
+                                            skipWarnings={true}
                                             initialOpen={false}
                                             initialAmountSats={
                                                 field.value || "0"
