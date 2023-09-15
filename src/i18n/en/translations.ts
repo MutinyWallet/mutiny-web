@@ -279,13 +279,13 @@ export default {
                 "Authorize external services to request payments from your wallet. Pairs great with Nostr clients.",
             pending_nwc: {
                 title: "Pending Requests",
-                configure_link: "Configure",
-                approve_all: "Approve All"
+                approve_all: "Approve All",
+                deny_all: "Deny All"
             },
             careful:
                 "Be careful where you share this connection! Requests within budget will paid automatically.",
             spent: "Spent",
-            remaining: "Remaining",
+            remaining: "Remaining"
         },
         emergency_kit: {
             title: "Emergency Kit",

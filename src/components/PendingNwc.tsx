@@ -82,11 +82,32 @@ export function PendingNwc() {
         }
     }
 
+    async function denyItem(item: PendingItem) {
+        try {
+            setPaying(item.id);
+            await state.mutiny_wallet?.deny_invoice(item.id);
+        } catch (e) {
+            setError(eify(e));
+            console.error(e);
+        } finally {
+            setPaying("");
+            refetch();
+        }
+    }
+
     async function approveAll() {
         // clone the list so it doesn't update in place
         const toApprove = [...pendingRequests()!];
         for (const item of toApprove) {
             await payItem(item);
+        }
+    }
+
+    async function denyAll() {
+        // clone the list so it doesn't update in place
+        const toDeny = [...pendingRequests()!];
+        for (const item of toDeny) {
+            await denyItem(item);
         }
     }
 
@@ -198,14 +219,12 @@ export function PendingNwc() {
                     >
                         {i18n.t("settings.connections.pending_nwc.approve_all")}
                     </button>
-                    <A
-                        href="/settings/connections"
-                        class="self-center font-semibold text-m-red no-underline active:text-m-red/80"
+                    <button
+                        class="font-semibold text-m-red active:text-m-red/80"
+                        onClick={denyAll}
                     >
-                        {i18n.t(
-                            "settings.connections.pending_nwc.configure_link"
-                        )}
-                    </A>
+                        {i18n.t("settings.connections.pending_nwc.deny_all")}
+                    </button>
                 </div>
             </Card>
         </Show>
