@@ -11,8 +11,8 @@ import {
 import { A } from "solid-start";
 
 import {
+    ActivityDetailsModal,
     ActivityItem,
-    DetailsIdModal,
     HackActivityType,
     LoadingShimmer,
     NiceP
@@ -30,7 +30,7 @@ export const REDSHIFT_LABEL =
     "py-1 px-2 bg-white text-m-red rounded inline-block text-sm";
 export const RIGHT_COLUMN = "flex flex-col items-right text-right max-w-[8rem]";
 
-interface IActivityItem {
+export interface IActivityItem {
     kind: HackActivityType;
     id: string;
     amount_sats: number;
@@ -50,7 +50,6 @@ function UnifiedActivityItem(props: {
             props.item.kind as unknown as HackActivityType
         );
     };
-
     return (
         <ActivityItem
             // This is actually the ActivityType enum but wasm is hard
@@ -77,7 +76,6 @@ export function CombinedActivity(props: { limit?: number }) {
     function openDetailsModal(id: string, kind: HackActivityType) {
         console.log("Opening details modal: ", id, kind);
 
-        // Some old channels don't have a channel id in the activity list
         if (!id) {
             console.warn("No id provided to openDetailsModal");
             return;
@@ -109,7 +107,7 @@ export function CombinedActivity(props: { limit?: number }) {
             fallback={<LoadingShimmer />}
         >
             <Show when={detailsId() && detailsKind()}>
-                <DetailsIdModal
+                <ActivityDetailsModal
                     open={detailsOpen()}
                     kind={detailsKind()}
                     id={detailsId()}

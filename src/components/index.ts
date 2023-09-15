@@ -2,6 +2,7 @@ export * from "./layout";
 export * from "./successfail";
 
 export * from "./Activity";
+export * from "./ActivityDetailsModal";
 export * from "./ActivityItem";
 export * from "./Amount";
 export * from "./AmountCard";
@@ -14,7 +15,6 @@ export * from "./ContactForm";
 export * from "./ContactViewer";
 export * from "./DecryptDialog";
 export * from "./DeleteEverything";
-export * from "./DetailsModal";
 export * from "./ErrorDisplay";
 export * from "./Fee";
 export * from "./I18nProvider";

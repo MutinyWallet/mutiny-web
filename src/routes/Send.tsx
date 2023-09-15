@@ -15,6 +15,7 @@ import { useNavigate } from "solid-start";
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
 import {
+    ActivityDetailsModal,
     AmountCard,
     AmountFiat,
     AmountSats,
@@ -24,9 +25,9 @@ import {
     ButtonLink,
     Card,
     DefaultMain,
-    ExternalLink,
     Fee,
     GiftLink,
+    HackActivityType,
     HStack,
     InfoBox,
     LargeHeader,
@@ -44,10 +45,9 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { ParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, mempoolTxUrl, MutinyTagItem, vibrateSuccess } from "~/utils";
+import { eify, MutinyTagItem, vibrateSuccess } from "~/utils";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -59,6 +59,7 @@ type SentDetails = {
     amount?: bigint;
     destination?: string;
     txid?: string;
+    payment_hash?: string;
     failure_reason?: string;
     fee_estimate?: bigint | number;
 };
@@ -227,6 +228,11 @@ export default function Send() {
         Partial<MutinyTagItem>[]
     >([]);
 
+    // Details Modal
+    const [detailsOpen, setDetailsOpen] = createSignal(false);
+    const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
+    const [detailsId, setDetailsId] = createSignal("");
+
     // Errors
     const [error, setError] = createSignal<string>();
 
@@ -241,6 +247,29 @@ export default function Send() {
         setNodePubkey(undefined);
         setLnurlp(undefined);
         setFieldDestination("");
+    }
+
+    function openDetailsModal() {
+        const paymentTxId = sentDetails()?.txid
+            ? sentDetails()
+                ? sentDetails()?.txid
+                : undefined
+            : sentDetails()
+            ? sentDetails()?.payment_hash
+            : undefined;
+        const kind = sentDetails()?.txid ? "OnChain" : "Lightning";
+
+        console.log("Opening details modal: ", paymentTxId, kind);
+
+        if (!paymentTxId) {
+            console.warn("No id provided to openDetailsModal");
+            return;
+        }
+        if (paymentTxId !== undefined) {
+            setDetailsId(paymentTxId);
+        }
+        setDetailsKind(kind);
+        setDetailsOpen(true);
     }
 
     // If we got here from a scan result we want to set the destination and clean up that scan result
@@ -478,6 +507,7 @@ export default function Send() {
                         tags
                     );
                     sentDetails.amount = invoice()?.amount_sats;
+                    sentDetails.payment_hash = invoice()?.payment_hash;
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 } else {
                     const payment = await state.mutiny_wallet?.pay_invoice(
@@ -487,6 +517,7 @@ export default function Send() {
                         tags
                     );
                     sentDetails.amount = amountSats();
+                    sentDetails.payment_hash = invoice()?.payment_hash;
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && nodePubkey()) {
@@ -505,6 +536,7 @@ export default function Send() {
                     throw new Error(i18n.t("send.error_keysend"));
                 } else {
                     sentDetails.amount = amountSats();
+                    sentDetails.payment_hash = invoice()?.payment_hash;
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && lnurlp()) {
@@ -517,11 +549,13 @@ export default function Send() {
                     undefined, // zap_npub
                     tags
                 );
+                sentDetails.payment_hash = invoice()?.payment_hash;
 
                 if (!payment?.paid) {
                     throw new Error(i18n.t("send.error_LNURL"));
                 } else {
                     sentDetails.amount = amountSats();
+                    sentDetails.payment_hash = invoice()?.payment_hash;
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "onchain" && address()) {
@@ -568,8 +602,6 @@ export default function Send() {
         return !destination() || sending() || amountSats() === 0n || !!error();
     });
 
-    const network = state.mutiny_wallet?.get_network() as Network;
-
     return (
         <MutinyWalletGuard>
             <SafeArea>
@@ -614,6 +646,14 @@ export default function Send() {
                                 {/*TODO: add failure hint logic for different failure conditions*/}
                             </Match>
                             <Match when={true}>
+                                <Show when={detailsId() && detailsKind()}>
+                                    <ActivityDetailsModal
+                                        open={detailsOpen()}
+                                        kind={detailsKind()}
+                                        id={detailsId()}
+                                        setOpen={setDetailsOpen}
+                                    />
+                                </Show>
                                 <MegaCheck />
                                 <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
                                     {sentDetails()?.amount
@@ -638,16 +678,12 @@ export default function Send() {
                                 </div>
                                 <hr class="w-16 bg-m-grey-400" />
                                 <Fee amountSats={sentDetails()?.fee_estimate} />
-                                <Show when={sentDetails()?.txid}>
-                                    <ExternalLink
-                                        href={mempoolTxUrl(
-                                            sentDetails()?.txid,
-                                            network
-                                        )}
-                                    >
-                                        {i18n.t("common.view_transaction")}
-                                    </ExternalLink>
-                                </Show>
+                                <p
+                                    class="cursor-pointer underline"
+                                    onClick={openDetailsModal}
+                                >
+                                    {i18n.t("common.view_payment_details")}
+                                </p>
                             </Match>
                         </Switch>
                     </SuccessModal>

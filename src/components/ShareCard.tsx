@@ -46,8 +46,7 @@ export function TruncateMiddle(props: { text: string; whiteBg?: boolean }) {
         <div
             class="flex font-mono"
             classList={{
-                "text-black": props.whiteBg,
-                "text-neutral-300": !props.whiteBg
+                "text-black": props.whiteBg
             }}
         >
             <span class="truncate">{props.text}</span>

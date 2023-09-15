@@ -12,13 +12,14 @@ import {
 import { useNavigate } from "solid-start";
 
 import {
+    ActivityDetailsModal,
     AmountCard,
     AmountFiat,
     BackLink,
     Button,
     Card,
     DefaultMain,
-    ExternalLink,
+    HackActivityType,
     InfoBox,
     LargeHeader,
     MegaCheck,
@@ -35,7 +36,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { MethodChooser, SendSource } from "~/routes/Send";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, mempoolTxUrl, vibrateSuccess } from "~/utils";
+import { eify, vibrateSuccess } from "~/utils";
 
 const CHANNEL_FEE_ESTIMATE_ADDRESS =
     "bc1qf7546vg73ddsjznzq57z3e8jdn6gtw6au576j07kt6d9j7nz8mzsyn6lgf";
@@ -62,8 +63,31 @@ export default function Swap() {
 
     const [selectedPeer, setSelectedPeer] = createSignal<string>("");
 
+    // Details Modal
+    const [detailsOpen, setDetailsOpen] = createSignal(false);
+    const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
+    const [detailsId, setDetailsId] = createSignal("");
+
     const [channelOpenResult, setChannelOpenResult] =
         createSignal<ChannelOpenDetails>();
+
+    function openDetailsModal() {
+        const paymentTxId =
+            channelOpenResult()?.channel?.outpoint?.split(":")[0];
+        const kind: HackActivityType = "ChannelOpen";
+
+        console.log("Opening details modal: ", paymentTxId, kind);
+
+        if (!paymentTxId) {
+            console.warn("No id provided to openDetailsModal");
+            return;
+        }
+        if (paymentTxId !== undefined) {
+            setDetailsId(paymentTxId);
+        }
+        setDetailsKind(kind);
+        setDetailsOpen(true);
+    }
 
     function resetState() {
         setSource("onchain");
@@ -258,8 +282,6 @@ export default function Swap() {
         return undefined;
     });
 
-    const network = state.mutiny_wallet?.get_network() as Network;
-
     return (
         <MutinyWalletGuard>
             <SafeArea>
@@ -293,6 +315,14 @@ export default function Swap() {
                                 {/*TODO: Error hint needs to be added for possible failure reasons*/}
                             </Match>
                             <Match when={channelOpenResult()?.channel}>
+                                <Show when={detailsId() && detailsKind()}>
+                                    <ActivityDetailsModal
+                                        open={detailsOpen()}
+                                        kind={detailsKind()}
+                                        id={detailsId()}
+                                        setOpen={setDetailsOpen}
+                                    />
+                                </Show>
                                 <MegaCheck />
                                 <div class="flex flex-col justify-center">
                                     <h1 class="mb-2 mt-4 w-full justify-center text-center text-2xl font-semibold md:text-3xl">
@@ -328,22 +358,12 @@ export default function Swap() {
                                     </div>
                                 </div>
                                 <hr class="w-16 bg-m-grey-400" />
-                                <Show
-                                    when={
-                                        channelOpenResult()?.channel?.outpoint
-                                    }
+                                <p
+                                    class="cursor-pointer underline"
+                                    onClick={openDetailsModal}
                                 >
-                                    <ExternalLink
-                                        href={mempoolTxUrl(
-                                            channelOpenResult()?.channel?.outpoint?.split(
-                                                ":"
-                                            )[0],
-                                            network
-                                        )}
-                                    >
-                                        {i18n.t("common.view_transaction")}
-                                    </ExternalLink>
-                                </Show>
+                                    {i18n.t("common.view_payment_details")}
+                                </p>
                                 {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}
                             </Match>
                         </Switch>

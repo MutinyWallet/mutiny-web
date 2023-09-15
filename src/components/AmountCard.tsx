@@ -9,7 +9,9 @@ const noop = () => {
     // do nothing
 };
 
-const KeyValue: ParentComponent<{ key: string; gray?: boolean }> = (props) => {
+const AmountKeyValue: ParentComponent<{ key: string; gray?: boolean }> = (
+    props
+) => {
     return (
         <div
             class="flex items-center justify-between"
@@ -55,12 +57,12 @@ function USDShower(props: { amountSats: string; fee?: string }) {
 
     return (
         <Show when={!(props.amountSats === "0")}>
-            <KeyValue gray key="">
+            <AmountKeyValue gray key="">
                 <div class="self-end">
                     {amountInFiat()}&nbsp;
                     <span class="text-sm">{state.fiat.value}</span>
                 </div>
-            </KeyValue>
+            </AmountKeyValue>
         </Show>
     );
 }
@@ -99,7 +101,7 @@ export function AmountCard(props: {
                 <Switch>
                     <Match when={props.fee}>
                         <div class="flex flex-col gap-1">
-                            <KeyValue key={i18n.t("receive.amount")}>
+                            <AmountKeyValue key={i18n.t("receive.amount")}>
                                 <Show
                                     when={props.isAmountEditable}
                                     fallback={
@@ -124,16 +126,16 @@ export function AmountCard(props: {
                                         fee={props.fee}
                                     />
                                 </Show>
-                            </KeyValue>
-                            <KeyValue gray key={i18n.t("receive.fee")}>
+                            </AmountKeyValue>
+                            <AmountKeyValue gray key={i18n.t("receive.fee")}>
                                 <InlineAmount amount={props.fee || "0"} />
-                            </KeyValue>
+                            </AmountKeyValue>
                         </div>
                         <hr class="border-white/20" />
                         <div class="flex flex-col gap-1">
-                            <KeyValue key={i18n.t("receive.total")}>
+                            <AmountKeyValue key={i18n.t("receive.total")}>
                                 <InlineAmount amount={totalOrTotalLessFee()} />
-                            </KeyValue>
+                            </AmountKeyValue>
                             <USDShower
                                 amountSats={props.amountSats}
                                 fee={props.fee}
@@ -142,26 +144,28 @@ export function AmountCard(props: {
                     </Match>
                     <Match when={props.reserve}>
                         <div class="flex flex-col gap-1">
-                            <KeyValue key={i18n.t("receive.channel_size")}>
+                            <AmountKeyValue
+                                key={i18n.t("receive.channel_size")}
+                            >
                                 <InlineAmount
                                     amount={add(
                                         props.amountSats,
                                         props.reserve
                                     ).toString()}
                                 />
-                            </KeyValue>
-                            <KeyValue
+                            </AmountKeyValue>
+                            <AmountKeyValue
                                 gray
                                 key={i18n.t("receive.channel_reserve")}
                             >
                                 <InlineAmount amount={props.reserve || "0"} />
-                            </KeyValue>
+                            </AmountKeyValue>
                         </div>
                         <hr class="border-white/20" />
                         <div class="flex flex-col gap-1">
-                            <KeyValue key={i18n.t("receive.spendable")}>
+                            <AmountKeyValue key={i18n.t("receive.spendable")}>
                                 <InlineAmount amount={props.amountSats} />
-                            </KeyValue>
+                            </AmountKeyValue>
                             <USDShower
                                 amountSats={props.amountSats}
                                 fee={props.reserve}
@@ -170,7 +174,7 @@ export function AmountCard(props: {
                     </Match>
                     <Match when={!props.fee && !props.reserve}>
                         <div class="flex flex-col gap-1">
-                            <KeyValue key={i18n.t("receive.amount")}>
+                            <AmountKeyValue key={i18n.t("receive.amount")}>
                                 <Show
                                     when={props.isAmountEditable}
                                     fallback={
@@ -195,7 +199,7 @@ export function AmountCard(props: {
                                         fee={props.fee}
                                     />
                                 </Show>
-                            </KeyValue>
+                            </AmountKeyValue>
                             <USDShower amountSats={props.amountSats} />
                         </div>
                     </Match>

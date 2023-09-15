@@ -13,13 +13,19 @@ import {
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-export function LoadingShimmer() {
+export function LoadingShimmer(props: { center?: boolean }) {
     return (
         <div class="flex animate-pulse flex-col gap-2">
-            <h1 class="text-4xl font-light">
+            <h1
+                class="text-4xl font-light"
+                classList={{ "flex justify-center": props.center }}
+            >
                 <div class="h-[2.5rem] w-[12rem] rounded bg-neutral-700" />
             </h1>
-            <h2 class="text-xl font-light text-white/70">
+            <h2
+                class="text-xl font-light text-white/70"
+                classList={{ "flex justify-center": props.center }}
+            >
                 <div class="h-[1.75rem] w-[8rem] rounded bg-neutral-700" />
             </h2>
         </div>

@@ -17,6 +17,7 @@ import { useNavigate } from "solid-start";
 
 import side2side from "~/assets/icons/side-to-side.svg";
 import {
+    ActivityDetailsModal,
     AmountCard,
     AmountFiat,
     AmountSats,
@@ -26,9 +27,9 @@ import {
     Card,
     Checkbox,
     DefaultMain,
-    ExternalLink,
     Fee,
     FeesModal,
+    HackActivityType,
     Indicator,
     InfoBox,
     IntegratedQr,
@@ -45,11 +46,9 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import {
     eify,
-    mempoolTxUrl,
     MutinyTagItem,
     objectToSearchParams,
     vibrateSuccess
@@ -142,6 +141,11 @@ export default function Receive() {
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<string>("");
 
+    // Details Modal
+    const [detailsOpen, setDetailsOpen] = createSignal(false);
+    const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
+    const [detailsId, setDetailsId] = createSignal<string>("");
+
     const RECEIVE_FLAVORS = [
         {
             value: "unified",
@@ -182,6 +186,30 @@ export default function Receive() {
         setPaymentTx(undefined);
         setPaymentInvoice(undefined);
         setSelectedValues([]);
+    }
+
+    function openDetailsModal() {
+        const paymentTxId =
+            paidState() === "onchain_paid"
+                ? paymentTx()
+                    ? paymentTx()?.txid
+                    : undefined
+                : paymentInvoice()
+                ? paymentInvoice()?.payment_hash
+                : undefined;
+        const kind = paidState() === "onchain_paid" ? "OnChain" : "Lightning";
+
+        console.log("Opening details modal: ", paymentTxId, kind);
+
+        if (!paymentTxId) {
+            console.warn("No id provided to openDetailsModal");
+            return;
+        }
+        if (paymentTxId !== undefined) {
+            setDetailsId(paymentTxId);
+        }
+        setDetailsKind(kind);
+        setDetailsOpen(true);
     }
 
     async function processContacts(
@@ -346,8 +374,6 @@ export default function Receive() {
 
     const [paidState, { refetch }] = createResource(bip21Raw, checkIfPaid);
 
-    const network = state.mutiny_wallet?.get_network() as Network;
-
     createEffect(() => {
         const interval = setInterval(() => {
             if (receiveState() === "show") refetch();
@@ -483,6 +509,14 @@ export default function Receive() {
                                     navigate("/");
                                 }}
                             >
+                                <Show when={detailsId() && detailsKind()}>
+                                    <ActivityDetailsModal
+                                        open={detailsOpen()}
+                                        kind={detailsKind()}
+                                        id={detailsId()}
+                                        setOpen={setDetailsOpen}
+                                    />
+                                </Show>
                                 <MegaCheck />
                                 <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
                                     {receiveState() === "paid" &&
@@ -525,22 +559,14 @@ export default function Receive() {
                                 >
                                     <Fee amountSats={lspFee()} />
                                 </Show>
-                                {/*TODO: Confirmation time estimate still not possible needs to be implemented in mutiny-node first
-                                {/*TODO: add internal payment detail page* for lightning*/}
-                                <Show
-                                    when={
-                                        receiveState() === "paid" &&
-                                        paidState() === "onchain_paid"
-                                    }
-                                >
-                                    <ExternalLink
-                                        href={mempoolTxUrl(
-                                            paymentTx()?.txid,
-                                            network
-                                        )}
+                                {/*TODO: Confirmation time estimate still not possible needs to be implemented in mutiny-node first*/}
+                                <Show when={receiveState() === "paid"}>
+                                    <p
+                                        class="cursor-pointer underline"
+                                        onClick={openDetailsModal}
                                     >
-                                        {i18n.t("common.view_transaction")}
-                                    </ExternalLink>
+                                        {i18n.t("common.view_payment_details")}
+                                    </p>
                                 </Show>
                             </SuccessModal>
                         </Match>
