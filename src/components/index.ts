@@ -17,7 +17,6 @@ export * from "./CopyableQR";
 export * from "./DecryptDialog";
 export * from "./DeleteEverything";
 export * from "./DetailsModal";
-export * from "./Dialog";
 export * from "./ErrorDisplay";
 export * from "./Fee";
 export * from "./I18nProvider";

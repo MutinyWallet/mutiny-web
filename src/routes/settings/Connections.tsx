@@ -16,6 +16,7 @@ import {
     BackLink,
     Button,
     Collapser,
+    ConfirmDialog,
     DefaultMain,
     KeyValue,
     LargeHeader,
@@ -93,6 +94,12 @@ function NwcDetails(props: {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
+    const [confirmOpen, setConfirmOpen] = createSignal(false);
+
+    function confirmDelete() {
+        setConfirmOpen(true);
+    }
+
     async function deleteProfile() {
         try {
             await state.mutiny_wallet?.delete_nwc_profile(props.profile.index);
@@ -138,9 +145,6 @@ function NwcDetails(props: {
                 <KeyValue key={"Resets every"}>
                     {props.profile.budget_period}
                 </KeyValue>
-                <KeyValue key={"Remaining"}>
-                    <AmountSats amountSats={props.profile.budget_remaining} />
-                </KeyValue>
             </Show>
 
             <Button layout="small" intent="green" onClick={props.onEdit}>
@@ -155,9 +159,17 @@ function NwcDetails(props: {
                 {i18n.t("settings.connections.open_in_primal")}
             </Button>
 
-            <Button layout="small" onClick={deleteProfile}>
+            <Button layout="small" onClick={confirmDelete}>
                 {i18n.t("settings.connections.delete_connection")}
             </Button>
+            <ConfirmDialog
+                loading={false}
+                open={confirmOpen()}
+                onConfirm={deleteProfile}
+                onCancel={() => setConfirmOpen(false)}
+            >
+                {i18n.t("settings.connections.confirm_delete")}
+            </ConfirmDialog>
         </VStack>
     );
 }

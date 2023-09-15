@@ -19,7 +19,12 @@ import { A } from "solid-start";
 import check from "~/assets/icons/check.svg";
 import close from "~/assets/icons/close.svg";
 import down from "~/assets/icons/down.svg";
-import { DecryptDialog, LoadingIndicator, LoadingSpinner } from "~/components";
+import {
+    Button,
+    DecryptDialog,
+    LoadingIndicator,
+    LoadingSpinner
+} from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { generateGradient, MutinyTagItem } from "~/utils";
@@ -355,6 +360,52 @@ export const SimpleDialog: ParentComponent<{
                         </div>
                         <Dialog.Description class="flex flex-col gap-4">
                             {props.children}
+                        </Dialog.Description>
+                    </Dialog.Content>
+                </div>
+            </Dialog.Portal>
+        </Dialog.Root>
+    );
+};
+
+export const ConfirmDialog: ParentComponent<{
+    open: boolean;
+    loading: boolean;
+    onCancel: () => void;
+    onConfirm: () => void;
+}> = (props) => {
+    const i18n = useI18n();
+    return (
+        <Dialog.Root open={props.open} onOpenChange={props.onCancel}>
+            <Dialog.Portal>
+                <Dialog.Overlay class={SIMPLE_OVERLAY} />
+                <div class={SIMPLE_DIALOG_POSITIONER}>
+                    <Dialog.Content class={SIMPLE_DIALOG_CONTENT}>
+                        <div class="mb-2 flex justify-between">
+                            <Dialog.Title>
+                                <SmallHeader>
+                                    {i18n.t(
+                                        "modals.confirm_dialog.are_you_sure"
+                                    )}
+                                </SmallHeader>
+                            </Dialog.Title>
+                        </div>
+                        <Dialog.Description class="flex flex-col gap-4">
+                            {props.children}
+                            <div class="flex w-full justify-end gap-4">
+                                <Button layout="small" onClick={props.onCancel}>
+                                    {i18n.t("modals.confirm_dialog.cancel")}
+                                </Button>
+                                <Button
+                                    layout="small"
+                                    intent="red"
+                                    onClick={props.onConfirm}
+                                    loading={props.loading}
+                                    disabled={props.loading}
+                                >
+                                    {i18n.t("modals.confirm_dialog.confirm")}
+                                </Button>
+                            </div>
                         </Dialog.Description>
                     </Dialog.Content>
                 </div>
