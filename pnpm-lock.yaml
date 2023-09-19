@@ -42,8 +42,8 @@ importers:
         specifier: 5.0.0-beta.3
         version: 5.0.0-beta.3(@capacitor/core@5.2.2)
       '@mutinywallet/mutiny-wasm':
-        specifier: 0.4.18
-        version: 0.4.18
+        specifier: 0.4.19
+        version: 0.4.19
       '@mutinywallet/waila-wasm':
         specifier: ^0.2.1
         version: 0.2.1
@@ -2497,8 +2497,8 @@ packages:
       '@capacitor/core': 5.2.2
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.4.18:
-    resolution: {integrity: sha512-iao+seNqCRcbRS2a+O7hIPqUMrN7aNcfBwrlo6gSfcjhN7b8O81cfefjKscNTsgZuga86RAT6yOJa8IXdRLeAg==}
+  /@mutinywallet/mutiny-wasm@0.4.19:
+    resolution: {integrity: sha512-iDH6JFinOUnJu57tbdJqCMWjN1h5+UDznK8hLga+1l7LJw9ro/wxop+hsvKwGSsX6rvK3xhRKQHsFsb7NkiRfQ==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.2.1:
