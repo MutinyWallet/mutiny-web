@@ -179,14 +179,28 @@ export const Provider: ParentComponent = (props) => {
                     }
                 }
 
-                // Get balance optimistically
+                // Get balance + price optimistically
                 const balance = await mutinyWallet.get_balance();
+                let price;
+                try {
+                    if (state.fiat.value === "BTC") {
+                        price = 1;
+                    } else {
+                        price = await mutinyWallet.get_bitcoin_price(
+                            state.fiat.value.toLowerCase() || "usd"
+                        );
+                    }
+                } catch (e) {
+                    console.error(e);
+                    price = 0;
+                }
 
                 setState({
                     mutiny_wallet: mutinyWallet,
                     wallet_loading: false,
                     subscription_timestamp: subscription_timestamp,
                     load_stage: "done",
+                    price: price || 0,
                     balance
                 });
             } catch (e) {
