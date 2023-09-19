@@ -103,6 +103,7 @@ function NwcDetails(props: {
     async function deleteProfile() {
         try {
             await state.mutiny_wallet?.delete_nwc_profile(props.profile.index);
+            setConfirmOpen(false);
             props.refetch();
         } catch (e) {
             console.error(e);
