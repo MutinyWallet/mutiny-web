@@ -1,4 +1,3 @@
-import { Browser } from "@capacitor/browser";
 import { NwcProfile, type BudgetPeriod } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
@@ -34,7 +33,7 @@ import {
 import { BudgetForm, NWCBudgetEditor } from "~/components/NWCBudgetEditor";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { createDeepSignal } from "~/utils";
+import { createDeepSignal, openLinkProgrammatically } from "~/utils";
 
 function mapIntervalToBudgetPeriod(
     interval: "Day" | "Week" | "Month" | "Year"
@@ -112,13 +111,13 @@ function NwcDetails(props: {
 
     function openInNostrClient() {
         const uri = props.profile.nwc_uri;
-        Browser.open({ url: uri });
+        openLinkProgrammatically(uri);
     }
 
     function openInPrimal() {
         const uri = props.profile.nwc_uri;
         const connectString = uri.replace("nostr+walletconnect", "primal");
-        Browser.open({ url: connectString });
+        openLinkProgrammatically(connectString);
     }
 
     return (
@@ -197,7 +196,7 @@ function Nwc() {
     const [searchParams, setSearchParams] = useSearchParams();
     const queryName = searchParams.name;
     const [callbackDialogOpen, setCallbackDialogOpen] = createSignal(false);
-    const [callbackUri, setCallbackUri] = createSignal<string | null>(null);
+    const [callbackUri, setCallbackUri] = createSignal<string>();
 
     // Profile creation / editing
     const [dialogOpen, setDialogOpen] = createSignal(!!queryName);
@@ -279,11 +278,9 @@ function Nwc() {
     }
 
     function openCallbackUri() {
-        if (callbackUri()) {
-            Browser.open({ url: callbackUri() as string });
-            setSearchParams({ callbackUri: "" });
-            setCallbackDialogOpen(false);
-        }
+        openLinkProgrammatically(callbackUri());
+        setSearchParams({ callbackUri: "" });
+        setCallbackDialogOpen(false);
     }
 
     return (
