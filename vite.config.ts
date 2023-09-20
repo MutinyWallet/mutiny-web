@@ -22,6 +22,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
         short_name: "Mutiny",
         description: "A lightning wallet",
         theme_color: "#000",
+        categories: ["finance", "social"],
         icons: [
             {
                 src: "192.png",
