@@ -39,6 +39,44 @@ const pwaOptions: Partial<VitePWAOptions> = {
                 type: "image/png",
                 purpose: "any maskable"
             }
+        ],
+        shortcuts: [
+            {
+                name: "Send",
+                short_name: "Send",
+                url: "/send",
+                icons: [
+                    {
+                        src: "/images/airplane.png",
+                        sizes: "192x192",
+                        type: "image/png"
+                    },
+                ]
+            },
+            {
+                name: "Receive",
+                short_name: "Receive",
+                url: "/receive",
+                icons: [
+                    {
+                        src: "/images/big-receive.png",
+                        sizes: "192x192",
+                        type: "image/png"
+                    },
+                ]
+            },
+            {
+                name: "Activity",
+                short_name: "Activity",
+                url: "/activity",
+                icons: [
+                    {
+                        src: "/images/user-clock.png",
+                        sizes: "192x192",
+                        type: "image/png"
+                    },
+                ]
+            }
         ]
     }
 };
