@@ -2,9 +2,8 @@ import { createOptions, Select } from "@thisbeyond/solid-select";
 
 import "~/styles/solid-select.css";
 
-import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { createMemo, createSignal, onMount } from "solid-js";
 
-import { TinyButton } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import { MutinyTagItem, sortByLastUsed } from "~/utils";
 
@@ -65,12 +64,8 @@ export function TagEditor(props: {
         }
     };
 
-    const onTagTap = (tag: MutinyTagItem) => {
-        props.setSelectedValues([...props.selectedValues!, tag]);
-    };
-
     return (
-        <div class="flex flex-1 flex-shrink flex-col gap-2">
+        <>
             <Select
                 multiple
                 initialValue={props.selectedValues}
@@ -78,24 +73,6 @@ export function TagEditor(props: {
                 onChange={onChange}
                 {...selectProps()}
             />
-            <div class="flex flex-wrap gap-2">
-                <Show when={availableTags() && availableTags()!.length > 0}>
-                    <For
-                        each={availableTags()!.slice(0, 3).sort(sortByLastUsed)}
-                    >
-                        {(tag) => (
-                            <TinyButton
-                                hidden={props.selectedValues.includes(tag)}
-                                tag={tag}
-                                // eslint-disable-next-line solid/reactivity
-                                onClick={() => onTagTap(tag)}
-                            >
-                                {tag.name}
-                            </TinyButton>
-                        )}
-                    </For>
-                </Show>
-            </div>
-        </div>
+        </>
     );
 }
