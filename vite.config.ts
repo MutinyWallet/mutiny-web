@@ -48,7 +48,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
                 url: "/send",
                 icons: [
                     {
-                        src: "/images/airplane.png",
+                        src: "/images/send.png",
                         sizes: "192x192",
                         type: "image/png"
                     },
@@ -60,7 +60,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
                 url: "/receive",
                 icons: [
                     {
-                        src: "/images/big-receive.png",
+                        src: "/images/receive.png",
                         sizes: "192x192",
                         type: "image/png"
                     },
@@ -72,7 +72,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
                 url: "/activity",
                 icons: [
                     {
-                        src: "/images/user-clock.png",
+                        src: "/images/activity.png",
                         sizes: "192x192",
                         type: "image/png"
                     },
