@@ -477,21 +477,23 @@ export default function Send() {
                 sentDetails.destination = bolt11;
                 // If the invoice has sats use that, otherwise we pass the user-defined amount
                 if (invoice()?.amount_sats) {
-                    await state.mutiny_wallet?.pay_invoice(
+                    const payment = await state.mutiny_wallet?.pay_invoice(
                         firstNode,
                         bolt11,
                         undefined,
                         tags
                     );
                     sentDetails.amount = invoice()?.amount_sats;
+                    sentDetails.fee_estimate = payment?.fees_paid || 0;
                 } else {
-                    await state.mutiny_wallet?.pay_invoice(
+                    const payment = await state.mutiny_wallet?.pay_invoice(
                         firstNode,
                         bolt11,
                         amountSats(),
                         tags
                     );
                     sentDetails.amount = amountSats();
+                    sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && nodePubkey()) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
@@ -508,6 +510,7 @@ export default function Send() {
                     throw new Error(i18n.t("send.error_keysend"));
                 } else {
                     sentDetails.amount = amountSats();
+                    sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && lnurlp()) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
@@ -524,6 +527,7 @@ export default function Send() {
                     throw new Error(i18n.t("send.error_LNURL"));
                 } else {
                     sentDetails.amount = amountSats();
+                    sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "onchain" && address()) {
                 if (isMax()) {
