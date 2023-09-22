@@ -328,11 +328,11 @@ export function ModalCloseButton() {
     );
 }
 
-export const SIMPLE_OVERLAY = "fixed inset-0 z-50 bg-black/20 backdrop-blur-md";
+export const SIMPLE_OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-lg";
 export const SIMPLE_DIALOG_POSITIONER =
     "fixed inset-0 z-50 flex items-center justify-center";
 export const SIMPLE_DIALOG_CONTENT =
-    "max-w-[500px] w-[90vw] max-h-[100dvh] overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/80 backdrop-blur-md shadow-xl rounded-xl border border-white/10";
+    "max-w-[500px] w-[90vw] max-h-[100dvh] overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/90 rounded-xl border border-white/10";
 
 export const SimpleDialog: ParentComponent<{
     title: string;
