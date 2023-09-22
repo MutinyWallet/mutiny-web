@@ -7,6 +7,7 @@ import {
     DefaultMain,
     ExternalLink,
     LargeHeader,
+    MutinyPlusCta,
     NavBar,
     SafeArea,
     SettingsCard,
@@ -78,15 +79,7 @@ export default function Settings() {
                 <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
                 <VStack biggap>
                     <Show when={state.settings?.selfhosted !== "true"}>
-                        <SettingsLinkList
-                            header={i18n.t("settings.plus.title")}
-                            links={[
-                                {
-                                    href: "/settings/plus",
-                                    text: i18n.t("settings.support")
-                                }
-                            ]}
-                        />
+                        <MutinyPlusCta />
                     </Show>
                     <SettingsLinkList
                         header={i18n.t("settings.general")}
@@ -137,7 +130,9 @@ export default function Settings() {
                                 disabled: !state.mutiny_plus,
 
                                 text: i18n.t("settings.gift.title"),
-                                caption: !state.mutiny_plus ? "Upgrade to Mutiny+ to enabled gifting" : undefined
+                                caption: !state.mutiny_plus
+                                    ? "Upgrade to Mutiny+ to enabled gifting"
+                                    : undefined
                             },
                             {
                                 href: "/settings/lnurlauth",

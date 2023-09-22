@@ -144,9 +144,9 @@ function NwcDetails(props: {
                 </KeyValue>
                 {/* No interval for gifts */}
                 <Show when={props.profile.budget_period}>
-                <KeyValue key={i18n.t("settings.connections.resets_every")}>
-                    {props.profile.budget_period}
-                </KeyValue>
+                    <KeyValue key={i18n.t("settings.connections.resets_every")}>
+                        {props.profile.budget_period}
+                    </KeyValue>
                 </Show>
             </Show>
 
@@ -302,7 +302,7 @@ function Nwc() {
                 <SettingsCard
                     title={i18n.t("settings.connections.manage_connections")}
                 >
-                    <For each={nwcProfiles()?.filter(p => p.tag !== "Gift")}>
+                    <For each={nwcProfiles()?.filter((p) => p.tag !== "Gift")}>
                         {(profile) => (
                             <Collapser
                                 title={profile.name}

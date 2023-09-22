@@ -29,6 +29,7 @@ import {
     IntegratedQr,
     LargeHeader,
     LoadingSpinner,
+    MutinyPlusCta,
     MutinyWalletGuard,
     NavBar,
     NiceP,
@@ -47,7 +48,10 @@ type CreateGiftForm = {
     amount: string;
 };
 
-export function SingleGift(props: { profile: NwcProfile; onDelete?: () => void }) {
+export function SingleGift(props: {
+    profile: NwcProfile;
+    onDelete?: () => void;
+}) {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
@@ -199,6 +203,15 @@ export default function GiftPage() {
             <SafeArea>
                 <DefaultMain>
                     <BackPop />
+                    <Show when={!state.mutiny_plus}>
+                        <VStack>
+                            <LargeHeader>
+                                {i18n.t("settings.gift.send_header")}
+                            </LargeHeader>
+                            <NiceP>{i18n.t("settings.gift.need_plus")}</NiceP>
+                            <MutinyPlusCta />
+                        </VStack>
+                    </Show>
                     <Show when={giftResult()}>
                         <VStack>
                             <Switch>
@@ -234,7 +247,7 @@ export default function GiftPage() {
                             </Button>
                         </VStack>
                     </Show>
-                    <Show when={!giftResult()}>
+                    <Show when={!giftResult() && state.mutiny_plus}>
                         <LargeHeader>
                             {i18n.t("settings.gift.send_header")}
                         </LargeHeader>
