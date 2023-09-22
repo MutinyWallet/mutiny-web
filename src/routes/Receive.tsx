@@ -24,6 +24,7 @@ import {
     BackLink,
     Button,
     Card,
+    Checkbox,
     DefaultMain,
     ExternalLink,
     Fee,
@@ -110,7 +111,7 @@ function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
 }
 
 export default function Receive() {
-    const [state, _actions] = useMegaStore();
+    const [state, actions] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -132,8 +133,10 @@ export default function Receive() {
     const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
     const [paymentInvoice, setPaymentInvoice] = createSignal<MutinyInvoice>();
 
-    // The flavor of the receive
-    const [flavor, setFlavor] = createSignal<ReceiveFlavor>("unified");
+    // The flavor of the receive (defaults to unified)
+    const [flavor, setFlavor] = createSignal<ReceiveFlavor>(
+        state.preferredInvoiceType
+    );
 
     // loading state for the continue button
     const [loading, setLoading] = createSignal(false);
@@ -155,6 +158,8 @@ export default function Receive() {
             caption: i18n.t("receive.onchain_caption")
         }
     ];
+
+    const [rememberChoice, setRememberChoice] = createSignal(false);
 
     const receiveString = createMemo(() => {
         if (unified() && receiveState() === "show") {
@@ -326,6 +331,9 @@ export default function Receive() {
 
     function selectFlavor(flavor: string) {
         setFlavor(flavor as ReceiveFlavor);
+        if (rememberChoice()) {
+            actions.setPreferredInvoiceType(flavor as ReceiveFlavor);
+        }
         setMethodChooserOpen(false);
     }
 
@@ -434,11 +442,19 @@ export default function Receive() {
                                     }
                                 >
                                     <StyledRadioGroup
-                                        value={flavor()}
+                                        initialValue={flavor()}
                                         onValueChange={selectFlavor}
                                         choices={RECEIVE_FLAVORS}
                                         accent="white"
                                         vertical
+                                        delayOnChange
+                                    />
+                                    <Checkbox
+                                        label={i18n.t(
+                                            "receive.remember_choice"
+                                        )}
+                                        checked={rememberChoice()}
+                                        onChange={setRememberChoice}
                                     />
                                 </SimpleDialog>
                             </Show>

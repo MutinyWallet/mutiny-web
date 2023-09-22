@@ -473,7 +473,7 @@ export default function Redshift() {
                                         </NiceP>
                                         <StyledRadioGroup
                                             accent="red"
-                                            value={shiftType()}
+                                            initialValue={shiftType()}
                                             onValueChange={(newValue) =>
                                                 setShiftType(
                                                     newValue as ShiftOption

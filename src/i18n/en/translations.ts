@@ -89,7 +89,8 @@ export default {
             onchain: "On-chain",
             lightning: "Lightning",
             unified: "Unified"
-        }
+        },
+        remember_choice: "Remember my choice next time"
     },
     send: {
         sending: "Sending...",

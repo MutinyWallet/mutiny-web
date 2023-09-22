@@ -1,5 +1,7 @@
 import { RadioGroup } from "@kobalte/core";
-import { For, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
+
+import { timeout } from "~/utils";
 
 type Choices = {
     value: string;
@@ -10,18 +12,31 @@ type Choices = {
 
 // TODO: how could would it be if we could just pass the estimated fees in here?
 export function StyledRadioGroup(props: {
-    value: string;
+    initialValue: string;
     choices: Choices;
     onValueChange: (value: string) => void;
     small?: boolean;
     accent?: "red" | "white";
     vertical?: boolean;
+    delayOnChange?: boolean;
 }) {
+    const [value, setValue] = createSignal(props.initialValue);
+
+    async function onChange(value: string) {
+        setValue(value);
+
+        // This is so if the modal is going to be closed after value change, it will show the choice briefly first
+        if (props.delayOnChange) {
+            await timeout(200);
+            props.onValueChange(value);
+        } else {
+            props.onValueChange(value);
+        }
+    }
     return (
-        // TODO: rewrite this with CVA, props are bad for tailwind
         <RadioGroup.Root
-            value={props.value}
-            onChange={props.onValueChange}
+            value={value()}
+            onChange={onChange}
             class={"w-full gap-4"}
             classList={{
                 "flex flex-col": props.vertical,
@@ -36,7 +51,7 @@ export function StyledRadioGroup(props: {
                 {(choice) => (
                     <RadioGroup.Item
                         value={choice.value}
-                        class={`rounded bg-white/10 outline outline-black/50 ui-checked:bg-neutral-950 ui-checked:outline-2 ui-checked:outline-m-blue`}
+                        class={`rounded-lg bg-m-grey-700 ui-checked:outline`}
                         classList={{
                             "ui-checked:outline-m-red": props.accent === "red",
                             "ui-checked:outline-white":
@@ -45,19 +60,28 @@ export function StyledRadioGroup(props: {
                         }}
                         disabled={choice.disabled}
                     >
-                        <div class={props.small ? "px-2 py-2" : "px-4 py-3"}>
+                        <div
+                            class={"flex items-center gap-2 p-4"}
+                            classList={{ "px-2 py-2": props.small }}
+                        >
                             <RadioGroup.ItemInput />
-                            <RadioGroup.ItemControl>
-                                <RadioGroup.ItemIndicator />
+                            <RadioGroup.ItemControl
+                                class="flex aspect-square h-6 w-6 items-center justify-center rounded-full border"
+                                classList={{
+                                    hidden: !props.vertical
+                                }}
+                            >
+                                <RadioGroup.ItemIndicator class="h-3 w-3 rounded-full bg-white" />
                             </RadioGroup.ItemControl>
-                            <RadioGroup.ItemLabel class="text-neutral-400 ui-checked:text-white">
+                            <RadioGroup.ItemLabel>
                                 <div class="block">
                                     <div
+                                        class={"font-semibold"}
                                         classList={{
                                             "text-base": props.small,
-                                            "text-lg": !props.small
+                                            "text-md": !props.small,
+                                            "text-sm": !props.vertical
                                         }}
-                                        class={`font-semibold max-sm:text-sm`}
                                     >
                                         {choice.label}
                                     </div>

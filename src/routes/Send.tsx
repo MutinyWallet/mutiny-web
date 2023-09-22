@@ -102,7 +102,7 @@ export function MethodChooser(props: {
             <Match when={props.both}>
                 <StyledRadioGroup
                     accent="white"
-                    value={props.source}
+                    initialValue={props.source}
                     onValueChange={props.setSource}
                     choices={methods()}
                 />
@@ -110,7 +110,7 @@ export function MethodChooser(props: {
             <Match when={props.source === "lightning"}>
                 <StyledRadioGroup
                     accent="white"
-                    value={props.source}
+                    initialValue={props.source}
                     onValueChange={props.setSource}
                     choices={[methods()[0]]}
                 />
@@ -118,7 +118,7 @@ export function MethodChooser(props: {
             <Match when={props.source === "onchain"}>
                 <StyledRadioGroup
                     accent="white"
-                    value={props.source}
+                    initialValue={props.source}
                     onValueChange={props.setSource}
                     choices={[methods()[1]]}
                 />
