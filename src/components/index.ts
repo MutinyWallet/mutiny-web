@@ -43,3 +43,4 @@ export * from "./Toaster";
 export * from "./NostrActivity";
 export * from "./SyncContactsForm";
 export * from "./GiftLink";
+export * from "./MutinyPlusCta";

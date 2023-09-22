@@ -407,7 +407,9 @@ export default {
             satisfaction: "Smug satisfaction",
             gifting: "Gifting",
             multi_device: "Multi-device access",
-            more: "... and more to come"
+            more: "... and more to come",
+            cta_description:
+                "Enjoy early access to new features and premium functionality."
         },
         restore: {
             title: "Restore",
@@ -486,7 +488,9 @@ export default {
             send_cta: "Create a gift",
             send_delete_button: "Delete Gift",
             send_delete_confirm:
-                "Are you sure you want to delete this gift? Is this your rugpull moment?"
+                "Are you sure you want to delete this gift? Is this your rugpull moment?",
+            need_plus:
+                "Upgrade to Mutiny+ to enable gifting. Gifting allows you to create a Mutiny gift URL that can be claimed by anyone with a web browser."
         }
     },
     swap: {

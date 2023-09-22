@@ -36,12 +36,9 @@ function Perks(props: { alreadySubbed?: boolean }) {
             <Show when={props.alreadySubbed}>
                 <li>{i18n.t("settings.plus.satisfaction")}</li>
             </Show>
+            <li>{i18n.t("settings.plus.gifting")} </li>
             <li>
                 {i18n.t("redshift.title")}{" "}
-                <em>{i18n.t("common.coming_soon")}</em>
-            </li>
-            <li>
-                {i18n.t("settings.plus.gifting")}{" "}
                 <em>{i18n.t("common.coming_soon")}</em>
             </li>
             <li>
