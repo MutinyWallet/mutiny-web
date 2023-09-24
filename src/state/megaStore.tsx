@@ -182,17 +182,25 @@ export const Provider: ParentComponent = (props) => {
                 // Get balance + price optimistically
                 const balance = await mutinyWallet.get_balance();
                 let price;
-                try {
-                    if (state.fiat.value === "BTC") {
-                        price = 1;
-                    } else {
-                        price = await mutinyWallet.get_bitcoin_price(
-                            state.fiat.value.toLowerCase() || "usd"
-                        );
+                // only get price if balance is non-zero
+                if (
+                    balance.confirmed > 0 ||
+                    balance.unconfirmed > 0 ||
+                    balance.lightning > 0 ||
+                    balance.force_close > 0
+                ) {
+                    try {
+                        if (state.fiat.value === "BTC") {
+                            price = 1;
+                        } else {
+                            price = await mutinyWallet.get_bitcoin_price(
+                                state.fiat.value.toLowerCase() || "usd"
+                            );
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        price = 0;
                     }
-                } catch (e) {
-                    console.error(e);
-                    price = 0;
                 }
 
                 setState({
