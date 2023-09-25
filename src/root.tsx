@@ -8,15 +8,14 @@ import {
     Link,
     Meta,
     Scripts,
-    Title,
+    Title
 } from "solid-start";
 
 import "./root.css";
 
-
 import { ErrorDisplay, I18nProvider } from "~/components";
-import { Provider as MegaStoreProvider } from "~/state/megaStore";
 import { Router } from "~/router";
+import { Provider as MegaStoreProvider } from "~/state/megaStore";
 
 export default function Root() {
     return (

@@ -437,6 +437,8 @@ export default {
             lsp_label: "LSP",
             lsp_caption:
                 "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy.",
+            storage_label: "Storage",
+            storage_caption: "Encrypted VSS backup service.",
             error_lsp: "That doesn't look like a URL",
             save: "Save"
         },
