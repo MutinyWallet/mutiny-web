@@ -31,29 +31,43 @@ export type BudgetForm = {
 export function NWCBudgetEditor(props: {
     initialProfile?: NwcProfile;
     initialName?: string;
+    initialAmount?: string;
+    initialInterval?: "Day" | "Week" | "Month" | "Year";
     onSave: (value: BudgetForm) => Promise<void>;
 }) {
     const i18n = useI18n();
 
+    const connection_name =
+        props.initialProfile?.name ?? props.initialName ?? "";
+
+    // If there's an initial profile, look at that, otherwise default to false
+    const auto_approve =
+        props.initialProfile?.require_approval !== undefined
+            ? !props.initialProfile?.require_approval
+            : false;
+
+    // prop amount -> profile editing -> subscriptions -> 0
+    // (ternaries take precendence so I put it in parens)
+    const budget_amount =
+        props.initialAmount ??
+        props.initialProfile?.budget_amount?.toString() ??
+        (props.initialProfile?.index === 0 ? "21000" : "0");
+
+    // prop intervail -> profile editing -> subscriptions -> day
+    const interval =
+        props.initialInterval ??
+        (props.initialProfile?.budget_period
+            ? (props.initialProfile?.budget_period as BudgetForm["interval"])
+            : props.initialProfile?.index === 0
+            ? "Month"
+            : "Day");
+
     const [budgetForm, { Form, Field }] = createForm<BudgetForm>({
         initialValues: {
-            connection_name:
-                props.initialProfile?.name || props.initialName || "",
-            // If there's an initial profile, look at that, otherwise default to false
-            auto_approve: props.initialProfile
-                ? !props.initialProfile.require_approval
-                : false,
-            budget_amount:
-                props.initialProfile?.budget_amount?.toString() ||
-                props.initialProfile?.index === 0
-                    ? "21000"
-                    : "0",
-            interval:
-                (props.initialProfile
-                    ?.budget_period as BudgetForm["interval"]) ||
-                props.initialProfile?.index === 0
-                    ? "Month"
-                    : "Day"
+            connection_name,
+            auto_approve,
+            budget_amount,
+            interval
         },
         validate: (values) => {
             const errors: Record<string, string> = {};

@@ -50,6 +50,24 @@ function mapIntervalToBudgetPeriod(
     }
 }
 
+function mapBudgetRenewalToInterval(
+    budgetRenewal?: string
+): undefined | "Day" | "Week" | "Month" | "Year" {
+    if (!budgetRenewal) return undefined;
+    switch (budgetRenewal) {
+        case "day":
+            return "Day";
+        case "week":
+            return "Week";
+        case "month":
+            return "Month";
+        case "year":
+            return "Year";
+        default:
+            return undefined;
+    }
+}
+
 function Spending(props: { spent: number; remaining: number }) {
     const i18n = useI18n();
     return (
@@ -287,6 +305,13 @@ function Nwc() {
         setSearchParams({ name: "" });
         setDialogOpen(false);
 
+        // If there's a "return_to" param we use that instead of the callbackUri scheme
+        const returnUrl = searchParams.return_to;
+        if (returnUrl) {
+            setCallbackUri(returnUrl);
+            setCallbackDialogOpen(true);
+        }
+
         const callbackUriScheme = searchParams.callbackUri;
         if (callbackUriScheme) {
             const fullURI = newProfile.nwc_uri.replace(
@@ -343,6 +368,14 @@ function Nwc() {
                     initialName={queryName}
                     initialProfile={profileToOpen()}
                     onSave={createConnection}
+                    initialAmount={
+                        searchParams.max_amount
+                            ? searchParams.max_amount
+                            : undefined
+                    }
+                    initialInterval={mapBudgetRenewalToInterval(
+                        searchParams.budget_renewal
+                    )}
                 />
             </SimpleDialog>
             <SimpleDialog
