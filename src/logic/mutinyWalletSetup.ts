@@ -14,6 +14,7 @@ export type MutinyWalletSettingStrings = {
     subscriptions?: string;
     storage?: string;
     scorer?: string;
+    selfhosted?: string;
 };
 
 const SETTINGS_KEYS = [
@@ -61,6 +62,11 @@ const SETTINGS_KEYS = [
         name: "scorer",
         storageKey: "USER_SETTINGS_scorer",
         default: import.meta.env.VITE_SCORER
+    },
+    {
+        name: "selfhosted",
+        storageKey: "USER_SETTINGS_selfhosted",
+        default: import.meta.env.VITE_SELFHOSTED
     }
 ];
 
@@ -98,6 +104,23 @@ export async function getSettings() {
         const item = getItemOrDefault(storageKey, defaultValue);
         settings[n] = item as string;
     });
+
+    // VITE_PROXY and VITE_STORAGE might be set as relative URLs when self-hosting, so we need to make them absolute
+    const selfhosted = settings.selfhosted === "true";
+
+    // Expect urls like /_services/proxy and /_services/storage
+    if (selfhosted) {
+        const base = window.location.origin;
+        console.log("Self-hosted mode enabled, using base URL", base);
+        const proxy = settings.proxy;
+        const storage = settings.storage;
+        if (proxy && proxy.startsWith("/")) {
+            settings.proxy = base + proxy;
+        }
+        if (storage && storage.startsWith("/")) {
+            settings.storage = base + storage;
+        }
+    }
 
     if (!settings.network || !settings.proxy || !settings.esplora) {
         throw new Error(
