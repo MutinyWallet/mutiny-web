@@ -1,13 +1,15 @@
 # Use Node.js as a base image for building the site
-FROM node:19-slim AS builder
+FROM node:20-slim AS builder
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
-RUN apt update && apt install -y git
-
-# Set working directory
+# This is the cooler way to run pnpm these days (no need to npm install it)
+RUN corepack enable
+COPY . /app
 WORKDIR /app
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# I think we need git be here because the vite build wants to look up the commit hash
+RUN apt update && apt install -y git
 
 # Add the ARG directives for build-time environment variables
 ARG VITE_NETWORK="bitcoin"
@@ -19,14 +21,11 @@ ARG VITE_AUTH="https://auth.mutinywallet.com"
 ARG VITE_STORAGE="https://storage.mutinywallet.com"
 ARG VITE_SELFHOSTED="true"
 
-# Copy package.json and pnpm-lock.yaml (or shrinkwrap.yaml) to utilize Docker cache
-COPY package.json pnpm-lock.yaml ./
-
 # Install dependencies
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the files
-COPY . .
+# IDK why but it gets mad if you don't do this
+RUN git config --global --add safe.directory /app
 
 # Build the static site
 RUN pnpm run build
