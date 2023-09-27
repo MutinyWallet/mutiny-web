@@ -17,8 +17,8 @@ ARG VITE_PROXY="wss://p.mutinywallet.com"
 ARG VITE_ESPLORA="https://mutinynet.com/api"
 ARG VITE_LSP="https://lsp.voltageapi.com"
 ARG VITE_RGS="https://rgs.mutinynet.com/snapshot/"
-ARG VITE_AUTH="https://auth.mutinywallet.com"
-ARG VITE_STORAGE="https://storage.mutinywallet.com"
+ARG VITE_AUTH
+ARG VITE_STORAGE
 ARG VITE_SELFHOSTED="true"
 
 # Install dependencies
