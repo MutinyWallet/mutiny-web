@@ -69,6 +69,7 @@ export function LiquidityMonitor() {
     const [channelInfo] = createResource(async () => {
         try {
             const channels = await state.mutiny_wallet?.list_channels();
+            let outbound = 0n;
             let inbound = 0n;
             let reserve = 0n;
 
@@ -78,12 +79,18 @@ export function LiquidityMonitor() {
                     BigInt(channel.size) -
                     BigInt(channel.balance + channel.reserve);
                 reserve = reserve + BigInt(channel.reserve);
+                outbound = outbound + BigInt(channel.balance);
             }
 
-            return { inbound, reserve, channelCount: channels?.length };
+            return {
+                inbound,
+                reserve,
+                outbound,
+                channelCount: channels?.length
+            };
         } catch (e) {
             console.error(e);
-            return { inbound: 0, reserve: 0, channelCount: 0 };
+            return { inbound: 0, reserve: 0, outbound: 0, channelCount: 0 };
         }
     });
 
@@ -101,7 +108,7 @@ export function LiquidityMonitor() {
                     <BalanceBar
                         inbound={Number(channelInfo()?.inbound) || 0}
                         reserve={Number(channelInfo()?.reserve) || 0}
-                        outbound={Number(state.balance?.lightning) || 0}
+                        outbound={Number(channelInfo()?.outbound) || 0}
                     />
                     <TinyText>
                         {i18n.t("settings.channels.inbound_outbound_tip")}
