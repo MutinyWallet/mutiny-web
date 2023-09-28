@@ -4,3 +4,4 @@ node_modules
 *.md
 dist
 justfile
+.env.local

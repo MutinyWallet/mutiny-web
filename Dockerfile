@@ -13,12 +13,12 @@ RUN apt update && apt install -y git
 
 # Add the ARG directives for build-time environment variables
 ARG VITE_NETWORK="bitcoin"
-ARG VITE_PROXY="wss://p.mutinywallet.com"
-ARG VITE_ESPLORA="https://mutinynet.com/api"
+ARG VITE_PROXY="/_services/proxy"
+ARG VITE_ESPLORA
 ARG VITE_LSP="https://lsp.voltageapi.com"
-ARG VITE_RGS="https://rgs.mutinynet.com/snapshot/"
+ARG VITE_RGS
 ARG VITE_AUTH
-ARG VITE_STORAGE
+ARG VITE_STORAGE="/_services/vss/v2"
 ARG VITE_SELFHOSTED="true"
 
 # Install dependencies
