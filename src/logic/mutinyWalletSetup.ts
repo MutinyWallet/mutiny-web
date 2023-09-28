@@ -110,21 +110,27 @@ export async function getSettings() {
 
     // Expect urls like /_services/proxy and /_services/storage
     if (selfhosted) {
-        const base = window.location.origin;
+        let base = window.location.origin;
         console.log("Self-hosted mode enabled, using base URL", base);
-        const proxy = settings.proxy;
         const storage = settings.storage;
-        if (proxy && proxy.startsWith("/")) {
-            settings.proxy = base + proxy;
-        }
         if (storage && storage.startsWith("/")) {
             settings.storage = base + storage;
         }
+
+        const proxy = settings.proxy;
+        if (proxy && proxy.startsWith("/")) {
+            if (base.startsWith("http://")) {
+                base = base.replace("http://", "ws://");
+            } else if (base.startsWith("https://")) {
+                base = base.replace("https://", "wss://");
+            }
+            settings.proxy = base + proxy;
+        }
     }
 
-    if (!settings.network || !settings.proxy || !settings.esplora) {
+    if (!settings.network || !settings.proxy) {
         throw new Error(
-            "Missing a default setting for network, proxy, or esplora. Check your .env file to make sure it looks like .env.sample"
+            "Missing a default setting for network or proxy. Check your .env file to make sure it looks like .env.sample"
         );
     }
 

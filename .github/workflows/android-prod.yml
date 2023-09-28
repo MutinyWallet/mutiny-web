@@ -64,7 +64,7 @@ jobs:
           VITE_RGS: https://scorer.mutinywallet.com/v1/rgs/snapshot/
           VITE_AUTH: https://auth.mutinywallet.com
           VITE_SUBSCRIPTIONS: https://subscriptions.mutinywallet.com
-          VITE_STORAGE: https://storage.mutinywallet.com
+          VITE_STORAGE: https://storage.mutinywallet.com/v2
           VITE_FEEDBACK: https://feedback.mutinywallet.com
           VITE_SCORER: https://scorer.mutinywallet.com
           VITE_PRIMAL: https://primal-cache.mutinywallet.com/api
