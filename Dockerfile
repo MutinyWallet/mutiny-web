@@ -15,6 +15,7 @@ RUN apt update && apt install -y git
 ARG VITE_NETWORK="bitcoin"
 ARG VITE_PROXY="/_services/proxy"
 ARG VITE_ESPLORA
+ARG VITE_SCORER="https://scorer.mutinywallet.com"
 ARG VITE_LSP="https://lsp.voltageapi.com"
 ARG VITE_RGS
 ARG VITE_AUTH
