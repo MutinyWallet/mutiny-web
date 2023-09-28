@@ -96,7 +96,7 @@ function TwelveWordsEntry() {
 
     async function handlePaste() {
         try {
-            let text;
+            let text: string;
 
             if (Capacitor.isNativePlatform()) {
                 const { value } = await Clipboard.read();
@@ -111,7 +111,7 @@ function TwelveWordsEntry() {
             }
 
             // split words on space or newline
-            const words = text.split(/[\s\n]+/);
+            const words = text.trim().split(/[\s\n]+/);
 
             if (words.length !== 12) {
                 return showToast(
