@@ -6,7 +6,6 @@ export * from "./ActivityItem";
 export * from "./Amount";
 export * from "./AmountCard";
 export * from "./AmountEditable";
-export * from "./App";
 export * from "./BalanceBox";
 export * from "./BetaWarningModal";
 export * from "./ChooseCurrency";

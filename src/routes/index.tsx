@@ -62,6 +62,11 @@ export default function App() {
                                 {state.mutiny_wallet?.get_network()}
                             </div>
                         </Show>
+                        <Show when={state.settings?.selfhosted === "true"}>
+                            <div class="text-white-400 -my-1 box-border w-fit rounded bg-neutral-800 px-2 py-1 text-xs  uppercase">
+                            {i18n.t("common.self_hosted")}
+                            </div>
+                        </Show>
                     </div>
                     <A
                         class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
