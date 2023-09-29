@@ -64,7 +64,7 @@ export default function App() {
                         </Show>
                         <Show when={state.settings?.selfhosted === "true"}>
                             <div class="text-white-400 -my-1 box-border w-fit rounded bg-neutral-800 px-2 py-1 text-xs  uppercase">
-                            {i18n.t("common.self_hosted")}
+                                {i18n.t("common.self_hosted")}
                             </div>
                         </Show>
                     </div>
