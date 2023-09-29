@@ -9,7 +9,7 @@ COPY . /app
 WORKDIR /app
 
 # I think we need git be here because the vite build wants to look up the commit hash
-RUN apt update && apt install -y git
+RUN apt update && apt install -y git python3 make build-essential
 
 # Add the ARG directives for build-time environment variables
 ARG VITE_NETWORK="bitcoin"
