@@ -21,7 +21,7 @@ export default {
         pending: "Pending",
         error_safe_mode:
             "Mutiny is running in safe mode. Lightning is disabled.",
-        self_hosted: "Self-hosted",
+        self_hosted: "Self-hosted"
     },
     contacts: {
         new: "new",
