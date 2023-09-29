@@ -77,15 +77,17 @@ export default function Settings() {
                 <BackLink />
                 <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
                 <VStack biggap>
-                    <SettingsLinkList
-                        header={i18n.t("settings.plus.title")}
-                        links={[
-                            {
-                                href: "/settings/plus",
-                                text: i18n.t("settings.support")
-                            }
-                        ]}
-                    />
+                    <Show when={state.settings?.selfhosted !== "true"}>
+                        <SettingsLinkList
+                            header={i18n.t("settings.plus.title")}
+                            links={[
+                                {
+                                    href: "/settings/plus",
+                                    text: i18n.t("settings.support")
+                                }
+                            ]}
+                        />
+                    </Show>
                     <SettingsLinkList
                         header={i18n.t("settings.general")}
                         links={[
