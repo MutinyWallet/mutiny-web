@@ -261,7 +261,9 @@ export function Send() {
     const [nodePubkey, setNodePubkey] = createSignal<string>();
     const [lnurlp, setLnurlp] = createSignal<string>();
     const [lnAddress, setLnAddress] = createSignal<string>();
+    const [originalScan, setOriginalScan] = createSignal<string>();
     const [address, setAddress] = createSignal<string>();
+    const [payjoinEnabled, setPayjoinEnabled] = createSignal<boolean>();
     const [description, setDescription] = createSignal<string>();
     const [contactId, setContactId] = createSignal<string>();
     const [isHodlInvoice, setIsHodlInvoice] = createSignal<boolean>(false);
@@ -414,9 +416,11 @@ export function Send() {
     function handleDestination(source: ParsedParams | undefined) {
         if (!source) return;
         setParsingDestination(true);
-
+        setOriginalScan(source.original);
         try {
             if (source.address) setAddress(source.address);
+            if (source.payjoin_enabled)
+                setPayjoinEnabled(source.payjoin_enabled);
             if (source.memo) setDescription(source.memo);
             if (source.contact_id) setContactId(source.contact_id);
 
@@ -594,6 +598,16 @@ export function Send() {
                         tags
                     );
 
+                    sentDetails.amount = amountSats();
+                    sentDetails.destination = address();
+                    sentDetails.txid = txid;
+                    sentDetails.fee_estimate = feeEstimate() ?? 0;
+                } else if (payjoinEnabled()) {
+                    const txid = await state.mutiny_wallet?.send_payjoin(
+                        originalScan()!,
+                        amountSats(),
+                        tags
+                    );
                     sentDetails.amount = amountSats();
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
@@ -788,6 +802,11 @@ export function Send() {
                             methods={sendMethods()}
                             setChosenMethod={setSourceFromMethod}
                         />
+                    </Show>
+                    <Show when={payjoinEnabled()}>
+                        <InfoBox accent="green">
+                            <p>{i18n.t("send.payjoin_send")}</p>
+                        </InfoBox>
                     </Show>
                     <Show when={!isAmtEditable()}>
                         <AmountEditable

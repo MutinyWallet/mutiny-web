@@ -369,6 +369,7 @@ export const Provider: ParentComponent = (props) => {
             } else {
                 if (
                     result.value?.address ||
+                    result.value?.payjoin_enabled ||
                     result.value?.invoice ||
                     result.value?.node_pubkey ||
                     (result.value?.lnurl && !result.value.is_lnurl_auth)
