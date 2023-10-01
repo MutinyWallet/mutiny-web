@@ -546,6 +546,16 @@ export default function Send() {
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
                     sentDetails.fee_estimate = feeEstimate() ?? 0;
+                } else if (payjoinEnabled()) {
+                    const txid = await state.mutiny_wallet?.send_payjoin(
+                        address()!,
+                        amountSats(),
+                        tags
+                    );
+                    sentDetails.amount = amountSats();
+                    sentDetails.destination = address();
+                    sentDetails.txid = txid;
+                    sentDetails.fee_estimate = feeEstimate() ?? 0;
                 } else {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const txid = await state.mutiny_wallet?.send_to_address(
@@ -558,16 +568,6 @@ export default function Send() {
                     sentDetails.txid = txid;
                     sentDetails.fee_estimate = feeEstimate() ?? 0;
                 }
-            } else if (source() === "onchain" && payjoinEnabled()) {
-                const txid = await state.mutiny_wallet?.send_payjoin(
-                    address()!,
-                    amountSats(),
-                    tags
-                );
-                sentDetails.amount = amountSats();
-                sentDetails.destination = address();
-                sentDetails.txid = txid;
-                sentDetails.fee_estimate = feeEstimate() ?? 0;
             }
             setSentDetails(sentDetails as SentDetails);
             clearAll();
@@ -594,11 +594,7 @@ export default function Send() {
                 <DefaultMain>
                     <Show
                         when={
-                            address() ||
-                            pjUri() ||
-                            invoice() ||
-                            nodePubkey() ||
-                            lnurlp()
+                            address() || invoice() || nodePubkey() || lnurlp()
                         }
                         fallback={<BackLink />}
                     >
@@ -678,7 +674,6 @@ export default function Send() {
                             <Match
                                 when={
                                     address() ||
-                                    pjUri() ||
                                     invoice() ||
                                     nodePubkey() ||
                                     lnurlp()
@@ -687,10 +682,7 @@ export default function Send() {
                                 <MethodChooser
                                     source={source()}
                                     setSource={setSource}
-                                    both={
-                                        (!!address() || !!pjUri()) &&
-                                        !!invoice()
-                                    }
+                                    both={!!address() && !!invoice()}
                                 />
                                 <Card title={i18n.t("send.destination")}>
                                     <VStack>
@@ -699,7 +691,6 @@ export default function Send() {
                                             description={description()}
                                             invoice={invoice()}
                                             address={address()}
-                                            pjUri={pjUri()}
                                             nodePubkey={nodePubkey()}
                                             lnurl={lnurlp()}
                                             clearAll={clearAll}
