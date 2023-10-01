@@ -19,8 +19,18 @@ export const useCopy = ({ copiedTimeout = 2000 }: UseCopyProps = {}): [
             await Clipboard.write({
                 string: text
             });
-        } else {
+        } else if (navigator.clipboard && window.isSecureContext) {
             await navigator.clipboard.writeText(text);
+        } else {
+            // handle if running on http://
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "absolute";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.select();
+            await document.execCommand("copy");
+            textArea.remove();
         }
         setCopied(true);
         if (timeout) clearTimeout(timeout);
