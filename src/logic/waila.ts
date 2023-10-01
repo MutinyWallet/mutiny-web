@@ -7,7 +7,7 @@ await initWaila();
 
 export type ParsedParams = {
     address?: string;
-    pj_uri?: string;
+    payjoin_enabled?: boolean;
     invoice?: string;
     amount_sats?: bigint;
     network?: string;
@@ -50,7 +50,7 @@ export function toParsedParams(
         ok: true,
         value: {
             address: params.address,
-            pj_uri: params.pj_uri,
+            payjoin_enabled: params.payjoin_supported,
             invoice: params.invoice,
             amount_sats: params.amount_sats,
             network,

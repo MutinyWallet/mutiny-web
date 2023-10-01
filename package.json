@@ -54,7 +54,7 @@
         "@modular-forms/solid": "^0.18.1",
         "@mutinywallet/barcode-scanner": "5.0.0-beta.3",
         "@mutinywallet/mutiny-wasm": "0.4.20",
-        "@mutinywallet/waila-wasm": "^0.2.1",
+        "@mutinywallet/waila-wasm": "^0.2.3",
         "@nostr-dev-kit/ndk": "^0.8.11",
         "@solid-primitives/upload": "^0.0.111",
         "@solid-primitives/websocket": "^1.1.0",

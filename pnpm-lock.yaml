@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -41,8 +45,8 @@ importers:
         specifier: 0.4.20
         version: 0.4.20
       '@mutinywallet/waila-wasm':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.2.3
+        version: 0.2.3
       '@nostr-dev-kit/ndk':
         specifier: ^0.8.11
         version: 0.8.11(eslint-import-resolver-typescript@2.7.1)(typescript@5.1.6)
@@ -2497,8 +2501,8 @@ packages:
     resolution: {integrity: sha512-dygacqfLbWzUeN9iUpWwmZluM5ZfwYpzBXOeTTYSweiWpblTia7x67UqTNgzxh88gkuM4b0GUoo69QO5LppPSQ==}
     dev: false
 
-  /@mutinywallet/waila-wasm@0.2.1:
-    resolution: {integrity: sha512-D//LCPB+dUOkmVWXLR4IA7tR/3odIoGhbwSiWBAlxqclegZMfWIdGdupYf9Yc16H18l/1cR3MXKvVwUkfSsj5g==}
+  /@mutinywallet/waila-wasm@0.2.3:
+    resolution: {integrity: sha512-U2upDhtGLM+bR8CvkYWZJZk3fG5uQ6dvvJGR3+IO64fmnljNBaooX9lo2WT4g/4t2knFMsMPIzOdGVyPQpejAg==}
     dev: false
 
   /@ndelangen/get-tarball@3.0.9:
@@ -14062,7 +14066,3 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

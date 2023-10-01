@@ -175,7 +175,6 @@ function DestinationShower(props: {
     source: SendSource;
     description?: string;
     address?: string;
-    pjUri?: string;
     invoice?: MutinyInvoice;
     nodePubkey?: string;
     lnurl?: string;
@@ -185,9 +184,6 @@ function DestinationShower(props: {
         <Switch>
             <Match when={props.address && props.source === "onchain"}>
                 <StringShower text={props.address || ""} />
-            </Match>
-            <Match when={props.pjUri && props.source === "onchain"}>
-                <StringShower text={props.pjUri || ""} />
             </Match>
             <Match when={props.invoice && props.source === "lightning"}>
                 <StringShower text={props.invoice?.bolt11 || ""} />
@@ -221,7 +217,7 @@ export default function Send() {
     const [nodePubkey, setNodePubkey] = createSignal<string>();
     const [lnurlp, setLnurlp] = createSignal<string>();
     const [address, setAddress] = createSignal<string>();
-    const [pjUri, setPjUri] = createSignal<string>();
+    const [payjoinEnabled, setPayjoinEnabled] = createSignal<boolean>();
     const [description, setDescription] = createSignal<string>();
 
     // Is sending / sent
@@ -243,7 +239,7 @@ export default function Send() {
         setSource("lightning");
         setInvoice(undefined);
         setAddress(undefined);
-        setPjUri(undefined);
+        setPayjoinEnabled(undefined);
         setDescription(undefined);
         setNodePubkey(undefined);
         setLnurlp(undefined);
@@ -312,7 +308,7 @@ export default function Send() {
             source() === "onchain" &&
             amountSats() &&
             amountSats() > 0n &&
-            (address() || pjUri())
+            address()
         ) {
             try {
                 // If max we want to use the sweep fee estimator
@@ -323,7 +319,7 @@ export default function Send() {
                 }
 
                 return state.mutiny_wallet?.estimate_tx_fee(
-                    address()! || pjUri()!,
+                    address()!,
                     amountSats(),
                     undefined
                 );
@@ -340,7 +336,8 @@ export default function Send() {
         if (!source) return;
         try {
             if (source.address) setAddress(source.address);
-            if (source.pj_uri) setPjUri(source.pj_uri);
+            if (source.payjoin_enabled)
+                setPayjoinEnabled(source.payjoin_enabled);
             if (source.memo) setDescription(source.memo);
 
             if (source.invoice) {
@@ -395,7 +392,6 @@ export default function Send() {
             } else {
                 if (
                     result.value?.address ||
-                    result.value?.pj_uri ||
                     result.value?.invoice ||
                     result.value?.node_pubkey ||
                     result.value?.lnurl
@@ -562,14 +558,14 @@ export default function Send() {
                     sentDetails.txid = txid;
                     sentDetails.fee_estimate = feeEstimate() ?? 0;
                 }
-            } else if (source() === "onchain" && pjUri()) {
+            } else if (source() === "onchain" && payjoinEnabled()) {
                 const txid = await state.mutiny_wallet?.send_payjoin(
-                    pjUri()!,
+                    address()!,
                     amountSats(),
                     tags
                 );
                 sentDetails.amount = amountSats();
-                sentDetails.destination = pjUri();
+                sentDetails.destination = address();
                 sentDetails.txid = txid;
                 sentDetails.fee_estimate = feeEstimate() ?? 0;
             }
