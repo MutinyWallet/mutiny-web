@@ -6,6 +6,7 @@ import { Result } from "~/utils";
 await initWaila();
 
 export type ParsedParams = {
+    original: string;
     address?: string;
     payjoin_enabled?: boolean;
     invoice?: string;
@@ -49,6 +50,7 @@ export function toParsedParams(
     return {
         ok: true,
         value: {
+            original: str,
             address: params.address,
             payjoin_enabled: params.payjoin_supported,
             invoice: params.invoice,

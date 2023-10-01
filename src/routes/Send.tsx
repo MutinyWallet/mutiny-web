@@ -548,7 +548,7 @@ export default function Send() {
                     sentDetails.fee_estimate = feeEstimate() ?? 0;
                 } else if (payjoinEnabled()) {
                     const txid = await state.mutiny_wallet?.send_payjoin(
-                        address()!,
+                        destination()!.original,
                         amountSats(),
                         tags
                     );
