@@ -60,36 +60,38 @@ export function StyledRadioGroup(props: {
                         }}
                         disabled={choice.disabled}
                     >
-                        <div
-                            class={"flex items-center gap-2 p-4"}
-                            classList={{ "px-2 py-2": props.small }}
-                        >
+                        <div class={"flex items-center"}>
                             <RadioGroup.ItemInput />
-                            <RadioGroup.ItemControl
-                                class="flex aspect-square h-6 w-6 items-center justify-center rounded-full border"
-                                classList={{
-                                    hidden: !props.vertical
-                                }}
+                            <RadioGroup.ItemLabel
+                                class="w-full p-4"
+                                classList={{ "px-2 py-2": props.small }}
                             >
-                                <RadioGroup.ItemIndicator class="h-3 w-3 rounded-full bg-white" />
-                            </RadioGroup.ItemControl>
-                            <RadioGroup.ItemLabel>
-                                <div class="block">
-                                    <div
-                                        class={"font-semibold"}
+                                <div class="flex flex-row gap-2">
+                                    <RadioGroup.ItemControl
+                                        class="my-auto flex aspect-square h-6 w-6 items-center justify-center rounded-full border"
                                         classList={{
-                                            "text-base": props.small,
-                                            "text-md": !props.small,
-                                            "text-sm": !props.vertical
+                                            hidden: !props.vertical
                                         }}
                                     >
-                                        {choice.label}
-                                    </div>
-                                    <Show when={!props.small}>
-                                        <div class="text-sm font-light">
-                                            {choice.caption}
+                                        <RadioGroup.ItemIndicator class="h-3 w-3 rounded-full bg-white" />
+                                    </RadioGroup.ItemControl>
+                                    <div class="flex flex-col">
+                                        <div
+                                            class={"font-semibold"}
+                                            classList={{
+                                                "text-base": props.small,
+                                                "text-md": !props.small,
+                                                "text-sm": !props.vertical
+                                            }}
+                                        >
+                                            {choice.label}
                                         </div>
-                                    </Show>
+                                        <Show when={!props.small}>
+                                            <div class="text-sm font-light">
+                                                {choice.caption}
+                                            </div>
+                                        </Show>
+                                    </div>
                                 </div>
                             </RadioGroup.ItemLabel>
                         </div>
