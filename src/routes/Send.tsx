@@ -712,6 +712,14 @@ export default function Send() {
                                         />
                                     </VStack>
                                 </Card>
+                                <Show when={payjoinEnabled()}>
+                                    <InfoBox accent="green">
+                                        <p>
+                                            This is a payjoin! The Mutiny will
+                                            continue until privacy improves
+                                        </p>
+                                    </InfoBox>
+                                </Show>
                                 <Show when={error()}>
                                     <InfoBox accent="red">
                                         <p>{error()}</p>
