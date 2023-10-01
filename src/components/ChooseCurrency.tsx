@@ -121,9 +121,7 @@ export function ChooseCurrency() {
     const handleFormSubmit = async (f: ChooseCurrencyForm) => {
         setLoading(true);
         try {
-            actions.saveFiat(
-                findCurrencyByValue(f.fiatCurrency) || FIAT_OPTIONS[1]
-            );
+            actions.saveFiat(findCurrencyByValue(f.fiatCurrency) || state.fiat);
 
             await timeout(1000);
             navigate("/");
