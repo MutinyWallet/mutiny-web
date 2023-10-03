@@ -31,6 +31,14 @@ just test-ui
 
 Hopefully your editor picks up on the `.prettirrc` file and auto formats accordingly. If you want to format everything in the project run `pnpm run format`.
 
+### Deploying Web
+
+Create a PR from `master` to `prod`, and once it does CI and gets approvals, do this from the command line: 
+
+```
+git checkout master && git pull && git checkout prod && git pull && git merge --ff-only origin/master && git push
+```
+
 ## Contributing
 
 Before committing make sure to run `pnpm run pre-commit`. This will typecheck, lint, and format everything so CI won't hassle you.
