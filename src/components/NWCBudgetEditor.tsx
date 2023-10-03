@@ -109,11 +109,11 @@ export function NWCBudgetEditor(props: {
                                 {(field, _fieldProps) => (
                                     <div class="flex flex-col items-end gap-2">
                                         <AmountEditable
-                                            skipWarnings={true}
                                             initialOpen={false}
                                             initialAmountSats={
                                                 field.value || "0"
                                             }
+                                            showWarnings={false}
                                             setAmountSats={(a) => {
                                                 setValue(
                                                     budgetForm,

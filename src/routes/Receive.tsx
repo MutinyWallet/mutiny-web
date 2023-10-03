@@ -386,6 +386,7 @@ export default function Receive() {
                                     setAmountSats={setAmount}
                                     isAmountEditable
                                     exitRoute={amount() ? "/receive" : "/"}
+                                    showWarnings
                                 />
 
                                 <Card title={i18n.t("common.private_tags")}>

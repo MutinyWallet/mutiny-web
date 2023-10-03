@@ -700,7 +700,6 @@ export default function Send() {
                                     fee={feeEstimate()?.toString()}
                                     isAmountEditable={isAmtEditable()}
                                     maxAmountSats={maxAmountSats()}
-                                    skipWarnings={true}
                                 />
                             </Match>
                             <Match when={true}>
