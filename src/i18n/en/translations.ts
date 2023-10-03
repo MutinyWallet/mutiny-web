@@ -409,7 +409,8 @@ export default {
             multi_device: "Multi-device access",
             more: "... and more to come",
             cta_description:
-                "Enjoy early access to new features and premium functionality."
+                "Enjoy early access to new features and premium functionality.",
+            cta_but_already_plus: "Thank you for your support!"
         },
         restore: {
             title: "Restore",

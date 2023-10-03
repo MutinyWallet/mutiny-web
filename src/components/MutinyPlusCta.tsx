@@ -1,8 +1,9 @@
-import { ParentComponent } from "solid-js";
+import { ParentComponent, Show } from "solid-js";
 import { A } from "solid-start";
 
 import forward from "~/assets/icons/forward.svg";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 
 export const CtaCard: ParentComponent = (props) => {
     return (
@@ -18,6 +19,7 @@ export const CtaCard: ParentComponent = (props) => {
 };
 
 export function MutinyPlusCta() {
+    const [state, _actions] = useMegaStore();
     const i18n = useI18n();
     return (
         <CtaCard>
@@ -32,7 +34,12 @@ export function MutinyPlusCta() {
                     <img src={forward} alt="go" />
                 </div>
                 <div class="text-sm text-m-grey-400">
-                    {i18n.t("settings.plus.cta_description")}
+                    <Show
+                        when={state.mutiny_plus}
+                        fallback={i18n.t("settings.plus.cta_description")}
+                    >
+                        {i18n.t("settings.plus.cta_but_already_plus")}
+                    </Show>
                 </div>
             </A>
         </CtaCard>
