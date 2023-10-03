@@ -55,7 +55,13 @@ export function SingleGift(props: {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
-    const baseUrl = window.location.origin;
+    const network = state.mutiny_wallet?.get_network();
+
+    const baseUrl =
+        network === "bitcoin"
+            ? "https://app.mutinywallet.com"
+            : "https://signet-app.mutinywallet.com";
+
     const sharableUrl = () => baseUrl.concat(props.profile.url_suffix || "");
     const amount = () => props.profile.budget_amount?.toString() || "0";
 
@@ -198,12 +204,15 @@ export default function GiftPage() {
         return Number(getValue(giftForm, "amount")) < 50000;
     };
 
+    const selfHosted = state.mutiny_wallet?.get_network() === "signet";
+    const canGift = state.mutiny_plus || selfHosted;
+
     return (
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
                     <BackPop />
-                    <Show when={!state.mutiny_plus}>
+                    <Show when={!canGift}>
                         <VStack>
                             <LargeHeader>
                                 {i18n.t("settings.gift.send_header")}
@@ -236,6 +245,9 @@ export default function GiftPage() {
                                             "settings.gift.send_instructions"
                                         )}
                                     </NiceP>
+                                    <InfoBox accent="green">
+                                        {i18n.t("settings.gift.send_tip")}
+                                    </InfoBox>
                                     <SingleGift
                                         profile={freshProfile()!}
                                         onDelete={resetGifting}
@@ -247,7 +259,7 @@ export default function GiftPage() {
                             </Button>
                         </VStack>
                     </Show>
-                    <Show when={!giftResult() && state.mutiny_plus}>
+                    <Show when={!giftResult() && canGift}>
                         <LargeHeader>
                             {i18n.t("settings.gift.send_header")}
                         </LargeHeader>

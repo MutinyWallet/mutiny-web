@@ -465,13 +465,16 @@ export default {
             already_claimed: "This gift has already been claimed",
             sender_is_poor:
                 "The sender doesn't have enough balance to pay this gift.",
+            sender_timed_out:
+                "Gift payment timed out. The sender may be offline, or this gift has already been claimed.",
             sender_generic_error: "Sender sent error: {{error}}",
             receive_header: "You've been gifted some sats!",
             receive_description:
-                "You must be pretty special. To claim your money just hit the big button. Funds will be added to your balance the next time your gifter is online.",
+                "You must be pretty special. To claim your money just hit the big button. Funds will be added to this wallet the next time your gifter is online.",
             receive_claimed:
                 "Gift claimed! You should see the gift hit your balance shortly.",
             receive_cta: "Claim Gift",
+            receive_try_again: "Try Again",
             send_header: "Create Gift",
             send_explainer:
                 "Give the gift of sats. Create a Mutiny gift URL that can be claimed by anyone with a web browser.",
@@ -489,6 +492,8 @@ export default {
             send_delete_button: "Delete Gift",
             send_delete_confirm:
                 "Are you sure you want to delete this gift? Is this your rugpull moment?",
+            send_tip:
+                "Your copy of Mutiny Wallet needs to be open for the gift to be redeemed.",
             need_plus:
                 "Upgrade to Mutiny+ to enable gifting. Gifting allows you to create a Mutiny gift URL that can be claimed by anyone with a web browser."
         }
