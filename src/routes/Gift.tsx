@@ -1,4 +1,12 @@
-import { createResource, createSignal, Match, Show, Switch } from "solid-js";
+import {
+    createMemo,
+    createResource,
+    createSignal,
+    Match,
+    Show,
+    Suspense,
+    Switch
+} from "solid-js";
 import { useSearchParams } from "solid-start";
 
 import treasureClosed from "~/assets/treasure-closed.png";
@@ -6,6 +14,7 @@ import treasure from "~/assets/treasure.gif";
 import {
     AmountFiat,
     AmountSats,
+    BackLink,
     Button,
     ButtonLink,
     DefaultMain,
@@ -24,38 +33,36 @@ import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { eify } from "~/utils";
 
-export default function GiftPage() {
+function InboundWarning() {
     const [state, _] = useMegaStore();
     const i18n = useI18n();
-
-    const [claimSuccess, setClaimSuccess] = createSignal(false);
-    const [error, setError] = createSignal<Error>();
-    const [loading, setLoading] = createSignal(false);
-
     const [searchParams] = useSearchParams();
 
     const [inboundCapacity] = createResource(async () => {
         try {
             const channels = await state.mutiny_wallet?.list_channels();
-            let inbound = 0;
+            let inbound = 0n;
 
             for (const channel of channels) {
-                inbound += channel.size - (channel.balance + channel.reserve);
+                inbound =
+                    inbound +
+                    BigInt(channel.size) -
+                    BigInt(channel.balance + channel.reserve);
             }
 
             return inbound;
         } catch (e) {
             console.error(e);
-            return 0;
+            return 0n;
         }
     });
 
-    const warningText = () => {
-        const amount = Number(searchParams.amount);
-
-        if (isNaN(amount)) {
+    const warningText = createMemo(() => {
+        if (isNaN(Number(searchParams.amount))) {
             return undefined;
         }
+
+        const amount = BigInt(searchParams.amount);
 
         const network = state.mutiny_wallet?.get_network() as Network;
 
@@ -68,12 +75,31 @@ export default function GiftPage() {
             });
         }
 
-        if (amount > (inboundCapacity() || 0)) {
+        if (inboundCapacity() && inboundCapacity()! > amount) {
+            return undefined;
+        } else {
             return i18n.t("settings.gift.setup_fee_lightning");
         }
+    });
 
-        return undefined;
-    };
+    return (
+        <Show when={warningText()}>
+            <InfoBox accent="blue">
+                {warningText()} <FeesModal />
+            </InfoBox>
+        </Show>
+    );
+}
+
+export default function GiftPage() {
+    const [state, _] = useMegaStore();
+    const i18n = useI18n();
+
+    const [claimSuccess, setClaimSuccess] = createSignal(false);
+    const [error, setError] = createSignal<Error>();
+    const [loading, setLoading] = createSignal(false);
+
+    const [searchParams] = useSearchParams();
 
     async function claim() {
         const amount = Number(searchParams.amount);
@@ -84,7 +110,6 @@ export default function GiftPage() {
                 BigInt(amount),
                 nwc
             );
-            console.log("claim result", claimResult);
             if (claimResult === "Already Claimed") {
                 throw new Error(i18n.t("settings.gift.already_claimed"));
             }
@@ -105,16 +130,27 @@ export default function GiftPage() {
             setClaimSuccess(true);
         } catch (e) {
             console.error(e);
-            setError(eify(e));
+            const err = eify(e);
+            if (err.message === "Payment timed out.") {
+                setError(new Error(i18n.t("settings.gift.sender_timed_out")));
+            } else {
+                setError(err);
+            }
         } finally {
             setLoading(false);
         }
+    }
+
+    async function tryAgain() {
+        setError(undefined);
+        await claim();
     }
 
     return (
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
+                    <BackLink />
                     <Show when={searchParams.nwc_uri && searchParams.amount}>
                         <VStack>
                             <FancyCard>
@@ -173,12 +209,10 @@ export default function GiftPage() {
                                             "settings.gift.receive_description"
                                         )}
                                     </NiceP>
-                                    <Show
-                                        when={warningText() && !claimSuccess()}
-                                    >
-                                        <InfoBox accent="blue">
-                                            {warningText()} <FeesModal />
-                                        </InfoBox>
+                                    <Show when={!claimSuccess()}>
+                                        <Suspense>
+                                            <InboundWarning />
+                                        </Suspense>
                                     </Show>
                                     <Switch>
                                         <Match when={error()}>
@@ -188,6 +222,15 @@ export default function GiftPage() {
                                             <ButtonLink href="/" intent="red">
                                                 {i18n.t("common.dangit")}
                                             </ButtonLink>
+                                            <Button
+                                                intent="inactive"
+                                                onClick={tryAgain}
+                                                loading={loading()}
+                                            >
+                                                {i18n.t(
+                                                    "settings.gift.receive_try_again"
+                                                )}
+                                            </Button>
                                         </Match>
                                         <Match when={claimSuccess()}>
                                             <InfoBox accent="green">

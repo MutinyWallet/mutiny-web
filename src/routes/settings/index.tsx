@@ -72,13 +72,15 @@ export default function Settings() {
     // @ts-ignore
     const COMMIT_HASH = import.meta.env.__COMMIT_HASH__;
 
+    const selfHosted = state.settings?.selfhosted === "true";
+
     return (
         <SafeArea>
             <DefaultMain>
                 <BackLink />
                 <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
                 <VStack biggap>
-                    <Show when={state.settings?.selfhosted !== "true"}>
+                    <Show when={!selfHosted}>
                         <MutinyPlusCta />
                     </Show>
                     <SettingsLinkList
@@ -127,10 +129,9 @@ export default function Settings() {
                             },
                             {
                                 href: "/settings/gift",
-                                disabled: !state.mutiny_plus,
-
+                                disabled: !(state.mutiny_plus || selfHosted),
                                 text: i18n.t("settings.gift.title"),
-                                caption: !state.mutiny_plus
+                                caption: !(state.mutiny_plus || selfHosted)
                                     ? "Upgrade to Mutiny+ to enabled gifting"
                                     : undefined
                             },
