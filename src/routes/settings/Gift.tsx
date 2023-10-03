@@ -41,6 +41,7 @@ import {
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { eify } from "~/utils";
+import { baseUrlAccountingForNative } from "~/utils/baseUrl";
 import { createDeepSignal } from "~/utils/deepSignal";
 
 type CreateGiftForm = {
@@ -57,10 +58,7 @@ export function SingleGift(props: {
 
     const network = state.mutiny_wallet?.get_network();
 
-    const baseUrl =
-        network === "bitcoin"
-            ? "https://app.mutinywallet.com"
-            : "https://signet-app.mutinywallet.com";
+    const baseUrl = baseUrlAccountingForNative(network);
 
     const sharableUrl = () => baseUrl.concat(props.profile.url_suffix || "");
     const amount = () => props.profile.budget_amount?.toString() || "0";
@@ -204,7 +202,7 @@ export default function GiftPage() {
         return Number(getValue(giftForm, "amount")) < 50000;
     };
 
-    const selfHosted = state.mutiny_wallet?.get_network() === "signet";
+    const selfHosted = state.settings?.selfhosted === "true";
     const canGift = state.mutiny_plus || selfHosted;
 
     return (
