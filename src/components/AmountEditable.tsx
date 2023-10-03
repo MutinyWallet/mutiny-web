@@ -262,7 +262,7 @@ export const AmountEditable: ParentComponent<{
     initialAmountSats: string;
     initialOpen: boolean;
     setAmountSats: (s: bigint) => void;
-    skipWarnings?: boolean;
+    showWarnings: boolean;
     exitRoute?: string;
     maxAmountSats?: bigint;
     fee?: string;
@@ -781,7 +781,7 @@ export const AmountEditable: ParentComponent<{
                                     </InfoBox>
                                 </Match>
                                 <Match
-                                    when={warningText() && !props.skipWarnings}
+                                    when={warningText() && props.showWarnings}
                                 >
                                     <InfoBox accent="blue">
                                         {warningText()} <FeesModal />

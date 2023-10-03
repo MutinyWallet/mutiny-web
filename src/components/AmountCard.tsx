@@ -76,7 +76,7 @@ export function AmountCard(props: {
     initialOpen?: boolean;
     isAmountEditable?: boolean;
     setAmountSats?: (amount: bigint) => void;
-    skipWarnings?: boolean;
+    showWarnings?: boolean;
     exitRoute?: string;
     maxAmountSats?: bigint;
 }) {
@@ -116,7 +116,9 @@ export function AmountCard(props: {
                                                 ? props.setAmountSats
                                                 : noop
                                         }
-                                        skipWarnings={props.skipWarnings}
+                                        showWarnings={
+                                            props.showWarnings ?? false
+                                        }
                                         exitRoute={props.exitRoute}
                                         maxAmountSats={props.maxAmountSats}
                                         fee={props.fee}
@@ -185,7 +187,9 @@ export function AmountCard(props: {
                                                 ? props.setAmountSats
                                                 : noop
                                         }
-                                        skipWarnings={props.skipWarnings}
+                                        showWarnings={
+                                            props.showWarnings ?? false
+                                        }
                                         exitRoute={props.exitRoute}
                                         maxAmountSats={props.maxAmountSats}
                                         fee={props.fee}

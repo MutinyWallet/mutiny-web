@@ -435,7 +435,6 @@ export default function Swap() {
                             setAmountSats={setAmountSats}
                             fee={feeEstimate()?.toString()}
                             isAmountEditable={true}
-                            skipWarnings={true}
                             maxAmountSats={maxOnchain()}
                         />
                         <Show when={amountWarning() && amountSats() > 0n}>
