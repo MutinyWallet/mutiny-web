@@ -73,6 +73,9 @@ export default function Settings() {
     const COMMIT_HASH = import.meta.env.__COMMIT_HASH__;
 
     const selfHosted = state.settings?.selfhosted === "true";
+    const today = new Date();
+    // days are 1 indexed, months are 0 indexed
+    const isChristmas = today.getDate() === 25 && today.getMonth() === 11;
 
     return (
         <SafeArea>
@@ -129,10 +132,18 @@ export default function Settings() {
                             },
                             {
                                 href: "/settings/gift",
-                                disabled: !(state.mutiny_plus || selfHosted),
+                                disabled: !(
+                                    state.mutiny_plus ||
+                                    selfHosted ||
+                                    isChristmas
+                                ),
                                 text: i18n.t("settings.gift.title"),
-                                caption: !(state.mutiny_plus || selfHosted)
-                                    ? "Upgrade to Mutiny+ to enabled gifting"
+                                caption: !(
+                                    state.mutiny_plus ||
+                                    selfHosted ||
+                                    isChristmas
+                                )
+                                    ? i18n.t("settings.gift.no_plus_caption")
                                     : undefined
                             },
                             {

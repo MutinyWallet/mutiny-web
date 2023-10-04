@@ -466,6 +466,7 @@ export default {
         gift: {
             give_sats_link: "Give sats as a gift",
             title: "Gifting",
+            no_plus_caption: "Upgrade to Mutiny+ to enabled gifting",
             receive_too_small:
                 "Your first receive needs to be {{amount}} SATS or greater.",
             setup_fee_lightning:

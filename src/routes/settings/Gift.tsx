@@ -203,7 +203,11 @@ export default function GiftPage() {
     };
 
     const selfHosted = state.settings?.selfhosted === "true";
-    const canGift = state.mutiny_plus || selfHosted;
+    const today = new Date();
+    // days are 1 indexed, months are 0 indexed
+    const isChristmas = today.getDate() === 25 && today.getMonth() === 11;
+
+    const canGift = state.mutiny_plus || selfHosted || isChristmas;
 
     return (
         <MutinyWalletGuard>
