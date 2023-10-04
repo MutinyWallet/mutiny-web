@@ -493,6 +493,7 @@ export default function Send() {
                     firstNode,
                     nodePubkey()!,
                     amountSats(),
+                    undefined, // todo add optional keysend message
                     tags
                 );
 
