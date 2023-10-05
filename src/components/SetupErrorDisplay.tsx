@@ -1,7 +1,9 @@
 import { Match, Switch } from "solid-js";
 import { Title } from "solid-start";
 
+import nodevice from "~/assets/no-device.png";
 import {
+    Button,
     DefaultMain,
     DeleteEverything,
     ExternalLink,
@@ -83,6 +85,11 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                         <LargeHeader>
                             {i18n.t("error.on_boot.existing_tab.title")}
                         </LargeHeader>
+                        <img
+                            src={nodevice}
+                            alt="no device"
+                            class="mx-auto w-1/4 max-w-[25vh] flex-shrink"
+                        />
                         <p class="rounded-xl bg-white/10 p-4 font-mono">
                             <span class="font-bold">{error.name}</span>:{" "}
                             {error.message}
@@ -90,6 +97,39 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                         <NiceP>
                             {i18n.t("error.on_boot.existing_tab.description")}
                         </NiceP>
+                        <Button onClick={() => window.location.reload()}>
+                            Reload
+                        </Button>
+                        <ErrorFooter />
+                    </DefaultMain>
+                </Match>
+                <Match
+                    when={error.message.startsWith("Mutiny is already running")}
+                >
+                    <Title>
+                        {i18n.t("error.on_boot.already_running.title")}
+                    </Title>
+                    <DefaultMain>
+                        <LargeHeader>
+                            {i18n.t("error.on_boot.already_running.title")}
+                        </LargeHeader>
+                        <img
+                            src={nodevice}
+                            alt="no device"
+                            class="mx-auto w-1/4 max-w-[25vh] flex-shrink"
+                        />
+                        <p class="rounded-xl bg-white/10 p-4 font-mono">
+                            <span class="font-bold">{error.name}</span>:{" "}
+                            {error.message}
+                        </p>
+                        <NiceP>
+                            {i18n.t(
+                                "error.on_boot.already_running.description"
+                            )}
+                        </NiceP>
+                        <Button onClick={() => window.location.reload()}>
+                            Reload
+                        </Button>
                         <ErrorFooter />
                     </DefaultMain>
                 </Match>
