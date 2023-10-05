@@ -552,7 +552,12 @@ export default {
             existing_tab: {
                 title: "Multiple tabs detected",
                 description:
-                    "Mutiny currently only supports use in one tab at a time. It looks like you have another tab open with Mutiny running. Please close that tab and refresh this page, or close this tab and refresh the other one."
+                    "Mutiny can only be used in one tab at a time. It looks like you have another tab open with Mutiny running. Please close that tab and refresh this page, or close this tab and refresh the other one."
+            },
+            already_running: {
+                title: "Mutiny may be running on another device",
+                description:
+                    "Mutiny can only be used in one place at a time. It looks like you have another device or browser using this wallet. If you've recently closed Mutiny on another device, please wait a few minutes and try again."
             },
             incompatible_browser: {
                 title: "Incompatible browser",
