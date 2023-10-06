@@ -122,13 +122,15 @@ function NwcDetails(props: {
 
     return (
         <VStack>
-            <div class="w-full rounded-xl bg-white">
-                <QRCodeSVG
-                    value={props.profile.nwc_uri}
-                    class="h-full max-h-[320px] w-full p-8"
-                />
-            </div>
-            <ShareCard text={props.profile.nwc_uri || ""} />
+            <Show when={props.profile.index >= 1000}>
+                <div class="w-full rounded-xl bg-white">
+                    <QRCodeSVG
+                        value={props.profile.nwc_uri}
+                        class="h-full max-h-[320px] w-full p-8"
+                    />
+                </div>
+                <ShareCard text={props.profile.nwc_uri || ""} />
+            </Show>
 
             <Show when={!props.profile.require_approval}>
                 <TinyText>{i18n.t("settings.connections.careful")}</TinyText>
@@ -146,6 +148,15 @@ function NwcDetails(props: {
                 <Show when={props.profile.budget_period}>
                     <KeyValue key={i18n.t("settings.connections.resets_every")}>
                         {props.profile.budget_period}
+                    </KeyValue>
+                </Show>
+                <Show when={props.profile.index === 0}>
+                    <KeyValue
+                        key={i18n.t("settings.connections.resubscribe_date")}
+                    >
+                        {new Date(
+                            state.subscription_timestamp! * 1000
+                        ).toLocaleDateString()}
                     </KeyValue>
                 </Show>
             </Show>

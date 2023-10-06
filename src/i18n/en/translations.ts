@@ -296,7 +296,8 @@ export default {
             remaining: "Remaining",
             confirm_delete: "Are you sure you want to delete this connection?",
             budget: "Budget",
-            resets_every: "Resets every"
+            resets_every: "Resets every",
+            resubscribe_date: "Resubscribe on"
         },
         emergency_kit: {
             title: "Emergency Kit",
