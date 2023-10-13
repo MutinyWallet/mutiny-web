@@ -364,6 +364,9 @@ export default function Send() {
                             setLnurlp(source.lnurl);
                             setSource("lightning");
                         }
+                    })
+                    .catch((e) => {
+                        showToast(eify(e));
                     });
             } else {
                 setAmountSats(source.amount_sats || 0n);
@@ -691,11 +694,6 @@ export default function Send() {
                                         />
                                     </VStack>
                                 </Card>
-                                <Show when={error()}>
-                                    <InfoBox accent="red">
-                                        <p>{error()}</p>
-                                    </InfoBox>
-                                </Show>
                                 <AmountCard
                                     amountSats={amountSats().toString()}
                                     setAmountSats={setAmountSats}
@@ -703,6 +701,11 @@ export default function Send() {
                                     isAmountEditable={isAmtEditable()}
                                     maxAmountSats={maxAmountSats()}
                                 />
+                                <Show when={error()}>
+                                    <InfoBox accent="red">
+                                        <p>{error()}</p>
+                                    </InfoBox>
+                                </Show>
                             </Match>
                             <Match when={true}>
                                 <DestinationInput
@@ -713,7 +716,14 @@ export default function Send() {
                                 />
                             </Match>
                         </Switch>
-                        <Show when={destination()}>
+                        <Show
+                            when={
+                                address() ||
+                                invoice() ||
+                                nodePubkey() ||
+                                lnurlp()
+                            }
+                        >
                             <VStack>
                                 <Button
                                     disabled={sendButtonDisabled()}
