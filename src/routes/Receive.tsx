@@ -51,7 +51,8 @@ import {
     eify,
     mempoolTxUrl,
     MutinyTagItem,
-    objectToSearchParams
+    objectToSearchParams,
+    vibrateSuccess
 } from "~/utils";
 
 type OnChainTx = {
@@ -314,6 +315,7 @@ export default function Receive() {
                     if (invoice && invoice.paid) {
                         setReceiveState("paid");
                         setPaymentInvoice(invoice);
+                        await vibrateSuccess();
                         return "lightning_paid";
                     }
                 }
@@ -325,6 +327,7 @@ export default function Receive() {
                 if (tx) {
                     setReceiveState("paid");
                     setPaymentTx(tx);
+                    await vibrateSuccess();
                     return "onchain_paid";
                 }
             } catch (e) {
