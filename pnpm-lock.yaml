@@ -29,6 +29,9 @@ importers:
       '@capacitor/share':
         specifier: ^5.0.6
         version: 5.0.6(@capacitor/core@5.2.2)
+      '@capacitor/haptics':
+        specifier: ^5.0.6
+        version: 5.0.6(@capacitor/core@5.2.2)
       '@capacitor/toast':
         specifier: ^5.0.6
         version: 5.0.6(@capacitor/core@5.2.2)
@@ -1605,6 +1608,14 @@ packages:
 
   /@capacitor/share@5.0.6(@capacitor/core@5.2.2):
     resolution: {integrity: sha512-/dVOW7kcuuD7hWB9Z1drArIpEk+5JCoMnMrAs2c7CLp3q5PeaXNJjTkGr6RJ1OtMhsHyXc6DAFwQ4frFkmZsgw==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.2
+    dev: false
+
+  /@capacitor/haptics@5.0.6(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-UrMcR7p2X10ql4VLlowUuH/VckTeu0lj+RQpekxox14uxDmu5AGIFDK/iDTi8W6QZkxTJRZK6sbCjgwYgNJ7Pw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:

@@ -35,7 +35,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { MethodChooser, SendSource } from "~/routes/Send";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, mempoolTxUrl } from "~/utils";
+import { eify, mempoolTxUrl, vibrateSuccess } from "~/utils";
 
 const CHANNEL_FEE_ESTIMATE_ADDRESS =
     "bc1qf7546vg73ddsjznzq57z3e8jdn6gtw6au576j07kt6d9j7nz8mzsyn6lgf";
@@ -158,6 +158,8 @@ export default function Swap() {
 
                     setChannelOpenResult({ channel: new_channel });
                 }
+
+                await vibrateSuccess();
             } catch (e) {
                 setChannelOpenResult({ failure_reason: eify(e) });
             } finally {

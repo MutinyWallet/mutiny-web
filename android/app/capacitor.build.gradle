@@ -14,6 +14,7 @@ dependencies {
     implementation project(':capacitor-clipboard')
     implementation project(':capacitor-filesystem')
     implementation project(':capacitor-share')
+    implementation project(':capacitor-haptics')
     implementation project(':capacitor-toast')
     implementation project(':mutinywallet-barcode-scanner')
 

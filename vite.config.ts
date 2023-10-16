@@ -51,6 +51,7 @@ export default defineConfig({
             "@capacitor/core",
             "@capacitor/filesystem",
             "@capacitor/toast",
+            "@capacitor/haptics",
             "@capacitor/app",
             "@capacitor/browser",
         ],

@@ -27,7 +27,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, subscriptionValid } from "~/utils";
+import { eify, subscriptionValid, vibrateSuccess } from "~/utils";
 
 function Perks(props: { alreadySubbed?: boolean }) {
     const i18n = useI18n();
@@ -89,6 +89,8 @@ function PlusCTA() {
             await state.mutiny_wallet?.pay_subscription_invoice(
                 invoice?.bolt11
             );
+
+            await vibrateSuccess();
 
             // "true" flag gives this a fallback to set a timestamp in case the subscription server is down
             await actions.checkForSubscription(true);
