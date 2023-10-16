@@ -69,6 +69,12 @@ export default {
         spendable: "Spendable",
         channel_size: "Channel size",
         channel_reserve: "- Channel reserve",
+        error_under_min_lightning:
+            "Defaulting to On-chain. Amount is too small for your initial Lightning receive.",
+        error_creating_unified:
+            "Defaulting to On-chain. Something went wrong when creating the unified address",
+        error_creating_address:
+            "Something went wrong when creating the on-chain address",
         amount_editable: {
             receive_too_small:
                 "Your first lightning receive needs to be {{amount}} SATS or greater. A setup fee will be deducted from the requested amount.",

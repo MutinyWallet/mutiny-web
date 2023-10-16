@@ -45,7 +45,6 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { matchError } from "~/logic/errorDispatch";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import {
@@ -140,6 +139,7 @@ export default function Receive() {
 
     // loading state for the continue button
     const [loading, setLoading] = createSignal(false);
+    const [error, setError] = createSignal<string>("");
 
     const RECEIVE_FLAVORS = [
         {
@@ -253,8 +253,12 @@ export default function Receive() {
             setLoading(false);
             return `bitcoin:${raw?.address}?${params}`;
         } catch (e) {
-            showToast(matchError(e));
             console.error(e);
+            if (e === "Satoshi amount is invalid") {
+                setError(i18n.t("receive.error_under_min_lightning"));
+            } else {
+                setError(i18n.t("receive.error_creating_unified"));
+            }
         }
 
         // If we didn't return before this, that means create_bip21 failed
@@ -271,7 +275,7 @@ export default function Receive() {
             return raw?.address;
         } catch (e) {
             // If THAT failed we're really screwed
-            showToast(matchError(e));
+            showToast(eify(i18n.t("receive.error_creating_address")));
             console.error(e);
         } finally {
             setLoading(false);
@@ -414,6 +418,11 @@ export default function Receive() {
                         </Match>
                         <Match when={unified() && receiveState() === "show"}>
                             <FeeWarning fee={lspFee()} flavor={flavor()} />
+                            <Show when={error()}>
+                                <InfoBox accent="red">
+                                    <p>{error()}</p>
+                                </InfoBox>
+                            </Show>
                             <IntegratedQr
                                 value={receiveString() ?? ""}
                                 amountSats={amount() || "0"}
