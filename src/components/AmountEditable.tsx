@@ -21,7 +21,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
-import { fiatToSats, satsToFiat } from "~/utils";
+import { fiatToSats, satsToFiat, vibrate } from "~/utils";
 
 import { Currency } from "./ChooseCurrency";
 
@@ -106,6 +106,7 @@ function SingleDigitButton(props: {
 
     function onClick() {
         props.onClick(props.character);
+        vibrate(15);
 
         clearTimeout(holdTimer);
     }
@@ -545,6 +546,7 @@ export const AmountEditable: ParentComponent<{
             setLocalSats("0");
             setLocalFiat(satsToFiat(state.price, Number("0") || 0, state.fiat));
         }
+        vibrate(250);
 
         // After a button press make sure we re-focus the input
         focus();
