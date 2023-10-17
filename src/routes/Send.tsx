@@ -47,7 +47,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { ParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, mempoolTxUrl, MutinyTagItem } from "~/utils";
+import { eify, mempoolTxUrl, MutinyTagItem, vibrateSuccess } from "~/utils";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -549,6 +549,7 @@ export default function Send() {
             }
             setSentDetails(sentDetails as SentDetails);
             clearAll();
+            await vibrateSuccess();
         } catch (e) {
             const error = eify(e);
             setSentDetails({ failure_reason: error.message });

@@ -21,7 +21,12 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { createDeepSignal, eify, formatExpiration } from "~/utils";
+import {
+    createDeepSignal,
+    eify,
+    formatExpiration,
+    vibrateSuccess
+} from "~/utils";
 
 type PendingItem = {
     id: string;
@@ -72,6 +77,7 @@ export function PendingNwc() {
             setPaying(item.id);
             const nodes = await state.mutiny_wallet?.list_nodes();
             await state.mutiny_wallet?.approve_invoice(item.id, nodes[0]);
+            await vibrateSuccess();
         } catch (e) {
             setError(eify(e));
             console.error(e);
