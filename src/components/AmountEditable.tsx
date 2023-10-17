@@ -21,7 +21,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
-import { fiatToSats, satsToFiat, vibrate } from "~/utils";
+import { fiatToSats, satsToFiat, vibrate, vibrateSuccess } from "~/utils";
 
 import { Currency } from "./ChooseCurrency";
 
@@ -106,7 +106,7 @@ function SingleDigitButton(props: {
 
     async function onClick() {
         props.onClick(props.character);
-        await vibrate(15);
+        await vibrateSuccess();
 
         clearTimeout(holdTimer);
     }
