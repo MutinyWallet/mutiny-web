@@ -104,9 +104,9 @@ function SingleDigitButton(props: {
         clearTimeout(holdTimer);
     }
 
-    function onClick() {
+    async function onClick() {
         props.onClick(props.character);
-        vibrate(15);
+        await vibrate(15);
 
         clearTimeout(holdTimer);
     }
@@ -536,7 +536,7 @@ export const AmountEditable: ParentComponent<{
         focus();
     }
 
-    function handleClear() {
+    async function handleClear() {
         const isFiatMode = mode() === "fiat";
 
         if (isFiatMode) {
@@ -546,7 +546,7 @@ export const AmountEditable: ParentComponent<{
             setLocalSats("0");
             setLocalFiat(satsToFiat(state.price, Number("0") || 0, state.fiat));
         }
-        vibrate(250);
+        await vibrate(250);
 
         // After a button press make sure we re-focus the input
         focus();
