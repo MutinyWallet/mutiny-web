@@ -106,7 +106,7 @@ function SingleDigitButton(props: {
 
     async function onClick() {
         props.onClick(props.character);
-        await vibrateSuccess();
+        await vibrate(15);
 
         clearTimeout(holdTimer);
     }
@@ -546,7 +546,7 @@ export const AmountEditable: ParentComponent<{
             setLocalSats("0");
             setLocalFiat(satsToFiat(state.price, Number("0") || 0, state.fiat));
         }
-        await vibrate(250);
+        await vibrateSuccess();
 
         // After a button press make sure we re-focus the input
         focus();
