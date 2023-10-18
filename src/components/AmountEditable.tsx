@@ -105,8 +105,8 @@ function SingleDigitButton(props: {
     }
 
     async function onClick() {
+        await vibrate(300);
         props.onClick(props.character);
-        await vibrate();
 
         clearTimeout(holdTimer);
     }
