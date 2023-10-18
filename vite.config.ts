@@ -13,9 +13,13 @@ const commitHash = child.execSync("git rev-parse --short HEAD").toString().trim(
 
 const pwaOptions: Partial<VitePWAOptions> = {
     base: "/",
+    injectRegister: 'inline',
+    filename: 'sw.ts',
+    strategies: 'injectManifest',
     registerType: "autoUpdate",
     devOptions: {
-        enabled: false
+        enabled: true,
+        type: "module"
     },
     includeAssets: ["favicon.ico", "robots.txt"],
     manifest: manifest
