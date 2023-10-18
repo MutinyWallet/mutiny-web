@@ -1,10 +1,13 @@
 import { Capacitor } from "@capacitor/core";
 import { Haptics } from "@capacitor/haptics";
-import { NotificationType, ImpactStyle } from "@capacitor/haptics/dist/esm/definitions";
+import {
+    ImpactStyle,
+    NotificationType
+} from "@capacitor/haptics/dist/esm/definitions";
 
 export const impact = async () => {
     if (Capacitor.isNativePlatform()) {
-        await Haptics.impact({ style: ImpactStyle.Light})
+        await Haptics.impact({ style: ImpactStyle.Light });
     } else {
         window.navigator.vibrate(35);
     }
@@ -12,7 +15,7 @@ export const impact = async () => {
 
 export const vibrate = async (millis: number[]) => {
     if (Capacitor.isNativePlatform()) {
-        await Haptics.impact({ style: ImpactStyle.Light})
+        await Haptics.impact({ style: ImpactStyle.Light });
     } else {
         window.navigator.vibrate(millis);
     }
