@@ -235,6 +235,7 @@ export async function setupMutinyWallet(
         subscriptions,
         storage,
         scorer,
+        "http://127.0.0.1:8080",
         // Do not connect peers
         undefined,
         // Do not skip device lock
