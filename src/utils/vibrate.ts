@@ -2,7 +2,7 @@ import { Capacitor } from "@capacitor/core";
 import { Haptics } from "@capacitor/haptics";
 import { NotificationType } from "@capacitor/haptics/dist/esm/definitions";
 
-export const vibrate = async (millis: number) => {
+export const vibrate = async (millis: number[]) => {
     if (Capacitor.isNativePlatform()) {
         await Haptics.vibrate();
     } else {
