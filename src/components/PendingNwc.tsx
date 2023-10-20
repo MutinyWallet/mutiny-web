@@ -87,19 +87,6 @@ export function PendingNwc() {
         }
     }
 
-    async function denyItem(item: PendingItem) {
-        try {
-            setPaying(item.id);
-            await state.mutiny_wallet?.deny_invoice(item.id);
-        } catch (e) {
-            setError(eify(e));
-            console.error(e);
-        } finally {
-            setPaying("");
-            refetch();
-        }
-    }
-
     async function approveAll() {
         // clone the list so it doesn't update in place
         const toApprove = [...pendingRequests()!];
@@ -109,10 +96,13 @@ export function PendingNwc() {
     }
 
     async function denyAll() {
-        // clone the list so it doesn't update in place
-        const toDeny = [...pendingRequests()!];
-        for (const item of toDeny) {
-            await denyItem(item);
+        try {
+            await state.mutiny_wallet?.deny_all_pending_nwc();
+        } catch (e) {
+            setError(eify(e));
+            console.error(e);
+        } finally {
+            refetch();
         }
     }
 
