@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -20,8 +24,11 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
       '@capacitor/filesystem':
-        specifier: ^5.1.1
-        version: 5.1.1(@capacitor/core@5.2.2)
+        specifier: ^5.1.4
+        version: 5.1.4(@capacitor/core@5.2.2)
+      '@capacitor/share':
+        specifier: ^5.0.6
+        version: 5.0.6(@capacitor/core@5.2.2)
       '@capacitor/toast':
         specifier: ^5.0.6
         version: 5.0.6(@capacitor/core@5.2.2)
@@ -1588,10 +1595,18 @@ packages:
       tslib: 2.6.1
     dev: false
 
-  /@capacitor/filesystem@5.1.1(@capacitor/core@5.2.2):
-    resolution: {integrity: sha512-wq55joyYocsYI0f0UNoDE9TPxI0n4fx+PmejGR5JOYFzrnU8DqcSJ9EREAYAkkoOrmQHrB1vuN9F79XC0PuADw==}
+  /@capacitor/filesystem@5.1.4(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-10EM1KvFMs+pTzxkcflspzxBWcX9sOnS9nTP5Afjr5hn4OxLrwTFySw2Z12Uv6jdN4OnhY3jXtDKXPljXvXILg==}
     peerDependencies:
       '@capacitor/core': ^5.1.1
+    dependencies:
+      '@capacitor/core': 5.2.2
+    dev: false
+
+  /@capacitor/share@5.0.6(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-/dVOW7kcuuD7hWB9Z1drArIpEk+5JCoMnMrAs2c7CLp3q5PeaXNJjTkGr6RJ1OtMhsHyXc6DAFwQ4frFkmZsgw==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
     dependencies:
       '@capacitor/core': 5.2.2
     dev: false
@@ -14062,7 +14077,3 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

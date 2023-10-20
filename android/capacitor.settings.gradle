@@ -12,7 +12,10 @@ include ':capacitor-clipboard'
 project(':capacitor-clipboard').projectDir = new File('../node_modules/.pnpm/@capacitor+clipboard@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/clipboard/android')
 
 include ':capacitor-filesystem'
-project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@5.1.1_@capacitor+core@5.2.2/node_modules/@capacitor/filesystem/android')
+project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@5.1.4_@capacitor+core@5.2.2/node_modules/@capacitor/filesystem/android')
+
+include ':capacitor-share'
+project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capacitor+share@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/share/android')
 
 include ':capacitor-toast'
 project(':capacitor-toast').projectDir = new File('../node_modules/.pnpm/@capacitor+toast@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/toast/android')
