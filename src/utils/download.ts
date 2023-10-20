@@ -1,5 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 import { Toast } from "@capacitor/toast";
 
 export async function downloadTextFile(
@@ -11,21 +12,31 @@ export async function downloadTextFile(
 
     if (Capacitor.isNativePlatform()) {
         try {
-            const writeFileResult = await Filesystem.writeFile({
-                path: `${fileName}`,
+            const fileConfig = {
+                path: `Exports/${fileName}`,
                 data: content,
-                directory: Directory.Documents,
-                encoding: Encoding.UTF8
-            });
+                directory: Directory.Cache,
+                encoding: Encoding.UTF8,
+                recursive: true
+            };
+            const writeFileResult = await Filesystem.writeFile(fileConfig);
+
+            // Share the file
+            // This is because we save to the cache to get around reinstall issues
+            // with file storage permissions.
+            await Share.share({ url: writeFileResult.uri });
 
             await Toast.show({
-                text: `Saved to ${writeFileResult.uri}`,
+                text: `File shared successfully`,
                 duration: "long"
             });
-        } catch (err) {
-            console.error("Error writing the file:", err);
+        } catch (error) {
+            console.error(
+                "Error creating or sharing the file: ",
+                JSON.stringify(error)
+            );
             await Toast.show({
-                text: `Error while saving file`,
+                text: `Error while saving or sharing file`,
                 duration: "long"
             });
         }
