@@ -9,7 +9,7 @@ import manifest from "./manifest";
 import * as path from "path";
 import * as child from "child_process";
 
-const commitHash = child.execSync("git rev-parse --short HEAD").toString().trim();
+const commitHash = process.env.VITE_COMMIT_HASH ?? child.execSync("git rev-parse --short HEAD").toString().trim();
 
 const pwaOptions: Partial<VitePWAOptions> = {
     base: "/",
