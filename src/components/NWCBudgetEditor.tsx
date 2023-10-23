@@ -42,9 +42,11 @@ export function NWCBudgetEditor(props: {
 
     // If there's an initial profile, look at that, otherwise default to false
     const auto_approve =
-        props.initialProfile?.require_approval !== undefined
+        props.initialAmount !== undefined ||
+        props.initialInterval !== undefined ||
+        (props.initialProfile?.require_approval !== undefined
             ? !props.initialProfile?.require_approval
-            : false;
+            : false);
 
     // prop amount -> profile editing -> subscriptions -> 0
     // (ternaries take precendence so I put it in parens)
