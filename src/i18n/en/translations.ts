@@ -466,7 +466,7 @@ export default {
         gift: {
             give_sats_link: "Give sats as a gift",
             title: "Gifting",
-            no_plus_caption: "Upgrade to Mutiny+ to enabled gifting",
+            no_plus_caption: "Upgrade to Mutiny+ to enable gifting",
             receive_too_small:
                 "Your first receive needs to be {{amount}} SATS or greater.",
             setup_fee_lightning:
@@ -488,7 +488,7 @@ export default {
             send_explainer:
                 "Give the gift of sats. Create a Mutiny gift URL that can be claimed by anyone with a web browser.",
             send_name_required: "This is for your records",
-            send_name_label: "Recepient Name",
+            send_name_label: "Recipient Name",
             send_header_claimed: "Gift Received!",
             send_claimed: "Your gift has been claimed. Thanks for sharing.",
             send_sharable_header: "Sharable URL",
@@ -658,7 +658,7 @@ export default {
             self_custodial:
                 "Mutiny is a self-custodial wallet. To initiate a lightning payment we must open a lightning channel, which requires a minimum amount and a setup fee.",
             future_payments:
-                "Future payments, both send and recieve, will only incur normal network fees and a nominal service fee unless your channel runs out of inbound capacity.",
+                "Future payments, both send and receive, will only incur normal network fees and a nominal service fee unless your channel runs out of inbound capacity.",
             liquidity: "Learn more about liquidity"
         },
         confirm_dialog: {
