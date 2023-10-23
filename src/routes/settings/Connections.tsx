@@ -308,7 +308,14 @@ function Nwc() {
         // If there's a "return_to" param we use that instead of the callbackUri scheme
         const returnUrl = searchParams.return_to;
         if (returnUrl) {
-            setCallbackUri(returnUrl);
+            // add the nwc query param to the return url
+            const fullURI =
+                returnUrl +
+                (returnUrl.includes("?") ? "&" : "?") +
+                "nwc=" +
+                encodeURIComponent(newProfile.nwc_uri);
+
+            setCallbackUri(fullURI);
             setCallbackDialogOpen(true);
         }
 
