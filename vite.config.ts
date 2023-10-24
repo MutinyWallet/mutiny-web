@@ -12,8 +12,10 @@ import * as child from "child_process";
 const commitHash = child.execSync("git rev-parse --short HEAD").toString().trim();
 
 const pwaOptions: Partial<VitePWAOptions> = {
+    mode: "development",
     base: "/",
     injectRegister: 'inline',
+    srcDir: 'src/service-worker',
     filename: 'sw.ts',
     strategies: 'injectManifest',
     registerType: "autoUpdate",
@@ -60,6 +62,9 @@ export default defineConfig({
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
         exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
+    },
+    build: {
+        target: "esnext",
     },
     css: {
         postcss: {
