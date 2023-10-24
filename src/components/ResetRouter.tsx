@@ -11,7 +11,7 @@ import {MutinyWallet} from "@mutinywallet/mutiny-wasm";
 //     });
 // }
 
-const WEBPUSH_PUBLIC_KEY = "BG0ZMyIMKsKbFJ3DwebtbJqt68O7Jn1NcppR1QQLMx3RC9HcMT-aF59VNIDPH8BRI6nmLlHuHLK1zaVADjHrv_M"
+const WEBPUSH_PUBLIC_KEY = "BJbNCspGEEdyrj4hI6DD5OBlXpEgVzfaWwZP72p0EiSUTQKXyWauOKGzi-_NWq0dT31s3r5MRPvYVeussdEBygM"
 
 async function subscribeUserToPush() {
     console.log("waiting for service worker");
@@ -31,7 +31,7 @@ async function subscribeUserToPush() {
     console.log("talking to mutiny notification service");
     try {
         // Send the subscription to your server
-        await MutinyWallet.test_register_web_push("https://auth-staging.mutinywallet.com", "http://localhost:8080", JSON.stringify(subscription));
+        await MutinyWallet.test_register_web_push("https://auth-staging.mutinywallet.com", "https://notifications.benthecarman.com", subscription);
         console.log("registered")
     } catch (e) {
         console.error(e)
