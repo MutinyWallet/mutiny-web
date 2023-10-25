@@ -118,6 +118,7 @@ export default function Receive() {
     const [amount, setAmount] = createSignal("");
     const [receiveState, setReceiveState] = createSignal<ReceiveState>("edit");
     const [bip21Raw, setBip21Raw] = createSignal<MutinyBip21RawMaterials>();
+    const [bolt12, setBolt12] = createSignal("");
     const [unified, setUnified] = createSignal("");
     const [shouldShowAmountEditor, setShouldShowAmountEditor] =
         createSignal(true);
@@ -157,6 +158,11 @@ export default function Receive() {
             value: "onchain",
             label: i18n.t("receive.onchain_label"),
             caption: i18n.t("receive.onchain_caption")
+        },
+        {
+            value: "bolt12",
+            label: "Bolt12",
+            caption: "Try the future of Lightning payments"
         }
     ];
 
@@ -170,6 +176,8 @@ export default function Receive() {
                 return bip21Raw()?.invoice ?? "";
             } else if (flavor() === "onchain") {
                 return bip21Raw()?.address ?? "";
+            } else if (flavor() === "bolt12") {
+                return bolt12() ?? "";
             }
         }
     });
@@ -336,11 +344,22 @@ export default function Receive() {
         }
     }
 
-    function selectFlavor(flavor: string) {
+    async function selectFlavor(flavor: string) {
         setFlavor(flavor as ReceiveFlavor);
-        if (rememberChoice()) {
+        if (rememberChoice() && flavor !== "bolt12") {
             actions.setPreferredInvoiceType(flavor as ReceiveFlavor);
         }
+        if (flavor === "bolt12") {
+            const nodes = await state.mutiny_wallet?.list_nodes();
+            const firstNode = (nodes[0] as string) || "";
+            const offer = await state.mutiny_wallet?.create_offer(firstNode, amount(), [])
+            if (offer) {
+                setBolt12(offer);
+            } else {
+                console.log("error creating offer");
+            }
+        }
+
         setMethodChooserOpen(false);
     }
 

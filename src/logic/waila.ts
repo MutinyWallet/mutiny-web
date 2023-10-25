@@ -2,12 +2,13 @@ import initWaila, { PaymentParams } from "@mutinywallet/waila-wasm";
 
 import { Result } from "~/utils";
 
-// Make sure we've initialzied waila before we try to use it
+// Make sure we've initialized waila before we try to use it
 await initWaila();
 
 export type ParsedParams = {
     address?: string;
     invoice?: string;
+    offer?: string;
     amount_sats?: bigint;
     network?: string;
     memo?: string;
@@ -50,6 +51,7 @@ export function toParsedParams(
         value: {
             address: params.address,
             invoice: params.invoice,
+            offer: params.offer,
             amount_sats: params.amount_sats,
             network,
             memo: params.memo,

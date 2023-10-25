@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
@@ -51,8 +47,8 @@ importers:
         specifier: 0.4.26
         version: 0.4.26
       '@mutinywallet/waila-wasm':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: 0.2.4
+        version: 0.2.4
       '@nostr-dev-kit/ndk':
         specifier: ^0.8.11
         version: 0.8.11(eslint-import-resolver-typescript@2.7.1)(typescript@5.1.6)
@@ -2523,8 +2519,8 @@ packages:
     resolution: {integrity: sha512-iPummhYwOKLvbeU/BJq2xQFNo0Worl47zxgX1Yn2ZFSgD0x4CYuB4C3cN0TEbnGvqEtHw/oAuDg5Ri/Li8wA/g==}
     dev: false
 
-  /@mutinywallet/waila-wasm@0.2.1:
-    resolution: {integrity: sha512-D//LCPB+dUOkmVWXLR4IA7tR/3odIoGhbwSiWBAlxqclegZMfWIdGdupYf9Yc16H18l/1cR3MXKvVwUkfSsj5g==}
+  /@mutinywallet/waila-wasm@0.2.4:
+    resolution: {integrity: sha512-wd4+Pht5GFP7jHFYA6T6Q9lZFOKfAFjEW2n6HPa6cqOK+SFbUTbrDn4GHwLQm6vDvQ48m0rV08CkyFvGFCWiOw==}
     dev: false
 
   /@ndelangen/get-tarball@3.0.9:

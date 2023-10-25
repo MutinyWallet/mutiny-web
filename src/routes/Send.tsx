@@ -175,6 +175,7 @@ function DestinationShower(props: {
     description?: string;
     address?: string;
     invoice?: MutinyInvoice;
+    offer?: string;
     nodePubkey?: string;
     lnurl?: string;
     clearAll: () => void;
@@ -186,6 +187,9 @@ function DestinationShower(props: {
             </Match>
             <Match when={props.invoice && props.source === "lightning"}>
                 <StringShower text={props.invoice?.bolt11 || ""} />
+            </Match>
+            <Match when={props.offer && props.source === "lightning"}>
+                <StringShower text={props.offer || ""} />
             </Match>
             <Match when={props.nodePubkey && props.source === "lightning"}>
                 <StringShower text={props.nodePubkey || ""} />
@@ -213,6 +217,7 @@ export default function Send() {
 
     // These can only be derived from the "destination" signal
     const [invoice, setInvoice] = createSignal<MutinyInvoice>();
+    const [offer, setOffer] = createSignal<string>();
     const [nodePubkey, setNodePubkey] = createSignal<string>();
     const [lnurlp, setLnurlp] = createSignal<string>();
     const [address, setAddress] = createSignal<string>();
@@ -236,6 +241,7 @@ export default function Send() {
         setIsAmtEditable(true);
         setSource("lightning");
         setInvoice(undefined);
+        setOffer(undefined);
         setAddress(undefined);
         setDescription(undefined);
         setNodePubkey(undefined);
@@ -346,6 +352,13 @@ export default function Send() {
                         setInvoice(invoice);
                         setSource("lightning");
                     });
+            } else if (source.offer) {
+                if (source.amount_sats) {
+                    setAmountSats(source.amount_sats)
+                    setIsAmtEditable(false);
+                }
+                setOffer(source.offer);
+                setSource("lightning");
             } else if (source.node_pubkey) {
                 setAmountSats(source.amount_sats || 0n);
                 setNodePubkey(source.node_pubkey);
@@ -489,6 +502,24 @@ export default function Send() {
                     sentDetails.amount = amountSats();
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
+            } else if (source() === "lightning" && offer()) {
+                const nodes = await state.mutiny_wallet?.list_nodes();
+                const firstNode = (nodes[0] as string) || "";
+                const payment = await state.mutiny_wallet?.pay_offer(
+                    firstNode,
+                    offer()!,
+                    amountSats(),
+                    undefined,
+                    undefined, // todo add optional payer message
+                    tags
+                );
+
+                if (!payment?.paid) {
+                    throw new Error(i18n.t("send.error_keysend"));
+                } else {
+                    sentDetails.amount = amountSats();
+                    sentDetails.fee_estimate = payment?.fees_paid || 0;
+                }
             } else if (source() === "lightning" && nodePubkey()) {
                 const nodes = await state.mutiny_wallet?.list_nodes();
                 const firstNode = (nodes[0] as string) || "";
@@ -576,7 +607,7 @@ export default function Send() {
                 <DefaultMain>
                     <Show
                         when={
-                            address() || invoice() || nodePubkey() || lnurlp()
+                            address() || invoice() || offer() || nodePubkey() || lnurlp()
                         }
                         fallback={<BackLink />}
                     >
@@ -657,6 +688,7 @@ export default function Send() {
                                 when={
                                     address() ||
                                     invoice() ||
+                                    offer() ||
                                     nodePubkey() ||
                                     lnurlp()
                                 }
@@ -672,6 +704,7 @@ export default function Send() {
                                             source={source()}
                                             description={description()}
                                             invoice={invoice()}
+                                            offer={offer()}
                                             address={address()}
                                             nodePubkey={nodePubkey()}
                                             lnurl={lnurlp()}
@@ -720,6 +753,7 @@ export default function Send() {
                             when={
                                 address() ||
                                 invoice() ||
+                                offer() ||
                                 nodePubkey() ||
                                 lnurlp()
                             }
