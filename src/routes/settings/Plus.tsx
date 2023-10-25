@@ -88,7 +88,7 @@ function PlusCTA() {
 
             await state.mutiny_wallet?.pay_subscription_invoice(
                 invoice?.bolt11,
-                false // todo add flag for auto-pay
+                true
             );
 
             await vibrateSuccess();
