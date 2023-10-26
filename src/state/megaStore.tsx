@@ -12,7 +12,12 @@ import {
 import { createStore } from "solid-js/store";
 import { useNavigate, useSearchParams } from "solid-start";
 
-import { Currency, FIAT_OPTIONS } from "~/components/ChooseCurrency";
+import {
+    BTC_INDEX,
+    Currency,
+    FIAT_OPTIONS,
+    USD_INDEX
+} from "~/components/ChooseCurrency";
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import {
     doubleInitDefense,
@@ -90,7 +95,7 @@ export const Provider: ParentComponent = (props) => {
         price: 0,
         fiat: localStorage.getItem("fiat_currency")
             ? (JSON.parse(localStorage.getItem("fiat_currency")!) as Currency)
-            : FIAT_OPTIONS[1],
+            : FIAT_OPTIONS[USD_INDEX],
         has_backed_up: localStorage.getItem("has_backed_up") === "true",
         balance: undefined as MutinyBalance | undefined,
         last_sync: undefined as number | undefined,
@@ -264,7 +269,7 @@ export const Provider: ParentComponent = (props) => {
                             balance: newBalance,
                             last_sync: Date.now(),
                             price: 1,
-                            fiat: FIAT_OPTIONS[0]
+                            fiat: FIAT_OPTIONS[BTC_INDEX]
                         });
                     }
                 }
