@@ -23,8 +23,11 @@ import {
 import { useI18n } from "~/i18n/context";
 import { FeedbackLink } from "~/routes/Feedback";
 import { useMegaStore } from "~/state/megaStore";
+import { registerSW } from 'virtual:pwa-register';
 
 export default function App() {
+    registerSW({ immediate: true });
+
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
