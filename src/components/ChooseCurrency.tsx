@@ -101,7 +101,7 @@ export const FIAT_OPTIONS: Currency[] = [
         maxFractionalDigits: 0
     },
     { label: "Kuwaiti Dinar KWD", value: "KWD", maxFractionalDigits: 3 }
-];
+].sort((a, b) => (a.value > b.value ? 1 : b.value > a.value ? -1 : 0));
 
 export function ChooseCurrency() {
     const i18n = useI18n();
