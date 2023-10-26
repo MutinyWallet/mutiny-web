@@ -71,6 +71,12 @@ export const FIAT_OPTIONS: Currency[] = [
         maxFractionalDigits: 2
     },
     {
+        label: "Brazilian Real BRL",
+        value: "BRL",
+        hasSymbol: "R$",
+        maxFractionalDigits: 2
+    },
+    {
         label: "British Pound GBP",
         value: "GBP",
         hasSymbol: "₤",
