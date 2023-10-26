@@ -77,6 +77,12 @@ export const FIAT_OPTIONS: Currency[] = [
         maxFractionalDigits: 2
     },
     {
+        label: "Australia Dollar AUD",
+        value: "AUD",
+        hasSymbol: "$",
+        maxFractionalDigits: 2
+    },
+    {
         label: "Japanese Yen JPY",
         value: "JPY",
         hasSymbol: "¥",
