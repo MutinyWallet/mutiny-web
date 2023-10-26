@@ -696,16 +696,15 @@ export const AmountEditable: ParentComponent<{
                     <InlineAmount amount={maxOrLocalSats()} />
                 </Show>
                 <img src={pencil} alt="Edit" />
-                {/* {props.children} */}
             </button>
             <Dialog.Portal>
-                {/* <Dialog.Overlay class={OVERLAY} /> */}
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content
                         class={DIALOG_CONTENT}
+                        // Should always be on top, even when nested in other dialogs
+                        classList={{ "z-50": true }}
                         onEscapeKeyDown={handleClose}
                     >
-                        {/* TODO: figure out how to submit on enter */}
                         <div class="flex w-full justify-end">
                             <button
                                 onClick={handleClose}
@@ -715,7 +714,6 @@ export const AmountEditable: ParentComponent<{
                                 <img src={close} alt="Close" />
                             </button>
                         </div>
-                        {/* <form onSubmit={handleSubmit} class="text-black"> */}
                         <form
                             onSubmit={handleSubmit}
                             class="absolute -z-10 opacity-0"
