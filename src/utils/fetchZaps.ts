@@ -1,14 +1,14 @@
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
-import { NDKKind, NDKTag, NDKUser } from "@nostr-dev-kit/ndk";
 import { ResourceFetcher } from "solid-js";
 
 import { useMegaStore } from "~/state/megaStore";
+import { hexpubFromNpub, NostrKind, NostrTag } from "~/utils/nostr";
 
 export type NostrEvent = {
     created_at: number;
     content: string;
-    tags: NDKTag[];
-    kind?: NDKKind | number;
+    tags: NostrTag[];
+    kind?: NostrKind | number;
     pubkey: string;
     id?: string;
     sig?: string;
@@ -116,12 +116,6 @@ async function simpleZapFromEvent(
 
 const PRIMAL_API = import.meta.env.VITE_PRIMAL;
 
-export function getHexpubFromNpub(npub?: string) {
-    if (!npub) return;
-    const user = new NDKUser({ npub });
-    return user.hexpubkey();
-}
-
 export const fetchZaps: ResourceFetcher<
     string,
     {
@@ -143,7 +137,13 @@ export const fetchZaps: ResourceFetcher<
 
     // Only have to ask the relays for follows one time
     if (follows.length === 0) {
-        const pubkey = getHexpubFromNpub(npub);
+        let pubkey = undefined;
+        try {
+            pubkey = await hexpubFromNpub(npub);
+        } catch (err) {
+            console.error("Failed to get hexpub from npub");
+            throw err;
+        }
 
         const response = await fetch(PRIMAL_API, {
             method: "POST",
