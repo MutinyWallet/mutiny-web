@@ -23,6 +23,7 @@ import {
 } from "~/logic/mutinyWalletSetup";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { eify, MutinyTagItem, subscriptionValid } from "~/utils";
+import {OpenWebsocket} from "~/router";
 
 const MegaStoreContext = createContext<MegaStore>();
 
@@ -330,6 +331,11 @@ export const Provider: ParentComponent = (props) => {
                 const url = new URL(str);
                 if (url && url.pathname.startsWith("/gift")) {
                     navigate(url.pathname + url.search);
+                    return;
+                }
+                if (url && ["wss:", "ws:"].indexOf(url.protocol) > -1) {
+                    OpenWebsocket(url.toString())
+                    navigate("/")
                     return;
                 }
             } catch (e) {
