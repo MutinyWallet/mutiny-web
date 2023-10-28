@@ -11,7 +11,7 @@ import rightArrow from "~/assets/icons/right-arrow.svg";
 import { AmountSats, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { fetchZaps, getHexpubFromNpub } from "~/utils";
+import { fetchZaps, hexpubFromNpub } from "~/utils";
 import { timeAgo } from "~/utils/prettyPrintTime";
 
 function Avatar(props: { image_url?: string }) {
@@ -37,7 +37,7 @@ export function NostrActivity() {
 
     const [data, { refetch }] = createResource(state.npub, fetchZaps);
 
-    const userHexpub = getHexpubFromNpub(state.npub);
+    const [userHexpub] = createResource(state.npub, hexpubFromNpub);
 
     function nameFromHexpub(hexpub: string): string {
         const profile = data.latest?.profiles[hexpub];
@@ -70,7 +70,7 @@ export function NostrActivity() {
                         class="rounded-lg bg-m-grey-800 p-2"
                         classList={{
                             "outline outline-m-blue":
-                                userHexpub === zap.to_hexpub
+                                userHexpub() === zap.to_hexpub
                         }}
                     >
                         <div class="grid grid-cols-[1fr_auto_1fr] gap-4">
