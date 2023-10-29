@@ -17,6 +17,9 @@ importers:
       '@capacitor/app':
         specifier: ^5.0.6
         version: 5.0.6(@capacitor/core@5.5.1)
+      '@capacitor/background-runner':
+        specifier: 1.0.5
+        version: 1.0.5(@capacitor/core@5.5.1)
       '@capacitor/browser':
         specifier: 5.0.6
         version: 5.0.6(@capacitor/core@5.5.1)
@@ -1536,6 +1539,15 @@ packages:
       - supports-color
       - typescript
     dev: true
+
+  /@capacitor/background-runner@1.0.5(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-8WCPkhO42p3O5ENjf8FqvnbwMjNEPcFVxIwsp/Gi+CGWQlgGm7MbxlJAtGmGcNrglD1OqpYWWB0tvJzX2+I+sA==}
+    requiresBuild: true
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.5.1
+    dev: false
 
   /@capacitor/browser@5.0.6(@capacitor/core@5.5.1):
     resolution: {integrity: sha512-wEI7Na6PVzSP/00ud7pjbBwXwVG7HywCdy2fJT/hzF6yuHn4tDirbOvbr1JKd9LZqKs2Xn+TapV38JhBRhX6YA==}
