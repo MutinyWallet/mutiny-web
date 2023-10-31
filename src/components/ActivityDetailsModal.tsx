@@ -536,56 +536,66 @@ export function ActivityDetailsModal(props: {
                                 </div>
                                 <Dialog.Title>
                                     <FancyCard>
-                                        <Switch>
-                                            <Match
-                                                when={kind() === "Lightning"}
-                                            >
-                                                <LightningHeader
-                                                    info={
-                                                        data() as MutinyInvoice
+                                        <Show when={data.latest}>
+                                            <Switch>
+                                                <Match
+                                                    when={
+                                                        kind() === "Lightning"
                                                     }
-                                                />
-                                            </Match>
-                                            <Match
-                                                when={
-                                                    kind() === "OnChain" ||
-                                                    kind() === "ChannelOpen" ||
-                                                    kind() === "ChannelClose"
-                                                }
-                                            >
-                                                <OnchainHeader
-                                                    info={data() as OnChainTx}
-                                                    kind={kind()}
-                                                />
-                                            </Match>
-                                        </Switch>
+                                                >
+                                                    <LightningHeader
+                                                        info={
+                                                            data() as MutinyInvoice
+                                                        }
+                                                    />
+                                                </Match>
+                                                <Match
+                                                    when={
+                                                        kind() === "OnChain" ||
+                                                        kind() ===
+                                                            "ChannelOpen" ||
+                                                        kind() ===
+                                                            "ChannelClose"
+                                                    }
+                                                >
+                                                    <OnchainHeader
+                                                        info={
+                                                            data() as OnChainTx
+                                                        }
+                                                        kind={kind()}
+                                                    />
+                                                </Match>
+                                            </Switch>
+                                        </Show>
                                     </FancyCard>
                                 </Dialog.Title>
                                 <Hr />
                                 <Switch>
-                                    <Match when={kind() === "Lightning"}>
-                                        <LightningDetails
-                                            info={data() as MutinyInvoice}
-                                            tags={tags()}
-                                        />
-                                    </Match>
-                                    <Match
-                                        when={
-                                            kind() === "OnChain" ||
-                                            kind() === "ChannelOpen"
-                                        }
-                                    >
-                                        <OnchainDetails
-                                            info={data() as OnChainTx}
-                                            kind={kind()}
-                                            tags={tags()}
-                                        />
-                                    </Match>
-                                    <Match when={kind() === "ChannelClose"}>
-                                        <ChannelCloseDetails
-                                            info={data() as ChannelClosure}
-                                        />
-                                    </Match>
+                                    <Show when={data.latest}>
+                                        <Match when={kind() === "Lightning"}>
+                                            <LightningDetails
+                                                info={data() as MutinyInvoice}
+                                                tags={tags()}
+                                            />
+                                        </Match>
+                                        <Match
+                                            when={
+                                                kind() === "OnChain" ||
+                                                kind() === "ChannelOpen"
+                                            }
+                                        >
+                                            <OnchainDetails
+                                                info={data() as OnChainTx}
+                                                kind={kind()}
+                                                tags={tags()}
+                                            />
+                                        </Match>
+                                        <Match when={kind() === "ChannelClose"}>
+                                            <ChannelCloseDetails
+                                                info={data() as ChannelClosure}
+                                            />
+                                        </Match>
+                                    </Show>
                                 </Switch>
                             </div>
                         </Suspense>
