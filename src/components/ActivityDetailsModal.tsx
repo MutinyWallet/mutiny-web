@@ -197,7 +197,7 @@ function LightningDetails(props: { info: MutinyInvoice; tags?: TagItem }) {
             <ul class="flex flex-col gap-4">
                 <KeyValue key={i18n.t("activity.transaction_details.fee")}>
                     <ActivityAmount
-                        amount={props.info.fees_paid!.toString()}
+                        amount={props.info.fees_paid?.toString() || "0"}
                         price={state.price}
                     />
                 </KeyValue>
