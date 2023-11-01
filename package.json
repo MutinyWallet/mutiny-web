@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "solid-start dev",
         "host": "solid-start dev --host",
-        "build": "solid-start build && node insertHead.js",
+        "build": "solid-start build",
         "start": "solid-start start",
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
