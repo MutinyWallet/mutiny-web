@@ -1,0 +1,20 @@
+CERTIFICATE_STORE_URL = ENV["CERTIFICATE_STORE_URL"]
+GIT_USERNAME = ENV["GIT_USERNAME"]
+GIT_TOKEN = ENV["GIT_TOKEN"]
+FASTLANE_APPLE_ID = ENV["FASTLANE_APPLE_ID"]
+
+git_url(CERTIFICATE_STORE_URL)
+
+storage_mode("git")
+type("appstore") # The default type, can be: appstore, adhoc, enterprise or development
+
+git_basic_authorization(Base64.strict_encode64("#{GIT_USERNAME}:#{GIT_TOKEN}"))
+username(FASTLANE_APPLE_ID)
+
+# app_identifier(["tools.fastlane.app", "tools.fastlane.app2"])
+# username("user@fastlane.tools") # Your Apple Developer Portal username
+
+# For all available options run `fastlane match --help`
+# Remove the # in the beginning of the line to enable the other options
+
+# The docs are available on https://docs.fastlane.tools/actions/match

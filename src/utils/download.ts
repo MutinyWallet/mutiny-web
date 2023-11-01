@@ -3,6 +3,8 @@ import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
 import { Toast } from "@capacitor/toast";
 
+import { eify } from "./eify";
+
 export async function downloadTextFile(
     content: string,
     fileName: string,
@@ -35,10 +37,18 @@ export async function downloadTextFile(
                 "Error creating or sharing the file: ",
                 JSON.stringify(error)
             );
-            await Toast.show({
-                text: `Error while saving or sharing file`,
-                duration: "long"
-            });
+
+            const err = eify(error);
+
+            if (err.message.includes("Share canceled")) {
+                // Do nothing
+                return;
+            } else {
+                await Toast.show({
+                    text: `Error while saving or sharing file`,
+                    duration: "long"
+                });
+            }
         }
     } else {
         // https://stackoverflow.com/questions/34156282/how-do-i-save-json-to-local-text-file
