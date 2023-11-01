@@ -58,15 +58,17 @@ export const WarningModal: ParentComponent<{
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>
                     <Dialog.Content class={DIALOG_CONTENT}>
-                        <Dialog.Title class="mb-2 flex items-center justify-between">
-                            <SmallHeader>{props.title}</SmallHeader>
-                            <Dialog.CloseButton>
-                                <ModalCloseButton />
-                            </Dialog.CloseButton>
-                        </Dialog.Title>
-                        <Dialog.Description class="flex flex-col gap-4">
-                            <div>{props.children}</div>
-                        </Dialog.Description>
+                        <div class="p-4">
+                            <Dialog.Title class="mb-2 flex items-center justify-between">
+                                <SmallHeader>{props.title}</SmallHeader>
+                                <Dialog.CloseButton>
+                                    <ModalCloseButton />
+                                </Dialog.CloseButton>
+                            </Dialog.Title>
+                            <Dialog.Description class="flex flex-col gap-4">
+                                <div>{props.children}</div>
+                            </Dialog.Description>
+                        </div>
                     </Dialog.Content>
                 </div>
             </Dialog.Portal>
