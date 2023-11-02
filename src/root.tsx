@@ -76,11 +76,15 @@ export default function Root() {
             <Body>
                 <Suspense>
                     <ErrorBoundary fallback={(e) => <ErrorDisplay error={e} />}>
-                        <I18nProvider>
-                            <MegaStoreProvider>
-                                <Router />
-                            </MegaStoreProvider>
-                        </I18nProvider>
+                        <MegaStoreProvider>
+                            <I18nProvider>
+                                <ErrorBoundary
+                                    fallback={(e) => <ErrorDisplay error={e} />}
+                                >
+                                    <Router />
+                                </ErrorBoundary>
+                            </I18nProvider>
+                        </MegaStoreProvider>
                     </ErrorBoundary>
                 </Suspense>
                 <Scripts />
