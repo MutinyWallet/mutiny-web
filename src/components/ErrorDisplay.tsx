@@ -39,7 +39,9 @@ export function ErrorDisplay(props: { error: Error }) {
                 </NiceP>
                 <NiceP>
                     {i18n.t("error.general.getting_desperate")}{" "}
-                    <A href="/emergencykit">{i18n.t("error.emergency_link")}</A>
+                    <A href="/settings/emergencykit">
+                        {i18n.t("error.emergency_link")}
+                    </A>
                 </NiceP>
                 <div class="h-full" />
                 <Button
