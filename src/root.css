@@ -4,12 +4,17 @@
 
 body {
     @apply text-white;
-    overscroll-behavior-y: none;
-    min-height: 100.3%;
+    @apply min-h-[100dvh] overflow-y-scroll overscroll-y-none safe-top safe-bottom disable-scrollbars;
 }
 
 html {
+    /* Fixed stops it from stretchy overscrolling (more app-like) */
+    @apply fixed inset-0 h-[100dvh] overflow-y-scroll overscroll-y-none disable-scrollbars;
     @apply bg-neutral-900;
+}
+
+@media (prefers-color-scheme: light) {
+    /* we don't support this but I want the browser to know I care */
 }
 
 #mutiny-logo {

@@ -42,6 +42,7 @@
         "workbox-window": "^6.6.0"
     },
     "dependencies": {
+        "@capacitor-mlkit/barcode-scanning": "^5.3.0",
         "@capacitor/android": "^5.5.1",
         "@capacitor/app": "^5.0.6",
         "@capacitor/browser": "5.0.6", 
@@ -54,7 +55,6 @@
         "@kobalte/core": "^0.9.8",
         "@kobalte/tailwindcss": "^0.5.0",
         "@modular-forms/solid": "^0.18.1",
-        "@mutinywallet/barcode-scanner": "5.0.0-beta.3",
         "@mutinywallet/mutiny-wasm": "0.4.28",
         "@mutinywallet/waila-wasm": "^0.2.4",
         "@solid-primitives/upload": "^0.0.111",
