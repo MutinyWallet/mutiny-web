@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@capacitor-mlkit/barcode-scanning':
+        specifier: ^5.3.0
+        version: 5.3.0(@capacitor/core@5.5.1)
       '@capacitor/android':
         specifier: ^5.5.1
         version: 5.5.1(@capacitor/core@5.5.1)
@@ -44,9 +47,6 @@ importers:
       '@modular-forms/solid':
         specifier: ^0.18.1
         version: 0.18.1(solid-js@1.8.5)
-      '@mutinywallet/barcode-scanner':
-        specifier: 5.0.0-beta.3
-        version: 5.0.0-beta.3(@capacitor/core@5.5.1)
       '@mutinywallet/mutiny-wasm':
         specifier: 0.4.28
         version: 0.4.28
@@ -2526,6 +2526,14 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
+  /@capacitor-mlkit/barcode-scanning@5.3.0(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-ML1nEzcvegeOTu3AxufWYwLmvxkkeKbToyTuMHmpFlIYn69qVdAzwGrN39Kh3+jUwZ4cLy7KTCf27/p6ShT8ag==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.5.1
+    dev: false
+
   /@capacitor/android@5.5.1(@capacitor/core@5.5.1):
     resolution: {integrity: sha512-WTnPnpaEvTtaEtTNRbh06Y1afF7A4plY/4uajAL0WW8tdR1FxieadF357yKGiAT6CudI/B+eOu6rxn6qWuphKg==}
     peerDependencies:
@@ -3626,14 +3634,6 @@ packages:
       solid-js: ^1.3.1
     dependencies:
       solid-js: 1.8.5
-    dev: false
-
-  /@mutinywallet/barcode-scanner@5.0.0-beta.3(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-UIR/OibIUoyMI3i691e/G97hr2gOXGZ0PX0WpuPWzuBLDCReKl6Uj+uEnrdrJjdkbN+oeXQ9mWuQrWJ6LSL1hQ==}
-    peerDependencies:
-      '@capacitor/core': ^5.0.0
-    dependencies:
-      '@capacitor/core': 5.5.1
     dev: false
 
   /@mutinywallet/mutiny-wasm@0.4.28:

@@ -45,7 +45,7 @@ export default defineConfig({
             "@solid-primitives/upload",
             "i18next",
             "i18next-browser-languagedetector",
-            "@mutinywallet/barcode-scanner",
+            "@capacitor-mlkit/barcode-scanner",
             "@nostr-dev-kit/ndk",
             "@capacitor/clipboard",
             "@capacitor/core",

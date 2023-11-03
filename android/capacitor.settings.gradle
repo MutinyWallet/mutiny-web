@@ -2,6 +2,9 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/android/capacitor')
 
+include ':capacitor-mlkit-barcode-scanning'
+project(':capacitor-mlkit-barcode-scanning').projectDir = new File('../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@5.3.0_@capacitor+core@5.5.1/node_modules/@capacitor-mlkit/barcode-scanning/android')
+
 include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app/android')
 
@@ -22,6 +25,3 @@ project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capaci
 
 include ':capacitor-toast'
 project(':capacitor-toast').projectDir = new File('../node_modules/.pnpm/@capacitor+toast@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/toast/android')
-
-include ':mutinywallet-barcode-scanner'
-project(':mutinywallet-barcode-scanner').projectDir = new File('../node_modules/.pnpm/@mutinywallet+barcode-scanner@5.0.0-beta.3_@capacitor+core@5.5.1/node_modules/@mutinywallet/barcode-scanner/android')
