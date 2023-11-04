@@ -15,8 +15,8 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6(@capacitor/core@5.5.1)
       '@capacitor/browser':
-        specifier: ^5.1.0
-        version: 5.1.0(@capacitor/core@5.5.1)
+        specifier: 5.0.6
+        version: 5.0.6(@capacitor/core@5.5.1)
       '@capacitor/clipboard':
         specifier: ^5.0.6
         version: 5.0.6(@capacitor/core@5.5.1)
@@ -2568,8 +2568,8 @@ packages:
       - typescript
     dev: true
 
-  /@capacitor/browser@5.1.0(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-7togqchk2Tvq4SmLaWhcrd4x48ES/GEZsceM+29aun7WhxQEVcDU0cJsVdSU2LNFwNhWgPV2GW90etVd1B3OdQ==}
+  /@capacitor/browser@5.0.6(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-wEI7Na6PVzSP/00ud7pjbBwXwVG7HywCdy2fJT/hzF6yuHn4tDirbOvbr1JKd9LZqKs2Xn+TapV38JhBRhX6YA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
