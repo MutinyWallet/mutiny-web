@@ -52,6 +52,9 @@ export function BalanceBox(props: { loading?: boolean }) {
         (state.balance?.unconfirmed || 0n) +
         (state.balance?.force_close || 0n);
 
+    const usableOnchain = () =>
+        (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
+
     return (
         <>
             <FancyCard>
@@ -115,7 +118,7 @@ export function BalanceBox(props: { loading?: boolean }) {
                             <Show when={state.balance?.unconfirmed === 0n}>
                                 <div />
                             </Show>
-                            <Show when={totalOnchain() != 0n}>
+                            <Show when={usableOnchain() > 0n}>
                                 <div class="self-end justify-self-end">
                                     <A href="/swap" class={STYLE}>
                                         <img
