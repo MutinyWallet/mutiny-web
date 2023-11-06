@@ -13,6 +13,7 @@ class MyCustomViewController: CAPBridgeViewController {
         super.viewDidLoad()
         webView!.allowsBackForwardNavigationGestures = true
         webView!.scrollView.bounces = false
+        webView!.scrollView.alwaysBounceVertical = false
         webView!.scrollView.showsVerticalScrollIndicator = false
     }
 }
