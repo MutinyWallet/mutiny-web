@@ -1,7 +1,10 @@
-name: Release iOS Staging
+name: Build iOS Staging
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   build:
@@ -82,7 +85,7 @@ jobs:
             APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
             DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
           with:
-            lane: 'beta'
+            lane: 'build'
             subdirectory: 'ios/App'
 
 
