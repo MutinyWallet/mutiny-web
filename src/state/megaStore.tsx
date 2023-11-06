@@ -61,6 +61,7 @@ export type MegaStore = [
         safe_mode?: boolean;
         npub?: string;
         preferredInvoiceType: "unified" | "lightning" | "onchain";
+        betaWarned: boolean;
     },
     {
         setup(password?: string): Promise<void>;
@@ -81,6 +82,7 @@ export type MegaStore = [
             onError: (e: Error) => void,
             onSuccess: (value: ParsedParams) => void
         ): void;
+        setBetaWarned(): void;
     }
 ];
 
@@ -114,7 +116,8 @@ export const Provider: ParentComponent = (props) => {
         settings: undefined as MutinyWalletSettingStrings | undefined,
         safe_mode: searchParams.safe_mode === "true",
         npub: localStorage.getItem("npub") || undefined,
-        preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain"
+        preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
+        betaWarned: localStorage.getItem("betaWarned") === "true"
     });
 
     const actions = {
@@ -360,6 +363,10 @@ export const Provider: ParentComponent = (props) => {
                     }
                 }
             }
+        },
+        setBetaWarned() {
+            localStorage.setItem("betaWarned", "true");
+            setState({ betaWarned: true });
         }
     };
 
