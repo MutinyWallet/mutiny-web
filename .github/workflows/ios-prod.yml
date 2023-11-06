@@ -1,0 +1,91 @@
+name: Release iOS Prod
+
+on:
+    push:
+        tags:
+        - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+        branches:
+        - master
+
+jobs:
+  build:
+    name: Build iOS
+    runs-on: macos-latest
+    timeout-minutes: 180
+    steps:
+        - name: Checkout source
+          uses: actions/checkout@v3
+
+        - uses: pnpm/action-setup@v2
+          name: Install pnpm
+          id: pnpm-install
+          with:
+            version: 8
+            run_install: false
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18.x
+            cache: 'pnpm'
+
+        # Install dependencies using pnpm
+        - name: Install Dependencies
+          run: pnpm install
+
+        - name: Build SolidJS app
+          env:
+            VITE_NETWORK: bitcoin
+            VITE_PROXY: wss://p.mutinywallet.com
+            VITE_ESPLORA: https://mutiny.mempool.space/api
+            VITE_LSP: https://lsp.voltageapi.com
+            VITE_RGS: https://scorer.mutinywallet.com/v1/rgs/snapshot/
+            VITE_AUTH: https://auth.mutinywallet.com
+            VITE_SUBSCRIPTIONS: https://subscriptions.mutinywallet.com
+            VITE_STORAGE: https://storage.mutinywallet.com/v2
+            VITE_FEEDBACK: https://feedback.mutinywallet.com
+            VITE_SCORER: https://scorer.mutinywallet.com
+            VITE_PRIMAL: https://primal-cache.mutinywallet.com/api
+          run: pnpm build
+
+        - uses: actions/cache@v3
+          with:
+            path: ios/App/Pods
+            key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+            restore-keys: |
+              ${{ runner.os }}-pods-
+
+        - name: Capacitor sync
+          run: npx cap sync
+        
+        - uses: ruby/setup-ruby@v1
+          with:
+            ruby-version: '3.2.2'
+            bundler-cache: true
+            working-directory: 'ios/App'
+
+        - uses: maxim-lobanov/setup-xcode@v1
+          with:
+            xcode-version: '14.2.0'
+
+        - uses: maierj/fastlane-action@v3.0.0
+          env:
+            DEVELOPER_APP_IDENTIFIER: ${{ secrets.DEVELOPER_APP_IDENTIFIER }}
+            KEYCHAIN_NAME: ${{ secrets.KEYCHAIN_NAME }}
+            KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+            APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+            APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+            APPLE_KEY_CONTENT: ${{ secrets.APPLE_KEY_CONTENT }}
+            CERTIFICATE_STORE_URL: ${{ secrets.CERTIFICATE_STORE_URL }}
+            GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+            GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+            FASTLANE_APPLE_ID: ${{ secrets.FASTLANE_APPLE_ID }}
+            MATCH_USERNAME: ${{ secrets.FASTLANE_APPLE_ID }}
+            MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+            APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
+            DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
+          with:
+            lane: 'beta'
+            subdirectory: 'ios/App'
+
+
