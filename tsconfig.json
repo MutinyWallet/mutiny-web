@@ -23,7 +23,8 @@
         "playwright.config.ts",
         "vite.config.ts",
         ".eslintrc.cjs",
-        "e2e/**/*"
+        "e2e/**/*",
+        "capacitor.config.ts"
     ],
     "exclude": [
         "node_modules",
