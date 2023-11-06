@@ -24,9 +24,36 @@ import { useI18n } from "~/i18n/context";
 import { FeedbackLink } from "~/routes/Feedback";
 import { useMegaStore } from "~/state/megaStore";
 
+async function registerPeriodicInFlightCheck() {
+    const registration = await navigator.serviceWorker.ready;
+    try {
+        // Request notification permission from the user
+        Notification.requestPermission().then(async (permission) => {
+            if (permission === "granted") {
+                console.log("Notification permission granted.");
+
+                await registration.periodicSync.register(
+                    "check-inflight-payments",
+                    {
+                        minInterval: 60 * 60 * 1000 // every hour
+                    }
+                );
+            } else {
+                console.error("Notification permission denied.");
+            }
+        });
+    } catch (e) {
+        console.warn("Periodic Sync could not be registered!");
+        console.error(e);
+    }
+}
+
 export default function App() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
+
+    // run registerPeriodicInFlightCheck in background
+    const _ = registerPeriodicInFlightCheck();
 
     return (
         <SafeArea>
