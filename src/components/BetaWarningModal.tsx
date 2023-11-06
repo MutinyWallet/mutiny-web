@@ -1,5 +1,5 @@
 import { Dialog } from "@kobalte/core";
-import { createSignal, ParentComponent } from "solid-js";
+import { ParentComponent } from "solid-js";
 
 import {
     DIALOG_CONTENT,
@@ -19,7 +19,6 @@ export function BetaWarningModal() {
             title={i18n.t("modals.beta_warning.title")}
             linkText={i18n.t("common.why")}
         >
-            <p>{i18n.t("translations:modals.beta_warning.beta_warning")}</p>
             <p>{i18n.t("modals.beta_warning.be_careful")}</p>
             <p>
                 <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Mutiny-Beta-Readme">
@@ -40,20 +39,17 @@ export const WarningModal: ParentComponent<{
     linkText: string;
     title: string;
 }> = (props) => {
-    const [state, _actions] = useMegaStore();
-
-    const [open, setOpen] = createSignal(
-        localStorage.getItem("betaWarned") !== "true" &&
-            state.settings?.network === "bitcoin"
-    );
+    const [state, actions] = useMegaStore();
 
     function close() {
-        localStorage.setItem("betaWarned", "true");
-        setOpen(false);
+        actions.setBetaWarned();
     }
 
     return (
-        <Dialog.Root open={open()} onOpenChange={close}>
+        <Dialog.Root
+            open={!state.betaWarned && state.settings?.network === "bitcoin"}
+            onOpenChange={close}
+        >
             <Dialog.Portal>
                 <Dialog.Overlay class={OVERLAY} />
                 <div class={DIALOG_POSITIONER}>
