@@ -89,7 +89,7 @@ export function AmountFiat(props: {
                     "text-xl": props.denominationSize === "xl"
                 }}
             >
-                {`${state.fiat.value} `}
+                {` ${state.fiat.value} `}
             </span>
         </h2>
     );
