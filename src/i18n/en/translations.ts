@@ -123,7 +123,10 @@ export default {
             "Amount requested, {{amount}} SATS, does not equal amount set.",
         error_clipboard: "Clipboard not supported",
         error_keysend: "Keysend failed",
-        error_LNURL: "LNURL Pay failed"
+        error_LNURL: "LNURL Pay failed",
+        payment_pending: "Payment pending",
+        payment_pending_description:
+            "It's taking a while, but it's possible this payment may still go through. Please check 'Activity' for the current status."
     },
     feedback: {
         header: "Give us feedback!",

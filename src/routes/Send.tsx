@@ -32,6 +32,7 @@ import {
     InfoBox,
     LargeHeader,
     MegaCheck,
+    MegaClock,
     MegaEx,
     MutinyWalletGuard,
     NavBar,
@@ -193,6 +194,30 @@ function DestinationShower(props: {
             </Match>
             <Match when={props.lnurl && props.source === "lightning"}>
                 <StringShower text={props.lnurl || ""} />
+            </Match>
+        </Switch>
+    );
+}
+
+function Failure(props: { reason: string }) {
+    const i18n = useI18n();
+
+    return (
+        <Switch>
+            <Match when={props.reason === "Payment timed out."}>
+                <MegaClock />
+                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
+                    {i18n.t("send.payment_pending")}
+                </h1>
+                <InfoBox accent="white">
+                    {i18n.t("send.payment_pending_description")}
+                </InfoBox>
+            </Match>
+            <Match when={true}>
+                <MegaEx />
+                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
+                    {props.reason}
+                </h1>
             </Match>
         </Switch>
     );
@@ -635,15 +660,12 @@ export default function Send() {
                     >
                         <Switch>
                             <Match when={sentDetails()?.failure_reason}>
-                                <MegaEx />
-                                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
-                                    {sentDetails()?.amount
-                                        ? source() === "onchain"
-                                            ? i18n.t("send.payment_initiated")
-                                            : i18n.t("send.payment_sent")
-                                        : sentDetails()?.failure_reason}
-                                </h1>
-                                {/*TODO: add failure hint logic for different failure conditions*/}
+                                <Failure
+                                    reason={
+                                        sentDetails()?.failure_reason ||
+                                        "Payment failed for an unknown reason"
+                                    }
+                                />
                             </Match>
                             <Match when={true}>
                                 <Show when={detailsId() && detailsKind()}>
