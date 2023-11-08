@@ -238,13 +238,15 @@ function LightningDetails(props: { info: MutinyInvoice; tags?: TagItem }) {
                 >
                     <MiniStringShower text={props.info.payment_hash ?? ""} />
                 </KeyValue>
-                <KeyValue
-                    key={i18n.t(
-                        "activity.transaction_details.payment_preimage"
-                    )}
-                >
-                    <MiniStringShower text={props.info.preimage ?? ""} />
-                </KeyValue>
+                <Show when={props.info.paid}>
+                    <KeyValue
+                        key={i18n.t(
+                            "activity.transaction_details.payment_preimage"
+                        )}
+                    >
+                        <MiniStringShower text={props.info.preimage ?? ""} />
+                    </KeyValue>
+                </Show>
             </ul>
         </VStack>
     );
