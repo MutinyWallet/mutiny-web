@@ -1,6 +1,6 @@
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 
-import { Currency } from "~/components/ChooseCurrency";
+import { Currency } from "./currencies";
 
 /** satsToFiat
  *  returns a toLocaleString() based on the bitcoin price in the chosen currency

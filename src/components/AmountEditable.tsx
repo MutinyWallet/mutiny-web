@@ -22,9 +22,7 @@ import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
-import { fiatToSats, satsToFiat } from "~/utils";
-
-import { Currency } from "./ChooseCurrency";
+import { Currency, fiatToSats, satsToFiat } from "~/utils";
 
 // Checks the users locale to determine if decimals should be a "." or a ","
 const decimalDigitDivider = Number(1.0)
