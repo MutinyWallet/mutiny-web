@@ -1,119 +1,37 @@
 import { createForm } from "@modular-forms/solid";
-import { createSignal, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { useNavigate } from "solid-start";
 
-import {
-    Button,
-    ExternalLink,
-    InfoBox,
-    NiceP,
-    SelectField,
-    VStack
-} from "~/components";
+import { Button, ExternalLink, InfoBox, NiceP, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, timeout } from "~/utils";
-
-export interface Currency {
-    value: string;
-    label: string;
-    hasSymbol?: string;
-    maxFractionalDigits: number;
-}
+import {
+    BTC_OPTION,
+    Currency,
+    eify,
+    FIAT_OPTIONS,
+    timeout,
+    USD_OPTION
+} from "~/utils";
 
 type ChooseCurrencyForm = {
     fiatCurrency: string;
 };
 
-/**
- *  FIAT_OPTIONS is an array of possible currencies
- *  All available currencies can be found here https://api.coingecko.com/api/v3/simple/supported_vs_currencies
- *  @Currency
- *  @param {string} label - should be in the format {Name} {ISO code}
- *  @param {string} values - are uppercase ISO 4217 currency code
- *  @param {string?} hasSymbol - if the currency has a symbol it should be represented as a string
- *  @param {number} maxFractionalDigits - the standard fractional units used by the currency should be set with maxFractionalDigits
- *
- *  Bitcoin is represented as:
- *  {
- *      label: "bitcoin BTC",
- *      value: "BTC",
- *      hasSymbol: "₿",
- *      maxFractionalDigits: 8
- *  }
- */
-
-export const FIAT_OPTIONS: Currency[] = [
-    {
-        label: "Bitcoin BTC",
-        value: "BTC",
-        hasSymbol: "₿",
-        maxFractionalDigits: 8
-    },
-    {
-        label: "United States Dollar USD",
-        value: "USD",
-        hasSymbol: "$",
-        maxFractionalDigits: 2
-    },
-    { label: "Swiss Franc CHF", value: "CHF", maxFractionalDigits: 2 },
-    {
-        label: "Chinese Yuan CNY",
-        value: "CNY",
-        hasSymbol: "¥",
-        maxFractionalDigits: 2
-    },
-    {
-        label: "Euro EUR",
-        value: "EUR",
-        hasSymbol: "€",
-        maxFractionalDigits: 2
-    },
-    {
-        label: "Brazilian Real BRL",
-        value: "BRL",
-        hasSymbol: "R$",
-        maxFractionalDigits: 2
-    },
-    {
-        label: "British Pound GBP",
-        value: "GBP",
-        hasSymbol: "₤",
-        maxFractionalDigits: 2
-    },
-    {
-        label: "Australia Dollar AUD",
-        value: "AUD",
-        hasSymbol: "$",
-        maxFractionalDigits: 2
-    },
-    {
-        label: "Japanese Yen JPY",
-        value: "JPY",
-        hasSymbol: "¥",
-        maxFractionalDigits: 0
-    },
-    {
-        label: "Korean Won KRW",
-        value: "KRW",
-        hasSymbol: "₩",
-        maxFractionalDigits: 0
-    },
-    { label: "Kuwaiti Dinar KWD", value: "KWD", maxFractionalDigits: 3 }
-].sort((a, b) => (a.value > b.value ? 1 : b.value > a.value ? -1 : 0));
-
-export const USD_INDEX = FIAT_OPTIONS.findIndex((fo) => fo.value === "USD");
-export const BTC_INDEX = FIAT_OPTIONS.findIndex((fo) => fo.value === "BTC");
+const COMBINED_OPTIONS: Currency[] = [USD_OPTION, BTC_OPTION, ...FIAT_OPTIONS];
 
 export function ChooseCurrency() {
     const i18n = useI18n();
     const [error, setError] = createSignal<Error>();
-    const [state, actions] = useMegaStore();
+    const [_state, actions] = useMegaStore();
     const [loading, setLoading] = createSignal(false);
     const navigate = useNavigate();
 
     function findCurrencyByValue(value: string) {
-        return FIAT_OPTIONS.find((currency) => currency.value === value);
+        return (
+            COMBINED_OPTIONS.find((currency) => currency.value === value) ??
+            USD_OPTION
+        );
     }
 
     const [_chooseCurrencyForm, { Form, Field }] =
@@ -135,7 +53,7 @@ export function ChooseCurrency() {
     const handleFormSubmit = async (f: ChooseCurrencyForm) => {
         setLoading(true);
         try {
-            actions.saveFiat(findCurrencyByValue(f.fiatCurrency) || state.fiat);
+            actions.saveFiat(findCurrencyByValue(f.fiatCurrency));
 
             await timeout(1000);
             navigate("/");
@@ -157,16 +75,17 @@ export function ChooseCurrency() {
                 <VStack>
                     <Field name="fiatCurrency">
                         {(field, props) => (
-                            <SelectField
+                            <select
                                 {...props}
                                 value={field.value}
-                                error={field.error}
-                                placeholder={state.fiat.label}
-                                options={FIAT_OPTIONS}
-                                label={i18n.t(
-                                    "settings.currency.select_currency_label"
-                                )}
-                            />
+                                class="w-full rounded-lg bg-m-grey-750 py-2 pl-4 pr-12 text-base font-normal text-white"
+                            >
+                                <For each={COMBINED_OPTIONS}>
+                                    {({ value, label }) => (
+                                        <option value={value}>{label}</option>
+                                    )}
+                                </For>
+                            </select>
                         )}
                     </Field>
                     <Show when={error()}>
