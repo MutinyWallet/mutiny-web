@@ -201,9 +201,13 @@ export const fetchZaps: ResourceFetcher<
 
     for (const object of data) {
         if (object.kind === 10000113) {
-            const content = JSON.parse(object.content);
-            if (content?.until) {
-                newUntil = content?.until + 1;
+            try {
+                const content = JSON.parse(object.content);
+                if (content?.until) {
+                    newUntil = content?.until + 1;
+                }
+            } catch (e) {
+                console.error("Failed to parse content: ", object.content);
             }
         }
 
@@ -212,14 +216,18 @@ export const fetchZaps: ResourceFetcher<
         }
 
         if (object.kind === 9735) {
-            const event = await simpleZapFromEvent(
-                object,
-                state.mutiny_wallet!
-            );
+            try {
+                const event = await simpleZapFromEvent(
+                    object,
+                    state.mutiny_wallet!
+                );
 
-            // Only add it if it's a valid zap (not undefined)
-            if (event) {
-                zaps.push(event);
+                // Only add it if it's a valid zap (not undefined)
+                if (event) {
+                    zaps.push(event);
+                }
+            } catch (e) {
+                console.error("Failed to parse zap event: ", object);
             }
         }
     }
