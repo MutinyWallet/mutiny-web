@@ -201,7 +201,7 @@ export default function Swap() {
         if (network === "bitcoin") {
             return (
                 (!!selectedPeer() || !!hasLsp()) &&
-                amountSats() >= 50000n &&
+                amountSats() >= 100000n &&
                 amountSats() <= balance
             );
         } else {
@@ -220,8 +220,8 @@ export default function Swap() {
 
         const network = state.mutiny_wallet?.get_network() as Network;
 
-        if (network === "bitcoin" && amountSats() < 50000n) {
-            return i18n.t("swap.channel_too_small", { amount: "50,000" });
+        if (network === "bitcoin" && amountSats() < 100000n) {
+            return i18n.t("swap.channel_too_small", { amount: "100,000" });
         }
 
         if (amountSats() < 10000n) {

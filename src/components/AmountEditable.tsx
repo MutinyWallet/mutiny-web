@@ -410,7 +410,7 @@ export const AmountEditable: ParentComponent<{
             const network = state.mutiny_wallet?.get_network() as Network;
             if (network === "bitcoin") {
                 return i18n.t("receive.amount_editable.receive_too_small", {
-                    amount: "50,000"
+                    amount: "100,000"
                 });
             } else {
                 return i18n.t("receive.amount_editable.receive_too_small", {
