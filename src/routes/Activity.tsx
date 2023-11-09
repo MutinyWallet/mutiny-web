@@ -98,7 +98,7 @@ function ContactRow() {
 const TAB =
     "flex-1 inline-block px-8 py-4 text-lg font-semibold rounded-lg ui-selected:bg-white/10 bg-neutral-950 hover:bg-white/10";
 
-export default function Activity() {
+export function Activity() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
     return (

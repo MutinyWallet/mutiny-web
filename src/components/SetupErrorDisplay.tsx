@@ -1,5 +1,5 @@
+import { Title } from "@solidjs/meta";
 import { Match, Switch } from "solid-js";
-import { Title } from "solid-start";
 
 import nodevice from "~/assets/no-device.png";
 import {

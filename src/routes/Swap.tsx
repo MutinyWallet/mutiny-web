@@ -1,5 +1,6 @@
 import { createForm, required } from "@modular-forms/solid";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
+import { useNavigate } from "@solidjs/router";
 import {
     createMemo,
     createResource,
@@ -9,7 +10,6 @@ import {
     Show,
     Switch
 } from "solid-js";
-import { useNavigate } from "solid-start";
 
 import {
     ActivityDetailsModal,
@@ -50,7 +50,7 @@ type ChannelOpenDetails = {
     failure_reason?: Error;
 };
 
-export default function Swap() {
+export function Swap() {
     const [state, _actions] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();

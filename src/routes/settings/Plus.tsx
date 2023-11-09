@@ -1,3 +1,4 @@
+import { A } from "@solidjs/router";
 import {
     createResource,
     createSignal,
@@ -6,7 +7,6 @@ import {
     Suspense,
     Switch
 } from "solid-js";
-import { A } from "solid-start";
 
 import party from "~/assets/party.gif";
 import {
@@ -198,7 +198,7 @@ function PlusCTA() {
     );
 }
 
-export default function Plus() {
+export function Plus() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 

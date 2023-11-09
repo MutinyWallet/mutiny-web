@@ -125,7 +125,7 @@ export function LiquidityMonitor() {
     );
 }
 
-export default function Channels() {
+export function Channels() {
     const i18n = useI18n();
     return (
         <MutinyWalletGuard>

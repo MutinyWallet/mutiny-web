@@ -14,7 +14,7 @@ import {
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-export default function LnUrlAuth() {
+export function LnUrlAuth() {
     const i18n = useI18n();
     const [state, _] = useMegaStore();
 

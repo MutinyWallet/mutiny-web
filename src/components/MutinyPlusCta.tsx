@@ -1,5 +1,5 @@
+import { A } from "@solidjs/router";
 import { ParentComponent, Show } from "solid-js";
-import { A } from "solid-start";
 
 import forward from "~/assets/icons/forward.svg";
 import { useI18n } from "~/i18n/context";

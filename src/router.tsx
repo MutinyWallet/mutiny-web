@@ -1,13 +1,38 @@
 // @refresh reload
-import { Match, onCleanup, Switch } from "solid-js";
-import { FileRoutes, Routes, useNavigate } from "solid-start";
-
-import "./root.css";
-
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
+import { Route, Routes, useNavigate } from "@solidjs/router";
+import { Match, onCleanup, Switch } from "solid-js";
 
 import { SetupErrorDisplay, Toaster } from "~/components";
+import {
+    Activity,
+    Feedback,
+    Gift as GiftReceive,
+    Main,
+    NotFound,
+    Receive,
+    Redshift,
+    Scanner,
+    Send,
+    Swap
+} from "~/routes";
+import {
+    Admin,
+    Backup,
+    Channels,
+    Connections,
+    Currency,
+    EmergencyKit,
+    Encrypt,
+    Gift,
+    LnUrlAuth,
+    Plus,
+    Restore,
+    Servers,
+    Settings,
+    SyncNostrContacts
+} from "~/routes/settings";
 
 import { useMegaStore } from "./state/megaStore";
 
@@ -63,9 +88,37 @@ export function Router() {
                 <SetupErrorDisplay initialError={state.setup_error!} />
             </Match>
             <Match when={true}>
+                <GlobalListeners />
                 <Routes>
-                    <GlobalListeners />
-                    <FileRoutes />
+                    <Route path="/" component={Main} />
+                    <Route path="/activity" component={Activity} />
+                    <Route path="/feedback" component={Feedback} />
+                    <Route path="/gift" component={GiftReceive} />
+                    <Route path="/receive" component={Receive} />
+                    <Route path="/redshift" component={Redshift} />
+                    <Route path="/scanner" component={Scanner} />
+                    <Route path="/send" component={Send} />
+                    <Route path="/swap" component={Swap} />
+                    <Route path="/settings">
+                        <Route path="/" component={Settings} />
+                        <Route path="/admin" component={Admin} />
+                        <Route path="/backup" component={Backup} />
+                        <Route path="/channels" component={Channels} />
+                        <Route path="/connections" component={Connections} />
+                        <Route path="/currency" component={Currency} />
+                        <Route path="/emergencykit" component={EmergencyKit} />
+                        <Route path="/encrypt" component={Encrypt} />
+                        <Route path="/gift" component={Gift} />
+                        <Route path="/lnurlauth" component={LnUrlAuth} />
+                        <Route path="/plus" component={Plus} />
+                        <Route path="/restore" component={Restore} />
+                        <Route path="/servers" component={Servers} />
+                        <Route
+                            path="/syncnostrcontacts"
+                            component={SyncNostrContacts}
+                        />
+                    </Route>
+                    <Route path="/*all" component={NotFound} />
                 </Routes>
                 <Toaster />
             </Match>

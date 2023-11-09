@@ -4,10 +4,8 @@
     "license": "MIT",
     "packageManager": "pnpm@8.6.6",
     "scripts": {
-        "dev": "solid-start dev",
-        "host": "solid-start dev --host",
-        "build": "solid-start build",
-        "start": "solid-start start",
+        "dev": "vite",
+        "build": "tsc && vite build",
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
         "pre-commit": "pnpm run eslint && pnpm run check-types && pnpm run format",
@@ -33,11 +31,11 @@
         "postcss": "^8.4.31",
         "prettier": "^3.0.3",
         "prettier-plugin-tailwindcss": "^0.5.6",
-        "solid-start-node": "^0.3.9",
         "tailwindcss": "^3.3.5",
         "typescript": "^5.2.2",
         "vite": "^4.5.0",
         "vite-plugin-pwa": "^0.14.7",
+        "vite-plugin-solid": "^2.7.0",
         "vite-plugin-wasm": "^3.2.2",
         "workbox-window": "^6.6.0"
     },
@@ -61,16 +59,17 @@
         "@mutinywallet/waila-wasm": "^0.2.4",
         "@solid-primitives/upload": "^0.0.111",
         "@solid-primitives/websocket": "^1.2.0",
+        "@solidjs/meta": "^0.29.1",
+        "@solidjs/router": "^0.9.0",
         "@thisbeyond/solid-select": "^0.14.0",
         "i18next": "^22.5.1",
         "i18next-browser-languagedetector": "^7.1.0",
         "qr-scanner": "^1.4.2",
         "solid-js": "^1.8.5",
         "solid-qr-code": "^0.0.8",
-        "solid-start": "^0.3.9",
         "undici": "^5.27.1"
     },
     "engines": {
-        "node": ">=16.8"
+        "node": ">=18"
     }
 }

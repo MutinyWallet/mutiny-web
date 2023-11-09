@@ -1,6 +1,6 @@
 import { createForm } from "@modular-forms/solid";
+import { useNavigate } from "@solidjs/router";
 import { createSignal, For, Show } from "solid-js";
-import { useNavigate } from "solid-start";
 
 import { Button, ExternalLink, InfoBox, NiceP, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";

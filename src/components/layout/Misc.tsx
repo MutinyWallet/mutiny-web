@@ -5,6 +5,7 @@ import {
     Separator
 } from "@kobalte/core";
 import { TagItem, TagKind } from "@mutinywallet/mutiny-wasm";
+import { A } from "@solidjs/router";
 import {
     createResource,
     createSignal,
@@ -15,7 +16,6 @@ import {
     Suspense,
     Switch
 } from "solid-js";
-import { A } from "solid-start";
 
 import check from "~/assets/icons/check.svg";
 import close from "~/assets/icons/close.svg";

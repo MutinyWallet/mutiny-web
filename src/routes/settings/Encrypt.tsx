@@ -25,7 +25,7 @@ type EncryptPasswordForm = {
     confirmPassword: string;
 };
 
-export default function Encrypt() {
+export function Encrypt() {
     const i18n = useI18n();
     const [store, _actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();

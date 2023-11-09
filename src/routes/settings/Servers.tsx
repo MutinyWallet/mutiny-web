@@ -150,7 +150,7 @@ function AsyncSettingsEditor() {
     );
 }
 
-export default function Servers() {
+export function Servers() {
     const i18n = useI18n();
     return (
         <SafeArea>

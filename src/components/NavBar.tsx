@@ -1,4 +1,4 @@
-import { A } from "solid-start";
+import { A } from "@solidjs/router";
 
 import airplane from "~/assets/icons/airplane.svg";
 import receive from "~/assets/icons/big-receive.svg";

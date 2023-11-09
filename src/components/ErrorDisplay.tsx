@@ -1,4 +1,5 @@
-import { A, Title } from "solid-start";
+import { Title } from "@solidjs/meta";
+import { A } from "@solidjs/router";
 
 import { ExternalLink } from "~/components";
 import {

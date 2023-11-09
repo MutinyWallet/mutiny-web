@@ -1,5 +1,5 @@
+import { A, useNavigate } from "@solidjs/router";
 import { Match, Show, Switch } from "solid-js";
-import { A, useNavigate } from "solid-start";
 
 import shuffle from "~/assets/icons/shuffle.svg";
 import {

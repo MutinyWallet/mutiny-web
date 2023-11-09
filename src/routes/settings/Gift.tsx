@@ -130,7 +130,7 @@ function ExistingGifts() {
     );
 }
 
-export default function GiftPage() {
+export function Gift() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 

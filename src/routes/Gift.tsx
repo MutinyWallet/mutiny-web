@@ -1,3 +1,4 @@
+import { useSearchParams } from "@solidjs/router";
 import {
     createMemo,
     createResource,
@@ -7,7 +8,6 @@ import {
     Suspense,
     Switch
 } from "solid-js";
-import { useSearchParams } from "solid-start";
 
 import treasureClosed from "~/assets/treasure-closed.png";
 import treasure from "~/assets/treasure.gif";
@@ -91,7 +91,7 @@ function InboundWarning() {
     );
 }
 
-export default function GiftPage() {
+export function Gift() {
     const [state, _] = useMegaStore();
     const i18n = useI18n();
 

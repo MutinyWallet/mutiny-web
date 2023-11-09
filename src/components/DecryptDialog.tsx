@@ -1,5 +1,5 @@
+import { A } from "@solidjs/router";
 import { createSignal, Show } from "solid-js";
-import { A } from "solid-start";
 
 import { Button, InfoBox, SimpleDialog, TextField } from "~/components";
 import { useI18n } from "~/i18n/context";

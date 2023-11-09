@@ -1,4 +1,4 @@
-import { A } from "solid-start";
+import { A } from "@solidjs/router";
 
 import { Back } from "~/assets/svg/Back";
 import { useI18n } from "~/i18n/context";

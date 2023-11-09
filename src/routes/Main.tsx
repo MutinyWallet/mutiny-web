@@ -1,5 +1,5 @@
+import { A } from "@solidjs/router";
 import { Show, Suspense } from "solid-js";
-import { A } from "solid-start";
 
 import scan from "~/assets/icons/scan.svg";
 import settings from "~/assets/icons/settings.svg";
@@ -24,7 +24,7 @@ import { useI18n } from "~/i18n/context";
 import { FeedbackLink } from "~/routes/Feedback";
 import { useMegaStore } from "~/state/megaStore";
 
-export default function App() {
+export function Main() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 

@@ -92,7 +92,7 @@ export function SyncContactsForm() {
     );
 }
 
-export default function SyncNostrContacts() {
+export function SyncNostrContacts() {
     const [state, actions] = useMegaStore();
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<Error>();

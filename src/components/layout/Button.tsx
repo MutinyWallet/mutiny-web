@@ -1,6 +1,6 @@
+import { A } from "@solidjs/router";
 import { JSX, ParentComponent, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import { A } from "solid-start";
 
 import { LoadingSpinner } from "~/components";
 
