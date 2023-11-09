@@ -1,6 +1,7 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
 import { Contact, MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
+import { useNavigate } from "@solidjs/router";
 import {
     createEffect,
     createMemo,
@@ -10,7 +11,6 @@ import {
     Show,
     Switch
 } from "solid-js";
-import { useNavigate } from "solid-start";
 
 import { Paste } from "~/assets/svg/Paste";
 import { Scan } from "~/assets/svg/Scan";
@@ -223,7 +223,7 @@ function Failure(props: { reason: string }) {
     );
 }
 
-export default function Send() {
+export function Send() {
     const [state, actions] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();

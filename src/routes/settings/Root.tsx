@@ -1,6 +1,6 @@
 import { Capacitor } from "@capacitor/core";
+import { A } from "@solidjs/router";
 import { For, Show } from "solid-js";
-import { A } from "solid-start";
 
 import forward from "~/assets/icons/forward.svg";
 import {
@@ -63,7 +63,7 @@ function SettingsLinkList(props: {
     );
 }
 
-export default function Settings() {
+export function Settings() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

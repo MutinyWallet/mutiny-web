@@ -6,6 +6,7 @@ import {
     MutinyWallet,
     TagItem
 } from "@mutinywallet/mutiny-wasm";
+import { useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createContext,
     onCleanup,
@@ -14,7 +15,6 @@ import {
     useContext
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import { useNavigate, useSearchParams } from "solid-start";
 
 import { checkBrowserCompatibility } from "~/logic/browserCompatibility";
 import {

@@ -1,5 +1,5 @@
+import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, Show } from "solid-js";
-import { useNavigate } from "solid-start";
 
 import {
     BackLink,
@@ -52,7 +52,7 @@ function Quiz(props: { setHasCheckedAll: (hasChecked: boolean) => void }) {
     );
 }
 
-export default function Backup() {
+export function Backup() {
     const i18n = useI18n();
     const [store, actions] = useMegaStore();
     const navigate = useNavigate();

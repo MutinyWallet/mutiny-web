@@ -1,4 +1,5 @@
 import { Contact } from "@mutinywallet/mutiny-wasm";
+import { A } from "@solidjs/router";
 import {
     createEffect,
     createResource,
@@ -8,7 +9,6 @@ import {
     Show,
     Switch
 } from "solid-js";
-import { A } from "solid-start";
 
 import {
     ActivityDetailsModal,

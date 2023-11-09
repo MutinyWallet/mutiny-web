@@ -1,7 +1,7 @@
 import { NwcProfile, type BudgetPeriod } from "@mutinywallet/mutiny-wasm";
+import { useSearchParams } from "@solidjs/router";
 import { createResource, createSignal, For, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
-import { useSearchParams } from "solid-start";
 
 import {
     AmountSats,
@@ -384,7 +384,7 @@ function Nwc() {
     );
 }
 
-export default function Connections() {
+export function Connections() {
     const i18n = useI18n();
     return (
         <MutinyWalletGuard>

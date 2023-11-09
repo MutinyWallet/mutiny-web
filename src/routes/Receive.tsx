@@ -6,6 +6,7 @@ import {
     MutinyInvoice,
     TagItem
 } from "@mutinywallet/mutiny-wasm";
+import { useNavigate } from "@solidjs/router";
 import {
     createEffect,
     createMemo,
@@ -16,7 +17,6 @@ import {
     Show,
     Switch
 } from "solid-js";
-import { useNavigate } from "solid-start";
 
 import side2side from "~/assets/icons/side-to-side.svg";
 import {
@@ -107,7 +107,7 @@ function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
     );
 }
 
-export default function Receive() {
+export function Receive() {
     const [state, actions] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();

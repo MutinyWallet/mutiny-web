@@ -1,5 +1,5 @@
-import solid from "solid-start/vite";
 import { defineConfig } from "vite";
+import solid from "vite-plugin-solid";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 import wasm from "vite-plugin-wasm";
 import autoprefixer from "autoprefixer";
@@ -22,6 +22,11 @@ const pwaOptions: Partial<VitePWAOptions> = {
 };
 
 export default defineConfig({
+    build: {
+        target: "esnext",
+        outDir: "dist/public",
+        emptyOutDir: true
+    },
     server: {
         port: 3420,
         fs: {
@@ -29,7 +34,7 @@ export default defineConfig({
             allow: [".."]
         }
     },
-    plugins: [wasm(), solid({ ssr: false }), VitePWA(pwaOptions)],
+    plugins: [wasm(), solid(), VitePWA(pwaOptions)],
     define: {
         "import.meta.env.__COMMIT_HASH__": JSON.stringify(commitHash),
         "import.meta.env.__RELEASE_VERSION__": JSON.stringify(process.env.npm_package_version)
@@ -41,19 +46,19 @@ export default defineConfig({
         // Don't want vite to bundle these late during dev causing reload
         include: [
             "qr-scanner",
-            "@kobalte/core",
             "@solid-primitives/upload",
             "i18next",
             "i18next-browser-languagedetector",
-            "@capacitor-mlkit/barcode-scanner",
-            "@nostr-dev-kit/ndk",
+            "@capacitor-mlkit/barcode-scanning",
+            "@capacitor/app",
+            "@capacitor/app-launcher",
             "@capacitor/clipboard",
             "@capacitor/core",
             "@capacitor/filesystem",
-            "@capacitor/toast",
             "@capacitor/haptics",
-            "@capacitor/app",
-            "@capacitor/browser",
+            "@capacitor/share",
+            "@capacitor/status-bar",
+            "@capacitor/toast",
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
         exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]

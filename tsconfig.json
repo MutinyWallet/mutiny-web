@@ -1,14 +1,17 @@
 {
     "compilerOptions": {
+        "declaration": true,
+        "declarationDir": "./types",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "node",
         "jsxImportSource": "solid-js",
+        "noEmit": true,
         "jsx": "preserve",
         "strict": true,
-        "types": ["solid-start/env", "node", "vite-plugin-pwa/client"],
+        "types": ["node", "vite-plugin-pwa/client"],
         "baseUrl": "./",
         "paths": {
             "~/*": ["./src/*"]

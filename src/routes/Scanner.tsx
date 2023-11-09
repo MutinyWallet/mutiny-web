@@ -1,13 +1,13 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
-import { useNavigate } from "solid-start";
 
 import { Button, Scanner as Reader, showToast } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-export default function Scanner() {
+export function Scanner() {
     const i18n = useI18n();
     const [_state, actions] = useMegaStore();
     const [scanResult, setScanResult] = createSignal<string>();

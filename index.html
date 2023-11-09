@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Mutiny Wallet</title>
+        <title data-sm="">Mutiny Wallet</title>
         <meta charset="utf-8" />
         <meta
             name="viewport"
@@ -82,7 +82,8 @@
                 </p>
             </div>
         </noscript>
-        <script type="module" async src="./src/entry-client.tsx"></script>
+    <div id="root"></div>
+        <script type="module" src="/src/index.tsx"></script>
         <script>
             // Check for WebAssembly support
             if (

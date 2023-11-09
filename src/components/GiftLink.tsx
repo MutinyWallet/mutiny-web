@@ -1,4 +1,4 @@
-import { A, useLocation } from "solid-start";
+import { A, useLocation } from "@solidjs/router";
 
 import gift from "~/assets/icons/gift.svg";
 import { useI18n } from "~/i18n/context";

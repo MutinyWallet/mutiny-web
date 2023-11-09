@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "solid-start";
+import { useLocation, useNavigate } from "@solidjs/router";
 
 import { BackButton } from "~/components";
 import { useI18n } from "~/i18n/context";

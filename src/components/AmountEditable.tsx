@@ -1,5 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { Dialog } from "@kobalte/core";
+import { useNavigate } from "@solidjs/router";
 import {
     createEffect,
     createResource,
@@ -12,7 +13,6 @@ import {
     Show,
     Switch
 } from "solid-js";
-import { useNavigate } from "solid-start";
 
 import close from "~/assets/icons/close.svg";
 import currencySwap from "~/assets/icons/currency-swap.svg";

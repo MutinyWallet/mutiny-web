@@ -374,7 +374,7 @@ const KV: ParentComponent<{ key: string }> = (props) => {
     );
 };
 
-export default function Redshift() {
+export function Redshift() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 

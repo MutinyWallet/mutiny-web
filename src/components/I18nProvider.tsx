@@ -6,7 +6,12 @@ import { I18nContext } from "~/i18n/context";
 
 export const I18nProvider: ParentComponent = (props) => {
     const [i18nConfigured] = createResource(async () => {
-        await i18nConfig;
+        console.log("about to get the config");
+        try {
+            await i18nConfig;
+        } catch (e) {
+            console.error("Config error", e);
+        }
         return true;
     });
 

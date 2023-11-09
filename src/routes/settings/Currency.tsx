@@ -10,7 +10,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 
-export default function Currency() {
+export function Currency() {
     const i18n = useI18n();
     return (
         <MutinyWalletGuard>

@@ -251,7 +251,7 @@ function TwelveWordsEntry() {
     );
 }
 
-export default function RestorePage() {
+export function Restore() {
     const i18n = useI18n();
     return (
         <SafeArea>

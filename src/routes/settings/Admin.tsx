@@ -13,7 +13,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 
-export default function Admin() {
+export function Admin() {
     const i18n = useI18n();
     return (
         <MutinyWalletGuard>

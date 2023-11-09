@@ -29,7 +29,7 @@ function EmergencyStack() {
     );
 }
 
-export default function EmergencyKit() {
+export function EmergencyKit() {
     const i18n = useI18n();
     return (
         <SafeArea>

@@ -1,6 +1,6 @@
 import { createForm, required, SubmitHandler } from "@modular-forms/solid";
+import { A, useLocation } from "@solidjs/router";
 import { createSignal, Match, Show, Switch } from "solid-js";
-import { A, useLocation } from "solid-start";
 
 import feedback from "~/assets/icons/feedback.svg";
 import { ExternalLink, InfoBox, MegaCheck, NavBar } from "~/components";
@@ -164,7 +164,7 @@ function FeedbackForm(props: { onSubmitted: () => void }) {
     );
 }
 
-export default function Feedback() {
+export function Feedback() {
     const i18n = useI18n();
     const [submitted, setSubmitted] = createSignal(false);
     const location = useLocation();
