@@ -531,7 +531,7 @@ export default {
                 "Copy this gift URL to your recipient, or ask them to scan this QR code with their wallet.",
             send_another: "Create Another",
             send_small_warning:
-                "A brand new Mutiny user won't be able to redeem fewer than 50k sats.",
+                "A brand new Mutiny user won't be able to redeem fewer than 100k sats.",
             send_cta: "Create a gift",
             send_delete_button: "Delete Gift",
             send_delete_confirm:
