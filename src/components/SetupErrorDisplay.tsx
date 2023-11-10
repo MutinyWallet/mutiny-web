@@ -186,6 +186,9 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                         <NiceP>
                             {i18n.t("error.on_boot.loading_failed.description")}
                         </NiceP>
+                        <Button onClick={() => window.location.reload()}>
+                            Reload
+                        </Button>
                         <NiceP>
                             {i18n.t(
                                 "error.on_boot.loading_failed.repair_options"
