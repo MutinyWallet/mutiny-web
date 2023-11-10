@@ -2,30 +2,31 @@ import { createOptions, Select } from "@thisbeyond/solid-select";
 
 import "~/styles/solid-select.css";
 
+import { TagItem, TagKind } from "@mutinywallet/mutiny-wasm";
 import { createMemo, createSignal, onMount } from "solid-js";
 
 import { useMegaStore } from "~/state/megaStore";
-import { MutinyTagItem, sortByLastUsed } from "~/utils";
+import { sortByLastUsed } from "~/utils";
 
-const createLabelValue = (label: string): Partial<MutinyTagItem> => {
-    return { name: label, kind: "Contact" };
+const createLabelValue = (label: string): Partial<TagItem> => {
+    return { name: label, kind: TagKind.Contact };
 };
 
 export function TagEditor(props: {
-    selectedValues: Partial<MutinyTagItem>[];
-    setSelectedValues: (value: Partial<MutinyTagItem>[]) => void;
+    selectedValues: Partial<TagItem>[];
+    setSelectedValues: (value: Partial<TagItem>[]) => void;
     placeholder: string;
     autoFillTag?: string | undefined;
 }) {
     const [_state, actions] = useMegaStore();
-    const [availableTags, setAvailableTags] = createSignal<MutinyTagItem[]>([]);
+    const [availableTags, setAvailableTags] = createSignal<TagItem[]>([]);
 
     onMount(async () => {
         const tags = await actions.listTags();
         if (tags) {
             setAvailableTags(
                 tags
-                    .filter((tag) => tag.kind === "Contact")
+                    .filter((tag) => tag.kind === TagKind.Contact)
                     .sort(sortByLastUsed)
             );
             if (props.autoFillTag && availableTags()) {
@@ -51,7 +52,7 @@ export function TagEditor(props: {
         });
     });
 
-    const onChange = (selected: MutinyTagItem[]) => {
+    const onChange = (selected: TagItem[]) => {
         props.setSelectedValues(selected);
 
         const lastValue = selected[selected.length - 1];

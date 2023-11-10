@@ -219,8 +219,8 @@ function Nwc() {
 
     async function fetchNwcProfiles() {
         try {
-            const profiles: NwcProfile[] =
-                await state.mutiny_wallet?.get_nwc_profiles();
+            const profiles = await state.mutiny_wallet?.get_nwc_profiles();
+            if (!profiles) return [];
 
             return profiles;
         } catch (e) {

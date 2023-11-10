@@ -104,8 +104,8 @@ function ExistingGifts() {
 
     const [giftNWCProfiles, { refetch }] = createResource(async () => {
         try {
-            const profiles: NwcProfile[] =
-                await state.mutiny_wallet?.get_nwc_profiles();
+            const profiles = await state.mutiny_wallet?.get_nwc_profiles();
+            if (!profiles) return [];
 
             const filteredForGifts = profiles.filter((p) => p.tag === "Gift");
 

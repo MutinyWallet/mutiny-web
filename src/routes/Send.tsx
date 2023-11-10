@@ -1,6 +1,6 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
-import { Contact, MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { Contact, MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
     createMemo,
@@ -48,7 +48,7 @@ import {
 import { useI18n } from "~/i18n/context";
 import { ParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, MutinyTagItem, vibrateSuccess } from "~/utils";
+import { eify, vibrateSuccess } from "~/utils";
 
 export type SendSource = "lightning" | "onchain";
 
@@ -250,7 +250,7 @@ export default function Send() {
 
     // Tagging stuff
     const [selectedContacts, setSelectedContacts] = createSignal<
-        Partial<MutinyTagItem>[]
+        Partial<TagItem>[]
     >([]);
 
     // Details Modal
@@ -476,7 +476,7 @@ export default function Send() {
     }
 
     async function processContacts(
-        contacts: Partial<MutinyTagItem>[]
+        contacts: Partial<TagItem>[]
     ): Promise<string[]> {
         if (contacts.length) {
             const first = contacts![0];

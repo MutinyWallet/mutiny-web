@@ -3,7 +3,8 @@
 import {
     Contact,
     MutinyBip21RawMaterials,
-    MutinyInvoice
+    MutinyInvoice,
+    TagItem
 } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
@@ -49,12 +50,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import {
-    eify,
-    MutinyTagItem,
-    objectToSearchParams,
-    vibrateSuccess
-} from "~/utils";
+import { eify, objectToSearchParams, vibrateSuccess } from "~/utils";
 
 type OnChainTx = {
     transaction: {
@@ -126,9 +122,7 @@ export default function Receive() {
     const [lspFee, setLspFee] = createSignal(0n);
 
     // Tagging stuff
-    const [selectedValues, setSelectedValues] = createSignal<MutinyTagItem[]>(
-        []
-    );
+    const [selectedValues, setSelectedValues] = createSignal<TagItem[]>([]);
 
     // The data we get after a payment
     const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
@@ -215,7 +209,7 @@ export default function Receive() {
     }
 
     async function processContacts(
-        contacts: Partial<MutinyTagItem>[]
+        contacts: Partial<TagItem>[]
     ): Promise<string[]> {
         if (contacts.length) {
             const first = contacts![0];
