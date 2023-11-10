@@ -1,7 +1,11 @@
 /* @refresh reload */
 
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
-import { MutinyBalance, MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import {
+    MutinyBalance,
+    MutinyWallet,
+    TagItem
+} from "@mutinywallet/mutiny-wasm";
 import {
     createContext,
     onCleanup,
@@ -25,7 +29,6 @@ import {
     BTC_OPTION,
     Currency,
     eify,
-    MutinyTagItem,
     subscriptionValid,
     USD_OPTION
 } from "~/utils";
@@ -70,7 +73,7 @@ export type MegaStore = [
         setScanResult(scan_result: ParsedParams | undefined): void;
         sync(): Promise<void>;
         setHasBackedUp(): void;
-        listTags(): Promise<MutinyTagItem[]>;
+        listTags(): Promise<TagItem[]>;
         checkForSubscription(justPaid?: boolean): Promise<void>;
         fetchPrice(fiat: Currency): Promise<number>;
         saveFiat(fiat: Currency): void;
@@ -317,9 +320,9 @@ export const Provider: ParentComponent = (props) => {
             localStorage.setItem("has_backed_up", "true");
             setState({ has_backed_up: true });
         },
-        async listTags(): Promise<MutinyTagItem[]> {
+        async listTags(): Promise<TagItem[] | undefined> {
             try {
-                return state.mutiny_wallet?.get_tag_items() as MutinyTagItem[];
+                return state.mutiny_wallet?.get_tag_items();
             } catch (e) {
                 console.error(e);
                 return [];

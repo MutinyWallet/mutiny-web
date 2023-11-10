@@ -1,4 +1,3 @@
-import { NwcProfile } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
     createResource,
@@ -42,10 +41,11 @@ export function PendingNwc() {
     const [error, setError] = createSignal<Error>();
 
     async function fetchPendingRequests() {
-        const profiles: NwcProfile[] =
-            await state.mutiny_wallet?.get_nwc_profiles();
+        const profiles = await state.mutiny_wallet?.get_nwc_profiles();
+        if (!profiles) return [];
 
         const pending = await state.mutiny_wallet?.get_pending_nwc_invoices();
+        if (!pending) return [];
 
         const pendingItems: PendingItem[] = [];
 

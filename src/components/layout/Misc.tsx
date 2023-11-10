@@ -4,6 +4,7 @@ import {
     Checkbox as KCheckbox,
     Separator
 } from "@kobalte/core";
+import { TagItem, TagKind } from "@mutinywallet/mutiny-wasm";
 import {
     createResource,
     createSignal,
@@ -27,7 +28,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { generateGradient, MutinyTagItem } from "~/utils";
+import { generateGradient } from "~/utils";
 
 export const SmallHeader: ParentComponent<{ class?: string }> = (props) => {
     return (
@@ -268,7 +269,7 @@ export const TinyText: ParentComponent = (props) => {
 
 export const TinyButton: ParentComponent<{
     onClick: () => void;
-    tag?: MutinyTagItem;
+    tag?: TagItem;
 }> = (props) => {
     // TODO: don't need to run this if it's not a contact
     const [gradient] = createResource(async () => {
@@ -276,7 +277,7 @@ export const TinyButton: ParentComponent<{
     });
 
     const bg = () =>
-        props.tag?.name && props.tag?.kind === "Contact"
+        props.tag?.name && props.tag?.kind === TagKind.Contact
             ? gradient()
             : "rgb(255 255 255 / 0.1)";
 
