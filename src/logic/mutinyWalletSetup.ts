@@ -187,7 +187,16 @@ export async function doubleInitDefense() {
 
 export async function initializeWasm() {
     // Actually intialize the WASM, this should be the first thing that requires the WASM blob to be downloaded
-    await initMutinyWallet();
+
+    // If WASM is already initialized, don't init twice
+    try {
+        const _sats_the_standard = MutinyWallet.convert_btc_to_sats(1);
+        console.debug("MutinyWallet WASM already initialized, skipping init");
+        return;
+    } catch (e) {
+        console.debug("MutinyWallet WASM about to be initialized");
+        await initMutinyWallet();
+    }
 }
 
 export async function setupMutinyWallet(
