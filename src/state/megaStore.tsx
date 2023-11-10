@@ -149,6 +149,16 @@ export const Provider: ParentComponent = (props) => {
                     throw state.setup_error;
                 }
 
+                // If there's already a mutiny wallet in state abort!
+                if (state.mutiny_wallet) {
+                    setState({
+                        setup_error: new Error(
+                            "Existing Mutiny Wallet already running, aborting setup"
+                        )
+                    });
+                    return;
+                }
+
                 setState({
                     wallet_loading: true,
                     load_stage: "checking_double_init"
