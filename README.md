@@ -6,7 +6,7 @@
 
 ```
 pnpm install
-pnpm run dev
+pnpm dev
 ```
 
 ### Env
@@ -27,9 +27,17 @@ Or get a visual look into what's happening:
 just test-ui
 ```
 
+### Pre-Commit Hooks
+
+We use [husky](https://typicode.github.io/husky/) with [lint-staged](https://github.com/lint-staged/lint-staged) for [pre-commit hooks](https://pre-commit.com/). This allows us to run linting, formatting, and type-checking scripts before every commit, and can save a lot of time fighting errors in CI.
+
+If you'd like to skip this verification for a commit, pass in the `--no-verify` flag, e.g. `git commit --no-verify -m "<my-commit-message>"`
+
 ### Formatting
 
-Hopefully your editor picks up on the `.prettirrc` file and auto formats accordingly. If you want to format everything in the project run `pnpm run format`.
+Husky handles this for you, but if you would like to manually format you can run `pnpm run format`.
+
+Hopefully your editor picks up on the `.prettier.config.mjs` file and auto formats accordingly.
 
 ### Deploying Web
 
@@ -40,8 +48,6 @@ git checkout master && git pull && git checkout prod && git pull && git merge --
 ```
 
 ## Contributing
-
-Before committing make sure to run `pnpm run pre-commit`. This will typecheck, lint, and format everything so CI won't hassle you.
 
 ### Local
 
