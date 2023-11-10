@@ -43,6 +43,11 @@
                 display: none;
             }
 
+            #no-session {
+                display: none;
+            }
+
+            #no-session,
             #no-wasm,
             #no-script {
                 margin: 1rem;
@@ -65,6 +70,21 @@
             <p>
                 If you're running iOS in lockdown mode you'll need to <a href="https://support.apple.com/en-us/HT212650">add an
                 exception for Mutiny Wallet.</a>
+            </p>
+        </div>
+        <div id="no-session">
+            <p>
+                <img
+                        src="/mutiny-pixel-logo.png"
+                        width="75px"
+                        alt="Mutiny Wallet"
+                />
+            </p>
+            <p>
+                Your browser does not support Sesssion Storage, or it's disabled.
+            </p>
+            <p>
+                You likely are in private browsing mode. Please disable private browsing mode to run this app.
             </p>
         </div>
         <noscript>
@@ -100,6 +120,24 @@
                 else document.getElementById("no-wasm").style.display = "block";
             } else {
                 document.getElementById("no-wasm").style.display = "block";
+            }
+            // Check for sessionStorage support
+            if (sessionStorage) {
+                try {
+                    const key = "mutiny-test-item";
+                    sessionStorage.setItem(key, "true");
+                    if (sessionStorage.getItem(key) === "true") {
+                        sessionStorage.removeItem(key);
+                        console.log("sessionStorage is supported");
+                    } else {
+                        document.getElementById("no-session").style.display = "block";
+                    }
+                } catch (e) {
+                    console.error(e);
+                    document.getElementById("no-session").style.display = "block";
+                }
+            } else {
+                document.getElementById("no-session").style.display = "block";
             }
         </script>
     </body>
