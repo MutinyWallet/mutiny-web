@@ -3,7 +3,7 @@ PODS:
     - CapacitorCordova
   - CapacitorApp (5.0.6):
     - Capacitor
-  - CapacitorBrowser (5.0.6):
+  - CapacitorAppLauncher (5.0.6):
     - Capacitor
   - CapacitorClipboard (5.0.6):
     - Capacitor
@@ -79,7 +79,7 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app`)"
-  - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/browser`)"
+  - "CapacitorAppLauncher (from `../../node_modules/.pnpm/@capacitor+app-launcher@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app-launcher`)"
   - "CapacitorClipboard (from `../../node_modules/.pnpm/@capacitor+clipboard@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/clipboard`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@5.1.4_@capacitor+core@5.5.1/node_modules/@capacitor/filesystem`)"
@@ -109,8 +109,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+ios@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/ios"
   CapacitorApp:
     :path: "../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app"
-  CapacitorBrowser:
-    :path: "../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/browser"
+  CapacitorAppLauncher:
+    :path: "../../node_modules/.pnpm/@capacitor+app-launcher@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app-launcher"
   CapacitorClipboard:
     :path: "../../node_modules/.pnpm/@capacitor+clipboard@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/clipboard"
   CapacitorCordova:
@@ -131,7 +131,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Capacitor: 9da0a2415e3b6098511f8b5ffdb578d91ee79f8f
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
-  CapacitorBrowser: 6192948e0ce804fd72aaf77f4114a3ad2e08c760
+  CapacitorAppLauncher: 5a9f06c13c6b4f5d65b550a07128ef04f3a216b3
   CapacitorClipboard: 77edf49827ea21da2a9c05c690a4a6a4d07199c4
   CapacitorCordova: e128cc7688c070ca0bfa439898a5f609da8dbcfe
   CapacitorFilesystem: af704badfbc69f6f8623d9ed313e5490e3723dcb
@@ -153,6 +153,6 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
 
-PODFILE CHECKSUM: 0fff4697f0ed13fc86b2f815bddfd57238283e54
+PODFILE CHECKSUM: 0a4556c3ff620e7baf2e9aeba1f6e9f4fe406a0f
 
 COCOAPODS: 1.10.2

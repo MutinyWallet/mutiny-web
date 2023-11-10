@@ -1,13 +1,19 @@
-import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
+import { AppLauncher } from '@capacitor/app-launcher';
 
-// Safari is a jerk and is aggressive about blocking window.open calls if the logic is too complex
-// Capacitor should be doing this for us but \o/
-export function openLinkProgrammatically(href?: string) {
-    if (!href) return;
+export async function openLinkProgrammatically(url?: string) {
+    if (!url) return;
     if (Capacitor.isNativePlatform()) {
-        Browser.open({ url: href || "", windowName: "_blank" });
+        const { value } = await AppLauncher.canOpenUrl({ url });
+
+        if (!value) {
+            // Try to open in browser just in case that works glhf
+            window.open(url || "", "_blank");
+            return;
+        } else {
+            await AppLauncher.openUrl({ url});
+        }
     } else {
-        window.open(href || "", "_blank");
+        window.open(url || "", "_blank");
     }
 }
