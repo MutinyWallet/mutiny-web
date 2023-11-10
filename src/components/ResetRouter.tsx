@@ -8,6 +8,7 @@ export function ResetRouter() {
 
     async function reset() {
         try {
+            alert(sessionStorage.getItem("MUTINY_WALLET_INITIALIZED"));
             await state.mutiny_wallet?.reset_router();
         } catch (e) {
             console.error(e);
