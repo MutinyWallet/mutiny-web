@@ -127,15 +127,9 @@ function NwcDetails(props: {
         }
     }
 
-    function openInNostrClient() {
+    async function openInNostrClient() {
         const uri = props.profile.nwc_uri;
-        openLinkProgrammatically(uri);
-    }
-
-    function openInPrimal() {
-        const uri = props.profile.nwc_uri;
-        const connectString = uri.replace("nostr+walletconnect", "primal");
-        openLinkProgrammatically(connectString);
+        await openLinkProgrammatically(uri);
     }
 
     return (
@@ -189,12 +183,8 @@ function NwcDetails(props: {
                     props.profile.tag !== "Subscription"
                 }
             >
-                <Button layout="small" onClick={openInNostrClient}>
+                <Button layout="small" intent="blue" onClick={openInNostrClient}>
                     {i18n.t("settings.connections.open_in_nostr_client")}
-                </Button>
-
-                <Button layout="small" onClick={openInPrimal}>
-                    {i18n.t("settings.connections.open_in_primal")}
                 </Button>
             </Show>
 
@@ -330,8 +320,8 @@ function Nwc() {
         }
     }
 
-    function openCallbackUri() {
-        openLinkProgrammatically(callbackUri());
+    async function openCallbackUri() {
+        await openLinkProgrammatically(callbackUri());
         setSearchParams({ callbackUri: "" });
         setCallbackDialogOpen(false);
     }
