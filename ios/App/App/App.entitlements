@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:mutinywallet.com</string>
+		<string>applinks:app.mutinywallet.com</string>
 	</array>
 </dict>
 </plist>

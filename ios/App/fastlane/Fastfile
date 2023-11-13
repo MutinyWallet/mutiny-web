@@ -22,6 +22,26 @@ KEY_CONTENT = ENV["APPLE_KEY_CONTENT"]
 KEYCHAIN_NAME = ENV["KEYCHAIN_NAME"]
 KEYCHAIN_PASSWORD = ENV["KEYCHAIN_PASSWORD"]
 
+def delete_temp_keychain(name)
+  delete_keychain(
+    name: name
+  ) if File.exist? File.expand_path("~/Library/Keychains/#{name}-db")
+end
+
+def create_temp_keychain(name, password)
+  create_keychain(
+    name: name,
+    password: password,
+    unlock: false,
+    timeout: 0
+  )
+end
+
+def ensure_temp_keychain(name, password)
+  delete_temp_keychain(name)
+  create_temp_keychain(name, password)
+end
+
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
@@ -30,16 +50,9 @@ platform :ios do
       issuer_id: ISSUER_ID,
       key_content: KEY_CONTENT
     )
-    
+
     # In CI we don't want to be prompted for a password
-    create_keychain(
-      name: KEYCHAIN_NAME,
-      password: KEYCHAIN_PASSWORD,
-      default_keychain: true,
-      unlock: true,
-      timeout: 3600,
-      add_to_search_list: true
-    )
+    ensure_temp_keychain(KEYCHAIN_NAME, KEYCHAIN_PASSWORD)
 
     match(
       type: "appstore",
@@ -63,16 +76,9 @@ platform :ios do
       issuer_id: ISSUER_ID,
       key_content: KEY_CONTENT
     )
-    
+
     # In CI we don't want to be prompted for a password
-    create_keychain(
-      name: KEYCHAIN_NAME,
-      password: KEYCHAIN_PASSWORD,
-      default_keychain: true,
-      unlock: true,
-      timeout: 3600,
-      add_to_search_list: true
-    )
+    ensure_temp_keychain(KEYCHAIN_NAME, KEYCHAIN_PASSWORD)
 
     match(
       type: "appstore",
