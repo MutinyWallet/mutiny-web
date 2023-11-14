@@ -93,9 +93,15 @@ Prereleased tags will be created for master.
 
 #### Release
 
+##### Android
+
 First bump up the `versionCode` and `versionName` in `./andriod/app/build.gradle`. The `versionCode` must always go up by one when making a release. The `versionName` can mimic `package.json` with an extra build number like `0.4.3-1` to make it easier to keep things looking like they are in sync when android only releases go out.
 
 Publish a new tag like `0.4.3-1` in order to trigger a signed release version running in mainnet mode.
+
+##### iOS
+
+In `ios/App/App.xcodeproj/project.pbxproj` bump `MARKETING_VERSION` and then do whatever needs to be done in testflight to get it released.
 
 ### Creating keys for the first time
 
