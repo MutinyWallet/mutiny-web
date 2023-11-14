@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:3420/");
 });
 
-test("restore from seed", async ({ page }) => {
+test("restore from seed @slow", async ({ page }) => {
     // should have 100k sats on-chain
     const TEST_SEED_WORDS =
         "rival hood review write spoon tide orange ill opera enrich clip acoustic";
