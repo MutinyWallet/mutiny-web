@@ -1,9 +1,11 @@
 name: Playwright Tests
+
+# Only run one at a time per branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
-  push:
-    branches:
-      - master
-      - prod
   pull_request:
     branches:
       - '*'
