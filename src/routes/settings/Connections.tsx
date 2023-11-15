@@ -1,11 +1,5 @@
 import { NwcProfile, type BudgetPeriod } from "@mutinywallet/mutiny-wasm";
-import {
-    createEffect,
-    createResource,
-    createSignal,
-    For,
-    Show
-} from "solid-js";
+import { createResource, createSignal, For, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 import { useSearchParams } from "solid-start";
 
@@ -253,13 +247,6 @@ function Nwc() {
 
     const [newConnection, setNewConnection] = createSignal<number>();
 
-    createEffect(() => {
-        // Should re-run after every sync
-        if (!state.is_syncing) {
-            refetch();
-        }
-    });
-
     async function createConnection(f: BudgetForm) {
         let newProfile: NwcProfile | undefined = undefined;
 
@@ -299,11 +286,11 @@ function Nwc() {
         } else {
             // Remember the index so the collapser is open after creation
             setNewConnection(newProfile.index);
-            refetch();
         }
 
         setSearchParams({ name: "" });
         setDialogOpen(false);
+        refetch();
 
         // If there's a "return_to" param we use that instead of the callbackUri scheme
         const returnUrl = searchParams.return_to;
@@ -341,7 +328,7 @@ function Nwc() {
             <Button intent="blue" onClick={createProfile}>
                 {i18n.t("settings.connections.add_connection")}
             </Button>
-            <Show when={nwcProfiles() && nwcProfiles()!.length > 0}>
+            <Show when={nwcProfiles.latest && nwcProfiles.latest?.length > 0}>
                 <SettingsCard
                     title={i18n.t("settings.connections.manage_connections")}
                 >
