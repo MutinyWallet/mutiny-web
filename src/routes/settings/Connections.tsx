@@ -129,7 +129,12 @@ function NwcDetails(props: {
 
     async function openInNostrClient() {
         const uri = props.profile.nwc_uri;
-        await openLinkProgrammatically(uri);
+        await openLinkProgrammatically(uri, {
+            title: i18n.t("settings.connections.nostr_client_not_found"),
+            description: i18n.t(
+                "settings.connections.client_not_found_description"
+            )
+        });
     }
 
     return (
@@ -183,7 +188,11 @@ function NwcDetails(props: {
                     props.profile.tag !== "Subscription"
                 }
             >
-                <Button layout="small" intent="blue" onClick={openInNostrClient}>
+                <Button
+                    layout="small"
+                    intent="blue"
+                    onClick={openInNostrClient}
+                >
                     {i18n.t("settings.connections.open_in_nostr_client")}
                 </Button>
             </Show>

@@ -326,6 +326,9 @@ export default {
             open_app: "Open App",
             open_in_nostr_client: "Open in Nostr Client",
             open_in_primal: "Open in Primal",
+            nostr_client_not_found: "Nostr client not found",
+            client_not_found_description:
+                "Install a nostr client like Primal, Amethyst, or Damus to open this link.",
             relay: "Relay",
             authorize:
                 "Authorize external services to request payments from your wallet. Pairs great with Nostr clients.",
