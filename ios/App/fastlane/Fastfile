@@ -21,6 +21,7 @@ KEY_CONTENT = ENV["APPLE_KEY_CONTENT"]
 
 KEYCHAIN_NAME = ENV["KEYCHAIN_NAME"]
 KEYCHAIN_PASSWORD = ENV["KEYCHAIN_PASSWORD"]
+APP_INDENTIFIER = ENV["DEVELOPER_APP_INDENTIFIER"]
 
 def delete_temp_keychain(name)
   delete_keychain(
@@ -61,7 +62,17 @@ platform :ios do
       readonly: is_ci
     )
 
-    increment_build_number(xcodeproj: "App.xcodeproj")
+    testflight_build_num = app_store_build_number(
+      live: false,
+      api_key: api_key,
+      app_identifier: APP_INDENTIFIER
+    )
+
+    increment_build_number(
+      build_number: testflight_build_num + 1,
+      xcodeproj: "App.xcodeproj"
+    )
+
     build_app(
       workspace: "App.xcworkspace",
       scheme: "App",
@@ -87,7 +98,6 @@ platform :ios do
       readonly: is_ci
     )
 
-    increment_build_number(xcodeproj: "App.xcodeproj")
     build_app(
       workspace: "App.xcworkspace",
       scheme: "App",
