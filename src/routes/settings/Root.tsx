@@ -155,6 +155,10 @@ export function Settings() {
                             {
                                 href: "/settings/syncnostrcontacts",
                                 text: "Sync Nostr Contacts"
+                            },
+                            {
+                                href: "/settings/dlc",
+                                text: "DLC Testing"
                             }
                         ]}
                     />
