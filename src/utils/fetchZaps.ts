@@ -116,62 +116,54 @@ async function simpleZapFromEvent(
 
 const PRIMAL_API = import.meta.env.VITE_PRIMAL;
 
-export const fetchZaps: ResourceFetcher<
-    string,
-    {
-        follows: string[];
-        zaps: SimpleZapItem[];
-        profiles: Record<string, NostrProfile>;
-        until?: number;
+async function fetchFollows(npub: string): Promise<string[]> {
+    let pubkey = undefined;
+    try {
+        pubkey = await hexpubFromNpub(npub);
+    } catch (err) {
+        console.error("Failed to get hexpub from npub");
+        throw err;
     }
-> = async (npub, info) => {
-    const [state, _actions] = useMegaStore();
 
-    console.log("fetching zaps for:", npub);
-    const follows: string[] = info?.value ? info.value.follows : [];
-    const zaps: SimpleZapItem[] = [];
-    const profiles: Record<string, NostrProfile> = info.value?.profiles || {};
-    let newUntil = undefined;
+    const response = await fetch(PRIMAL_API, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify([
+            "contact_list",
+            { pubkey: pubkey, extended_response: false }
+        ])
+    });
 
-    if (!PRIMAL_API) throw new Error("Missing PRIMAL_API environment variable");
+    if (!response.ok) {
+        throw new Error(`Failed to load follows`);
+    }
 
-    // Only have to ask the relays for follows one time
-    if (follows.length === 0) {
-        let pubkey = undefined;
-        try {
-            pubkey = await hexpubFromNpub(npub);
-        } catch (err) {
-            console.error("Failed to get hexpub from npub");
-            throw err;
-        }
+    const data = await response.json();
 
-        const response = await fetch(PRIMAL_API, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify([
-                "contact_list",
-                { pubkey: pubkey, extended_response: false }
-            ])
-        });
+    const follows: string[] = [];
 
-        if (!response.ok) {
-            throw new Error(`Failed to load follows`);
-        }
-
-        const data = await response.json();
-
-        for (const event of data) {
-            if (event.kind === 3) {
-                for (const tag of event.tags) {
-                    if (tag[0] === "p") {
-                        follows.push(tag[1]);
-                    }
+    for (const event of data) {
+        if (event.kind === 3) {
+            for (const tag of event.tags) {
+                if (tag[0] === "p") {
+                    follows.push(tag[1]);
                 }
             }
         }
     }
+
+    return follows;
+}
+
+type PrimalResponse = NostrEvent | NostrProfile;
+
+async function fetchZapsFromPrimal(
+    follows: string[],
+    until?: number
+): Promise<PrimalResponse[]> {
+    if (!PRIMAL_API) throw new Error("Missing PRIMAL_API environment variable");
 
     const query = {
         kinds: [9735, 0, 10000113],
@@ -182,7 +174,7 @@ export const fetchZaps: ResourceFetcher<
     const restPayload = JSON.stringify([
         "zaps_feed",
         // If we have a until value, use it, otherwise don't include it
-        info?.value?.until ? { ...query, since: info.value?.until } : query
+        until ? { ...query, since: until } : query
     ]);
 
     const response = await fetch(PRIMAL_API, {
@@ -199,43 +191,89 @@ export const fetchZaps: ResourceFetcher<
 
     const data = await response.json();
 
-    for (const object of data) {
-        if (object.kind === 10000113) {
-            try {
-                const content = JSON.parse(object.content);
-                if (content?.until) {
-                    newUntil = content?.until + 1;
-                }
-            } catch (e) {
-                console.error("Failed to parse content: ", object.content);
-            }
-        }
-
-        if (object.kind === 0) {
-            profiles[object.pubkey] = object;
-        }
-
-        if (object.kind === 9735) {
-            try {
-                const event = await simpleZapFromEvent(
-                    object,
-                    state.mutiny_wallet!
-                );
-
-                // Only add it if it's a valid zap (not undefined)
-                if (event) {
-                    zaps.push(event);
-                }
-            } catch (e) {
-                console.error("Failed to parse zap event: ", object);
-            }
-        }
+    // A primal response could be an error ({error: "error"}, or an array of events
+    if (data.error || !Array.isArray(data)) {
+        throw new Error("Zap response was not an array");
     }
 
-    return {
-        follows,
-        zaps: [...zaps, ...(info?.value?.zaps || [])],
-        profiles,
-        until: newUntil ? newUntil : info?.value?.until
-    };
+    return data;
+}
+
+export const fetchZaps: ResourceFetcher<
+    string,
+    {
+        follows: string[];
+        zaps: SimpleZapItem[];
+        profiles: Record<string, NostrProfile>;
+        until?: number;
+    }
+> = async (npub, info) => {
+    const [state, _actions] = useMegaStore();
+
+    try {
+        console.log("fetching zaps for:", npub);
+        let follows: string[] = info?.value ? info.value.follows : [];
+        const zaps: SimpleZapItem[] = [];
+        const profiles: Record<string, NostrProfile> =
+            info.value?.profiles || {};
+        let newUntil = undefined;
+
+        if (!PRIMAL_API)
+            throw new Error("Missing PRIMAL_API environment variable");
+
+        // Only have to ask the relays for follows one time
+        if (follows.length === 0) {
+            follows = await fetchFollows(npub);
+        }
+
+        // Ask primal for all the zaps for these follow pubkeys
+        const data = await fetchZapsFromPrimal(follows, info?.value?.until);
+
+        // Parse the primal response
+        for (const object of data) {
+            if (object.kind === 10000113) {
+                console.log("got a 10000113 object", object);
+                try {
+                    const content = JSON.parse(object.content);
+                    if (content?.until) {
+                        newUntil = content?.until + 1;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse content: ", object.content);
+                }
+            }
+
+            if (object.kind === 0) {
+                console.log("got a 0 object", object);
+                profiles[object.pubkey] = object as NostrProfile;
+            }
+
+            if (object.kind === 9735) {
+                console.log("got a 9735 object", object);
+                try {
+                    const event = await simpleZapFromEvent(
+                        object,
+                        state.mutiny_wallet!
+                    );
+
+                    // Only add it if it's a valid zap (not undefined)
+                    if (event) {
+                        zaps.push(event);
+                    }
+                } catch (e) {
+                    console.error("Failed to parse zap event: ", object);
+                }
+            }
+        }
+
+        return {
+            follows,
+            zaps: [...zaps, ...(info?.value?.zaps || [])],
+            profiles,
+            until: newUntil ? newUntil : info?.value?.until
+        };
+    } catch (e) {
+        console.error("Failed to load zaps: ", e);
+        throw new Error("Failed to load zaps");
+    }
 };
