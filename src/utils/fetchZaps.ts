@@ -143,12 +143,16 @@ async function fetchFollows(npub: string): Promise<string[]> {
     const data = await response.json();
 
     const follows: string[] = [];
+    const pubkeyRegex = new RegExp(/[0-9a-fA-F]{64}/);
 
     for (const event of data) {
         if (event.kind === 3) {
             for (const tag of event.tags) {
                 if (tag[0] === "p") {
-                    follows.push(tag[1]);
+                    // make sure it's actually a pubkey
+                    if (pubkeyRegex.test(tag[1])) {
+                        follows.push(tag[1]);
+                    }
                 }
             }
         }
