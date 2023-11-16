@@ -61,8 +61,8 @@ export function NWCBudgetEditor(props: {
         (props.initialProfile?.budget_period
             ? (props.initialProfile?.budget_period as BudgetForm["interval"])
             : props.initialProfile?.index === 0
-            ? "Month"
-            : "Day");
+              ? "Month"
+              : "Day");
 
     const [budgetForm, { Form, Field }] = createForm<BudgetForm>({
         initialValues: {

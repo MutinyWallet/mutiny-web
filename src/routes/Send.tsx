@@ -280,8 +280,8 @@ export default function Send() {
                 ? sentDetails()?.txid
                 : undefined
             : sentDetails()
-            ? sentDetails()?.payment_hash
-            : undefined;
+              ? sentDetails()?.payment_hash
+              : undefined;
         const kind = sentDetails()?.txid ? "OnChain" : "Lightning";
 
         console.log("Opening details modal: ", paymentTxId, kind);

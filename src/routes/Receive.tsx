@@ -191,8 +191,8 @@ export default function Receive() {
                     ? paymentTx()?.txid
                     : undefined
                 : paymentInvoice()
-                ? paymentInvoice()?.payment_hash
-                : undefined;
+                  ? paymentInvoice()?.payment_hash
+                  : undefined;
         const kind = paidState() === "onchain_paid" ? "OnChain" : "Lightning";
 
         console.log("Opening details modal: ", paymentTxId, kind);
