@@ -7,7 +7,17 @@ const config: CapacitorConfig = {
   webDir: 'dist/public',
   server: {
     androidScheme: 'https'
-  }
+  },
+  plugins: {
+    BackgroundRunner: {
+      label: 'com.mutinywallet.mutinywallet.background',
+      src: 'runners/background.ts',
+      event: 'checkPaymentsInFlight',
+      repeat: true,
+      interval: 60,
+      autoStart: true,
+    },
+  },
 };
 
 export default config;

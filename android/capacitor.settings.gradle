@@ -8,6 +8,9 @@ project(':capacitor-mlkit-barcode-scanning').projectDir = new File('../node_modu
 include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app/android')
 
+include ':capacitor-background-runner'
+project(':capacitor-background-runner').projectDir = new File('../node_modules/.pnpm/@capacitor+background-runner@1.0.5_@capacitor+core@5.2.2/node_modules/@capacitor/background-runner/android')
+
 include ':capacitor-browser'
 project(':capacitor-browser').projectDir = new File('../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/browser/android')
 
