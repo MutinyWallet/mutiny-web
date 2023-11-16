@@ -50,6 +50,7 @@ export type MegaStore = [
         balance?: MutinyBalance;
         is_syncing?: boolean;
         last_sync?: number;
+        price_sync_backoff_multiple?: number;
         price: number;
         fiat: Currency;
         has_backed_up: boolean;
@@ -107,6 +108,7 @@ export const Provider: ParentComponent = (props) => {
         has_backed_up: localStorage.getItem("has_backed_up") === "true",
         balance: undefined as MutinyBalance | undefined,
         last_sync: undefined as number | undefined,
+        price_sync_backoff_multiple: 1,
         is_syncing: false,
         wallet_loading: true,
         setup_error: undefined as Error | undefined,
@@ -191,7 +193,7 @@ export const Provider: ParentComponent = (props) => {
                 setState({ needs_password: false });
 
                 // Subscription stuff. Skip if it's not already in localstorage
-                let subscription_timestamp = undefined;
+                let subscription_timestamp: number | undefined = undefined;
                 const stored_subscription_timestamp = localStorage.getItem(
                     "subscription_timestamp"
                 );
@@ -219,25 +221,17 @@ export const Provider: ParentComponent = (props) => {
                 // Get balance + price optimistically
                 const balance = await mutinyWallet.get_balance();
                 let price;
-                // only get price if balance is non-zero
-                if (
-                    balance.confirmed > 0 ||
-                    balance.unconfirmed > 0 ||
-                    balance.lightning > 0 ||
-                    balance.force_close > 0
-                ) {
-                    try {
-                        if (state.fiat.value === "BTC") {
-                            price = 1;
-                        } else {
-                            price = await mutinyWallet.get_bitcoin_price(
-                                state.fiat.value.toLowerCase() || "usd"
-                            );
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        price = 0;
+                try {
+                    if (state.fiat.value === "BTC") {
+                        price = 1;
+                    } else {
+                        price = await mutinyWallet.get_bitcoin_price(
+                            state.fiat.value.toLowerCase() || "usd"
+                        );
                     }
+                } catch (e) {
+                    console.error(e);
+                    price = 0;
                 }
 
                 setState({
@@ -271,25 +265,38 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
             }
         },
+        async priceCheck(): Promise<void> {
+            try {
+                const price = await actions.fetchPrice(state.fiat);
+                setState({
+                    price: price || 0,
+                    fiat: state.fiat,
+                    price_sync_backoff_multiple: 1
+                });
+            } catch (e) {
+                setState({
+                    price: 1,
+                    fiat: BTC_OPTION,
+                    price_sync_backoff_multiple:
+                        state.price_sync_backoff_multiple * 2
+                });
+            }
+        },
         async sync(): Promise<void> {
             try {
                 if (state.mutiny_wallet && !state.is_syncing) {
                     setState({ is_syncing: true });
-                    let price;
                     const newBalance = await state.mutiny_wallet?.get_balance();
                     try {
-                        price = await actions.fetchPrice(state.fiat);
                         setState({
                             balance: newBalance,
                             last_sync: Date.now(),
-                            price: price || 0,
                             fiat: state.fiat
                         });
                     } catch (e) {
                         setState({
                             balance: newBalance,
                             last_sync: Date.now(),
-                            price: 1,
                             fiat: BTC_OPTION
                         });
                     }
@@ -468,6 +475,14 @@ export const Provider: ParentComponent = (props) => {
         setInterval(async () => {
             await actions.sync();
         }, 3 * 1000); // Poll every 3 seconds
+
+        // Set up price checking
+        setInterval(
+            async () => {
+                await actions.priceCheck();
+            },
+            60 * 1000 * state.price_sync_backoff_multiple
+        ); // Poll every minute * backoff multiple
     });
 
     const store = [state, actions] as MegaStore;
