@@ -202,7 +202,8 @@ export async function initializeWasm() {
 export async function setupMutinyWallet(
     settings: MutinyWalletSettingStrings,
     password?: string,
-    safeMode?: boolean
+    safeMode?: boolean,
+    shouldZapHodl?: boolean
 ): Promise<MutinyWallet> {
     console.log("Starting setup...");
 
@@ -245,6 +246,7 @@ export async function setupMutinyWallet(
     console.log("Using storage address", storage);
     console.log("Using scorer address", scorer);
     console.log(safeMode ? "Safe mode enabled" : "Safe mode disabled");
+    console.log(shouldZapHodl ? "Hodl zaps enabled" : "Hodl zaps disabled");
 
     const mutinyWallet = await new MutinyWallet(
         // Password
@@ -265,7 +267,9 @@ export async function setupMutinyWallet(
         // Do not skip device lock
         undefined,
         // Safe mode
-        safeMode || undefined
+        safeMode || undefined,
+        // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
+        shouldZapHodl ? false : undefined
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
