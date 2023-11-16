@@ -66,6 +66,7 @@ export type MegaStore = [
         npub?: string;
         preferredInvoiceType: "unified" | "lightning" | "onchain";
         betaWarned: boolean;
+        should_zap_hodl: boolean;
     },
     {
         setup(password?: string): Promise<void>;
@@ -87,6 +88,7 @@ export type MegaStore = [
             onSuccess: (value: ParsedParams) => void
         ): void;
         setBetaWarned(): void;
+        toggleHodl(): void;
     }
 ];
 
@@ -121,7 +123,8 @@ export const Provider: ParentComponent = (props) => {
         safe_mode: searchParams.safe_mode === "true",
         npub: localStorage.getItem("npub") || undefined,
         preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
-        betaWarned: localStorage.getItem("betaWarned") === "true"
+        betaWarned: localStorage.getItem("betaWarned") === "true",
+        should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true"
     });
 
     const actions = {
@@ -177,7 +180,8 @@ export const Provider: ParentComponent = (props) => {
                 const mutinyWallet = await setupMutinyWallet(
                     settings,
                     password,
-                    state.safe_mode
+                    state.safe_mode,
+                    state.should_zap_hodl
                 );
 
                 // Give other components access to settings via the store
@@ -381,6 +385,11 @@ export const Provider: ParentComponent = (props) => {
         setBetaWarned() {
             localStorage.setItem("betaWarned", "true");
             setState({ betaWarned: true });
+        },
+        toggleHodl() {
+            const should_zap_hodl = !state.should_zap_hodl;
+            localStorage.setItem("should_zap_hodl", should_zap_hodl.toString());
+            setState({ should_zap_hodl });
         }
     };
 

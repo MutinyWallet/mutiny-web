@@ -271,7 +271,12 @@ export default {
                 amount: "Amount",
                 open_channel: "Open Channel",
                 nodes: "Nodes",
-                no_nodes: "No nodes"
+                no_nodes: "No nodes",
+                enable_zaps_to_hodl: "Enable zaps to hodl invoices?",
+                zaps_to_hodl_desc:
+                    "Zaps to hodl invoices can result in channel force closes, which results in high on-chain fees. Use at your own risk!",
+                zaps_to_hodl_enable: "Enable hodl zaps",
+                zaps_to_hodl_disable: "Disable hodl zaps"
             }
         },
         backup: {

@@ -21,6 +21,7 @@ import {
     Restart,
     ResyncOnchain,
     showToast,
+    ToggleHodl,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -464,6 +465,8 @@ export function KitchenSink() {
             <PeersList />
             <Hr />
             <ChannelsList />
+            <Hr />
+            <ToggleHodl />
             <Hr />
             <ResyncOnchain />
             <Hr />
