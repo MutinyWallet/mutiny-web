@@ -580,6 +580,12 @@ export default {
         connecting: "Connecting...",
         confirm_swap: "Confirm Swap"
     },
+    reload: {
+        mutiny_update: "Mutiny Update",
+        new_version_description:
+            "New version of Mutiny has been cached, reload to start using it.",
+        reload: "Reload"
+    },
     error: {
         title: "Error",
         emergency_link: "emergency kit.",

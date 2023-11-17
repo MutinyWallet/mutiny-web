@@ -2,6 +2,7 @@ import { ManifestOptions } from "vite-plugin-pwa";
 
 const manifest: Partial<ManifestOptions> = {
     name: "Mutiny Wallet",
+    orientation: "portrait",
     short_name: "Mutiny",
     description: "A lightning wallet",
     theme_color: "#000",
@@ -489,7 +490,7 @@ const manifest: Partial<ManifestOptions> = {
                     src: "/images/send.png",
                     sizes: "192x192",
                     type: "image/png"
-                },
+                }
             ]
         },
         {
@@ -501,7 +502,7 @@ const manifest: Partial<ManifestOptions> = {
                     src: "/images/receive.png",
                     sizes: "192x192",
                     type: "image/png"
-                },
+                }
             ]
         },
         {
@@ -513,7 +514,7 @@ const manifest: Partial<ManifestOptions> = {
                     src: "/images/activity.png",
                     sizes: "192x192",
                     type: "image/png"
-                },
+                }
             ]
         }
     ]

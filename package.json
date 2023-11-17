@@ -34,10 +34,10 @@
         "tailwindcss": "^3.3.5",
         "typescript": "^5.2.2",
         "vite": "^4.5.0",
-        "vite-plugin-pwa": "^0.14.7",
+        "vite-plugin-pwa": "^0.16.7",
         "vite-plugin-solid": "^2.7.0",
         "vite-plugin-wasm": "^3.2.2",
-        "workbox-window": "^6.6.0"
+        "workbox-window": "^7.0.0"
     },
     "dependencies": {
         "@capacitor-mlkit/barcode-scanning": "^5.3.0",
