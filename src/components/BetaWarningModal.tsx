@@ -35,7 +35,7 @@ export function BetaWarningModal() {
     );
 }
 
-export const WarningModal: ParentComponent<{
+const WarningModal: ParentComponent<{
     linkText: string;
     title: string;
 }> = (props) => {

@@ -7,3 +7,4 @@ export * from "./Receive";
 export * from "./Scanner";
 export * from "./Send";
 export * from "./Swap";
+export * from "./Search";

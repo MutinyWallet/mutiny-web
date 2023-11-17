@@ -155,7 +155,7 @@ export function BalanceBox(props: { loading?: boolean }) {
             </FancyCard>
             <div class="flex gap-2 py-4">
                 <Button
-                    onClick={() => navigate("/send")}
+                    onClick={() => navigate("/search")}
                     disabled={emptyBalance() || props.loading}
                     intent="green"
                 >

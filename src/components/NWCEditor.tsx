@@ -34,7 +34,7 @@ import { useMegaStore } from "~/state/megaStore";
 import { fetchNostrProfile } from "~/utils";
 
 type BudgetInterval = "Day" | "Week" | "Month" | "Year";
-export type BudgetForm = {
+type BudgetForm = {
     connection_name: string;
     auto_approve: boolean;
     budget_amount: string; // modular forms doesn't like bigint
@@ -406,44 +406,39 @@ function NWCEditorForm(props: {
                         <TinyText>
                             {i18n.t("settings.connections.careful")}
                         </TinyText>
-                        <KeyValue key={i18n.t("settings.connections.budget")}>
-                            <Field name="budget_amount">
-                                {(field, _fieldProps) => (
-                                    <div class="flex flex-col items-end gap-2">
-                                        <Show
-                                            when={
-                                                props.budgetMode === "editable"
-                                            }
-                                            fallback={
-                                                <AmountSats
-                                                    amountSats={
-                                                        Number(field.value) || 0
-                                                    }
-                                                />
-                                            }
-                                        >
-                                            <AmountEditable
-                                                initialOpen={false}
-                                                initialAmountSats={
-                                                    field.value || "0"
+
+                        <Field name="budget_amount">
+                            {(field, _fieldProps) => (
+                                <div class="flex flex-col items-end gap-2">
+                                    <Show
+                                        when={props.budgetMode === "editable"}
+                                        fallback={
+                                            <AmountSats
+                                                amountSats={
+                                                    Number(field.value) || 0
                                                 }
-                                                showWarnings={false}
-                                                setAmountSats={(a) => {
-                                                    setValue(
-                                                        budgetForm,
-                                                        "budget_amount",
-                                                        a.toString()
-                                                    );
-                                                }}
                                             />
-                                        </Show>
-                                        <p class="text-sm text-m-red">
-                                            {field.error}
-                                        </p>
-                                    </div>
-                                )}
-                            </Field>
-                        </KeyValue>
+                                        }
+                                    >
+                                        <AmountEditable
+                                            initialAmountSats={
+                                                field.value || "0"
+                                            }
+                                            setAmountSats={(a) => {
+                                                setValue(
+                                                    budgetForm,
+                                                    "budget_amount",
+                                                    a.toString()
+                                                );
+                                            }}
+                                        />
+                                    </Show>
+                                    <p class="text-sm text-m-red">
+                                        {field.error}
+                                    </p>
+                                </div>
+                            )}
+                        </Field>
                         <KeyValue
                             key={i18n.t("settings.connections.resets_every")}
                         >

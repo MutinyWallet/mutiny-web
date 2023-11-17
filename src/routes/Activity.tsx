@@ -33,7 +33,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, gradientsPerContact } from "~/utils";
+import { eify, gradientsPerContact, hexpubFromNpub } from "~/utils";
 
 function ContactRow() {
     const [state, _actions] = useMegaStore();
@@ -73,6 +73,8 @@ function ContactRow() {
 
     //
     async function saveContact(id: string, contact: ContactFormValues) {
+        console.log("saving contact", id, contact);
+        const hexpub = await hexpubFromNpub(contact.npub?.trim());
         try {
             const existing = state.mutiny_wallet?.get_tag_item(id);
             // This shouldn't happen
@@ -80,7 +82,7 @@ function ContactRow() {
             await state.mutiny_wallet?.edit_contact(
                 id,
                 contact.name,
-                contact.npub ? contact.npub.trim() : undefined,
+                hexpub ? hexpub : undefined,
                 contact.ln_address ? contact.ln_address.trim() : undefined,
                 existing.lnurl,
                 existing.image_url

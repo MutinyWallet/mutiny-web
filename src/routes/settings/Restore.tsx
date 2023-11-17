@@ -45,7 +45,7 @@ function validateWord(word?: string): boolean {
     return WORDS_EN.includes(word?.trim() ?? "");
 }
 
-export function SeedTextField(props: TextFieldProps) {
+function SeedTextField(props: TextFieldProps) {
     const [fieldProps] = splitProps(props, [
         "placeholder",
         "ref",

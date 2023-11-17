@@ -169,7 +169,7 @@ function SingleChannelItem(props: { channel: MutinyChannel }) {
     );
 }
 
-export function LiquidityMonitor() {
+function LiquidityMonitor() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 

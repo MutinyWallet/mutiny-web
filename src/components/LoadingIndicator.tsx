@@ -4,7 +4,7 @@ import { Show } from "solid-js";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-export function LoadingBar(props: { value: number; max: number }) {
+function LoadingBar(props: { value: number; max: number }) {
     const i18n = useI18n();
     function valueToStage(value: number) {
         switch (value) {

@@ -45,8 +45,11 @@ export declare enum NostrKind {
 }
 
 export async function hexpubFromNpub(
-    npub: string
+    npub?: string
 ): Promise<string | undefined> {
+    if (!npub) {
+        return undefined;
+    }
     if (!npub.toLowerCase().startsWith("npub")) {
         return undefined;
     }

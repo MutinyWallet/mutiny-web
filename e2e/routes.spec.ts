@@ -183,7 +183,9 @@ test("visit each route", async ({ page }) => {
 
     // Swap
     await page.goto("http://localhost:3420/swap");
-    await expect(page.locator("h1")).toHaveText("Swap to Lightning");
+    await expect(
+        page.getByRole("heading", { name: "Swap to Lightning" })
+    ).toBeVisible();
     checklist.set("/swap", true);
 
     // Gift

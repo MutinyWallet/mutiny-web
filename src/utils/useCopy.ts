@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import type { Accessor } from "solid-js";
 import { createSignal } from "solid-js";
 
-export type UseCopyProps = {
+type UseCopyProps = {
     copiedTimeout?: number;
 };
 type CopyFn = (text: string) => Promise<void>;

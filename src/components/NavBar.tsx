@@ -49,7 +49,7 @@ export function NavBar(props: { activeTab: ActiveTab }) {
                     alt="home"
                 />
                 <NavBarItem
-                    href="/send"
+                    href="/search"
                     icon={airplane}
                     active={props.activeTab === "send"}
                     alt="send"

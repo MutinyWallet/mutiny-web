@@ -6,7 +6,7 @@ import { ResourceFetcher } from "solid-js";
 import { useMegaStore } from "~/state/megaStore";
 import { hexpubFromNpub, NostrKind, NostrTag } from "~/utils/nostr";
 
-export type NostrEvent = {
+type NostrEvent = {
     created_at: number;
     content: string;
     tags: NostrTag[];
@@ -16,7 +16,7 @@ export type NostrEvent = {
     sig?: string;
 };
 
-export type SimpleZapItem = {
+type SimpleZapItem = {
     kind: "public" | "private" | "anonymous";
     from_hexpub: string;
     to_hexpub: string;
@@ -28,7 +28,7 @@ export type SimpleZapItem = {
     content?: string;
 };
 
-export type NostrProfile = {
+type NostrProfile = {
     id: string;
     pubkey: string;
     created_at: number;
@@ -116,7 +116,7 @@ async function simpleZapFromEvent(
     }
 }
 
-export const PRIMAL_API = import.meta.env.VITE_PRIMAL;
+const PRIMAL_API = import.meta.env.VITE_PRIMAL;
 
 async function fetchFollows(npub: string): Promise<string[]> {
     let pubkey = undefined;

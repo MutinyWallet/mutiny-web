@@ -5,7 +5,7 @@ import forward from "~/assets/icons/forward.svg";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-export const CtaCard: ParentComponent = (props) => {
+const CtaCard: ParentComponent = (props) => {
     return (
         <div class="w-full">
             <div class="relative">

@@ -178,7 +178,7 @@ export function MiniStringShower(props: { text: string }) {
     );
 }
 
-export function FormatPrettyPrint(props: { ts: number }) {
+function FormatPrettyPrint(props: { ts: number }) {
     return (
         <div>
             {prettyPrintTime(props.ts).split(",", 2).join(",")}

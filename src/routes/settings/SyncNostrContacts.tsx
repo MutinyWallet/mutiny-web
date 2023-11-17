@@ -2,7 +2,7 @@ import { createForm, required, SubmitHandler } from "@modular-forms/solid";
 import { createSignal, Match, Show, Switch } from "solid-js";
 
 import {
-    BackLink,
+    BackPop,
     Button,
     DefaultMain,
     FancyCard,
@@ -26,7 +26,7 @@ type NostrContactsForm = {
 
 const PRIMAL_API = import.meta.env.VITE_PRIMAL;
 
-export function SyncContactsForm() {
+function SyncContactsForm() {
     const i18n = useI18n();
     const [state, actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
@@ -121,7 +121,7 @@ export function SyncNostrContacts() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title="Settings" />
+                    <BackPop />
                     <LargeHeader>Sync Nostr Contacts</LargeHeader>
                     <Switch>
                         <Match when={state.npub}>

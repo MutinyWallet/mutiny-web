@@ -8,7 +8,7 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { eify } from "~/utils";
 
-export type NostrContactsForm = {
+type NostrContactsForm = {
     npub: string;
 };
 

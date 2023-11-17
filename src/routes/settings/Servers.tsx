@@ -24,7 +24,7 @@ import {
 } from "~/logic/mutinyWalletSetup";
 import { eify } from "~/utils";
 
-export function SettingsStringsEditor(props: {
+function SettingsStringsEditor(props: {
     initialSettings: MutinyWalletSettingStrings;
 }) {
     const i18n = useI18n();
