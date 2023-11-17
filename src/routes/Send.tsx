@@ -196,7 +196,9 @@ function DestinationShower(props: {
             <Match
                 when={props.lightning_address && props.source === "lightning"}
             >
-                <StringShower text={props.lightning_address || ""} />
+                <span class="overflow-hidden overflow-ellipsis whitespace-nowrap font-mono">
+                    {props.lightning_address || ""}
+                </span>
             </Match>
             <Match
                 when={
