@@ -179,6 +179,7 @@ function DestinationShower(props: {
     invoice?: MutinyInvoice;
     nodePubkey?: string;
     lnurl?: string;
+    lightning_address?: string;
     clearAll: () => void;
 }) {
     return (
@@ -192,7 +193,18 @@ function DestinationShower(props: {
             <Match when={props.nodePubkey && props.source === "lightning"}>
                 <StringShower text={props.nodePubkey || ""} />
             </Match>
-            <Match when={props.lnurl && props.source === "lightning"}>
+            <Match
+                when={props.lightning_address && props.source === "lightning"}
+            >
+                <StringShower text={props.lightning_address || ""} />
+            </Match>
+            <Match
+                when={
+                    props.lnurl &&
+                    !props.lightning_address &&
+                    props.source === "lightning"
+                }
+            >
                 <StringShower text={props.lnurl || ""} />
             </Match>
         </Switch>
@@ -241,6 +253,7 @@ export default function Send() {
     const [invoice, setInvoice] = createSignal<MutinyInvoice>();
     const [nodePubkey, setNodePubkey] = createSignal<string>();
     const [lnurlp, setLnurlp] = createSignal<string>();
+    const [lnAddress, setLnAddress] = createSignal<string>();
     const [address, setAddress] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
 
@@ -267,12 +280,14 @@ export default function Send() {
         setDestination(undefined);
         setAmountSats(0n);
         setIsAmtEditable(true);
+        setIsHodlInvoice(false);
         setSource("lightning");
         setInvoice(undefined);
         setAddress(undefined);
         setDescription(undefined);
         setNodePubkey(undefined);
         setLnurlp(undefined);
+        setLnAddress(undefined);
         setFieldDestination("");
     }
 
@@ -418,6 +433,18 @@ export default function Send() {
                             } else {
                                 setAmountSats(source.amount_sats || 0n);
                             }
+
+                            // If it is a lightning address, set the address so we can display it
+                            if (source.lightning_address) {
+                                setLnAddress(source.lightning_address);
+                                // check for hodl invoices
+                                setIsHodlInvoice(
+                                    source.lightning_address
+                                        .toLowerCase()
+                                        .includes("zeuspay.com")
+                                );
+                            }
+
                             setLnurlp(source.lnurl);
                             setSource("lightning");
                         }
@@ -736,6 +763,7 @@ export default function Send() {
                                             address={address()}
                                             nodePubkey={nodePubkey()}
                                             lnurl={lnurlp()}
+                                            lightning_address={lnAddress()}
                                             clearAll={clearAll}
                                         />
                                         <SmallHeader>

@@ -128,7 +128,7 @@ export default {
         payment_pending_description:
             "It's taking a while, but it's possible this payment may still go through. Please check 'Activity' for the current status.",
         hodl_invoice_warning:
-            "This is a hodl invoice. Payments to hodl invoices can cause in channel force closes, which results in high on-chain fees. Pay at your own risk!"
+            "This is a hodl invoice. Payments to hodl invoices can cause channel force closes, which results in high on-chain fees. Pay at your own risk!"
     },
     feedback: {
         header: "Give us feedback!",
