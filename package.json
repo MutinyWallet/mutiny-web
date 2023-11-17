@@ -58,16 +58,13 @@
         "@mutinywallet/mutiny-wasm": "0.5.2",
         "@mutinywallet/waila-wasm": "^0.2.6",
         "@solid-primitives/upload": "^0.0.111",
-        "@solid-primitives/websocket": "^1.2.0",
         "@solidjs/meta": "^0.29.1",
         "@solidjs/router": "^0.9.0",
-        "@thisbeyond/solid-select": "^0.14.0",
         "i18next": "^22.5.1",
         "i18next-browser-languagedetector": "^7.1.0",
         "qr-scanner": "^1.4.2",
         "solid-js": "^1.8.5",
-        "solid-qr-code": "^0.0.8",
-        "undici": "^5.27.1"
+        "solid-qr-code": "^0.0.8"
     },
     "engines": {
         "node": ">=18"

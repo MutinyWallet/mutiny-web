@@ -129,17 +129,23 @@ export const SafeArea: ParentComponent = (props) => {
     );
 };
 
-export const DefaultMain: ParentComponent = (props) => {
+export const DefaultMain = (props: {
+    children?: JSX.Element;
+    zeroBottomPadding?: boolean;
+}) => {
     return (
-        <main class="mx-auto flex h-full w-full max-w-[600px] flex-col gap-4 p-4">
+        <main
+            class="mx-auto flex w-full max-w-[600px] flex-1 flex-col gap-4 p-4"
+            classList={{ "pb-0": props.zeroBottomPadding }}
+        >
             {props.children}
             {/* CSS is hard sometimes */}
-            <div class="py-1" />
+            {/* <div class="py-1" /> */}
         </main>
     );
 };
 
-export const FullscreenLoader = () => {
+const FullscreenLoader = () => {
     const i18n = useI18n();
     const [waitedTooLong, setWaitedTooLong] = createSignal(false);
 
@@ -239,26 +245,6 @@ export const VStack: ParentComponent<{
     );
 };
 
-export const HStack: ParentComponent<{ biggap?: boolean }> = (props) => {
-    return (
-        <div class={`flex gap-${props.biggap ? "8" : "4"}`}>
-            {props.children}
-        </div>
-    );
-};
-
-export const SmallAmount: ParentComponent<{
-    amount: number | bigint;
-    sign?: string;
-}> = (props) => {
-    return (
-        <h2 class="text-lg font-light">
-            {props.sign ? `${props.sign} ` : ""}
-            {props.amount.toLocaleString()} <span class="text-sm">SATS</span>
-        </h2>
-    );
-};
-
 export const NiceP: ParentComponent = (props) => {
     return <p class="text-xl font-light text-neutral-200">{props.children}</p>;
 };
@@ -340,10 +326,10 @@ export function ModalCloseButton() {
     );
 }
 
-export const SIMPLE_OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-lg";
-export const SIMPLE_DIALOG_POSITIONER =
+const SIMPLE_OVERLAY = "fixed inset-0 z-50 bg-black/50 backdrop-blur-lg";
+const SIMPLE_DIALOG_POSITIONER =
     "fixed inset-0 z-50 flex items-center justify-center";
-export const SIMPLE_DIALOG_CONTENT =
+const SIMPLE_DIALOG_CONTENT =
     "max-w-[500px] w-[90vw] max-h-device overflow-y-scroll disable-scrollbars mx-4 p-4 bg-neutral-800/90 rounded-xl border border-white/10";
 
 export const SimpleDialog: ParentComponent<{
@@ -355,11 +341,12 @@ export const SimpleDialog: ParentComponent<{
         <Dialog.Root
             open={props.open}
             onOpenChange={props.setOpen && props.setOpen}
+            modal={true}
         >
             <Dialog.Portal>
                 <Dialog.Overlay class={SIMPLE_OVERLAY} />
                 <div class={SIMPLE_DIALOG_POSITIONER}>
-                    <Dialog.Content class={SIMPLE_DIALOG_CONTENT}>
+                    <Dialog.Content class={SIMPLE_DIALOG_CONTENT} tabIndex={0}>
                         <div class="mb-2 flex items-center justify-between">
                             <Dialog.Title>
                                 <SmallHeader>{props.title}</SmallHeader>

@@ -19,7 +19,7 @@ import {
 } from "solid-js";
 
 import {
-    AmountCard,
+    AmountEditable,
     BackPop,
     Button,
     Collapser,
@@ -49,10 +49,7 @@ type CreateGiftForm = {
     amount: string;
 };
 
-export function SingleGift(props: {
-    profile: NwcProfile;
-    onDelete?: () => void;
-}) {
+function SingleGift(props: { profile: NwcProfile; onDelete?: () => void }) {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
@@ -268,6 +265,22 @@ export function Gift() {
                                 <NiceP>
                                     {i18n.t("settings.gift.send_explainer")}
                                 </NiceP>
+                                <Field name="amount">
+                                    {(field) => (
+                                        <AmountEditable
+                                            initialAmountSats={
+                                                field.value || "0"
+                                            }
+                                            setAmountSats={(newAmount) =>
+                                                setValue(
+                                                    giftForm,
+                                                    "amount",
+                                                    newAmount.toString()
+                                                )
+                                            }
+                                        />
+                                    )}
+                                </Field>
                                 <Field
                                     name="name"
                                     validate={[
@@ -290,23 +303,7 @@ export function Gift() {
                                         />
                                     )}
                                 </Field>
-                                <Field name="amount">
-                                    {(field) => (
-                                        <>
-                                            <AmountCard
-                                                amountSats={field.value || "0"}
-                                                isAmountEditable
-                                                setAmountSats={(newAmount) =>
-                                                    setValue(
-                                                        giftForm,
-                                                        "amount",
-                                                        newAmount.toString()
-                                                    )
-                                                }
-                                            />
-                                        </>
-                                    )}
-                                </Field>
+
                                 <Show when={lessThanMinChannelSize()}>
                                     <InfoBox accent="green">
                                         {i18n.t(

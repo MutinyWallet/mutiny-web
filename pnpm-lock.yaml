@@ -62,18 +62,12 @@ importers:
       '@solid-primitives/upload':
         specifier: ^0.0.111
         version: 0.0.111(solid-js@1.8.5)
-      '@solid-primitives/websocket':
-        specifier: ^1.2.0
-        version: 1.2.0(solid-js@1.8.5)
       '@solidjs/meta':
         specifier: ^0.29.1
         version: 0.29.1(solid-js@1.8.5)
       '@solidjs/router':
         specifier: ^0.9.0
         version: 0.9.0(solid-js@1.8.5)
-      '@thisbeyond/solid-select':
-        specifier: ^0.14.0
-        version: 0.14.0(solid-js@1.8.5)
       i18next:
         specifier: ^22.5.1
         version: 22.5.1
@@ -89,9 +83,6 @@ importers:
       solid-qr-code:
         specifier: ^0.0.8
         version: 0.0.8(qr.js@0.0.0)(solid-js@1.8.5)
-      undici:
-        specifier: ^5.27.1
-        version: 5.27.1
     devDependencies:
       '@capacitor/assets':
         specifier: ^2.0.4
@@ -2130,11 +2121,6 @@ packages:
     resolution: {integrity: sha512-cEee/Z+I12mZcFJshKcCqC8tuX5hG3s+d+9nZ3LabqKF1vKdF41B92pJVCBggjAGORAeOzyyDDKrZwIkLffeOQ==}
     dev: true
 
-  /@fastify/busboy@2.0.0:
-    resolution: {integrity: sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==}
-    engines: {node: '>=14'}
-    dev: false
-
   /@floating-ui/core@1.4.1:
     resolution: {integrity: sha512-jk3WqquEJRlcyu7997NtR5PibI+y5bi+LS3hPmguVClypenMsCY3CBa3LAQnozRCtCrYWSEtAdiskpamuJRFOQ==}
     dependencies:
@@ -3492,14 +3478,6 @@ packages:
       solid-js: 1.8.5
     dev: false
 
-  /@solid-primitives/websocket@1.2.0(solid-js@1.8.5):
-    resolution: {integrity: sha512-Ft74wlLD/zrOSDUq4zMDDEs4Bf7ywQO52zOMQqijLYZ9ndvepje5Eb1xiFGnfZ2kcbKaLUfnqIQxVZVB7FGnPQ==}
-    peerDependencies:
-      solid-js: ^1.6.12
-    dependencies:
-      solid-js: 1.8.5
-    dev: false
-
   /@solidjs/meta@0.28.6(solid-js@1.7.9):
     resolution: {integrity: sha512-mplUfmp7tjGgDTiVbEAqkWDLpr0ZNyR1+OOETNyJt759MqPzh979X3oJUk8SZisGII0BNycmHDIGc0Shqx7bIg==}
     peerDependencies:
@@ -4742,14 +4720,6 @@ packages:
     dependencies:
       '@testing-library/dom': 9.3.1
     dev: true
-
-  /@thisbeyond/solid-select@0.14.0(solid-js@1.8.5):
-    resolution: {integrity: sha512-ecq4U3Vnc/nJbU84ARuPg2scNuYt994ljF5AmBlzuZW87x43mWiGJ5hEWufIJJMpDT6CcnCIx/xbrdDkaDEHQw==}
-    peerDependencies:
-      solid-js: ^1.5
-    dependencies:
-      solid-js: 1.8.5
-    dev: false
 
   /@trapezedev/gradle-parse@5.0.10:
     resolution: {integrity: sha512-yriBEyOkJ8K4mHCgoyUKQCyVI8tP4S513Wp6/9SCx6Ub8ZvSQUonqU3/OZB2G8FRfL4aijpFfMWtiVFJbX6V/w==}
@@ -13059,13 +13029,6 @@ packages:
     engines: {node: '>=14.0'}
     dependencies:
       busboy: 1.6.0
-
-  /undici@5.27.1:
-    resolution: {integrity: sha512-h0P6HVTlbcvF6wiX88+aoouMOuiKJ2TEGfcr+tEbr96OIizJaM4BhXJs/wxdDN/RD0F2yZCV/ylCVJy9PjQJIg==}
-    engines: {node: '>=14.0'}
-    dependencies:
-      '@fastify/busboy': 2.0.0
-    dev: false
 
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}

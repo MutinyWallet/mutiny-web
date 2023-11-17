@@ -37,7 +37,7 @@ export function showToast(arg: ToastArg) {
     }
 }
 
-export function ToastItem(props: {
+function ToastItem(props: {
     toastId: number;
     title: string;
     description: string;

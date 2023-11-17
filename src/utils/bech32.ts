@@ -221,12 +221,11 @@ export function bech32WordsToUrl(words: number[]) {
 }
 
 export const bech32 = getLibraryFromEncoding("bech32");
-export const bech32m = getLibraryFromEncoding("bech32m");
-export interface Decoded {
+interface Decoded {
     prefix: string;
     words: number[];
 }
-export interface BechLib {
+interface BechLib {
     decodeUnsafe: (
         str: string,
         LIMIT?: number | undefined

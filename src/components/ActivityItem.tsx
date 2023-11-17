@@ -1,15 +1,13 @@
 import { TagItem } from "@mutinywallet/mutiny-wasm";
-import { createResource, Match, ParentComponent, Switch } from "solid-js";
+import { Match, ParentComponent, Switch } from "solid-js";
 
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
-import off from "~/assets/icons/download-channel.svg";
 import shuffle from "~/assets/icons/shuffle.svg";
-import on from "~/assets/icons/upload-channel.svg";
-import { AmountFiat, AmountSats } from "~/components";
+import { AmountFiat, AmountSats, LabelCircle } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { generateGradient, timeAgo } from "~/utils";
+import { timeAgo } from "~/utils";
 
 export const ActivityAmount: ParentComponent<{
     amount: string;
@@ -43,50 +41,6 @@ export const ActivityAmount: ParentComponent<{
         </div>
     );
 };
-
-function LabelCircle(props: {
-    name?: string;
-    image_url?: string;
-    contact: boolean;
-    label: boolean;
-    channel?: HackActivityType;
-}) {
-    const [gradient] = createResource(async () => {
-        if (props.name && props.contact) {
-            return generateGradient(props.name || "?");
-        } else {
-            return undefined;
-        }
-    });
-
-    const text = () =>
-        props.contact && props.name && props.name.length
-            ? props.name[0]
-            : props.label
-            ? "≡"
-            : "?";
-    const bg = () => (props.name && props.contact ? gradient() : "");
-
-    return (
-        <div
-            class="flex h-[3rem] w-[3rem] flex-none items-center justify-center overflow-clip rounded-full border-b border-t border-b-white/10 border-t-white/50 bg-neutral-700 text-3xl uppercase"
-            style={{ background: bg() }}
-        >
-            <Switch>
-                <Match when={props.image_url}>
-                    <img src={props.image_url} alt={"image"} />
-                </Match>
-                <Match when={props.channel === "ChannelOpen"}>
-                    <img src={on} alt="channel open" />
-                </Match>
-                <Match when={props.channel === "ChannelClose"}>
-                    <img src={off} alt="channel close" />
-                </Match>
-                <Match when={true}>{text()}</Match>
-            </Switch>
-        </div>
-    );
-}
 
 export type HackActivityType =
     | "Lightning"

@@ -18,6 +18,7 @@ export type ParsedParams = {
     nostr_wallet_auth?: string;
     fedimint_invite?: string;
     is_lnurl_auth?: boolean;
+    contact_id?: string;
 };
 
 export function toParsedParams(

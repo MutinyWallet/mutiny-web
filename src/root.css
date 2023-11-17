@@ -4,12 +4,16 @@
 
 body {
     @apply text-white;
-    @apply min-h-[100dvh] overflow-y-scroll overscroll-none safe-top safe-bottom disable-scrollbars;
+    @apply flex min-h-[100dvh] flex-col overflow-y-scroll overscroll-none safe-top safe-bottom disable-scrollbars;
 }
 
 html {
     @apply h-[100dvh] overscroll-none;
     @apply bg-neutral-900;
+}
+
+#root {
+    @apply flex flex-1 flex-col;
 }
 
 @media (prefers-color-scheme: light) {

@@ -21,14 +21,7 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { createDeepSignal } from "~/utils";
 
-export const THREE_COLUMNS =
-    "grid grid-cols-[auto,1fr,auto] gap-4 py-2 px-2 border-b border-neutral-800 last:border-b-0";
-export const CENTER_COLUMN = "min-w-0 overflow-hidden max-w-full";
-export const MISSING_LABEL =
-    "py-1 px-2 bg-white/10 rounded inline-block text-sm";
-export const RIGHT_COLUMN = "flex flex-col items-right text-right max-w-[8rem]";
-
-export interface IActivityItem {
+interface IActivityItem {
     kind: HackActivityType;
     id: string;
     amount_sats: number;

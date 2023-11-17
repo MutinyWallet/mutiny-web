@@ -1,5 +1,6 @@
 import { Title } from "@solidjs/meta";
 import { A } from "@solidjs/router";
+import { onMount } from "solid-js";
 
 import { ExternalLink } from "~/components";
 import {
@@ -23,6 +24,9 @@ export function SimpleErrorDisplay(props: { error: Error }) {
 
 export function ErrorDisplay(props: { error: Error }) {
     const i18n = useI18n();
+    onMount(() => {
+        console.error(props.error);
+    });
     return (
         <SafeArea>
             <Title>{i18n.t("error.general.oh_no")}</Title>

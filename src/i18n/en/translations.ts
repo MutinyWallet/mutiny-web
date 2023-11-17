@@ -42,7 +42,10 @@ export default {
         unimplemented: "Unimplemented",
         not_available: "We don't do that yet",
         error_name: "We at least need a name",
-        email_error: "That doesn't look like a lightning address"
+        email_error: "That doesn't look like a lightning address",
+        npub_error: "That doesn't look like a nostr npub",
+        error_ln_address_missing: "New contacts need a lightning address",
+        npub: "Nostr Npub"
     },
     receive: {
         receive_bitcoin: "Receive Bitcoin",
@@ -81,7 +84,7 @@ export default {
             "Something went wrong when creating the on-chain address",
         amount_editable: {
             receive_too_small:
-                "Your first lightning receive needs to be {{amount}} SATS or greater. A setup fee will be deducted from the requested amount.",
+                "A setup fee will be deducted from the requested amount.",
             setup_fee_lightning:
                 "A lightning setup fee will be charged if paid over lightning.",
             too_big_for_beta:
@@ -94,7 +97,8 @@ export default {
                 one_hundred_k: "100k",
                 one_million: "1m"
             },
-            del: "DEL"
+            del: "DEL",
+            balance: "Balance"
         },
         integrated_qr: {
             onchain: "On-chain",
@@ -102,7 +106,8 @@ export default {
             unified: "Unified",
             gift: "Lightning Gift"
         },
-        remember_choice: "Remember my choice next time"
+        remember_choice: "Remember my choice next time",
+        what_for: "What's this for?"
     },
     send: {
         sending: "Sending...",
@@ -119,11 +124,13 @@ export default {
             of: "of",
             sats_sent: "sats sent"
         },
+        what_for: "What's this for?",
         error_low_balance:
             "We do not have enough balance to pay the given amount.",
         error_invoice_match:
             "Amount requested, {{amount}} SATS, does not equal amount set.",
         error_channel_reserves: "Not enough available funds.",
+        error_address: "Invalid Lightning Address",
         error_channel_reserves_explained:
             "A portion of your channel balance is reserved for fees. Try sending a smaller amount or adding funds.",
         error_clipboard: "Clipboard not supported",

@@ -1,15 +1,7 @@
-import { Dialog } from "@kobalte/core";
 import { createSignal, JSXElement, ParentComponent } from "solid-js";
 
 import help from "~/assets/icons/help.svg";
-import {
-    DIALOG_CONTENT,
-    DIALOG_POSITIONER,
-    ExternalLink,
-    ModalCloseButton,
-    OVERLAY,
-    SmallHeader
-} from "~/components";
+import { ExternalLink, SimpleDialog } from "~/components";
 import { useI18n } from "~/i18n/context";
 
 export function FeesModal(props: { icon?: boolean }) {
@@ -36,35 +28,24 @@ export function FeesModal(props: { icon?: boolean }) {
     );
 }
 
-export const MoreInfoModal: ParentComponent<{
+const MoreInfoModal: ParentComponent<{
     linkText: string | JSXElement;
     title: string;
 }> = (props) => {
     const [open, setOpen] = createSignal(false);
 
     return (
-        <Dialog.Root open={open()} onOpenChange={setOpen}>
-            <Dialog.Trigger>
-                <button class="font-semibold underline decoration-light-text hover:decoration-white">
-                    {props.linkText}
-                </button>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-                <Dialog.Overlay class={OVERLAY} />
-                <div class={DIALOG_POSITIONER}>
-                    <Dialog.Content class={DIALOG_CONTENT}>
-                        <Dialog.Title class="mb-2 flex items-center justify-between">
-                            <SmallHeader>{props.title}</SmallHeader>
-                            <Dialog.CloseButton>
-                                <ModalCloseButton />
-                            </Dialog.CloseButton>
-                        </Dialog.Title>
-                        <Dialog.Description class="flex flex-col gap-4">
-                            <div>{props.children}</div>
-                        </Dialog.Description>
-                    </Dialog.Content>
-                </div>
-            </Dialog.Portal>
-        </Dialog.Root>
+        <>
+            <button
+                tabIndex={-1}
+                onClick={() => setOpen(true)}
+                class="font-semibold underline decoration-light-text hover:decoration-white"
+            >
+                {props.linkText}
+            </button>
+            <SimpleDialog open={open()} setOpen={setOpen} title={props.title}>
+                {props.children}
+            </SimpleDialog>
+        </>
     );
 };

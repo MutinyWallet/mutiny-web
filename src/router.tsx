@@ -13,6 +13,7 @@ import {
     NotFound,
     Receive,
     Scanner,
+    Search,
     Send,
     Swap
 } from "~/routes";
@@ -100,6 +101,7 @@ export function Router() {
                     <Route path="/scanner" component={Scanner} />
                     <Route path="/send" component={Send} />
                     <Route path="/swap" component={Swap} />
+                    <Route path="/search" component={Search} />
                     <Route path="/settings">
                         <Route path="/" component={Settings} />
                         <Route path="/admin" component={Admin} />

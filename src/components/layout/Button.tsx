@@ -6,7 +6,7 @@ import { LoadingSpinner } from "~/components";
 
 // Help from https://github.com/arpadgabor/credee/blob/main/packages/www/src/components/ui/button.tsx
 
-export type CommonButtonStyleProps = {
+type CommonButtonStyleProps = {
     intent?: "active" | "inactive" | "blue" | "red" | "green" | "text";
     layout?: "flex" | "pad" | "small" | "xs" | "full";
 };

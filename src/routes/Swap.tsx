@@ -13,17 +13,19 @@ import {
 
 import {
     ActivityDetailsModal,
-    AmountCard,
+    AmountEditable,
     AmountFiat,
     BackLink,
     Button,
     Card,
     DefaultMain,
+    FeeDisplay,
     HackActivityType,
     InfoBox,
     LargeHeader,
     MegaCheck,
     MegaEx,
+    MethodChooser,
     MutinyWalletGuard,
     NavBar,
     SafeArea,
@@ -34,7 +36,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
-import { MethodChooser, SendSource } from "~/routes/Send";
+import { SendSource } from "~/routes/Send";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
@@ -441,13 +443,19 @@ export function Swap() {
                                 </Card>
                             </Show>
                         </VStack>
-                        <AmountCard
-                            amountSats={amountSats().toString()}
+                        <AmountEditable
+                            initialAmountSats={amountSats()}
                             setAmountSats={setAmountSats}
                             fee={feeEstimate()?.toString()}
-                            isAmountEditable={true}
                             maxAmountSats={maxOnchain()}
                         />
+                        <Show when={feeEstimate() && amountSats() > 0n}>
+                            <FeeDisplay
+                                amountSats={amountSats().toString()}
+                                fee={feeEstimate()!.toString()}
+                                maxAmountSats={maxOnchain()}
+                            />
+                        </Show>
                         <Show when={amountWarning() && amountSats() > 0n}>
                             <InfoBox accent={"red"}>{amountWarning()}</InfoBox>
                         </Show>

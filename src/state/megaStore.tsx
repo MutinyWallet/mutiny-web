@@ -36,14 +36,14 @@ import {
 
 const MegaStoreContext = createContext<MegaStore>();
 
-export type LoadStage =
+type LoadStage =
     | "fresh"
     | "checking_double_init"
     | "downloading"
     | "setup"
     | "done";
 
-export type MegaStore = [
+type MegaStore = [
     {
         mutiny_wallet?: MutinyWallet;
         deleting: boolean;
