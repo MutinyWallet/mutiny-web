@@ -244,6 +244,8 @@ export default function Send() {
     const [address, setAddress] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
 
+    const [isHodlInvoice, setIsHodlInvoice] = createSignal<boolean>(false);
+
     // Is sending / sent
     const [sending, setSending] = createSignal(false);
     const [sentDetails, setSentDetails] = createSignal<SentDetails>();
@@ -398,6 +400,7 @@ export default function Send() {
                             setIsAmtEditable(false);
                         }
                         setInvoice(invoice);
+                        setIsHodlInvoice(invoice.potential_hodl_invoice);
                         setSource("lightning");
                     });
             } else if (source.node_pubkey) {
@@ -759,6 +762,15 @@ export default function Send() {
                                     isAmountEditable={isAmtEditable()}
                                     maxAmountSats={maxAmountSats()}
                                 />
+                                <Show when={isHodlInvoice()}>
+                                    <InfoBox accent="red">
+                                        <p>
+                                            {i18n.t(
+                                                "send.hodl_invoice_warning"
+                                            )}
+                                        </p>
+                                    </InfoBox>
+                                </Show>
                                 <Show when={error()}>
                                     <InfoBox accent="red">
                                         <p>{error()}</p>
