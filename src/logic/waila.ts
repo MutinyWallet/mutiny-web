@@ -14,6 +14,7 @@ export type ParsedParams = {
     privateTag?: string;
     node_pubkey?: string;
     lnurl?: string;
+    lightning_address?: string;
 };
 
 export function toParsedParams(
@@ -54,7 +55,8 @@ export function toParsedParams(
             network,
             memo: params.memo,
             node_pubkey: params.node_pubkey,
-            lnurl: params.lnurl
+            lnurl: params.lnurl,
+            lightning_address: params.lightning_address
         }
     };
 }
