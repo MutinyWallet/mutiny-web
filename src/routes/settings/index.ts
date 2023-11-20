@@ -12,3 +12,4 @@ export * from "./Plus";
 export * from "./Restore";
 export * from "./Servers";
 export * from "./SyncNostrContacts";
+export * from "./WalletAuth";

@@ -31,7 +31,8 @@ import {
     Restore,
     Servers,
     Settings,
-    SyncNostrContacts
+    SyncNostrContacts,
+    WalletAuth
 } from "~/routes/settings";
 
 import { useMegaStore } from "./state/megaStore";
@@ -110,6 +111,7 @@ export function Router() {
                         <Route path="/encrypt" component={Encrypt} />
                         <Route path="/gift" component={Gift} />
                         <Route path="/lnurlauth" component={LnUrlAuth} />
+                        <Route path="/walletauth" component={WalletAuth} />
                         <Route path="/plus" component={Plus} />
                         <Route path="/restore" component={Restore} />
                         <Route path="/servers" component={Servers} />

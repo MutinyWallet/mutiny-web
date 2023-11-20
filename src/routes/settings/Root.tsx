@@ -154,6 +154,10 @@ export function Settings() {
                                 text: i18n.t("settings.lnurl_auth.title")
                             },
                             {
+                                href: "/settings/walletauth",
+                                text: "Wallet Auth"
+                            },
+                            {
                                 href: "/settings/syncnostrcontacts",
                                 text: "Sync Nostr Contacts"
                             }
