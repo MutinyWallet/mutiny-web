@@ -659,6 +659,13 @@ export function Send() {
         return !destination() || sending() || amountSats() === 0n || !!error();
     });
 
+    const shouldShowGiftLink = createMemo(() => {
+        // iOS users should only see gift link if they're mutiny+ subscribers
+        const isIOS = Capacitor.getPlatform() === "ios";
+
+        return !isIOS || state.mutiny_plus;
+    });
+
     return (
         <MutinyWalletGuard>
             <SafeArea>
@@ -837,9 +844,11 @@ export function Send() {
                                 </Button>
                             </VStack>
                         </Show>
-                        <div class="flex justify-center">
-                            <GiftLink />
-                        </div>
+                        <Show when={shouldShowGiftLink()}>
+                            <div class="flex justify-center">
+                                <GiftLink />
+                            </div>
+                        </Show>
                     </VStack>
                 </DefaultMain>
                 <NavBar activeTab="send" />
