@@ -40,7 +40,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify } from "~/utils";
+import { eify, isFreeGiftingDay } from "~/utils";
 import { baseUrlAccountingForNative } from "~/utils/baseUrl";
 import { createDeepSignal } from "~/utils/deepSignal";
 
@@ -203,11 +203,9 @@ export function Gift() {
     };
 
     const selfHosted = state.settings?.selfhosted === "true";
-    const today = new Date();
-    // days are 1 indexed, months are 0 indexed
-    const isChristmas = today.getDate() === 25 && today.getMonth() === 11;
+    const freeDay = isFreeGiftingDay();
 
-    const canGift = state.mutiny_plus || selfHosted || isChristmas;
+    const canGift = state.mutiny_plus || selfHosted || freeDay;
 
     return (
         <MutinyWalletGuard>

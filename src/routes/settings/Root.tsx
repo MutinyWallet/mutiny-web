@@ -17,6 +17,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
+import { isFreeGiftingDay } from "~/utils";
 
 function SettingsLinkList(props: {
     header: string;
@@ -74,9 +75,7 @@ export function Settings() {
     const COMMIT_HASH = import.meta.env.__COMMIT_HASH__;
 
     const selfHosted = state.settings?.selfhosted === "true";
-    const today = new Date();
-    // days are 1 indexed, months are 0 indexed
-    const isChristmas = today.getDate() === 25 && today.getMonth() === 11;
+    const freeDay = isFreeGiftingDay();
 
     const ios = Capacitor.getPlatform() === "ios";
 
@@ -138,13 +137,13 @@ export function Settings() {
                                 disabled: !(
                                     state.mutiny_plus ||
                                     selfHosted ||
-                                    isChristmas
+                                    freeDay
                                 ),
                                 text: i18n.t("settings.gift.title"),
                                 caption: !(
                                     state.mutiny_plus ||
                                     selfHosted ||
-                                    isChristmas
+                                    freeDay
                                 )
                                     ? i18n.t("settings.gift.no_plus_caption")
                                     : undefined
