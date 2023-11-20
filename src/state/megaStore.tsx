@@ -67,6 +67,7 @@ export type MegaStore = [
         npub?: string;
         preferredInvoiceType: "unified" | "lightning" | "onchain";
         betaWarned: boolean;
+        testflightPromptDismissed: boolean;
         should_zap_hodl: boolean;
     },
     {
@@ -89,6 +90,7 @@ export type MegaStore = [
             onSuccess: (value: ParsedParams) => void
         ): void;
         setBetaWarned(): void;
+        setTestFlightPromptDismissed(): void;
         toggleHodl(): void;
     }
 ];
@@ -126,7 +128,9 @@ export const Provider: ParentComponent = (props) => {
         npub: localStorage.getItem("npub") || undefined,
         preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
         betaWarned: localStorage.getItem("betaWarned") === "true",
-        should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true"
+        should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
+        testflightPromptDismissed:
+            localStorage.getItem("testflightPromptDismissed") === "true"
     });
 
     const actions = {
@@ -383,6 +387,10 @@ export const Provider: ParentComponent = (props) => {
         setBetaWarned() {
             localStorage.setItem("betaWarned", "true");
             setState({ betaWarned: true });
+        },
+        setTestFlightPromptDismissed() {
+            localStorage.setItem("testflightPromptDismissed", "true");
+            setState({ testflightPromptDismissed: true });
         },
         toggleHodl() {
             const should_zap_hodl = !state.should_zap_hodl;

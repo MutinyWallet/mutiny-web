@@ -10,6 +10,7 @@ import {
     CombinedActivity,
     DecryptDialog,
     DefaultMain,
+    IOSbanner,
     LoadingIndicator,
     LoadingShimmer,
     Logo,
@@ -23,10 +24,13 @@ import {
 import { useI18n } from "~/i18n/context";
 import { FeedbackLink } from "~/routes/Feedback";
 import { useMegaStore } from "~/state/megaStore";
+import { iosNotNative } from "~/utils/platform";
 
 export function Main() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
+
+    const safari = iosNotNative();
 
     return (
         <SafeArea>
@@ -71,6 +75,9 @@ export function Main() {
                     </div>
                 </header>
                 <Show when={!state.wallet_loading}>
+                    <Show when={safari && !state.testflightPromptDismissed}>
+                        <IOSbanner />
+                    </Show>
                     <OnboardWarning />
                     <ReloadPrompt />
                 </Show>

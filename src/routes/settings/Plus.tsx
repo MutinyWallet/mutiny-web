@@ -14,6 +14,7 @@ import {
     Button,
     ConfirmDialog,
     DefaultMain,
+    ExternalLink,
     FancyCard,
     InfoBox,
     LargeHeader,
@@ -37,6 +38,16 @@ function Perks(props: { alreadySubbed?: boolean }) {
                 <li>{i18n.t("settings.plus.satisfaction")}</li>
             </Show>
             <li>{i18n.t("settings.plus.gifting")} </li>
+            <li>
+                <Show
+                    when={props.alreadySubbed}
+                    fallback={i18n.t("settings.plus.ios_beta_access")}
+                >
+                    <ExternalLink href="https://testflight.apple.com/join/9g23f0Mc">
+                        {i18n.t("settings.plus.ios_beta_access")}
+                    </ExternalLink>
+                </Show>
+            </li>
             <li>
                 {i18n.t("redshift.title")}{" "}
                 <em>{i18n.t("common.coming_soon")}</em>

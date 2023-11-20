@@ -462,6 +462,7 @@ export default {
             satisfaction: "Smug satisfaction",
             gifting: "Gifting",
             multi_device: "Multi-device access",
+            ios_beta_access: "iOS beta access",
             more: "... and more to come",
             cta_description:
                 "Enjoy early access to new features and premium functionality.",
