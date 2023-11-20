@@ -332,6 +332,11 @@ export const Provider: ParentComponent = (props) => {
                     navigate(url.pathname + url.search);
                     return;
                 }
+
+                if (url && url.pathname.startsWith("/settings/plus")) {
+                    navigate(url.pathname + url.search);
+                    return;
+                }
             } catch (e) {
                 // If it's not a URL, we'll just continue with normal parsing
             }
