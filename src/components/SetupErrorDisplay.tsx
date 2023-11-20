@@ -1,5 +1,6 @@
+import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { Title } from "@solidjs/meta";
-import { Match, Switch } from "solid-js";
+import { createResource, Match, Switch } from "solid-js";
 
 import nodevice from "~/assets/no-device.png";
 import {
@@ -15,6 +16,10 @@ import {
     SmallHeader
 } from "~/components";
 import { useI18n } from "~/i18n/context";
+import {
+    getSettings,
+    MutinyWalletSettingStrings
+} from "~/logic/mutinyWalletSetup";
 import { FeedbackLink } from "~/routes/Feedback";
 
 function ErrorFooter() {
@@ -32,6 +37,40 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
     // Error shouldn't be reactive, so we assign to it so it just gets rendered with the first value
     const i18n = useI18n();
     const error = props.initialError;
+
+    const [lockSeconds, { mutate }] = createResource(async () => {
+        if (error.message.startsWith("Mutiny is already running")) {
+            const settings: MutinyWalletSettingStrings = await getSettings();
+            // todo set password
+            try {
+                const secs = await MutinyWallet.get_device_lock_remaining_secs(
+                    undefined,
+                    settings.auth,
+                    settings.storage
+                );
+                return Number(secs) || 0;
+            } catch (e) {
+                console.error(e);
+                return 60; // set to 60 if we fail to get the lock time
+            }
+        } else {
+            return 0;
+        }
+    });
+
+    // Countdown every second if we are displaying the device lock error
+    if (error.message.startsWith("Mutiny is already running")) {
+        setInterval(async () => {
+            const current = lockSeconds();
+            if (current !== undefined) {
+                if (current > 0) {
+                    mutate(current - 1);
+                } else {
+                    window.location.reload();
+                }
+            }
+        }, 1000);
+    }
 
     return (
         <SafeArea>
@@ -98,7 +137,7 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                             {i18n.t("error.on_boot.existing_tab.description")}
                         </NiceP>
                         <Button onClick={() => window.location.reload()}>
-                            Reload
+                            {i18n.t("error.reload")}
                         </Button>
                         <ErrorFooter />
                     </DefaultMain>
@@ -127,8 +166,15 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                                 "error.on_boot.already_running.description"
                             )}
                         </NiceP>
+                        <p class="rounded-xl bg-white/10 p-4 font-mono">
+                            {i18n.t(
+                                "error.on_boot.already_running.retry_again_in"
+                            )}{" "}
+                            {lockSeconds()}{" "}
+                            {i18n.t("error.on_boot.already_running.seconds")}
+                        </p>
                         <Button onClick={() => window.location.reload()}>
-                            Reload
+                            {i18n.t("error.reload")}
                         </Button>
                         <ErrorFooter />
                     </DefaultMain>
@@ -187,7 +233,7 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
                             {i18n.t("error.on_boot.loading_failed.description")}
                         </NiceP>
                         <Button onClick={() => window.location.reload()}>
-                            Reload
+                            {i18n.t("error.reload")}
                         </Button>
                         <NiceP>
                             {i18n.t(

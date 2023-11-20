@@ -575,6 +575,7 @@ export default {
     error: {
         title: "Error",
         emergency_link: "emergency kit.",
+        reload: "Reload",
         restart: {
             title: "Something *extra* screwy going on? Stop the nodes!",
             start: "Start",
@@ -614,7 +615,9 @@ export default {
             already_running: {
                 title: "Mutiny may be running on another device",
                 description:
-                    "Mutiny can only be used in one place at a time. It looks like you have another device or browser using this wallet. If you've recently closed Mutiny on another device, please wait a few minutes and try again."
+                    "Mutiny can only be used in one place at a time. It looks like you have another device or browser using this wallet. If you've recently closed Mutiny on another device, please wait a few minutes and try again.",
+                retry_again_in: "Retry again in",
+                seconds: "seconds"
             },
             incompatible_browser: {
                 title: "Incompatible browser",
