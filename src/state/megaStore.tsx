@@ -218,28 +218,14 @@ export const Provider: ParentComponent = (props) => {
                     }
                 }
 
-                // Get balance + price optimistically
+                // Get balance
                 const balance = await mutinyWallet.get_balance();
-                let price;
-                try {
-                    if (state.fiat.value === "BTC") {
-                        price = 1;
-                    } else {
-                        price = await mutinyWallet.get_bitcoin_price(
-                            state.fiat.value.toLowerCase() || "usd"
-                        );
-                    }
-                } catch (e) {
-                    console.error(e);
-                    price = 0;
-                }
 
                 setState({
                     mutiny_wallet: mutinyWallet,
                     wallet_loading: false,
                     subscription_timestamp: subscription_timestamp,
                     load_stage: "done",
-                    price: price || 0,
                     balance
                 });
             } catch (e) {
@@ -476,7 +462,10 @@ export const Provider: ParentComponent = (props) => {
             await actions.sync();
         }, 3 * 1000); // Poll every 3 seconds
 
-        // Set up price checking
+        // Run our first price check
+        await actions.priceCheck();
+
+        // Set up price checking every minute
         setInterval(
             async () => {
                 await actions.priceCheck();
