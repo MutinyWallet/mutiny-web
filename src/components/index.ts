@@ -45,3 +45,4 @@ export * from "./SyncContactsForm";
 export * from "./GiftLink";
 export * from "./MutinyPlusCta";
 export * from "./ToggleHodl";
+export * from "./IOSbanner";
