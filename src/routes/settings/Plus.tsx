@@ -27,7 +27,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, subscriptionValid, vibrateSuccess } from "~/utils";
+import { eify, vibrateSuccess } from "~/utils";
 
 function Perks(props: { alreadySubbed?: boolean }) {
     const i18n = useI18n();
@@ -56,7 +56,6 @@ function PlusCTA() {
 
     const [subbing, setSubbing] = createSignal(false);
     const [confirmOpen, setConfirmOpen] = createSignal(false);
-    const [restoring, setRestoring] = createSignal(false);
 
     const [error, setError] = createSignal<Error>();
 
@@ -104,32 +103,6 @@ function PlusCTA() {
         }
     }
 
-    async function restore() {
-        try {
-            setError(undefined);
-            setRestoring(true);
-            await actions.checkForSubscription();
-            if (!state.subscription_timestamp) {
-                setError(
-                    new Error(i18n.t("settings.plus.error_no_subscription"))
-                );
-            }
-
-            if (!subscriptionValid(state.subscription_timestamp)) {
-                setError(
-                    new Error(
-                        i18n.t("settings.plus.error_expired_subscription")
-                    )
-                );
-            }
-        } catch (e) {
-            console.error(e);
-            setError(eify(e));
-        } finally {
-            setRestoring(false);
-        }
-    }
-
     const hasEnough = () => {
         if (!planDetails()) return false;
         return (state.balance?.lightning || 0n) > planDetails().amount_sat;
@@ -169,14 +142,6 @@ function PlusCTA() {
                         disabled={!hasEnough()}
                     >
                         {i18n.t("settings.plus.join")}
-                    </Button>
-                    <Button
-                        intent="green"
-                        layout="flex"
-                        onClick={restore}
-                        loading={restoring()}
-                    >
-                        {i18n.t("settings.plus.restore")}
                     </Button>
                 </div>
             </VStack>

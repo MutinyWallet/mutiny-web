@@ -133,20 +133,16 @@ export const Provider: ParentComponent = (props) => {
         async checkForSubscription(justPaid?: boolean): Promise<void> {
             try {
                 const timestamp = await state.mutiny_wallet?.check_subscribed();
-                console.log("timestamp:", timestamp);
-                if (timestamp) {
-                    localStorage.setItem(
-                        "subscription_timestamp",
-                        timestamp?.toString()
-                    );
+
+                // Check that timestamp is a number
+                if (timestamp && !isNaN(Number(timestamp))) {
                     setState({ subscription_timestamp: Number(timestamp) });
-                }
-            } catch (e) {
-                if (justPaid) {
+                } else if (justPaid) {
                     // we make a fake timestamp for 24 hours from now, in case the server is down
                     const timestamp = Math.ceil(Date.now() / 1000) + 86400;
                     setState({ subscription_timestamp: timestamp });
                 }
+            } catch (e) {
                 console.error(e);
             }
         },
@@ -192,30 +188,16 @@ export const Provider: ParentComponent = (props) => {
                 // If we get this far then we don't need the password anymore
                 setState({ needs_password: false });
 
-                // Subscription stuff. Skip if it's not already in localstorage
-                let subscription_timestamp: number | undefined = undefined;
-                const stored_subscription_timestamp = localStorage.getItem(
-                    "subscription_timestamp"
-                );
-                // If we have a stored timestamp, check if it's still valid
-                if (stored_subscription_timestamp) {
-                    try {
-                        const timestamp =
-                            await mutinyWallet?.check_subscribed();
+                // Check if we're subscribed and update the timestamp
+                try {
+                    const timestamp = await mutinyWallet?.check_subscribed();
 
-                        // Check that timestamp is a number
-                        if (!timestamp || isNaN(Number(timestamp))) {
-                            throw new Error("Timestamp is not a number");
-                        }
-
-                        subscription_timestamp = Number(timestamp);
-                        localStorage.setItem(
-                            "subscription_timestamp",
-                            timestamp.toString()
-                        );
-                    } catch (e) {
-                        console.error(e);
+                    // Check that timestamp is a number
+                    if (timestamp && !isNaN(Number(timestamp))) {
+                        setState({ subscription_timestamp: Number(timestamp) });
                     }
+                } catch (e) {
+                    console.error(e);
                 }
 
                 // Get balance + price optimistically
@@ -237,7 +219,6 @@ export const Provider: ParentComponent = (props) => {
                 setState({
                     mutiny_wallet: mutinyWallet,
                     wallet_loading: false,
-                    subscription_timestamp: subscription_timestamp,
                     load_stage: "done",
                     price: price || 0,
                     balance
