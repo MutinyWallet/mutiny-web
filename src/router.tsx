@@ -85,7 +85,10 @@ export function Router() {
     return (
         <Switch>
             <Match when={state.setup_error}>
-                <SetupErrorDisplay initialError={state.setup_error!} />
+                <SetupErrorDisplay
+                    initialError={state.setup_error!}
+                    password={state.password}
+                />
             </Match>
             <Match when={true}>
                 <GlobalListeners />

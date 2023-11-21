@@ -33,7 +33,10 @@ function ErrorFooter() {
     );
 }
 
-export function SetupErrorDisplay(props: { initialError: Error }) {
+export function SetupErrorDisplay(props: {
+    initialError: Error;
+    password?: string;
+}) {
     // Error shouldn't be reactive, so we assign to it so it just gets rendered with the first value
     const i18n = useI18n();
     const error = props.initialError;
@@ -41,10 +44,9 @@ export function SetupErrorDisplay(props: { initialError: Error }) {
     const [lockSeconds, { mutate }] = createResource(async () => {
         if (error.message.startsWith("Mutiny is already running")) {
             const settings: MutinyWalletSettingStrings = await getSettings();
-            // todo set password
             try {
                 const secs = await MutinyWallet.get_device_lock_remaining_secs(
-                    undefined,
+                    props.password,
                     settings.auth,
                     settings.storage
                 );
