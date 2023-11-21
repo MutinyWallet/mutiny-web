@@ -61,6 +61,7 @@ export type MegaStore = [
         subscription_timestamp?: number;
         readonly mutiny_plus: boolean;
         needs_password: boolean;
+        password?: string;
         load_stage: LoadStage;
         settings?: MutinyWalletSettingStrings;
         safe_mode?: boolean;
@@ -122,6 +123,8 @@ export const Provider: ParentComponent = (props) => {
             return subscriptionValid(state.subscription_timestamp);
         },
         needs_password: false,
+        // If setup fails we can remember the password for checking the device lock
+        password: undefined as string | undefined,
         load_stage: "fresh" as LoadStage,
         settings: undefined as MutinyWalletSettingStrings | undefined,
         safe_mode: searchParams.safe_mode === "true",
@@ -218,7 +221,8 @@ export const Provider: ParentComponent = (props) => {
                 if (eify(e).message === "Incorrect password entered.") {
                     setState({ needs_password: true });
                 } else {
-                    setState({ setup_error: eify(e) });
+                    // We only save the password for checking the timelock, will be blown away by the reload
+                    setState({ setup_error: eify(e), password: password });
                 }
             }
         },
