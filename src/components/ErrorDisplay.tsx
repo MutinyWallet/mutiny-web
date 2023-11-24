@@ -38,6 +38,9 @@ export function ErrorDisplay(props: { error: Error }) {
                         {i18n.t("error.general.support_link")}
                     </ExternalLink>
                 </NiceP>
+                <Button onClick={() => window.location.reload()}>
+                    {i18n.t("error.reload")}
+                </Button>
                 <NiceP>
                     {i18n.t("error.general.getting_desperate")}{" "}
                     <A href="/settings/emergencykit">
