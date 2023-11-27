@@ -121,6 +121,9 @@ export default {
             "We do not have enough balance to pay the given amount.",
         error_invoice_match:
             "Amount requested, {{amount}} SATS, does not equal amount set.",
+        error_channel_reserves: "Not enough available funds.",
+        error_channel_reserves_explained:
+            "A portion of your channel balance is reserved for fees. Try sending a smaller amount or adding funds.",
         error_clipboard: "Clipboard not supported",
         error_keysend: "Keysend failed",
         error_LNURL: "LNURL Pay failed",
@@ -310,7 +313,7 @@ export default {
             inbound_outbound_tip:
                 "Outbound is the amount of money you can spend on lightning. Inbound is the amount you can receive without incurring a lightning service fee.",
             reserve_tip:
-                "About 1% of your channel balance is reserved on lightning for fees.",
+                "About 1% of your channel balance is reserved on lightning for fees. Additional reserves are required for channels you opened via swap.",
             no_channels:
                 "It looks like you don't have any channels yet. To get started, receive some sats over lightning, or swap some on-chain funds into a channel. Get your hands dirty!"
         },
