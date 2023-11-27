@@ -54,8 +54,8 @@ importers:
         specifier: ^0.18.1
         version: 0.18.1(solid-js@1.8.5)
       '@mutinywallet/mutiny-wasm':
-        specifier: 0.4.37
-        version: 0.4.37
+        specifier: 0.4.38
+        version: 0.4.38
       '@mutinywallet/waila-wasm':
         specifier: ^0.2.4
         version: 0.2.4
@@ -2584,8 +2584,8 @@ packages:
       solid-js: 1.8.5
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.4.37:
-    resolution: {integrity: sha512-pXYL+WcLcueSSkvbYCpezuT7PYt6/F88d3ZjlOpqC4nY4RNfCn8h6FmXzFVvLkTtk1knzpSQtJurqK9UEggYsQ==}
+  /@mutinywallet/mutiny-wasm@0.4.38:
+    resolution: {integrity: sha512-OaYwKLYwKYT0QrjNhn1muKWTIH0TVTjiBeWTLuwepabSJbAZ+hCxuPXxDiXzYJArLm9Xvvmq3RVjDktdt0jOwA==}
     dev: false
 
   /@mutinywallet/waila-wasm@0.2.4:
