@@ -1,37 +1,62 @@
-import { createResource, Match, Switch } from "solid-js";
+import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
+import {
+    createEffect,
+    createMemo,
+    createResource,
+    createSignal,
+    For,
+    Match,
+    Show,
+    Suspense,
+    Switch
+} from "solid-js";
 
 import {
     AmountSmall,
     BackLink,
     Card,
+    Collapser,
+    ConfirmDialog,
     DefaultMain,
+    ExternalLink,
     LargeHeader,
     MutinyWalletGuard,
     NavBar,
     NiceP,
     SafeArea,
+    SettingsCard,
+    showToast,
     SmallHeader,
     TinyText,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
+import { createDeepSignal, eify, mempoolTxUrl } from "~/utils";
 
 export function BalanceBar(props: {
     inbound: number;
     reserve: number;
     outbound: number;
+    hideHeader?: boolean;
 }) {
     const i18n = useI18n();
     return (
         <VStack smallgap>
-            <div class="flex justify-between">
-                <SmallHeader>
-                    {i18n.t("settings.channels.outbound")}
-                </SmallHeader>
-                <SmallHeader>{i18n.t("settings.channels.reserve")}</SmallHeader>
-                <SmallHeader>{i18n.t("settings.channels.inbound")}</SmallHeader>
-            </div>
+            <Show when={!props.hideHeader}>
+                <div class="flex justify-between">
+                    <SmallHeader>
+                        {i18n.t("settings.channels.outbound")}
+                    </SmallHeader>
+                    <SmallHeader>
+                        {i18n.t("settings.channels.reserve")}
+                    </SmallHeader>
+                    <SmallHeader>
+                        {i18n.t("settings.channels.inbound")}
+                    </SmallHeader>
+                </div>
+            </Show>
             <div class="flex w-full gap-1">
                 <div
                     class="min-w-fit rounded-l-xl bg-m-green p-2"
@@ -62,13 +87,105 @@ export function BalanceBar(props: {
     );
 }
 
+function splitChannelNumbers(channel: MutinyChannel): {
+    inbound: number;
+    reserve: number;
+    outbound: number;
+} {
+    return {
+        inbound: Number(channel.inbound) || 0,
+        reserve: Number(channel.reserve),
+        outbound: Number(channel.balance)
+    };
+}
+
+function SingleChannelItem(props: { channel: MutinyChannel }) {
+    const i18n = useI18n();
+    const [state, _actions] = useMegaStore();
+    const network = state.mutiny_wallet?.get_network() as Network;
+
+    const [confirmOpen, setConfirmOpen] = createSignal(false);
+    const [confirmLoading, setConfirmLoading] = createSignal(false);
+
+    function confirmChannelClose() {
+        setConfirmOpen(true);
+    }
+
+    async function closeChannel() {
+        try {
+            if (!props.channel.outpoint) return;
+            setConfirmLoading(true);
+            await state.mutiny_wallet?.close_channel(
+                props.channel.outpoint,
+                false,
+                false
+            );
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
+        } finally {
+            setConfirmOpen(false);
+            setConfirmLoading(false);
+        }
+    }
+
+    const channelDetails = createMemo(() => splitChannelNumbers(props.channel));
+
+    return (
+        <Card>
+            <VStack smallgap>
+                <BalanceBar
+                    inbound={channelDetails().inbound}
+                    reserve={channelDetails().reserve}
+                    outbound={channelDetails().outbound}
+                    hideHeader
+                />
+                <div class="flex justify-between text-sm">
+                    <ExternalLink
+                        href={mempoolTxUrl(
+                            props.channel.outpoint?.split(":")[0],
+                            network
+                        )}
+                    >
+                        {i18n.t("common.view_transaction")}
+                    </ExternalLink>
+                    <button
+                        onClick={confirmChannelClose}
+                        class="self-center font-semibold text-m-red no-underline active:text-m-red/80"
+                    >
+                        {i18n.t("settings.channels.close_channel")}
+                    </button>
+                </div>
+                <ConfirmDialog
+                    loading={confirmLoading()}
+                    open={confirmOpen()}
+                    onConfirm={closeChannel}
+                    onCancel={() => setConfirmOpen(false)}
+                >
+                    {i18n.t("settings.channels.close_channel_confirm")}
+                </ConfirmDialog>
+            </VStack>
+        </Card>
+    );
+}
+
 export function LiquidityMonitor() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
-    const [channelInfo] = createResource(async () => {
+    async function listChannels() {
         try {
-            const channels = await state.mutiny_wallet?.list_channels();
+            const channels: MutinyChannel[] | undefined =
+                await state.mutiny_wallet?.list_channels();
+
+            if (!channels)
+                return {
+                    inbound: 0,
+                    reserve: 0,
+                    outbound: 0,
+                    channelCount: 0
+                };
+
             let outbound = 0n;
             let inbound = 0n;
             let reserve = 0n;
@@ -83,37 +200,94 @@ export function LiquidityMonitor() {
                 inbound,
                 reserve,
                 outbound,
-                channelCount: channels?.length
+                channelCount: channels?.length,
+                online: channels?.filter((c) => c.is_usable),
+                offline: channels?.filter((c) => !c.is_usable)
             };
         } catch (e) {
             console.error(e);
             return { inbound: 0, reserve: 0, outbound: 0, channelCount: 0 };
+        }
+    }
+
+    const [channelInfo, { refetch }] = createResource(listChannels, {
+        storage: createDeepSignal
+    });
+
+    createEffect(() => {
+        // Refetch on the sync interval
+        if (!state.is_syncing) {
+            refetch();
         }
     });
 
     return (
         <Switch>
             <Match when={channelInfo()?.channelCount}>
-                <Card>
-                    <NiceP>
-                        {i18n.t("settings.channels.have_channels")}{" "}
-                        {channelInfo()?.channelCount}{" "}
-                        {channelInfo()?.channelCount === 1
-                            ? i18n.t("settings.channels.have_channels_one")
-                            : i18n.t("settings.channels.have_channels_many")}
-                    </NiceP>{" "}
-                    <BalanceBar
-                        inbound={Number(channelInfo()?.inbound) || 0}
-                        reserve={Number(channelInfo()?.reserve) || 0}
-                        outbound={Number(channelInfo()?.outbound) || 0}
-                    />
-                    <TinyText>
-                        {i18n.t("settings.channels.inbound_outbound_tip")}
-                    </TinyText>
-                    <TinyText>
-                        {i18n.t("settings.channels.reserve_tip")}
-                    </TinyText>
-                </Card>
+                <VStack>
+                    <Card>
+                        <NiceP>
+                            {i18n.t("settings.channels.have_channels")}{" "}
+                            {channelInfo()?.channelCount}{" "}
+                            {channelInfo()?.channelCount === 1
+                                ? i18n.t("settings.channels.have_channels_one")
+                                : i18n.t(
+                                      "settings.channels.have_channels_many"
+                                  )}
+                        </NiceP>{" "}
+                        <BalanceBar
+                            inbound={Number(channelInfo()?.inbound) || 0}
+                            reserve={Number(channelInfo()?.reserve) || 0}
+                            outbound={Number(channelInfo()?.outbound) || 0}
+                        />
+                        <TinyText>
+                            {i18n.t("settings.channels.inbound_outbound_tip")}
+                        </TinyText>
+                        <TinyText>
+                            {i18n.t("settings.channels.reserve_tip")}
+                        </TinyText>
+                    </Card>
+                    <Show when={channelInfo()?.online?.length}>
+                        <SettingsCard>
+                            <Collapser
+                                title={i18n.t(
+                                    "settings.channels.online_channels"
+                                )}
+                                activityLight="on"
+                            >
+                                <VStack>
+                                    <For each={channelInfo()?.online}>
+                                        {(channel) => (
+                                            <SingleChannelItem
+                                                channel={channel}
+                                            />
+                                        )}
+                                    </For>
+                                </VStack>
+                            </Collapser>
+                        </SettingsCard>
+                    </Show>
+                    <Show when={channelInfo()?.offline?.length}>
+                        <SettingsCard>
+                            <Collapser
+                                title={i18n.t(
+                                    "settings.channels.offline_channels"
+                                )}
+                                activityLight="off"
+                            >
+                                <VStack>
+                                    <For each={channelInfo()?.offline}>
+                                        {(channel) => (
+                                            <SingleChannelItem
+                                                channel={channel}
+                                            />
+                                        )}
+                                    </For>
+                                </VStack>
+                            </Collapser>
+                        </SettingsCard>
+                    </Show>
+                </VStack>
             </Match>
             <Match when={true}>
                 <NiceP>{i18n.t("settings.channels.no_channels")}</NiceP>
@@ -135,7 +309,9 @@ export function Channels() {
                     <LargeHeader>
                         {i18n.t("settings.channels.title")}
                     </LargeHeader>
-                    <LiquidityMonitor />
+                    <Suspense>
+                        <LiquidityMonitor />
+                    </Suspense>
                 </DefaultMain>
                 <NavBar activeTab="settings" />
             </SafeArea>
