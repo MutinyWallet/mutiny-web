@@ -315,7 +315,12 @@ export default {
             reserve_tip:
                 "About 1% of your channel balance is reserved on lightning for fees. Additional reserves are required for channels you opened via swap.",
             no_channels:
-                "It looks like you don't have any channels yet. To get started, receive some sats over lightning, or swap some on-chain funds into a channel. Get your hands dirty!"
+                "It looks like you don't have any channels yet. To get started, receive some sats over lightning, or swap some on-chain funds into a channel. Get your hands dirty!",
+            close_channel: "Close",
+            online_channels: "Online Channels",
+            offline_channels: "Offline Channels",
+            close_channel_confirm:
+                "Closing this channel will move the balance on-chain and incur an on-chain fee."
         },
         connections: {
             title: "Wallet Connections",
