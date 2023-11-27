@@ -14,9 +14,14 @@ import { useMegaStore } from "~/state/megaStore";
 import { fetchZaps, hexpubFromNpub } from "~/utils";
 import { timeAgo } from "~/utils/prettyPrintTime";
 
-function Avatar(props: { image_url?: string }) {
+export function Avatar(props: { image_url?: string; large?: boolean }) {
     return (
-        <div class="flex h-[3rem] w-[3rem] flex-none items-center justify-center self-center overflow-clip rounded-full border-b border-t border-b-white/10 border-t-white/50 bg-neutral-700 text-3xl uppercase">
+        <div
+            class="flex h-[3rem] w-[3rem] flex-none items-center justify-center self-center overflow-clip rounded-full border-b border-t border-b-white/10 border-t-white/50 bg-neutral-700 text-3xl uppercase"
+            classList={{
+                "h-[6rem] w-[6rem]": props.large
+            }}
+        >
             <Switch>
                 <Match when={props.image_url}>
                     <img src={props.image_url} alt={"image"} />

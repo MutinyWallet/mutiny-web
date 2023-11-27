@@ -1,8 +1,9 @@
-import { NwcProfile, type BudgetPeriod } from "@mutinywallet/mutiny-wasm";
-import { useSearchParams } from "@solidjs/router";
+import { NwcProfile } from "@mutinywallet/mutiny-wasm";
+import { A, useSearchParams } from "@solidjs/router";
 import { createResource, createSignal, For, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 
+import scan from "~/assets/icons/scan.svg";
 import {
     AmountSats,
     AmountSmall,
@@ -24,43 +25,10 @@ import {
     TinyText,
     VStack
 } from "~/components";
-import { BudgetForm, NWCBudgetEditor } from "~/components/NWCBudgetEditor";
+import { NWCEditor } from "~/components/NWCEditor";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { createDeepSignal, openLinkProgrammatically } from "~/utils";
-
-function mapIntervalToBudgetPeriod(
-    interval: "Day" | "Week" | "Month" | "Year"
-): BudgetPeriod {
-    switch (interval) {
-        case "Day":
-            return 0;
-        case "Week":
-            return 1;
-        case "Month":
-            return 2;
-        case "Year":
-            return 3;
-    }
-}
-
-function mapBudgetRenewalToInterval(
-    budgetRenewal?: string
-): undefined | "Day" | "Week" | "Month" | "Year" {
-    if (!budgetRenewal) return undefined;
-    switch (budgetRenewal) {
-        case "day":
-            return "Day";
-        case "week":
-            return "Week";
-        case "month":
-            return "Month";
-        case "year":
-            return "Year";
-        default:
-            return undefined;
-    }
-}
 
 function Spending(props: { spent: number; remaining: number }) {
     const i18n = useI18n();
@@ -144,7 +112,11 @@ function NwcDetails(props: {
             </Show>
 
             <Show when={!props.profile.require_approval}>
-                <TinyText>{i18n.t("settings.connections.careful")}</TinyText>
+                <Show when={props.profile.nwc_uri}>
+                    <TinyText>
+                        {i18n.t("settings.connections.careful")}
+                    </TinyText>
+                </Show>
                 <Spending
                     spent={Number(
                         Number(props.profile.budget_amount || 0) -
@@ -227,16 +199,24 @@ function Nwc() {
     });
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const queryName = searchParams.name;
     const [callbackDialogOpen, setCallbackDialogOpen] = createSignal(false);
     const [callbackUri, setCallbackUri] = createSignal<string>();
 
     // Profile creation / editing
-    const [dialogOpen, setDialogOpen] = createSignal(!!queryName);
-    const [profileToOpen, setProfileToOpen] = createSignal<NwcProfile>();
+    const [dialogOpen, setDialogOpen] = createSignal(
+        !!searchParams.queryName || !!searchParams.nwa
+    );
+
+    function handleToggleOpen(open: boolean) {
+        setDialogOpen(open);
+        // If they close the dialog clear the search params
+        setSearchParams({ nwa: undefined, name: undefined });
+    }
+
+    const [profileToOpen, setProfileToOpen] = createSignal<number>();
 
     function editProfile(profile: NwcProfile) {
-        setProfileToOpen(profile);
+        setProfileToOpen(profile.index);
         setDialogOpen(true);
     }
 
@@ -247,74 +227,28 @@ function Nwc() {
 
     const [newConnection, setNewConnection] = createSignal<number>();
 
-    async function createConnection(f: BudgetForm) {
-        let newProfile: NwcProfile | undefined = undefined;
-
-        // If the form was editing, we want to call the edit methods
-        if (profileToOpen()) {
-            if (!f.auto_approve || f.budget_amount === "0") {
-                newProfile =
-                    await state.mutiny_wallet?.set_nwc_profile_require_approval(
-                        profileToOpen()!.index
-                    );
-            } else {
-                newProfile = await state.mutiny_wallet?.set_nwc_profile_budget(
-                    profileToOpen()!.index,
-                    BigInt(f.budget_amount),
-                    mapIntervalToBudgetPeriod(f.interval)
-                );
-            }
-        } else {
-            if (!f.auto_approve || f.budget_amount === "0") {
-                newProfile = await state.mutiny_wallet?.create_nwc_profile(
-                    f.connection_name
-                );
-            } else {
-                newProfile =
-                    await state.mutiny_wallet?.create_budget_nwc_profile(
-                        f.connection_name,
-                        BigInt(f.budget_amount),
-                        mapIntervalToBudgetPeriod(f.interval),
-                        undefined
-                    );
-            }
-        }
-
-        if (!newProfile) {
-            // This will be caught by the form
-            throw new Error(i18n.t("settings.connections.error_connection"));
-        } else {
-            // Remember the index so the collapser is open after creation
-            setNewConnection(newProfile.index);
-        }
-
-        setSearchParams({ name: "" });
+    async function handleSave(
+        indexToOpen?: number,
+        nwcUriForCallback?: string
+    ) {
         setDialogOpen(false);
         refetch();
 
-        // If there's a "return_to" param we use that instead of the callbackUri scheme
-        const returnUrl = searchParams.return_to;
-        if (returnUrl && newProfile.nwc_uri) {
-            // add the nwc query param to the return url
-            const fullURI =
-                returnUrl +
-                (returnUrl.includes("?") ? "&" : "?") +
-                "nwc=" +
-                encodeURIComponent(newProfile.nwc_uri);
-
-            setCallbackUri(fullURI);
-            setCallbackDialogOpen(true);
+        if (indexToOpen) {
+            setNewConnection(indexToOpen);
         }
 
         const callbackUriScheme = searchParams.callbackUri;
-        if (callbackUriScheme && newProfile.nwc_uri) {
-            const fullURI = newProfile.nwc_uri.replace(
+        if (callbackUriScheme && nwcUriForCallback) {
+            const fullURI = nwcUriForCallback.replace(
                 "nostr+walletconnect://",
                 `${callbackUriScheme}://`
             );
             setCallbackUri(fullURI);
             setCallbackDialogOpen(true);
         }
+
+        setSearchParams({ nwa: undefined, name: undefined });
     }
 
     async function openCallbackUri() {
@@ -351,25 +285,17 @@ function Nwc() {
             </Show>
             <SimpleDialog
                 open={dialogOpen()}
-                setOpen={setDialogOpen}
+                setOpen={handleToggleOpen}
                 title={
                     profileToOpen()
                         ? i18n.t("settings.connections.edit_connection")
                         : i18n.t("settings.connections.add_connection")
                 }
             >
-                <NWCBudgetEditor
-                    initialName={queryName}
-                    initialProfile={profileToOpen()}
-                    onSave={createConnection}
-                    initialAmount={
-                        searchParams.max_amount
-                            ? searchParams.max_amount
-                            : undefined
-                    }
-                    initialInterval={mapBudgetRenewalToInterval(
-                        searchParams.budget_renewal
-                    )}
+                <NWCEditor
+                    initialNWA={searchParams.nwa}
+                    initialProfileIndex={profileToOpen()}
+                    onSave={handleSave}
                 />
             </SimpleDialog>
             <SimpleDialog
@@ -391,10 +317,18 @@ export function Connections() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink
-                        href="/settings"
-                        title={i18n.t("settings.header")}
-                    />
+                    <div class="flex items-center justify-between">
+                        <BackLink
+                            href="/settings"
+                            title={i18n.t("settings.header")}
+                        />
+                        <A
+                            class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
+                            href="/scanner"
+                        >
+                            <img src={scan} alt="Scan" class="h-6 w-6" />
+                        </A>{" "}
+                    </div>
                     <LargeHeader>
                         {i18n.t("settings.connections.title")}
                     </LargeHeader>
