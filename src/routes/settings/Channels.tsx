@@ -74,10 +74,7 @@ export function LiquidityMonitor() {
             let reserve = 0n;
 
             for (const channel of channels) {
-                inbound =
-                    inbound +
-                    BigInt(channel.size) -
-                    BigInt(channel.balance + channel.reserve);
+                inbound = inbound + BigInt(channel.inbound);
                 reserve = reserve + BigInt(channel.reserve);
                 outbound = outbound + BigInt(channel.balance);
             }
