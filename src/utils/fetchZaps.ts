@@ -1,3 +1,5 @@
+/* @refresh reload */
+
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ResourceFetcher } from "solid-js";
 
@@ -114,7 +116,7 @@ async function simpleZapFromEvent(
     }
 }
 
-const PRIMAL_API = import.meta.env.VITE_PRIMAL;
+export const PRIMAL_API = import.meta.env.VITE_PRIMAL;
 
 async function fetchFollows(npub: string): Promise<string[]> {
     let pubkey = undefined;
@@ -279,5 +281,38 @@ export const fetchZaps: ResourceFetcher<
     } catch (e) {
         console.error("Failed to load zaps: ", e);
         throw new Error("Failed to load zaps");
+    }
+};
+
+export const fetchNostrProfile: ResourceFetcher<
+    string,
+    NostrProfile | undefined
+> = async (hexpub, _info) => {
+    try {
+        if (!PRIMAL_API)
+            throw new Error("Missing PRIMAL_API environment variable");
+
+        const response = await fetch(PRIMAL_API, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(["user_profile", { pubkey: hexpub }])
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to load profile`);
+        }
+
+        const data = await response.json();
+
+        for (const object of data) {
+            if (object.kind === 0) {
+                return object as NostrProfile;
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load profile: ", e);
+        throw new Error("Failed to load profile");
     }
 };

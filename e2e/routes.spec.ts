@@ -169,10 +169,10 @@ test("visit each route", async ({ page }) => {
     );
     checklist.set("/gift", true);
 
-    // Visit connections with AutoZap params
-    const autoZapParams =
-        "/settings/connections?return_to=https%3A%2F%2Fwww.zapplepay.com%2Fautozap%2Fnpub1xtscya34g58tk0z605fvr788k263gsu6cy9x0mhnm87echrgufzsevkk5s&name=AutoZap-jb55&budget_renewal=day&max_amount=420";
-    await page.goto("http://localhost:3420" + autoZapParams);
+    // Visit connections nwa params
+    const nwaParams =
+        "/settings/connections?nwa=nostr%2Bwalletauth%3A%2F%2Fe552dec5821ef94dc1b9138a347b4b1d8dcb595e31f5c89352e50dc11255e0f4%3Frelay%3Dwss%253A%252F%252Frelay.damus.io%252F%26secret%3D0bfe616c5e126a7c%26required_commands%3Dpay_invoice%26budget%3D21%252Fday%26identity%3D32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245";
+    await page.goto("http://localhost:3420" + nwaParams);
     await expect(page.locator('[role="dialog"] h2 header').first()).toHaveText(
         "Add Connection"
     );

@@ -367,6 +367,16 @@ export const Provider: ParentComponent = (props) => {
                         onSuccess(result.value);
                     }
                 }
+                if (result.value?.nostr_wallet_auth) {
+                    console.log(
+                        "nostr_wallet_auth",
+                        result.value?.nostr_wallet_auth
+                    );
+                    navigate(
+                        "/settings/connections/?nwa=" +
+                            encodeURIComponent(result.value?.nostr_wallet_auth)
+                    );
+                }
             }
         },
         setBetaWarned() {

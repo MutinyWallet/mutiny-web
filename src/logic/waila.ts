@@ -15,6 +15,7 @@ export type ParsedParams = {
     node_pubkey?: string;
     lnurl?: string;
     lightning_address?: string;
+    nostr_wallet_auth?: string;
 };
 
 export function toParsedParams(
@@ -56,7 +57,8 @@ export function toParsedParams(
             memo: params.memo,
             node_pubkey: params.node_pubkey,
             lnurl: params.lnurl,
-            lightning_address: params.lightning_address
+            lightning_address: params.lightning_address,
+            nostr_wallet_auth: params.nostr_wallet_auth
         }
     };
 }
