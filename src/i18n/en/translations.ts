@@ -533,6 +533,13 @@ export default {
             npub_required: "Npub can't be blank",
             sync: "Sync"
         },
+        manage_federations: {
+            title: "Manage Federations",
+            federation_code_label: "Federation code",
+            federation_code_required: "Federation code can't be blank",
+            add: "Add",
+            remove: "Remove"
+        },
         gift: {
             give_sats_link: "Give sats as a gift",
             title: "Gifting",

@@ -30,7 +30,8 @@ import {
     Restore,
     Servers,
     Settings,
-    SyncNostrContacts
+    SyncNostrContacts,
+    ManageFederations
 } from "~/routes/settings";
 
 import { useMegaStore } from "./state/megaStore";
@@ -118,6 +119,7 @@ export function Router() {
                             path="/syncnostrcontacts"
                             component={SyncNostrContacts}
                         />
+                        <Route path="/managefederations" component={ManageFederations} />
                     </Route>
                     <Route path="/*all" component={NotFound} />
                 </Routes>

@@ -151,6 +151,10 @@ export function Settings() {
                             {
                                 href: "/settings/syncnostrcontacts",
                                 text: "Sync Nostr Contacts"
+                            },
+                            {
+                                href: "/settings/managefederations",
+                                text: "Manage Federations"
                             }
                         ]}
                     />

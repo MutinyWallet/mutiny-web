@@ -26,6 +26,7 @@ const settingsRoutes = [
     "/restore",
     "/servers",
     "/syncnostrcontacts"
+    "/managefederations"
 ];
 
 const settingsRoutesPrefixed = settingsRoutes.map((route) => {
@@ -120,6 +121,15 @@ test("visit each route", async ({ page }) => {
         page,
         "/settings/syncnostrcontacts",
         "Sync Nostr Contacts",
+        checklist
+    );
+    await page.goBack();
+
+    // Manage Federations
+    await checkRoute(
+        page,
+        "/settings/managefederations",
+        "Manage Federations",
         checklist
     );
     await page.goBack();
