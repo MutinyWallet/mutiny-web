@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
+import community from "~/assets/icons/community.svg";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToFormattedFiat } from "~/utils";
@@ -15,7 +16,7 @@ function prettyPrintAmount(n?: number | bigint): string {
 
 export function AmountSats(props: {
     amountSats: bigint | number | undefined;
-    icon?: "lightning" | "chain" | "plus" | "minus";
+    icon?: "lightning" | "community" | "chain" | "plus" | "minus";
     denominationSize?: "sm" | "lg" | "xl";
 }) {
     const i18n = useI18n();
@@ -23,6 +24,9 @@ export function AmountSats(props: {
         <div class="flex items-center gap-2">
             <Show when={props.icon === "lightning"}>
                 <img src={bolt} alt="lightning" class="h-[18px]" />
+            </Show>
+            <Show when={props.icon === "community"}>
+                <img src={community} alt="community" class="h-[18px]" />
             </Show>
             <Show when={props.icon === "chain"}>
                 <img src={chain} alt="chain" class="h-[18px]" />
