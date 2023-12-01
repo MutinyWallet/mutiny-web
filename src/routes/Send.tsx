@@ -1,6 +1,6 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
-import { Contact, MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
+import { Contact, MutinyInvoice, TagItem } from "@johncantrell97/mutiny-wasm";
 import { A, useNavigate } from "@solidjs/router";
 import {
     createEffect,

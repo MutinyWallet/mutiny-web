@@ -9,7 +9,7 @@ import {
     SubmitHandler,
     validate
 } from "@modular-forms/solid";
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import { createSignal, For, Show, splitProps } from "solid-js";
 
 import pasteIcon from "~/assets/icons/paste.svg";

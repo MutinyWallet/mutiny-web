@@ -4,10 +4,10 @@ dev:
     pnpm run dev
 
 local:
-    pnpm install && pnpm link --global "@mutinywallet/mutiny-wasm"
+    pnpm install && pnpm link --global "@johncantrell97/mutiny-wasm"
 
 remote:
-    pnpm unlink --filter "@mutinywallet/mutiny-wasm" && pnpm install
+    pnpm unlink --filter "@johncantrell97/mutiny-wasm" && pnpm install
 
 native:
     pnpm install && pnpm build && npx cap sync

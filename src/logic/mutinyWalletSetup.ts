@@ -1,6 +1,6 @@
 /* @refresh reload */
 
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import initMutinyWallet, { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 

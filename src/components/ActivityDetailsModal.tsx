@@ -3,7 +3,7 @@ import {
     MutinyChannel,
     MutinyInvoice,
     TagItem
-} from "@mutinywallet/mutiny-wasm";
+} from "@johncantrell97/mutiny-wasm";
 import {
     createEffect,
     createMemo,

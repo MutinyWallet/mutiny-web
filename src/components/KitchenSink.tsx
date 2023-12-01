@@ -1,5 +1,5 @@
 import { Collapsible, TextField } from "@kobalte/core";
-import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
+import { MutinyChannel, MutinyPeer } from "@johncantrell97/mutiny-wasm";
 import {
     createResource,
     createSignal,

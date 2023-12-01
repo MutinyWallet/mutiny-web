@@ -53,7 +53,7 @@ importers:
       '@modular-forms/solid':
         specifier: ^0.18.1
         version: 0.18.1(solid-js@1.8.5)
-      '@mutinywallet/mutiny-wasm':
+      '@johncantrell97/mutiny-wasm':
         specifier: 0.4.38
         version: 0.4.38
       '@mutinywallet/waila-wasm':
@@ -2584,7 +2584,7 @@ packages:
       solid-js: 1.8.5
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.4.38:
+  /@johncantrell97/mutiny-wasm@0.4.38:
     resolution: {integrity: sha512-OaYwKLYwKYT0QrjNhn1muKWTIH0TVTjiBeWTLuwepabSJbAZ+hCxuPXxDiXzYJArLm9Xvvmq3RVjDktdt0jOwA==}
     dev: false
 

@@ -5,7 +5,7 @@ import {
     MutinyBalance,
     MutinyWallet,
     TagItem
-} from "@mutinywallet/mutiny-wasm";
+} from "@johncantrell97/mutiny-wasm";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createContext,

@@ -1,4 +1,4 @@
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import initMutinyWallet, { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import { createFileUploader } from "@solid-primitives/upload";
 import { createSignal, Show } from "solid-js";
 

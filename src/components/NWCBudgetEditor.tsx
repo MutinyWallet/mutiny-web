@@ -5,7 +5,7 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { NwcProfile } from "@mutinywallet/mutiny-wasm";
+import { NwcProfile } from "@johncantrell97/mutiny-wasm";
 import { For, Show } from "solid-js";
 
 import {

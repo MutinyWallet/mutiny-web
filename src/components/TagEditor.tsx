@@ -2,7 +2,7 @@ import { createOptions, Select } from "@thisbeyond/solid-select";
 
 import "~/styles/solid-select.css";
 
-import { TagItem, TagKind } from "@mutinywallet/mutiny-wasm";
+import { TagItem, TagKind } from "@johncantrell97/mutiny-wasm";
 import { createMemo, createSignal, onMount } from "solid-js";
 
 import { useMegaStore } from "~/state/megaStore";

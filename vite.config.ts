@@ -71,7 +71,7 @@ export default defineConfig({
             "@capacitor/toast"
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
-        exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
+        exclude: ["@johncantrell97/mutiny-wasm", "@mutinywallet/waila-wasm"]
     },
     css: {
         postcss: {

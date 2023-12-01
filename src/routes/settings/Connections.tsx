@@ -1,4 +1,4 @@
-import { NwcProfile, type BudgetPeriod } from "@mutinywallet/mutiny-wasm";
+import { NwcProfile, type BudgetPeriod } from "@johncantrell97/mutiny-wasm";
 import { useSearchParams } from "@solidjs/router";
 import { createResource, createSignal, For, Show } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
