@@ -286,7 +286,7 @@ export async function setupMutinyWallet(
         // Do not skip device lock
         undefined,
         // Safe mode
-        safeMode || undefined,
+        safeMode || undefined
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());

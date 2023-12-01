@@ -1,9 +1,9 @@
-import { Dialog } from "@kobalte/core";
 import {
     MutinyChannel,
     MutinyInvoice,
     TagItem
 } from "@johncantrell97/mutiny-wasm";
+import { Dialog } from "@kobalte/core";
 import {
     createEffect,
     createMemo,
@@ -119,10 +119,12 @@ function OnchainHeader(props: { info: OnChainTx; kind?: HackActivityType }) {
                 {props.kind === "ChannelOpen"
                     ? i18n.t("activity.transaction_details.channel_open")
                     : props.kind === "ChannelClose"
-                    ? i18n.t("activity.transaction_details.channel_close")
-                    : isSend()
-                    ? i18n.t("activity.transaction_details.onchain_send")
-                    : i18n.t("activity.transaction_details.onchain_receive")}
+                      ? i18n.t("activity.transaction_details.channel_close")
+                      : isSend()
+                        ? i18n.t("activity.transaction_details.onchain_send")
+                        : i18n.t(
+                              "activity.transaction_details.onchain_receive"
+                          )}
                 <Switch>
                     <Match
                         when={
@@ -470,9 +472,8 @@ export function ActivityDetailsModal(props: {
         try {
             if (kind() === "Lightning") {
                 console.debug("reading invoice: ", id());
-                const invoice = await state.mutiny_wallet?.get_invoice_by_hash(
-                    id()
-                );
+                const invoice =
+                    await state.mutiny_wallet?.get_invoice_by_hash(id());
                 return invoice;
             } else if (kind() === "ChannelClose") {
                 console.debug("reading channel close: ", id());

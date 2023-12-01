@@ -1,5 +1,5 @@
-import { Tabs } from "@kobalte/core";
 import { Contact } from "@johncantrell97/mutiny-wasm";
+import { Tabs } from "@kobalte/core";
 import {
     createEffect,
     createResource,

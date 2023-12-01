@@ -512,7 +512,8 @@ export default {
             lsp_connection_string_label: "LSP Connection String",
             lsp_connection_string_caption:
                 "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Using LSP specification.",
-            error_lsp_connection_string: "That doesn't look like node connection string",
+            error_lsp_connection_string:
+                "That doesn't look like node connection string",
             lsp_token_label: "LSP Token",
             lsp_token_caption:
                 "LSP Token.  Used to identify what wallet is connecting to the LSP",

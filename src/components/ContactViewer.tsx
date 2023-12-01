@@ -1,6 +1,6 @@
+import { Contact } from "@johncantrell97/mutiny-wasm";
 import { Dialog } from "@kobalte/core";
 import { SubmitHandler } from "@modular-forms/solid";
-import { Contact } from "@johncantrell97/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import { createSignal, Match, Show, Switch } from "solid-js";
 
