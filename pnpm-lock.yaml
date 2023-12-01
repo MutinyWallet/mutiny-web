@@ -42,8 +42,8 @@ dependencies:
     specifier: ^5.0.6
     version: 5.0.6(@capacitor/core@5.5.1)
   '@johncantrell97/mutiny-wasm':
-    specifier: 0.4.38
-    version: 0.4.38
+    specifier: 0.4.39
+    version: 0.4.39
   '@kobalte/core':
     specifier: ^0.9.8
     version: 0.9.8(solid-js@1.8.6)
@@ -2055,8 +2055,8 @@ packages:
       - supports-color
     dev: true
 
-  /@johncantrell97/mutiny-wasm@0.4.38:
-    resolution: {integrity: sha512-Znk1Gt7VvZyWl6bJJFPFmEJ71DtmfIrjb6LhUmiFu7HK6Zj80r5yJNQc8atzh5IKuOmwPMPgGBdgWCG6MVzjyQ==}
+  /@johncantrell97/mutiny-wasm@0.4.39:
+    resolution: {integrity: sha512-xw9bI+R4wSSitdxGlyD83eMeOG3qZQHB4vk0Gi3LWI408uuD/uzTFtp+aAxsklFLXCEYVb7veABfYaKoI9ssfw==}
     dev: false
 
   /@jridgewell/gen-mapping@0.3.3:

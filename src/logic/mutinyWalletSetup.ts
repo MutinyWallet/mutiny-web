@@ -286,7 +286,9 @@ export async function setupMutinyWallet(
         // Do not skip device lock
         undefined,
         // Safe mode
-        safeMode || undefined
+        safeMode || undefined,
+        // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
+        shouldZapHodl ? false : undefined
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
