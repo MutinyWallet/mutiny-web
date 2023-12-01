@@ -499,11 +499,11 @@ export function ActivityDetailsModal(props: {
         ) {
             try {
                 // find if there's just one for now
-                const contacts = state.mutiny_wallet?.get_contact(
+                const tags = state.mutiny_wallet?.get_tag_item(
                     data().labels[0]
                 );
-                if (contacts) {
-                    return contacts;
+                if (tags) {
+                    return tags;
                 } else {
                     return;
                 }

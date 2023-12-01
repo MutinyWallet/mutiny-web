@@ -133,10 +133,10 @@ function NwcDetails(props: {
 
     return (
         <VStack>
-            <Show when={props.profile.index >= 1000}>
+            <Show when={props.profile.index >= 1000 && props.profile.nwc_uri}>
                 <div class="w-full rounded-xl bg-white">
                     <QRCodeSVG
-                        value={props.profile.nwc_uri}
+                        value={props.profile.nwc_uri!}
                         class="h-full max-h-[320px] w-full p-8"
                     />
                 </div>
@@ -179,7 +179,8 @@ function NwcDetails(props: {
             <Show
                 when={
                     props.profile.tag !== "Gift" &&
-                    props.profile.tag !== "Subscription"
+                    props.profile.tag !== "Subscription" &&
+                    props.profile.nwc_uri
                 }
             >
                 <Button
@@ -293,7 +294,7 @@ function Nwc() {
 
         // If there's a "return_to" param we use that instead of the callbackUri scheme
         const returnUrl = searchParams.return_to;
-        if (returnUrl) {
+        if (returnUrl && newProfile.nwc_uri) {
             // add the nwc query param to the return url
             const fullURI =
                 returnUrl +
@@ -306,7 +307,7 @@ function Nwc() {
         }
 
         const callbackUriScheme = searchParams.callbackUri;
-        if (callbackUriScheme) {
+        if (callbackUriScheme && newProfile.nwc_uri) {
             const fullURI = newProfile.nwc_uri.replace(
                 "nostr+walletconnect://",
                 `${callbackUriScheme}://`

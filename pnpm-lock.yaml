@@ -54,11 +54,11 @@ importers:
         specifier: ^0.18.1
         version: 0.18.1(solid-js@1.8.5)
       '@mutinywallet/mutiny-wasm':
-        specifier: 0.4.38
-        version: 0.4.38
+        specifier: 0.4.39
+        version: 0.4.39
       '@mutinywallet/waila-wasm':
-        specifier: ^0.2.4
-        version: 0.2.4
+        specifier: ^0.2.6
+        version: 0.2.6
       '@solid-primitives/upload':
         specifier: ^0.0.111
         version: 0.0.111(solid-js@1.8.5)
@@ -2584,12 +2584,12 @@ packages:
       solid-js: 1.8.5
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.4.38:
-    resolution: {integrity: sha512-OaYwKLYwKYT0QrjNhn1muKWTIH0TVTjiBeWTLuwepabSJbAZ+hCxuPXxDiXzYJArLm9Xvvmq3RVjDktdt0jOwA==}
+  /@mutinywallet/mutiny-wasm@0.4.39:
+    resolution: {integrity: sha512-7vMgwteU0lCzMdX/INIIlsrq5jvEJA2aXuJmqHzGb6Bgty2jOfuWVvW54c2SZ3HQvuFHDPxjrrDB2QHabdBhMw==}
     dev: false
 
-  /@mutinywallet/waila-wasm@0.2.4:
-    resolution: {integrity: sha512-wd4+Pht5GFP7jHFYA6T6Q9lZFOKfAFjEW2n6HPa6cqOK+SFbUTbrDn4GHwLQm6vDvQ48m0rV08CkyFvGFCWiOw==}
+  /@mutinywallet/waila-wasm@0.2.6:
+    resolution: {integrity: sha512-qiyhaWX/zDKuh23VXIzeWGlmXne9IdRIx+ldGdse15JwEiC97OjATXMECX3Xo0tc3RTOo50cKyMlouKKRbLYpQ==}
     dev: false
 
   /@ndelangen/get-tarball@3.0.9:
