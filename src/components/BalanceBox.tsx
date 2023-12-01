@@ -42,6 +42,7 @@ export function BalanceBox(props: { loading?: boolean }) {
     const emptyBalance = () =>
         (state.balance?.confirmed || 0n) === 0n &&
         (state.balance?.lightning || 0n) === 0n &&
+        (state.balance?.federation || 0n) === 0n &&
         (state.balance?.force_close || 0n) === 0n &&
         (state.balance?.unconfirmed || 0n) === 0n;
 
@@ -82,6 +83,40 @@ export function BalanceBox(props: { loading?: boolean }) {
                                     <AmountFiat
                                         amountSats={
                                             state.balance?.lightning || 0
+                                        }
+                                        denominationSize="sm"
+                                    />
+                                </div>
+                            </div>
+                        </Match>
+                    </Switch>
+                </Show>
+
+                <hr class="my-2 border-m-grey-750" />
+                <Show when={!props.loading} fallback={<LoadingShimmer />}>
+                    <Switch>
+                        <Match when={state.safe_mode}>
+                            <div class="flex flex-col gap-1">
+                                <InfoBox accent="red">
+                                    {i18n.t("common.error_safe_mode")}
+                                </InfoBox>
+                            </div>
+                        </Match>
+                        <Match when={true}>
+                            <div class="flex flex-col gap-1">
+                                <div class="text-2xl">
+                                    <AmountSats
+                                        amountSats={
+                                            state.balance?.federation || 0
+                                        }
+                                        icon="community"
+                                        denominationSize="lg"
+                                    />
+                                </div>
+                                <div class="text-lg text-white/70">
+                                    <AmountFiat
+                                        amountSats={
+                                            state.balance?.lightning + state.balance?.federation || 0
                                         }
                                         denominationSize="sm"
                                     />
