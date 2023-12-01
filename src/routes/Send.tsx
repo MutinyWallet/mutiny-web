@@ -374,7 +374,10 @@ export function Send() {
         }
         if (
             source() === "lightning" &&
-            (state.balance?.lightning ?? 0n) <= amountSats()
+	    (
+            (state.balance?.lightning ?? 0n) <= amountSats() &&
+            (state.balance?.federation ?? 0n) <= amountSats()
+	    )
         ) {
             setError(i18n.t("send.error_low_balance"));
             return;
