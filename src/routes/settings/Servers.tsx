@@ -109,6 +109,32 @@ export function SettingsStringsEditor(props: {
                     )}
                 </Field>
                 <Field
+                    name="lsp_connection_string"
+                >
+                    {(field, props) => (
+                        <TextField
+                            {...props}
+                            value={field.value}
+                            error={field.error}
+                            label={i18n.t("settings.servers.lsp_connection_string_label")}
+                            caption={i18n.t("settings.servers.lsp_connection_string_caption")}
+                        />
+                    )}
+                </Field>
+                <Field
+                    name="lsp_token"
+                >
+                    {(field, props) => (
+                        <TextField
+                            {...props}
+                            value={field.value}
+                            error={field.error}
+                            label={i18n.t("settings.servers.lsp_token_label")}
+                            caption={i18n.t("settings.servers.lsp_token_caption")}
+                        />
+                    )}
+                </Field>
+                <Field
                     name="storage"
                     validate={[url(i18n.t("settings.servers.error_lsp"))]}
                 >

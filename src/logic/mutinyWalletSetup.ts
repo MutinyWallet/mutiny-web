@@ -10,6 +10,8 @@ export type MutinyWalletSettingStrings = {
     esplora?: string;
     rgs?: string;
     lsp?: string;
+    lsp_connection_string?: string;
+    lsp_token?: string;
     auth?: string;
     subscriptions?: string;
     storage?: string;
@@ -41,7 +43,18 @@ const SETTINGS_KEYS = [
     {
         name: "lsp",
         storageKey: "USER_SETTINGS_lsp",
-        default: import.meta.env.VITE_LSP
+        default: ""
+    },
+    {
+        name: "lsp_connection_string",
+        storageKey: "USER_SETTINGS_lsp_connection_string",
+        default:
+            "0371d6fd7d75de2d0372d03ea00e8bacdacb50c27d0eaea0a76a0622eff1f5ef2b@3.84.56.108:39735"
+    },
+    {
+        name: "lsp_token",
+        storageKey: "USER_SETTINGS_lsp_token",
+        default: "cequals21jit"
     },
     {
         name: "auth",
@@ -229,6 +242,8 @@ export async function setupMutinyWallet(
         esplora,
         rgs,
         lsp,
+        lsp_connection_string,
+        lsp_token,
         auth,
         subscriptions,
         storage,
@@ -241,6 +256,8 @@ export async function setupMutinyWallet(
     console.log("Using esplora address", esplora);
     console.log("Using rgs address", rgs);
     console.log("Using lsp address", lsp);
+    console.log("Using lsp connection string", lsp_connection_string);
+    console.log("Using lsp token", lsp_token);
     console.log("Using auth address", auth);
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
@@ -258,6 +275,8 @@ export async function setupMutinyWallet(
         esplora,
         rgs,
         lsp,
+        lsp_connection_string,
+        lsp_token,
         auth,
         subscriptions,
         storage,
@@ -268,8 +287,6 @@ export async function setupMutinyWallet(
         undefined,
         // Safe mode
         safeMode || undefined,
-        // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
-        shouldZapHodl ? false : undefined
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
