@@ -22,7 +22,6 @@ const settingsRoutes = [
     "/emergencykit",
     "/encrypt",
     "/gift",
-    "/lnurlauth",
     "/plus",
     "/restore",
     "/servers",
@@ -114,10 +113,6 @@ test("visit each route", async ({ page }) => {
         "Wallet Connections",
         checklist
     );
-    await page.goBack();
-
-    // LNURL Auth
-    await checkRoute(page, "/settings/lnurlauth", "LNURL Auth", checklist);
     await page.goBack();
 
     // Sync Nostr Contacts

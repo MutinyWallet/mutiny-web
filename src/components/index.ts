@@ -46,3 +46,4 @@ export * from "./GiftLink";
 export * from "./MutinyPlusCta";
 export * from "./ToggleHodl";
 export * from "./IOSbanner";
+export * from "./HomePrompt";
