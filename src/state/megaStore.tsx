@@ -299,7 +299,7 @@ export const Provider: ParentComponent = (props) => {
                 }
             }
         },
-        setScanResult(scan_result: ParsedParams) {
+        setScanResult(scan_result: ParsedParams | undefined) {
             setState({ scan_result });
         },
         setHasBackedUp() {
@@ -361,11 +361,24 @@ export const Provider: ParentComponent = (props) => {
                     result.value?.address ||
                     result.value?.invoice ||
                     result.value?.node_pubkey ||
-                    result.value?.lnurl
+                    (result.value?.lnurl && !result.value.is_lnurl_auth)
                 ) {
                     if (onSuccess) {
                         onSuccess(result.value);
                     }
+                }
+                if (result.value?.lnurl && result.value?.is_lnurl_auth) {
+                    navigate(
+                        "/?lnurlauth=" + encodeURIComponent(result.value?.lnurl)
+                    );
+                    actions.setScanResult(undefined);
+                }
+                if (result.value?.fedimint_invite) {
+                    navigate(
+                        "/?fedimint_invite=" +
+                            encodeURIComponent(result.value?.fedimint_invite)
+                    );
+                    actions.setScanResult(undefined);
                 }
                 if (result.value?.nostr_wallet_auth) {
                     console.log(

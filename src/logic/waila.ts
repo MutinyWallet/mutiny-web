@@ -16,6 +16,8 @@ export type ParsedParams = {
     lnurl?: string;
     lightning_address?: string;
     nostr_wallet_auth?: string;
+    fedimint_invite?: string;
+    is_lnurl_auth?: boolean;
 };
 
 export function toParsedParams(
@@ -58,7 +60,9 @@ export function toParsedParams(
             node_pubkey: params.node_pubkey,
             lnurl: params.lnurl,
             lightning_address: params.lightning_address,
-            nostr_wallet_auth: params.nostr_wallet_auth
+            nostr_wallet_auth: params.nostr_wallet_auth,
+            is_lnurl_auth: params.is_lnurl_auth,
+            fedimint_invite: params.fedimint_invite_code
         }
     };
 }

@@ -19,3 +19,4 @@ export * from "./vibrate";
 export * from "./openLinkProgrammatically";
 export * from "./nostr";
 export * from "./currencies";
+export * from "./bech32";

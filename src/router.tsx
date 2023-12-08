@@ -26,7 +26,6 @@ import {
     EmergencyKit,
     Encrypt,
     Gift,
-    LnUrlAuth,
     Plus,
     Restore,
     Servers,
@@ -112,7 +111,6 @@ export function Router() {
                         <Route path="/emergencykit" component={EmergencyKit} />
                         <Route path="/encrypt" component={Encrypt} />
                         <Route path="/gift" component={Gift} />
-                        <Route path="/lnurlauth" component={LnUrlAuth} />
                         <Route path="/plus" component={Plus} />
                         <Route path="/restore" component={Restore} />
                         <Route path="/servers" component={Servers} />

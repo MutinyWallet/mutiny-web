@@ -10,6 +10,7 @@ import {
     CombinedActivity,
     DecryptDialog,
     DefaultMain,
+    HomePrompt,
     IOSbanner,
     LoadingIndicator,
     LoadingShimmer,
@@ -106,6 +107,7 @@ export function Main() {
             </DefaultMain>
             <DecryptDialog />
             <BetaWarningModal />
+            <HomePrompt />
             <NavBar activeTab="home" />
         </SafeArea>
     );

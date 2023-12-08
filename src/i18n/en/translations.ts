@@ -703,6 +703,17 @@ export default {
             are_you_sure: "Are you sure?",
             cancel: "Cancel",
             confirm: "Confirm"
+        },
+        lnurl_auth: {
+            auth_request: "Authentication Request",
+            login: "Login",
+            decline: "Decline",
+            error: "That didn't work for some reason.",
+            authenticated: "Authenticated!"
+        },
+        fedi_invite: {
+            title: "Fedimint Invite",
+            description: "Fedimint support coming soon!"
         }
     }
 };
