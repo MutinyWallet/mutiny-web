@@ -1,7 +1,7 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
 import { Contact, MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
-import { A, useNavigate } from "@solidjs/router";
+import { A, useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createEffect,
     createMemo,
@@ -252,6 +252,7 @@ function Failure(props: { reason: string }) {
 export function Send() {
     const [state, actions] = useMegaStore();
     const navigate = useNavigate();
+    const [params, setParams] = useSearchParams();
     const i18n = useI18n();
 
     // These can only be set by the user
@@ -333,6 +334,14 @@ export function Send() {
         if (state.scan_result) {
             setDestination(state.scan_result);
             actions.setScanResult(undefined);
+        }
+    });
+
+    // send?invoice=... need to check for wallet because we can't parse until we have the wallet
+    createEffect(() => {
+        if (params.invoice && state.mutiny_wallet) {
+            parsePaste(params.invoice);
+            setParams({ invoice: undefined });
         }
     });
 
