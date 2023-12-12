@@ -14,6 +14,7 @@ RUN apt update && apt install -y git python3 make build-essential
 # Add the ARG directives for build-time environment variables
 ARG VITE_NETWORK="bitcoin"
 ARG VITE_PROXY="/_services/proxy"
+ARG VITE_PRIMAL="https://primal-cache.mutinywallet.com/api"
 ARG VITE_ESPLORA
 ARG VITE_SCORER="https://scorer.mutinywallet.com"
 ARG VITE_LSP="https://lsp.voltageapi.com"
