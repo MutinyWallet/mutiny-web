@@ -1,4 +1,5 @@
 import { Collapsible, TextField } from "@kobalte/core";
+import { createForm, url } from "@modular-forms/solid";
 import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import {
     createResource,
@@ -14,6 +15,7 @@ import {
     Button,
     ConfirmDialog,
     ExternalLink,
+    TextField as FTextField,
     Hr,
     InnerCard,
     MiniStringShower,
@@ -21,11 +23,17 @@ import {
     Restart,
     ResyncOnchain,
     showToast,
+    SimpleErrorDisplay,
     ToggleHodl,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
+import {
+    getSettings,
+    MutinyWalletSettingStrings,
+    Network,
+    setSettings
+} from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, mempoolTxUrl } from "~/utils";
 
@@ -439,9 +447,122 @@ function ListNodes() {
     );
 }
 
+function LSPS(props: { initialSettings: MutinyWalletSettingStrings }) {
+    const i18n = useI18n();
+    const [state, _] = useMegaStore();
+    const [lspSettingsForm, { Form, Field }] =
+        createForm<MutinyWalletSettingStrings>({
+            validate: (values) => {
+                const errors: Record<string, string> = {};
+                if (
+                    values.lsp &&
+                    (values.lsps_connection_string || values.lsps_token)
+                ) {
+                    errors.lsp = i18n.t("settings.servers.lsps_valid_error");
+                }
+                return errors;
+            },
+            initialValues: props.initialSettings
+        });
+
+    async function handleSubmit(values: MutinyWalletSettingStrings) {
+        console.log("values", values);
+        try {
+            await state.mutiny_wallet?.change_lsp(
+                values.lsp ? values.lsp : undefined,
+                values.lsps_connection_string
+                    ? values.lsps_connection_string
+                    : undefined,
+                values.lsps_token ? values.lsps_token : undefined
+            );
+            await setSettings(values);
+            window.location.reload();
+        } catch (e) {
+            console.error("Error changing lsp:", e);
+            showToast(eify(e));
+        }
+        console.log(values);
+    }
+
+    return (
+        <InnerCard>
+            <Form onSubmit={handleSubmit} class="flex flex-col gap-4">
+                <Field
+                    name="lsp"
+                    validate={[url(i18n.t("settings.servers.error_lsp"))]}
+                >
+                    {(field, props) => (
+                        <FTextField
+                            {...props}
+                            value={field.value}
+                            error={field.error}
+                            label={i18n.t("settings.servers.lsp_label")}
+                            caption={i18n.t("settings.servers.lsp_caption")}
+                        />
+                    )}
+                </Field>
+                <Field name="lsps_connection_string">
+                    {(field, props) => (
+                        <FTextField
+                            {...props}
+                            value={field.value}
+                            error={field.error}
+                            label={i18n.t(
+                                "settings.servers.lsps_connection_string_label"
+                            )}
+                            caption={i18n.t(
+                                "settings.servers.lsps_connection_string_caption"
+                            )}
+                        />
+                    )}
+                </Field>
+                <Field name="lsps_token">
+                    {(field, props) => (
+                        <FTextField
+                            {...props}
+                            value={field.value}
+                            error={field.error}
+                            label={i18n.t("settings.servers.lsps_token_label")}
+                            caption={i18n.t(
+                                "settings.servers.lsps_token_caption"
+                            )}
+                        />
+                    )}
+                </Field>
+                <Button
+                    type="submit"
+                    disabled={!lspSettingsForm.dirty}
+                    intent="blue"
+                >
+                    {i18n.t("settings.servers.save")}
+                </Button>
+            </Form>
+        </InnerCard>
+    );
+}
+
+function AsyncLSPSEditor() {
+    const [settings] = createResource<MutinyWalletSettingStrings>(getSettings);
+
+    return (
+        <Switch>
+            <Match when={settings.error}>
+                <SimpleErrorDisplay error={settings.error} />
+            </Match>
+            <Match when={settings.latest}>
+                <LSPS initialSettings={settings()!} />
+            </Match>
+        </Switch>
+    );
+}
+
 export function KitchenSink() {
     return (
         <>
+            <Suspense>
+                <AsyncLSPSEditor />
+            </Suspense>
+            <Hr />
             <ListNodes />
             <Hr />
             <PeersList />
