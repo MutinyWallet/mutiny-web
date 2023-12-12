@@ -511,6 +511,17 @@ export default {
             lsp_label: "LSP",
             lsp_caption:
                 "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy.",
+            lsps_connection_string_label: "LSPS Connection String",
+            lsps_connection_string_caption:
+                "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Using LSP specification.",
+            error_lsps_connection_string:
+                "That doesn't look like node connection string",
+            lsps_token_label: "LSPS Token",
+            lsps_token_caption:
+                "LSPS Token.  Used to identify what wallet is connecting to the LSP",
+            lsps_valid_error:
+                "You can either have just an LSP set or LSPS Connection String and LSPS Token set, not both.",
+            error_lsps_token: "That doesn't look like a valid token",
             storage_label: "Storage",
             storage_caption: "Encrypted VSS backup service.",
             error_lsp: "That doesn't look like a URL",

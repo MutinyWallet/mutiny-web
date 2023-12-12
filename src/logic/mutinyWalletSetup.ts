@@ -10,6 +10,8 @@ export type MutinyWalletSettingStrings = {
     esplora?: string;
     rgs?: string;
     lsp?: string;
+    lsps_connection_string?: string;
+    lsps_token?: string;
     auth?: string;
     subscriptions?: string;
     storage?: string;
@@ -42,6 +44,16 @@ const SETTINGS_KEYS = [
         name: "lsp",
         storageKey: "USER_SETTINGS_lsp",
         default: import.meta.env.VITE_LSP
+    },
+    {
+        name: "lsps_connection_string",
+        storageKey: "USER_SETTINGS_lsps_connection_string",
+        default: import.meta.env.VITE_LSPS_CONNECTION_STRING
+    },
+    {
+        name: "lsps_token",
+        storageKey: "USER_SETTINGS_lsps_token",
+        default: import.meta.env.VITE_LSPS_TOKEN
     },
     {
         name: "auth",
@@ -229,6 +241,8 @@ export async function setupMutinyWallet(
         esplora,
         rgs,
         lsp,
+        lsps_connection_string,
+        lsps_token,
         auth,
         subscriptions,
         storage,
@@ -241,12 +255,17 @@ export async function setupMutinyWallet(
     console.log("Using esplora address", esplora);
     console.log("Using rgs address", rgs);
     console.log("Using lsp address", lsp);
+    console.log("Using lsp connection string", lsps_connection_string);
+    console.log("Using lsp token", lsps_token);
     console.log("Using auth address", auth);
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
     console.log("Using scorer address", scorer);
     console.log(safeMode ? "Safe mode enabled" : "Safe mode disabled");
     console.log(shouldZapHodl ? "Hodl zaps enabled" : "Hodl zaps disabled");
+
+    // Only use lsps if there's no lsp set
+    const shouldUseLSPS = !lsp && lsps_connection_string && lsps_token;
 
     const mutinyWallet = await new MutinyWallet(
         // Password
@@ -258,10 +277,8 @@ export async function setupMutinyWallet(
         esplora,
         rgs,
         lsp,
-        // LSPS connection string
-        undefined,
-        // LSPS token
-        undefined,
+        shouldUseLSPS ? lsps_connection_string : undefined,
+        shouldUseLSPS ? lsps_token : undefined,
         auth,
         subscriptions,
         storage,
