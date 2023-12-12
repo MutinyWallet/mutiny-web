@@ -38,6 +38,9 @@ FROM nginx:alpine
 # Copy the static assets from the builder stage to the Nginx default static serve directory
 COPY --from=builder /app/dist/public /usr/share/nginx/html
 
+# Copy the custom Nginx configuration file into the container
+COPY default.conf /etc/nginx/conf.d/default.conf
+
 # Expose the default Nginx port
 EXPOSE 80
 
