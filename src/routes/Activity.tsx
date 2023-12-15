@@ -1,5 +1,5 @@
 import { Tabs } from "@kobalte/core";
-import { Contact } from "@mutinywallet/mutiny-wasm";
+import { TagItem } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
     createResource,
@@ -33,14 +33,13 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { gradientsPerContact } from "~/utils";
+import { eify, gradientsPerContact } from "~/utils";
 
 function ContactRow() {
-    const i18n = useI18n();
     const [state, _actions] = useMegaStore();
     const [contacts, { refetch }] = createResource(async () => {
         try {
-            const contacts: Contact[] =
+            const contacts: TagItem[] =
                 state.mutiny_wallet?.get_contacts_sorted();
             return contacts || [];
         } catch (e) {
@@ -58,10 +57,14 @@ function ContactRow() {
     const [gradients] = createResource(contacts, gradientsPerContact);
 
     async function createContact(contact: ContactFormValues) {
-        // FIXME: npub not valid? other undefineds
-        const c = new Contact(contact.name, undefined, undefined, undefined);
         try {
-            await state.mutiny_wallet?.create_new_contact(c);
+            await state.mutiny_wallet?.create_new_contact(
+                contact.name,
+                contact.npub ? contact.npub.trim() : undefined,
+                contact.ln_address ? contact.ln_address.trim() : undefined,
+                undefined,
+                undefined
+            );
         } catch (e) {
             console.error(e);
         }
@@ -69,9 +72,24 @@ function ContactRow() {
     }
 
     //
-    async function saveContact(_contact: ContactFormValues) {
-        showToast(new Error(i18n.t("common.error_unimplemented")));
-        // await editContact(contact)
+    async function saveContact(id: string, contact: ContactFormValues) {
+        try {
+            const existing = state.mutiny_wallet?.get_tag_item(id);
+            // This shouldn't happen
+            if (!existing) throw new Error("No existing contact");
+            await state.mutiny_wallet?.edit_contact(
+                id,
+                contact.name,
+                contact.npub ? contact.npub.trim() : undefined,
+                contact.ln_address ? contact.ln_address.trim() : undefined,
+                existing.lnurl,
+                existing.image_url
+            );
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
+        }
+
         refetch();
     }
 

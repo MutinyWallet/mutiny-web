@@ -5,7 +5,7 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { BudgetPeriod, Contact, NwcProfile } from "@mutinywallet/mutiny-wasm";
+import { BudgetPeriod, NwcProfile, TagItem } from "@mutinywallet/mutiny-wasm";
 import {
     createMemo,
     createResource,
@@ -192,7 +192,7 @@ export function NWCEditor(props: {
     );
 
     // TODO: this should get the contact so we can get the image, but not getting a contact tagged on the nwc right now
-    const contactFetcher: ResourceFetcher<string, Contact | undefined> = async (
+    const contactFetcher: ResourceFetcher<string, TagItem | undefined> = async (
         label,
         _last
     ) => {
@@ -200,8 +200,8 @@ export function NWCEditor(props: {
         if (!label) return undefined;
 
         try {
-            const contact: Contact | undefined =
-                await state.mutiny_wallet?.get_contact(label);
+            const contact: TagItem | undefined =
+                await state.mutiny_wallet?.get_tag_item(label);
             return contact;
         } catch (e) {
             console.error(e);

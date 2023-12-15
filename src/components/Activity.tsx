@@ -1,4 +1,4 @@
-import { Contact } from "@mutinywallet/mutiny-wasm";
+import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { A } from "@solidjs/router";
 import {
     createEffect,
@@ -36,7 +36,7 @@ export interface IActivityItem {
     amount_sats: number;
     inbound: boolean;
     labels: string[];
-    contacts: Contact[];
+    contacts: TagItem[];
     last_updated: number;
 }
 

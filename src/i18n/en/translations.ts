@@ -36,11 +36,13 @@ export default {
         edit: "Edit",
         pay: "Pay",
         name: "Name",
+        ln_address: "Lightning Address",
         placeholder: "Satoshi",
         lightning_address: "Lightning Address",
         unimplemented: "Unimplemented",
         not_available: "We don't do that yet",
-        error_name: "We at least need a name"
+        error_name: "We at least need a name",
+        email_error: "That doesn't look like a lightning address"
     },
     receive: {
         receive_bitcoin: "Receive Bitcoin",

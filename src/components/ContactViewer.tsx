@@ -1,6 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import { SubmitHandler } from "@modular-forms/solid";
-import { Contact } from "@mutinywallet/mutiny-wasm";
+import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import { createSignal, Match, Show, Switch } from "solid-js";
 
@@ -22,12 +22,13 @@ import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 export type ContactFormValues = {
     name: string;
     npub?: string;
+    ln_address?: string;
 };
 
 export function ContactViewer(props: {
-    contact: Contact;
+    contact: TagItem;
     gradient: string;
-    saveContact: (contact: Contact) => void;
+    saveContact: (id: string, contact: ContactFormValues) => void;
 }) {
     const i18n = useI18n();
     const [isOpen, setIsOpen] = createSignal(false);
@@ -38,10 +39,9 @@ export function ContactViewer(props: {
     const handleSubmit: SubmitHandler<ContactFormValues> = (
         c: ContactFormValues
     ) => {
-        // FIXME: merge with existing contact if saving (need edit contact method)
-        // FIXME: npub not valid? other undefineds
-        const contact = new Contact(c.name, undefined, undefined, undefined);
-        props.saveContact(contact);
+        const id = props.contact.id;
+
+        props.saveContact(id, c);
         setIsEditing(false);
     };
 
@@ -201,7 +201,7 @@ export function ContactViewer(props: {
                                     </div>
 
                                     {/* TODO: implement contact editing */}
-                                    {/* <div class="flex w-full gap-2">
+                                    <div class="flex w-full gap-2">
                                         <Button
                                             layout="flex"
                                             intent="green"
@@ -209,10 +209,6 @@ export function ContactViewer(props: {
                                         >
                                             {i18n.t("contacts.edit")}
                                         </Button>
-
-                                    </div> */}
-
-                                    <div class="flex w-full">
                                         <Button
                                             intent="blue"
                                             disabled={

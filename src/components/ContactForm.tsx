@@ -1,4 +1,9 @@
-import { createForm, required, SubmitHandler } from "@modular-forms/solid";
+import {
+    createForm,
+    email,
+    required,
+    SubmitHandler
+} from "@modular-forms/solid";
 
 import {
     Button,
@@ -42,11 +47,20 @@ export function ContactForm(props: {
                             />
                         )}
                     </Field>
-                    {/* <Field name="npub" validate={[]}>
+                    <Field
+                        name="ln_address"
+                        validate={[email(i18n.t("contacts.email_error"))]}
+                    >
                         {(field, props) => (
-                            <TextField  {...props} placeholder='npub...' value={field.value} error={field.error} label="Nostr npub or NIP-05 (optional)" />
+                            <TextField
+                                {...props}
+                                placeholder="example@example.com"
+                                value={field.value}
+                                error={field.error}
+                                label={i18n.t("contacts.ln_address")}
+                            />
                         )}
-                    </Field> */}
+                    </Field>
                 </VStack>
             </div>
             <VStack>
