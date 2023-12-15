@@ -1,6 +1,6 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
-import { Contact, MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
+import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createEffect,
@@ -539,15 +539,11 @@ export function Send() {
             }
 
             if (!first.id && first.name) {
-                const c = new Contact(
-                    first.name,
-                    undefined,
-                    undefined,
-                    undefined
-                );
                 try {
                     const newContactId =
-                        await state.mutiny_wallet?.create_new_contact(c);
+                        await state.mutiny_wallet?.create_new_contact(
+                            first.name
+                        );
                     if (newContactId) {
                         return [newContactId];
                     }

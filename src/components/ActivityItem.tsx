@@ -1,4 +1,4 @@
-import { Contact } from "@mutinywallet/mutiny-wasm";
+import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { createResource, Match, ParentComponent, Switch } from "solid-js";
 
 import bolt from "~/assets/icons/bolt.svg";
@@ -97,7 +97,7 @@ export type HackActivityType =
 export function ActivityItem(props: {
     // This is actually the ActivityType enum but wasm is hard
     kind: HackActivityType;
-    contacts: Contact[];
+    contacts: TagItem[];
     labels: string[];
     amount: number | bigint;
     date?: number | bigint;

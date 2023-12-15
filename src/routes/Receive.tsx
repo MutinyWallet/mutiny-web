@@ -1,7 +1,6 @@
 /* @refresh reload */
 
 import {
-    Contact,
     MutinyBip21RawMaterials,
     MutinyInvoice,
     TagItem
@@ -219,15 +218,11 @@ export function Receive() {
             }
 
             if (!first.id && first.name) {
-                const c = new Contact(
-                    first.name,
-                    undefined,
-                    undefined,
-                    undefined
-                );
                 try {
                     const newContactId =
-                        await state.mutiny_wallet?.create_new_contact(c);
+                        await state.mutiny_wallet?.create_new_contact(
+                            first.name
+                        );
                     if (newContactId) {
                         return [newContactId];
                     }
