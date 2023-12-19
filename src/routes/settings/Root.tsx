@@ -153,7 +153,7 @@ export function Settings() {
                                 text: "Sync Nostr Contacts"
                             },
                             {
-                                href: "/settings/managefederations",
+                                href: "/settings/federations",
                                 text: "Manage Federations"
                             }
                         ]}

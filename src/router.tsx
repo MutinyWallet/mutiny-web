@@ -26,12 +26,12 @@ import {
     EmergencyKit,
     Encrypt,
     Gift,
+    ManageFederations,
     Plus,
     Restore,
     Servers,
     Settings,
-    SyncNostrContacts,
-    ManageFederations
+    SyncNostrContacts
 } from "~/routes/settings";
 
 import { useMegaStore } from "./state/megaStore";
@@ -119,7 +119,10 @@ export function Router() {
                             path="/syncnostrcontacts"
                             component={SyncNostrContacts}
                         />
-                        <Route path="/managefederations" component={ManageFederations} />
+                        <Route
+                            path="/federations"
+                            component={ManageFederations}
+                        />
                     </Route>
                     <Route path="/*all" component={NotFound} />
                 </Routes>

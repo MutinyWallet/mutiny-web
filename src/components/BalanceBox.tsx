@@ -1,5 +1,5 @@
 import { A, useNavigate } from "@solidjs/router";
-import { createResource, Match, Show, Suspense, Switch } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 
 import shuffle from "~/assets/icons/shuffle.svg";
 import {
@@ -91,10 +91,25 @@ export function BalanceBox(props: { loading?: boolean }) {
                         </Match>
                     </Switch>
                 </Show>
-                <Show when={!props.loading && !state.safe_mode}>
-                    <Suspense>
-                        <FederationsBalance />
-                    </Suspense>
+                <Show when={state.federations && state.federations.length}>
+                    <Show when={!props.loading} fallback={<LoadingShimmer />}>
+                        <hr class="my-2 border-m-grey-750" />
+                        <div class="flex flex-col gap-1">
+                            <div class="text-2xl">
+                                <AmountSats
+                                    amountSats={state.balance?.federation || 0}
+                                    icon="community"
+                                    denominationSize="lg"
+                                />
+                            </div>
+                            <div class="text-lg text-white/70">
+                                <AmountFiat
+                                    amountSats={state.balance?.federation || 0n}
+                                    denominationSize="sm"
+                                />
+                            </div>
+                        </div>
+                    </Show>
                 </Show>
                 <hr class="my-2 border-m-grey-750" />
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
@@ -155,41 +170,5 @@ export function BalanceBox(props: { loading?: boolean }) {
                 </Button>
             </div>
         </>
-    );
-}
-
-function FederationsBalance() {
-    const [state, _actions] = useMegaStore();
-
-    async function fetchFederations() {
-        const result = await state.mutiny_wallet?.list_federations();
-        return result ?? [];
-    }
-
-    const [federations] = createResource(fetchFederations);
-
-    return (
-        <Show when={federations() && federations().length}>
-            <hr class="my-2 border-m-grey-750" />
-            <Switch>
-                <Match when={true}>
-                    <div class="flex flex-col gap-1">
-                        <div class="text-2xl">
-                            <AmountSats
-                                amountSats={state.balance?.federation || 0}
-                                icon="community"
-                                denominationSize="lg"
-                            />
-                        </div>
-                        <div class="text-lg text-white/70">
-                            <AmountFiat
-                                amountSats={state.balance?.federation || 0n}
-                                denominationSize="sm"
-                            />
-                        </div>
-                    </div>
-                </Match>
-            </Switch>
-        </Show>
     );
 }
