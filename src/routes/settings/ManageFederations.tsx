@@ -1,10 +1,17 @@
-import { createForm, required, SubmitHandler } from "@modular-forms/solid";
-import { createResource, createSignal, For, Show } from "solid-js";
+import {
+    createForm,
+    required,
+    reset,
+    SubmitHandler
+} from "@modular-forms/solid";
+import { createSignal, For, Show } from "solid-js";
 
 import {
     BackLink,
     Button,
+    ConfirmDialog,
     DefaultMain,
+    ExternalLink,
     FancyCard,
     InfoBox,
     KeyValue,
@@ -12,6 +19,7 @@ import {
     MiniStringShower,
     MutinyWalletGuard,
     NavBar,
+    NiceP,
     SafeArea,
     TextField,
     VStack
@@ -24,16 +32,16 @@ type FederationForm = {
     federation_code: string;
 };
 
-type MutinyFederationIdentity = {
+export type MutinyFederationIdentity = {
     federation_id: string;
     federation_name: string;
     welcome_message: string;
     federation_expiry_timestamp: number;
 };
 
-function AddFederationForm(props: { refetch: () => void }) {
+function AddFederationForm() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
 
@@ -56,7 +64,8 @@ function AddFederationForm(props: { refetch: () => void }) {
             setSuccess(
                 i18n.t("settings.manage_federations.federation_added_success")
             );
-            await props.refetch();
+            await actions.refreshFederations();
+            reset(feedbackForm);
         } catch (e) {
             console.error("Error submitting federation:", e);
             setError(eify(e));
@@ -89,109 +98,95 @@ function AddFederationForm(props: { refetch: () => void }) {
                         />
                     )}
                 </Field>
-                <Show when={error()}>
-                    <InfoBox accent="red">{error()?.message}</InfoBox>
-                </Show>
-                <Show when={success()}>
-                    <InfoBox accent="green">{success()}</InfoBox>
-                </Show>
                 <Button
-                    loading={false}
+                    loading={feedbackForm.submitting}
                     disabled={!feedbackForm.touched || feedbackForm.invalid}
                     intent="blue"
                     type="submit"
                 >
                     {i18n.t("settings.manage_federations.add")}
                 </Button>
+                <Show when={error()}>
+                    <InfoBox accent="red">{error()?.message}</InfoBox>
+                </Show>
+                <Show when={success()}>
+                    <InfoBox accent="green">{success()}</InfoBox>
+                </Show>
             </VStack>
         </Form>
     );
 }
 
-function ListAndRemoveFederations(props: {
-    federations?: MutinyFederationIdentity[];
-    refetch: () => void;
-}) {
+function FederationListItem(props: { fed: MutinyFederationIdentity }) {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
-    const [error, setError] = createSignal<Error>();
+    const [state, actions] = useMegaStore();
 
-    const removeFederation = async (federationId: string) => {
+    async function removeFederation() {
+        setConfirmLoading(true);
         try {
-            await state.mutiny_wallet?.remove_federation(federationId);
-            props.refetch();
+            await state.mutiny_wallet?.remove_federation(
+                props.fed.federation_id
+            );
+            await actions.refreshFederations();
         } catch (e) {
             console.error(e);
-            setError(eify(e));
         }
-    };
+        setConfirmLoading(false);
+    }
+
+    async function confirmRemove() {
+        setConfirmOpen(true);
+    }
+
+    const [confirmOpen, setConfirmOpen] = createSignal(false);
+    const [confirmLoading, setConfirmLoading] = createSignal(false);
 
     return (
-        <VStack>
-            <For each={props.federations ?? []}>
-                {(fed) => (
-                    <FancyCard>
-                        <Show when={fed.federation_name}>
-                            <header class={`font-semibold`}>
-                                {fed.federation_name}
-                            </header>
-                        </Show>
-                        <Show when={fed.welcome_message}>
-                            <p>{fed.welcome_message}</p>
-                        </Show>
-                        <Show when={fed.federation_expiry_timestamp}>
-                            <KeyValue
-                                key={i18n.t(
-                                    "settings.manage_federations.expires"
-                                )}
-                            >
-                                <time>
-                                    {timeAgo(fed.federation_expiry_timestamp)}
-                                </time>
-                            </KeyValue>
-                        </Show>
-                        <KeyValue
-                            key={i18n.t(
-                                "settings.manage_federations.federation_id"
-                            )}
-                        >
-                            <MiniStringShower text={fed.federation_id} />
-                        </KeyValue>
-                        <Button
-                            intent="red"
-                            onClick={() => removeFederation(fed.federation_id)}
-                        >
-                            {i18n.t("settings.manage_federations.remove")}
-                        </Button>
-                    </FancyCard>
+        <>
+            <FancyCard>
+                <Show when={props.fed.federation_name}>
+                    <header class={`font-semibold`}>
+                        {props.fed.federation_name}
+                    </header>
+                </Show>
+                <Show when={props.fed.welcome_message}>
+                    <p>{props.fed.welcome_message}</p>
+                </Show>
+                <Show when={props.fed.federation_expiry_timestamp}>
+                    <KeyValue
+                        key={i18n.t("settings.manage_federations.expires")}
+                    >
+                        <time>
+                            {timeAgo(props.fed.federation_expiry_timestamp)}
+                        </time>
+                    </KeyValue>
+                </Show>
+                <KeyValue
+                    key={i18n.t("settings.manage_federations.federation_id")}
+                >
+                    <MiniStringShower text={props.fed.federation_id} />
+                </KeyValue>
+                <Button intent="red" onClick={confirmRemove}>
+                    {i18n.t("settings.manage_federations.remove")}
+                </Button>
+            </FancyCard>
+            <ConfirmDialog
+                loading={confirmLoading()}
+                open={confirmOpen()}
+                onConfirm={removeFederation}
+                onCancel={() => setConfirmOpen(false)}
+            >
+                {i18n.t(
+                    "settings.manage_federations.federation_remove_confirm"
                 )}
-            </For>
-            <Show when={(props.federations ?? []).length === 0}>
-                <div>No federations available.</div>
-            </Show>
-            <Show when={error()}>
-                <InfoBox accent="red">{error()?.message}</InfoBox>
-            </Show>
-        </VStack>
+            </ConfirmDialog>
+        </>
     );
 }
 
 export function ManageFederations() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
-
-    async function fetchFederations() {
-        try {
-            const result =
-                (await state.mutiny_wallet?.list_federations()) as MutinyFederationIdentity[];
-            return result ?? [];
-        } catch (e) {
-            console.error(e);
-            return [];
-        }
-    }
-
-    const [federations, { refetch }] = createResource(fetchFederations);
 
     return (
         <MutinyWalletGuard>
@@ -204,11 +199,18 @@ export function ManageFederations() {
                     <LargeHeader>
                         {i18n.t("settings.manage_federations.title")}
                     </LargeHeader>
-                    <AddFederationForm refetch={refetch} />
-                    <ListAndRemoveFederations
-                        federations={federations.latest}
-                        refetch={refetch}
-                    />
+                    <NiceP>
+                        {i18n.t("settings.manage_federations.description")}{" "}
+                        <ExternalLink href="https://fedimint.org/">
+                            {i18n.t("settings.manage_federations.learn_more")}
+                        </ExternalLink>
+                    </NiceP>
+                    <AddFederationForm />
+                    <VStack>
+                        <For each={state.federations ?? []}>
+                            {(fed) => <FederationListItem fed={fed} />}
+                        </For>
+                    </VStack>
                 </DefaultMain>
                 <NavBar activeTab="settings" />
             </SafeArea>

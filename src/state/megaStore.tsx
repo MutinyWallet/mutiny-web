@@ -25,6 +25,7 @@ import {
     setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
+import { MutinyFederationIdentity } from "~/routes/settings";
 import {
     BTC_OPTION,
     Currency,
@@ -70,6 +71,7 @@ export type MegaStore = [
         betaWarned: boolean;
         testflightPromptDismissed: boolean;
         should_zap_hodl: boolean;
+        federations?: MutinyFederationIdentity[];
     },
     {
         setup(password?: string): Promise<void>;
@@ -94,6 +96,7 @@ export type MegaStore = [
         setTestFlightPromptDismissed(): void;
         toggleHodl(): void;
         dropMutinyWallet(): void;
+        refreshFederations(): Promise<void>;
     }
 ];
 
@@ -134,7 +137,8 @@ export const Provider: ParentComponent = (props) => {
         betaWarned: localStorage.getItem("betaWarned") === "true",
         should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
         testflightPromptDismissed:
-            localStorage.getItem("testflightPromptDismissed") === "true"
+            localStorage.getItem("testflightPromptDismissed") === "true",
+        federations: undefined as MutinyFederationIdentity[] | undefined
     });
 
     const actions = {
@@ -211,11 +215,16 @@ export const Provider: ParentComponent = (props) => {
                 // Get balance
                 const balance = await mutinyWallet.get_balance();
 
+                // Get federations
+                const federations =
+                    (await mutinyWallet.list_federations()) as MutinyFederationIdentity[];
+
                 setState({
                     mutiny_wallet: mutinyWallet,
                     wallet_loading: false,
                     load_stage: "done",
-                    balance
+                    balance,
+                    federations
                 });
             } catch (e) {
                 console.error(e);
@@ -408,6 +417,11 @@ export const Provider: ParentComponent = (props) => {
         },
         dropMutinyWallet() {
             setState({ mutiny_wallet: undefined });
+        },
+        async refreshFederations() {
+            const federations =
+                (await state.mutiny_wallet?.list_federations()) as MutinyFederationIdentity[];
+            setState({ federations });
         }
     };
 

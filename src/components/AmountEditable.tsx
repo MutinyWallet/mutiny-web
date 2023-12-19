@@ -19,7 +19,6 @@ import currencySwap from "~/assets/icons/currency-swap.svg";
 import pencil from "~/assets/icons/pencil.svg";
 import { Button, FeesModal, InfoBox, InlineAmount, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { DIALOG_CONTENT, DIALOG_POSITIONER } from "~/styles/dialogs";
 import { Currency, fiatToSats, satsToFiat } from "~/utils";
@@ -404,17 +403,13 @@ export const AmountEditable: ParentComponent<{
     });
 
     const warningText = () => {
+        if (state.federations?.length !== 0) {
+            return undefined;
+        }
         if ((state.balance?.lightning || 0n) === 0n) {
-            const network = state.mutiny_wallet?.get_network() as Network;
-            if (network === "bitcoin") {
-                return i18n.t("receive.amount_editable.receive_too_small", {
-                    amount: "100,000"
-                });
-            } else {
-                return i18n.t("receive.amount_editable.receive_too_small", {
-                    amount: "10,000"
-                });
-            }
+            return i18n.t("receive.amount_editable.receive_too_small", {
+                amount: "100,000"
+            });
         }
 
         const parsed = Number(localSats());

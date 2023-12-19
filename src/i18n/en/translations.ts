@@ -538,10 +538,15 @@ export default {
             federation_code_label: "Federation code",
             federation_code_required: "Federation code can't be blank",
             federation_added_success: "Federation added successfully",
+            federation_remove_confirm:
+                "Are you sure you want to remove this federation? Make sure any funds you have are transferred to your lightning balance or another wallet first.",
             add: "Add",
             remove: "Remove",
             expires: "Expires",
-            federation_id: "Federation ID"
+            federation_id: "Federation ID",
+            description:
+                "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. These funds are currently not backed up remotely. Store funds in a federation at your own risk!",
+            learn_more: "Learn more about Fedimint."
         },
         gift: {
             give_sats_link: "Give sats as a gift",
