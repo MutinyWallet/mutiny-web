@@ -537,8 +537,11 @@ export default {
             title: "Manage Federations",
             federation_code_label: "Federation code",
             federation_code_required: "Federation code can't be blank",
+            federation_added_success: "Federation added successfully",
             add: "Add",
-            remove: "Remove"
+            remove: "Remove",
+            expires: "Expires",
+            federation_id: "Federation ID"
         },
         gift: {
             give_sats_link: "Give sats as a gift",

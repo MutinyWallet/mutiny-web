@@ -18,34 +18,24 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify } from "~/utils";
+import { eify, timeAgo } from "~/utils";
 
 type FederationForm = {
     federation_code: string;
 };
 
-function fetchFederations() {
-    const [state, _actions] = useMegaStore();
-    try {
-        // Log the attempt to fetch federations
-        console.log('Attempting to fetch federations...');
-        const result = state.mutiny_wallet?.list_federations();
-        console.log('Fetched federations:', result);
-        return result ?? [];
-    } catch (e) {
-        console.error('Error fetching federations:', e);
-        return [];
-    }
-}
+type MutinyFederationIdentity = {
+    federation_id: string;
+    federation_name: string;
+    welcome_message: string;
+    federation_expiry_timestamp: number;
+};
 
-function AddFederationForm({ refetch }) {
+function AddFederationForm(props: { refetch: () => void }) {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [state, _actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
-    const [federationData, setFederationData] = createSignal({ federation_code: "" });
-    const [isDirty, setIsDirty] = createSignal(false);
-    const [isValid, setIsValid] = createSignal(false);
 
     const [feedbackForm, { Form, Field }] = createForm<FederationForm>({
         initialValues: {
@@ -53,52 +43,49 @@ function AddFederationForm({ refetch }) {
         }
     });
 
-    const handleInputChange = (value) => {
-        setFederationData({ federation_code: value });
-        setIsDirty(true);
-        validateForm(value);
-    };
-
-    const validateForm = (value) => {
-        const isValid = value.trim().length > 0; // Add more validation logic as needed
-        setIsValid(isValid);
-    };
-
-
-const handleSubmit: SubmitHandler<FederationForm> = async (f: FederationForm) => {
-    try {
-        if (!isValid()) {
-            setError(new Error("Form is invalid"));
-            return;
+    const handleSubmit: SubmitHandler<FederationForm> = async (
+        f: FederationForm
+    ) => {
+        setSuccess("");
+        setError(undefined);
+        try {
+            const federation_code = f.federation_code.trim();
+            const newFederation =
+                await state.mutiny_wallet?.new_federation(federation_code);
+            console.log("New federation added:", newFederation);
+            setSuccess(
+                i18n.t("settings.manage_federations.federation_added_success")
+            );
+            await props.refetch();
+        } catch (e) {
+            console.error("Error submitting federation:", e);
+            setError(eify(e));
         }
-
-        const federation_code = federationData().federation_code.trim();
-        const newFederation = await state.mutiny_wallet?.new_federation(federation_code);
-        console.log('New federation added:', newFederation);
-        setSuccess("Federation added successfully!");
-        setFederationData({ federation_code: "" }); // Reset the form data
-
-        // Now, refetch federations
-        console.log('Refetching federations...');
-        await refetch();
-    } catch (e) {
-        console.error('Error submitting federation:', e);
-        setError(eify(e));
-    }
-};
+    };
 
     return (
         <Form onSubmit={handleSubmit}>
             <VStack>
-                <Field name="federation_code">
+                <Field
+                    name="federation_code"
+                    validate={[
+                        required(
+                            i18n.t(
+                                "settings.manage_federations.federation_code_required"
+                            )
+                        )
+                    ]}
+                >
                     {(field, props) => (
                         <TextField
                             {...props}
-                            value={federationData().federation_code}
-                            onInput={(e) => handleInputChange(e.currentTarget.value)}
+                            {...field}
                             error={field.error}
-                            label={i18n.t("settings.manage_federations.federation_code_label")}
+                            label={i18n.t(
+                                "settings.manage_federations.federation_code_label"
+                            )}
                             placeholder="fedi1..."
+                            required
                         />
                     )}
                 </Field>
@@ -110,7 +97,7 @@ const handleSubmit: SubmitHandler<FederationForm> = async (f: FederationForm) =>
                 </Show>
                 <Button
                     loading={false}
-                    disabled={!isDirty() || !isValid()}
+                    disabled={!feedbackForm.touched || feedbackForm.invalid}
                     intent="blue"
                     type="submit"
                 >
@@ -121,15 +108,18 @@ const handleSubmit: SubmitHandler<FederationForm> = async (f: FederationForm) =>
     );
 }
 
-function ListAndRemoveFederations({ federations, refetch }) {
+function ListAndRemoveFederations(props: {
+    federations?: MutinyFederationIdentity[];
+    refetch: () => void;
+}) {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
 
-    const removeFederation = async (federationId) => {
+    const removeFederation = async (federationId: string) => {
         try {
             await state.mutiny_wallet?.remove_federation(federationId);
-            refetch();
+            props.refetch();
         } catch (e) {
             console.error(e);
             setError(eify(e));
@@ -138,19 +128,45 @@ function ListAndRemoveFederations({ federations, refetch }) {
 
     return (
         <VStack>
-            <For each={federations() ?? []}>
-                {(federationId) => (
+            <For each={props.federations ?? []}>
+                {(fed) => (
                     <FancyCard>
-                        <KeyValue key="Federation ID">
-                            <MiniStringShower text={federationId} />
+                        <Show when={fed.federation_name}>
+                            <header class={`font-semibold`}>
+                                {fed.federation_name}
+                            </header>
+                        </Show>
+                        <Show when={fed.welcome_message}>
+                            <p>{fed.welcome_message}</p>
+                        </Show>
+                        <Show when={fed.federation_expiry_timestamp}>
+                            <KeyValue
+                                key={i18n.t(
+                                    "settings.manage_federations.expires"
+                                )}
+                            >
+                                <time>
+                                    {timeAgo(fed.federation_expiry_timestamp)}
+                                </time>
+                            </KeyValue>
+                        </Show>
+                        <KeyValue
+                            key={i18n.t(
+                                "settings.manage_federations.federation_id"
+                            )}
+                        >
+                            <MiniStringShower text={fed.federation_id} />
                         </KeyValue>
-                        <Button intent="red" onClick={() => removeFederation(federationId)}>
+                        <Button
+                            intent="red"
+                            onClick={() => removeFederation(fed.federation_id)}
+                        >
                             {i18n.t("settings.manage_federations.remove")}
                         </Button>
                     </FancyCard>
                 )}
             </For>
-            <Show when={(federations() ?? []).length === 0}>
+            <Show when={(props.federations ?? []).length === 0}>
                 <div>No federations available.</div>
             </Show>
             <Show when={error()}>
@@ -162,16 +178,18 @@ function ListAndRemoveFederations({ federations, refetch }) {
 
 export function ManageFederations() {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [state, _actions] = useMegaStore();
 
-    const fetchFederations = async () => {
+    async function fetchFederations() {
         try {
-            return await state.mutiny_wallet?.list_federations() ?? [];
+            const result =
+                (await state.mutiny_wallet?.list_federations()) as MutinyFederationIdentity[];
+            return result ?? [];
         } catch (e) {
             console.error(e);
             return [];
         }
-    };
+    }
 
     const [federations, { refetch }] = createResource(fetchFederations);
 
@@ -179,10 +197,18 @@ export function ManageFederations() {
         <MutinyWalletGuard>
             <SafeArea>
                 <DefaultMain>
-                    <BackLink href="/settings" title={i18n.t("settings.header")} />
-                    <LargeHeader>{i18n.t("settings.manage_federations.title")}</LargeHeader>
-		    <AddFederationForm refetch={refetch} federations={federations} />
-                    <ListAndRemoveFederations federations={federations} refetch={refetch} />
+                    <BackLink
+                        href="/settings"
+                        title={i18n.t("settings.header")}
+                    />
+                    <LargeHeader>
+                        {i18n.t("settings.manage_federations.title")}
+                    </LargeHeader>
+                    <AddFederationForm refetch={refetch} />
+                    <ListAndRemoveFederations
+                        federations={federations.latest}
+                        refetch={refetch}
+                    />
                 </DefaultMain>
                 <NavBar activeTab="settings" />
             </SafeArea>
