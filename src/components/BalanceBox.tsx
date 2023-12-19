@@ -1,5 +1,5 @@
 import { A, useNavigate } from "@solidjs/router";
-import { Match, Show, Switch } from "solid-js";
+import { createResource, Match, Show, Switch } from "solid-js";
 
 import shuffle from "~/assets/icons/shuffle.svg";
 import {
@@ -56,6 +56,18 @@ export function BalanceBox(props: { loading?: boolean }) {
     const usableOnchain = () =>
         (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
 
+    async function fetchFederations() {
+        // Log the attempt to fetch federations
+        console.log("Attempting to fetch federations...");
+        const result = await state.mutiny_wallet?.list_federations();
+        console.log("Fetched federations:", result);
+        return result ?? [];
+    }
+
+    const [federations, { refetch }] = createResource(fetchFederations, {
+        // storage: createDeepSignal
+    });
+
     return (
         <>
             <FancyCard>
@@ -92,38 +104,40 @@ export function BalanceBox(props: { loading?: boolean }) {
                     </Switch>
                 </Show>
 
-                <hr class="my-2 border-m-grey-750" />
-                <Show when={!props.loading} fallback={<LoadingShimmer />}>
-                    <Switch>
-                        <Match when={state.safe_mode}>
-                            <div class="flex flex-col gap-1">
-                                <InfoBox accent="red">
-                                    {i18n.t("common.error_safe_mode")}
-                                </InfoBox>
-                            </div>
-                        </Match>
-                        <Match when={true}>
-                            <div class="flex flex-col gap-1">
-                                <div class="text-2xl">
-                                    <AmountSats
-                                        amountSats={
-                                            state.balance?.federation || 0
-                                        }
-                                        icon="community"
-                                        denominationSize="lg"
-                                    />
+                <Show when={federations.latest && federations().length}>
+                    <hr class="my-2 border-m-grey-750" />
+                    <Show when={!props.loading} fallback={<LoadingShimmer />}>
+                        <Switch>
+                            <Match when={state.safe_mode}>
+                                <div class="flex flex-col gap-1">
+                                    <InfoBox accent="red">
+                                        {i18n.t("common.error_safe_mode")}
+                                    </InfoBox>
                                 </div>
-                                <div class="text-lg text-white/70">
-                                    <AmountFiat
-                                        amountSats={
-                                            state.balance?.lightning + state.balance?.federation || 0
-                                        }
-                                        denominationSize="sm"
-                                    />
+                            </Match>
+                            <Match when={true}>
+                                <div class="flex flex-col gap-1">
+                                    <div class="text-2xl">
+                                        <AmountSats
+                                            amountSats={
+                                                state.balance?.federation || 0
+                                            }
+                                            icon="community"
+                                            denominationSize="lg"
+                                        />
+                                    </div>
+                                    <div class="text-lg text-white/70">
+                                        <AmountFiat
+                                            amountSats={
+                                                state.balance?.federation || 0n
+                                            }
+                                            denominationSize="sm"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </Match>
-                    </Switch>
+                            </Match>
+                        </Switch>
+                    </Show>
                 </Show>
 
                 <hr class="my-2 border-m-grey-750" />
