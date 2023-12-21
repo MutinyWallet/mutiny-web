@@ -2,7 +2,7 @@
 
 ### Dependencies
 
-- pnpm > 8
+-   pnpm > 8
 
 ```
 pnpm install
@@ -33,7 +33,7 @@ Hopefully your editor picks up on the `.prettirrc` file and auto formats accordi
 
 ### Deploying Web
 
-Create a PR from `master` to `prod`, and once it does CI and gets approvals, do this from the command line: 
+Create a PR from `master` to `prod`, and once it does CI and gets approvals, do this from the command line:
 
 ```
 git checkout master && git pull && git checkout prod && git pull && git merge --ff-only origin/master && git push
@@ -41,7 +41,7 @@ git checkout master && git pull && git checkout prod && git pull && git merge --
 
 ## Contributing
 
-Before committing make sure to run `pnpm run pre-commit`. This will typecheck, lint, and format everything so CI won't hassle you.
+Before committing make sure to run `pnpm run pre-commit`. This will typecheck, lint, and format everything so CI won't hassle you. (Shortcut: `just pre`).
 
 ### Local
 
@@ -106,10 +106,12 @@ In `ios/App/App.xcodeproj/project.pbxproj` bump `MARKETING_VERSION` and then do 
 ### Creating keys for the first time
 
 1. Generate a new signing key
+
 ```
 keytool -genkey -v -keystore <my-release-key.keystore> -alias <alias_name> -keyalg RSA -keysize 2048 -validity 10000
 openssl base64 < <my-release-key.keystore> | tr -d '\n' | tee some_signing_key.jks.base64.txt
 ```
+
 2. Create 3 Secret Key variables on your GitHub repository and fill in with the signing key information
     - `KEY_ALIAS` <- `<alias_name>`
     - `KEY_STORE_PASSWORD` <- `<your key store password>`
