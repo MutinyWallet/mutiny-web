@@ -15,6 +15,7 @@ export * from "./ContactForm";
 export * from "./ContactViewer";
 export * from "./DecryptDialog";
 export * from "./DeleteEverything";
+export * from "./DLCList";
 export * from "./ErrorDisplay";
 export * from "./Fee";
 export * from "./I18nProvider";
