@@ -116,7 +116,11 @@ function PlusCTA() {
 
     const hasEnough = () => {
         if (!planDetails()) return false;
-        return (state.balance?.lightning || 0n) > planDetails().amount_sat;
+        return (
+            (state.balance?.lightning || 0n) +
+                (state.balance?.federation || 0n) >
+            planDetails().amount_sat
+        );
     };
 
     return (

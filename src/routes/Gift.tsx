@@ -67,7 +67,9 @@ function InboundWarning() {
         const network = state.mutiny_wallet?.get_network() as Network;
 
         const threshold = network === "bitcoin" ? 100000 : 10000;
-        const balance = state.balance?.lightning || 0n;
+        const balance =
+            (state.balance?.lightning || 0n) +
+            (state.balance?.federation || 0n);
 
         if (balance === 0n && amount < threshold) {
             return i18n.t("settings.gift.receive_too_small", {
