@@ -73,7 +73,9 @@ export function MethodChooser(props: {
     const [store, _actions] = useMegaStore();
 
     const methods = createMemo(() => {
-        const lnBalance = store.balance?.lightning || 0n;
+        const lnBalance =
+            (store.balance?.lightning || 0n) +
+            (store.balance?.federation || 0n);
         const onchainBalance =
             (store.balance?.confirmed || 0n) +
             (store.balance?.unconfirmed || 0n);
