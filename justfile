@@ -3,6 +3,9 @@ set dotenv-load := false
 dev:
     pnpm run dev
 
+pre:
+    pnpm run pre-commit
+
 local:
     pnpm install && pnpm link --global "@mutinywallet/mutiny-wasm"
 
