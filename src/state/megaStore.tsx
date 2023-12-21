@@ -385,7 +385,7 @@ export const Provider: ParentComponent = (props) => {
                 }
                 if (result.value?.fedimint_invite) {
                     navigate(
-                        "/?fedimint_invite=" +
+                        "/settings/federations?fedimint_invite=" +
                             encodeURIComponent(result.value?.fedimint_invite)
                     );
                     actions.setScanResult(undefined);

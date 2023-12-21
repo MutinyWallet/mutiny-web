@@ -2,9 +2,11 @@ import {
     createForm,
     required,
     reset,
+    setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { createSignal, For, Show } from "solid-js";
+import { useSearchParams } from "@solidjs/router";
+import { createSignal, For, onMount, Show } from "solid-js";
 
 import {
     BackLink,
@@ -44,6 +46,17 @@ function AddFederationForm() {
     const [state, actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
+
+    const [params, setParams] = useSearchParams();
+
+    onMount(() => {
+        if (params.fedimint_invite) {
+            setValue(feedbackForm, "federation_code", params.fedimint_invite);
+
+            // Clear the search params
+            setParams({ fedimint_invite: undefined });
+        }
+    });
 
     const [feedbackForm, { Form, Field }] = createForm<FederationForm>({
         initialValues: {
@@ -93,14 +106,14 @@ function AddFederationForm() {
                             label={i18n.t(
                                 "settings.manage_federations.federation_code_label"
                             )}
-                            placeholder="fedi1..."
+                            placeholder="fed11..."
                             required
                         />
                     )}
                 </Field>
                 <Button
                     loading={feedbackForm.submitting}
-                    disabled={!feedbackForm.touched || feedbackForm.invalid}
+                    disabled={feedbackForm.invalid}
                     intent="blue"
                     type="submit"
                 >
