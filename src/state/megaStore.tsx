@@ -93,6 +93,7 @@ export type MegaStore = [
         setBetaWarned(): void;
         setTestFlightPromptDismissed(): void;
         toggleHodl(): void;
+        dropMutinyWallet(): void;
     }
 ];
 
@@ -404,6 +405,9 @@ export const Provider: ParentComponent = (props) => {
             const should_zap_hodl = !state.should_zap_hodl;
             localStorage.setItem("should_zap_hodl", should_zap_hodl.toString());
             setState({ should_zap_hodl });
+        },
+        dropMutinyWallet() {
+            setState({ mutiny_wallet: undefined });
         }
     };
 

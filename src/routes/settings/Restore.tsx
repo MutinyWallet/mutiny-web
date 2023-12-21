@@ -134,6 +134,7 @@ function TwelveWordsEntry() {
                 console.log("Mutiny wallet loaded, stopping");
                 try {
                     await state.mutiny_wallet.stop();
+                    actions.dropMutinyWallet();
                 } catch (e) {
                     console.error(e);
                 }
