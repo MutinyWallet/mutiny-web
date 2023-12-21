@@ -49,18 +49,7 @@ export function HomePrompt() {
             }
             return;
         }
-
-        if (params.fedimint_invite) {
-            const fedimint_invite = params.fedimint_invite;
-            setParams({ fedimint_invite: undefined });
-            setFedi(fedimint_invite);
-            return;
-        }
     });
-
-    // Fedi stuff
-    // fed11qgqzc2nhwden5te0vejkg6tdd9h8gepwvejkg6tdd9h8garhduhx6at5d9h8jmn9wshxxmmd9uqqzgxg6s3evnr6m9zdxr6hxkdkukexpcs3mn7mj3g5pc5dfh63l4tj6g9zk4er
-    const [fedi, setFedi] = createSignal<string>();
 
     // Lnurl Auth stuff
     const [lnurlauthResult, setLnurlauthResult] = createSignal<string>();
@@ -87,13 +76,6 @@ export function HomePrompt() {
 
     return (
         <>
-            <SimpleDialog
-                title={i18n.t("modals.fedi_invite.title")}
-                open={!!fedi()}
-                setOpen={() => setFedi(undefined)}
-            >
-                <NiceP>{i18n.t("modals.fedi_invite.description")}</NiceP>
-            </SimpleDialog>
             <SimpleDialog
                 title={i18n.t("modals.lnurl_auth.auth_request")}
                 open={!!lnurlauthResult()}
