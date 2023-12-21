@@ -258,6 +258,10 @@ export async function setupMutinyWallet(
         esplora,
         rgs,
         lsp,
+        // LSPS connection string
+        undefined,
+        // LSPS token
+        undefined,
         auth,
         subscriptions,
         storage,

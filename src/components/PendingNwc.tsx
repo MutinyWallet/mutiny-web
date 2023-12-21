@@ -75,8 +75,7 @@ export function PendingNwc() {
     async function payItem(item: PendingItem) {
         try {
             setPaying(item.id);
-            const nodes = await state.mutiny_wallet?.list_nodes();
-            await state.mutiny_wallet?.approve_invoice(item.id, nodes[0]);
+            await state.mutiny_wallet?.approve_invoice(item.id);
             await vibrateSuccess();
         } catch (e) {
             setError(eify(e));

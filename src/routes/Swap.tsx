@@ -116,13 +116,8 @@ export function Swap() {
         setIsConnecting(true);
         try {
             const peerConnectString = values.peer.trim();
-            const nodes = await state.mutiny_wallet?.list_nodes();
-            const firstNode = (nodes[0] as string) || "";
 
-            await state.mutiny_wallet?.connect_to_peer(
-                firstNode,
-                peerConnectString
-            );
+            await state.mutiny_wallet?.connect_to_peer(peerConnectString);
 
             await refetch();
 
@@ -156,8 +151,6 @@ export function Swap() {
         if (canSwap()) {
             try {
                 setLoading(true);
-                const nodes = await state.mutiny_wallet?.list_nodes();
-                const firstNode = (nodes[0] as string) || "";
 
                 let peer = undefined;
 
@@ -167,15 +160,11 @@ export function Swap() {
 
                 if (isMax()) {
                     const new_channel =
-                        await state.mutiny_wallet?.sweep_all_to_channel(
-                            firstNode,
-                            peer
-                        );
+                        await state.mutiny_wallet?.sweep_all_to_channel(peer);
 
                     setChannelOpenResult({ channel: new_channel });
                 } else {
                     const new_channel = await state.mutiny_wallet?.open_channel(
-                        firstNode,
                         peer,
                         amountSats()
                     );

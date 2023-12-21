@@ -573,13 +573,10 @@ export function Send() {
             const tags = await processContacts(selectedContacts());
 
             if (source() === "lightning" && invoice() && bolt11) {
-                const nodes = await state.mutiny_wallet?.list_nodes();
-                const firstNode = (nodes[0] as string) || "";
                 sentDetails.destination = bolt11;
                 // If the invoice has sats use that, otherwise we pass the user-defined amount
                 if (invoice()?.amount_sats) {
                     const payment = await state.mutiny_wallet?.pay_invoice(
-                        firstNode,
                         bolt11,
                         undefined,
                         tags
@@ -589,7 +586,6 @@ export function Send() {
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 } else {
                     const payment = await state.mutiny_wallet?.pay_invoice(
-                        firstNode,
                         bolt11,
                         amountSats(),
                         tags
@@ -599,10 +595,7 @@ export function Send() {
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && nodePubkey()) {
-                const nodes = await state.mutiny_wallet?.list_nodes();
-                const firstNode = (nodes[0] as string) || "";
                 const payment = await state.mutiny_wallet?.keysend(
-                    firstNode,
                     nodePubkey()!,
                     amountSats(),
                     undefined, // todo add optional keysend message
@@ -618,10 +611,7 @@ export function Send() {
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && lnurlp()) {
-                const nodes = await state.mutiny_wallet?.list_nodes();
-                const firstNode = (nodes[0] as string) || "";
                 const payment = await state.mutiny_wallet?.lnurl_pay(
-                    firstNode,
                     lnurlp()!,
                     amountSats(),
                     undefined, // zap_npub
