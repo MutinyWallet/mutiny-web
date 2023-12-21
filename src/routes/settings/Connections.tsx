@@ -1,6 +1,12 @@
 import { NwcProfile } from "@mutinywallet/mutiny-wasm";
 import { A, useSearchParams } from "@solidjs/router";
-import { createResource, createSignal, For, Show } from "solid-js";
+import {
+    createResource,
+    createSignal,
+    ErrorBoundary,
+    For,
+    Show
+} from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 
 import scan from "~/assets/icons/scan.svg";
@@ -12,6 +18,7 @@ import {
     Collapser,
     ConfirmDialog,
     DefaultMain,
+    InfoBox,
     KeyValue,
     LargeHeader,
     MutinyWalletGuard,
@@ -292,11 +299,17 @@ function Nwc() {
                         : i18n.t("settings.connections.add_connection")
                 }
             >
-                <NWCEditor
-                    initialNWA={searchParams.nwa}
-                    initialProfileIndex={profileToOpen()}
-                    onSave={handleSave}
-                />
+                <ErrorBoundary
+                    fallback={(e) => (
+                        <InfoBox accent="red">{e.message}</InfoBox>
+                    )}
+                >
+                    <NWCEditor
+                        initialNWA={searchParams.nwa}
+                        initialProfileIndex={profileToOpen()}
+                        onSave={handleSave}
+                    />
+                </ErrorBoundary>
             </SimpleDialog>
             <SimpleDialog
                 open={callbackDialogOpen()}
