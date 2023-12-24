@@ -4,7 +4,6 @@ export * from "./Feedback";
 export * from "./Gift";
 export * from "./Main";
 export * from "./Receive";
-export * from "./Redshift";
 export * from "./Scanner";
 export * from "./Send";
 export * from "./Swap";

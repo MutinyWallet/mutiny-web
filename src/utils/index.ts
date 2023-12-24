@@ -2,7 +2,6 @@ export * from "./conversions";
 export * from "./deepSignal";
 export * from "./download";
 export * from "./eify";
-export * from "./fakeLabels";
 export * from "./getHostname";
 export * from "./gradientHash";
 export * from "./mempoolTxUrl";

@@ -210,30 +210,6 @@ export default {
             back_home: "back home"
         }
     },
-    redshift: {
-        title: "Redshift",
-        unknown: "Unknown",
-        what_happened: "What happened?",
-        starting_amount: "Starting amount",
-        fees_paid: "Fees paid",
-        change: "Change",
-        outbound_channel: "Outbound channel",
-        return_channel: "Return channel",
-        where_this_goes: "Where is this going?",
-        watch_it_go: "Watch it go!",
-        choose_your: "Choose your",
-        utxo_to_begin: "UTXO to begin",
-        unshifted_utxo: "Unshifted UTXOs",
-        redshifted: "Redshifted",
-        utxos: "UTXOs",
-        no_utxos_empty_state: "No utxos (empty state)",
-        utxo_label: "UTXO",
-        utxo_caption: "Trade in your UTXO for a fresh UTXO",
-        lightning_label: "Lightning",
-        lightning_caption: "Convert your UTXO into Lightning",
-        oh_dear: "Oh dear",
-        here_is_error: "Here's what happened:"
-    },
     scanner: {
         paste: "Paste Something",
         cancel: "Cancel"

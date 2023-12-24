@@ -3,7 +3,6 @@ import { A } from "@solidjs/router";
 import airplane from "~/assets/icons/airplane.svg";
 import receive from "~/assets/icons/big-receive.svg";
 import mutiny_m from "~/assets/icons/m.svg";
-import redshift from "~/assets/icons/rs.svg";
 import scan from "~/assets/icons/scan.svg";
 import settings from "~/assets/icons/settings.svg";
 import userClock from "~/assets/icons/user-clock.svg";
@@ -14,7 +13,6 @@ type ActiveTab =
     | "send"
     | "receive"
     | "settings"
-    | "redshift"
     | "activity"
     | "none";
 
@@ -73,12 +71,6 @@ export function NavBar(props: { activeTab: ActiveTab }) {
                     icon={scan}
                     active={false}
                     alt="scan"
-                />
-                <NavBarItem
-                    href="/redshift"
-                    icon={redshift}
-                    active={props.activeTab === "redshift"}
-                    alt="redshift"
                 />
                 <NavBarItem
                     href="/settings"

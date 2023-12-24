@@ -49,10 +49,6 @@ function Perks(props: { alreadySubbed?: boolean }) {
                 </Show>
             </li>
             <li>
-                {i18n.t("redshift.title")}{" "}
-                <em>{i18n.t("common.coming_soon")}</em>
-            </li>
-            <li>
                 {i18n.t("settings.plus.multi_device")}{" "}
                 <em>{i18n.t("common.coming_soon")}</em>
             </li>

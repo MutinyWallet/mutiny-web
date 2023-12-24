@@ -175,25 +175,6 @@ export default {
                 "채널 상세정보를 찾을 수 없습니다. 이는 해당 채널이 종료된 것으로 보입니다."
         }
     },
-    redshift: {
-        title: "레드시프트",
-        unknown: "알 수 없음",
-        what_happened: "무슨 일이 발생했나요?",
-        where_this_goes: "이것은 어디로 가나요?",
-        watch_it_go: "보기",
-        choose_your: "선택하세요",
-        utxo_to_begin: "시작할 UTXO",
-        unshifted_utxo: "전환되지 않은 UTXO",
-        redshifted: "레드시프트된",
-        utxos: "UTXO",
-        no_utxos_empty_state: "UTXO가 없습니다.",
-        utxo_label: "UTXO",
-        utxo_caption: "새 UTXO와 교환하세요.",
-        lightning_label: "라이트닝",
-        lightning_caption: "UTXO를 라이트닝으로 전환하세요.",
-        oh_dear: "오 디얼!",
-        here_is_error: "다음과 같은 오류가 발생했습니다:"
-    },
     scanner: {
         paste: "붙여넣기",
         cancel: "취소"

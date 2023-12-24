@@ -12,7 +12,6 @@ import {
     Main,
     NotFound,
     Receive,
-    Redshift,
     Scanner,
     Send,
     Swap
@@ -98,7 +97,6 @@ export function Router() {
                     <Route path="/feedback" component={Feedback} />
                     <Route path="/gift" component={GiftReceive} />
                     <Route path="/receive" component={Receive} />
-                    <Route path="/redshift" component={Redshift} />
                     <Route path="/scanner" component={Scanner} />
                     <Route path="/send" component={Send} />
                     <Route path="/swap" component={Swap} />
