@@ -6,7 +6,6 @@ const routes = [
     "/feedback",
     "/gift",
     "/receive",
-    "/redshift",
     "/scanner",
     "/send",
     "/swap",
@@ -181,12 +180,6 @@ test("visit each route", async ({ page }) => {
     await expect(page.locator('[role="dialog"] h2 header').first()).toHaveText(
         "Add Connection"
     );
-
-    // Redshift
-    await page.goto("http://localhost:3420/redshift");
-    await expect(page.locator("h1")).toHaveText("Redshift (coming soon)");
-    checklist.set("/redshift", true);
-    await page.goBack();
 
     // Swap
     await page.goto("http://localhost:3420/swap");
