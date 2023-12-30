@@ -42,7 +42,7 @@ type RefetchPeersType = (
     info?: unknown
 ) => MutinyPeer[] | Promise<MutinyPeer[] | undefined> | null | undefined;
 
-function PeerItem(props: { peer: MutinyPeer }) {
+function PeerItem(props: { peer: MutinyPeer; refetchPeers: RefetchPeersType }) {
     const i18n = useI18n();
     const [state, _] = useMegaStore();
 
@@ -52,6 +52,7 @@ function PeerItem(props: { peer: MutinyPeer }) {
         } else {
             await state.mutiny_wallet?.delete_peer(props.peer.pubkey);
         }
+        await props.refetchPeers();
     };
 
     return (
@@ -108,7 +109,9 @@ function PeersList() {
                                 </code>
                             }
                         >
-                            {(peer) => <PeerItem peer={peer} />}
+                            {(peer) => (
+                                <PeerItem peer={peer} refetchPeers={refetch} />
+                            )}
                         </For>
                     </VStack>
                 </Suspense>
