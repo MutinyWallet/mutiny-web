@@ -148,7 +148,6 @@ function ConnectPeer(props: { refetchPeers: RefetchPeersType }) {
                 <TextField.Root
                     value={value()}
                     onChange={setValue}
-                    validationState={value() == "" ? "valid" : "invalid"}
                     class="flex flex-col gap-4"
                 >
                     <TextField.Label class="text-sm font-semibold uppercase">
