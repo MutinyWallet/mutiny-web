@@ -78,8 +78,20 @@ export function PendingNwc() {
             await state.mutiny_wallet?.approve_invoice(item.id);
             await vibrateSuccess();
         } catch (e) {
-            setError(eify(e));
-            console.error(e);
+            const err = eify(e);
+            // If we've already paid this invoice, just ignore the error
+            // we just want to remove it from the list and continue
+            if (err.message === "An invoice must not get payed twice.") {
+                // wrap in try/catch so we don't crash if the invoice is already gone
+                try {
+                    await state.mutiny_wallet?.deny_invoice(item.id);
+                } catch (_e) {
+                    // do nothing
+                }
+            } else {
+                setError(err);
+                console.error(e);
+            }
         } finally {
             setPaying("");
             refetch();
