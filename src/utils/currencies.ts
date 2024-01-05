@@ -163,20 +163,9 @@ export const FIAT_OPTIONS: Currency[] = [
         maxFractionalDigits: 0
     },
     {
-        label: "Kuwaiti Dinar KWD",
-        value: "KWD",
-        maxFractionalDigits: 3
-    },
-    {
         label: "Sri Lankan Rupee LKR",
         value: "LKR",
         hasSymbol: "Rs",
-        maxFractionalDigits: 2
-    },
-    {
-        label: "Myanmar Kyat MMK",
-        value: "MMK",
-        hasSymbol: "Ks",
         maxFractionalDigits: 2
     },
     {
@@ -273,12 +262,6 @@ export const FIAT_OPTIONS: Currency[] = [
         label: "Ukrainian Hryvnia UAH",
         value: "UAH",
         hasSymbol: "₴",
-        maxFractionalDigits: 2
-    },
-    {
-        label: "Venezuelan Bolívar VEF",
-        value: "VEF",
-        hasSymbol: "Bs",
         maxFractionalDigits: 2
     },
     {
