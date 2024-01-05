@@ -29,6 +29,7 @@ module.exports = {
                 "m-blue-dark": "hsla(220, 59%, 42%, 1)",
                 "m-red": "hsla(343, 92%, 54%, 1)",
                 "m-red-dark": "hsla(343, 92%, 44%, 1)",
+                "m-yellow": "#E7D538",
                 "sidebar-gray": "hsla(222, 15%, 7%, 1)",
                 "m-grey-350": "hsla(0, 0%, 73%, 1)",
                 "m-grey-400": "hsla(0, 0%, 64%, 1)",
