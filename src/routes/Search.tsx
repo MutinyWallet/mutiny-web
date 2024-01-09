@@ -7,9 +7,11 @@ import {
     createResource,
     createSignal,
     For,
+    Match,
     onMount,
     Show,
-    Suspense
+    Suspense,
+    Switch
 } from "solid-js";
 
 import close from "~/assets/icons/close.svg";
@@ -19,6 +21,7 @@ import {
     ContactEditor,
     ContactFormValues,
     LabelCircle,
+    LoadingShimmer,
     NavBar,
     showToast
 } from "~/components";
@@ -31,6 +34,13 @@ import {
 } from "~/components/layout";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
+import {
+    actuallyFetchNostrProfile,
+    hexpubFromNpub,
+    profileToPseudoContact,
+    PseudoContact,
+    searchProfiles
+} from "~/utils";
 
 export function Search() {
     return (
@@ -65,7 +75,6 @@ function ActualSearch() {
 
     async function contactsFetcher() {
         try {
-            console.log("getting contacts");
             const contacts: TagItem[] =
                 state.mutiny_wallet?.get_contacts_sorted();
             return contacts || [];
@@ -78,17 +87,24 @@ function ActualSearch() {
     const [contacts] = createResource(contactsFetcher);
 
     const filteredContacts = createMemo(() => {
+        const s = searchValue().toLowerCase();
         return (
             contacts()?.filter((c) => {
-                const s = searchValue().toLowerCase();
                 return (
-                    //
                     c.ln_address &&
                     (c.name.toLowerCase().includes(s) ||
                         c.ln_address?.toLowerCase().includes(s) ||
                         c.npub?.includes(s))
                 );
             }) || []
+        );
+    });
+
+    const foundNpubs = createMemo(() => {
+        return (
+            filteredContacts()
+                ?.map((c) => c.npub)
+                .filter((n) => !!n) || []
         );
     });
 
@@ -104,12 +120,10 @@ function ActualSearch() {
             let success = false;
             actions.handleIncomingString(
                 text,
-                (error) => {
-                    // showToast(error);
-                    console.log("error", error);
+                (_error) => {
+                    // noop
                 },
-                (result) => {
-                    console.log("result", result);
+                (_result) => {
                     success = true;
                 }
             );
@@ -258,7 +272,7 @@ function ActualSearch() {
                     Continue
                 </Button>
             </Show>
-            <div class="flex h-full flex-col gap-3 overflow-y-scroll">
+            <div class="relative flex h-full max-h-[100svh] flex-col gap-3 overflow-y-scroll">
                 <div class="sticky top-0 z-50 bg-m-grey-900/90 py-2 backdrop-blur-sm">
                     <h2 class="text-xl font-semibold">Contacts</h2>
                 </div>
@@ -290,8 +304,162 @@ function ActualSearch() {
                     </For>
                 </Show>
                 <ContactEditor createContact={createContact} />
+
+                <Show when={!!searchValue()}>
+                    <h2 class="py-2 text-xl font-semibold">Global Search</h2>
+                    <Suspense fallback={<LoadingShimmer />}>
+                        <GlobalSearch
+                            searchValue={searchValue()}
+                            sendToContact={sendToContact}
+                            foundNpubs={foundNpubs()}
+                        />
+                    </Suspense>
+                </Show>
                 <div class="h-4" />
             </div>
         </>
+    );
+}
+
+function GlobalSearch(props: {
+    searchValue: string;
+    sendToContact: (contact: TagItem) => void;
+    foundNpubs: (string | undefined)[];
+}) {
+    const hexpubs = createMemo(() => {
+        const hexpubs: string[] = [];
+        for (const npub of props.foundNpubs) {
+            hexpubFromNpub(npub)
+                .then((h) => {
+                    if (h) {
+                        hexpubs.push(h);
+                    }
+                })
+                .catch((e) => {
+                    console.error(e);
+                });
+        }
+        return hexpubs;
+    });
+
+    async function searchFetcher(args: { value?: string; hexpubs?: string[] }) {
+        try {
+            // Handling case when value starts with "npub"
+            if (args.value?.startsWith("npub")) {
+                const hexpub = await hexpubFromNpub(args.value);
+                if (!hexpub) return [];
+
+                const profile = await actuallyFetchNostrProfile(hexpub);
+                if (!profile) return [];
+
+                const contact = profileToPseudoContact(profile);
+                return contact.ln_address ? [contact] : [];
+            }
+
+            // Handling case for other values (name, nip-05, whatever else primal searches)
+            const contacts = await searchProfiles(args.value!.toLowerCase());
+            return contacts.filter(
+                (c) => c.ln_address && !args.hexpubs?.includes(c.hexpub)
+            );
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+    }
+
+    const searchArgs = createMemo(() => {
+        if (props.searchValue) {
+            return {
+                value: props.searchValue,
+                hexpubs: hexpubs()
+            };
+        } else {
+            return {
+                value: "",
+                hexpubs: undefined
+            };
+        }
+    });
+
+    const [searchResults] = createResource(searchArgs, searchFetcher);
+
+    return (
+        <Switch>
+            <Match
+                when={
+                    !!props.searchValue &&
+                    searchResults.state === "ready" &&
+                    searchResults()?.length === 0
+                }
+            >
+                <p class="text-neutral-500">
+                    No results found for "{props.searchValue}"
+                </p>
+            </Match>
+            <Match when={true}>
+                <For each={searchResults()}>
+                    {(contact) => (
+                        <SingleContact
+                            contact={contact}
+                            sendToContact={props.sendToContact}
+                        />
+                    )}
+                </For>
+            </Match>
+        </Switch>
+    );
+}
+
+function SingleContact(props: {
+    contact: PseudoContact;
+    sendToContact: (contact: TagItem) => void;
+}) {
+    const [state, _actions] = useMegaStore();
+    async function createContactFromSearchResult(contact: PseudoContact) {
+        try {
+            const contactId = await state.mutiny_wallet?.create_new_contact(
+                contact.name,
+                contact.hexpub ? contact.hexpub : undefined,
+                contact.ln_address ? contact.ln_address : undefined,
+                undefined,
+                contact.image_url ? contact.image_url : undefined
+            );
+
+            if (!contactId) {
+                throw new Error("no contact id returned");
+            }
+
+            const tagItem = await state.mutiny_wallet?.get_tag_item(contactId);
+
+            if (!tagItem) {
+                throw new Error("no contact returned");
+            }
+
+            props.sendToContact(tagItem);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    return (
+        <button
+            onClick={() => createContactFromSearchResult(props.contact)}
+            class="flex items-center gap-2"
+        >
+            <LabelCircle
+                name={props.contact.name}
+                image_url={props.contact.image_url}
+                contact
+                label={false}
+            />
+            <div class="flex flex-col items-start">
+                <h2 class="overflow-hidden overflow-ellipsis text-base font-semibold">
+                    {props.contact.name}
+                </h2>
+                <h3 class="overflow-hidden overflow-ellipsis text-sm font-normal text-neutral-500">
+                    {props.contact.ln_address}
+                </h3>
+            </div>
+        </button>
     );
 }
