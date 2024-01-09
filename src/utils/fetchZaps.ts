@@ -28,7 +28,7 @@ type SimpleZapItem = {
     content?: string;
 };
 
-type NostrProfile = {
+export type NostrProfile = {
     id: string;
     pubkey: string;
     created_at: number;
@@ -288,6 +288,10 @@ export const fetchNostrProfile: ResourceFetcher<
     string,
     NostrProfile | undefined
 > = async (hexpub, _info) => {
+    return await actuallyFetchNostrProfile(hexpub);
+};
+
+export async function actuallyFetchNostrProfile(hexpub: string) {
     try {
         if (!PRIMAL_API)
             throw new Error("Missing PRIMAL_API environment variable");
@@ -315,4 +319,59 @@ export const fetchNostrProfile: ResourceFetcher<
         console.error("Failed to load profile: ", e);
         throw new Error("Failed to load profile");
     }
+}
+
+// Search results from primal have some of the stuff we want for a TagItem contact
+export type PseudoContact = {
+    name: string;
+    hexpub: string;
+    ln_address?: string;
+    image_url?: string;
 };
+
+export async function searchProfiles(query: string): Promise<PseudoContact[]> {
+    console.log("searching profiles...");
+    const response = await fetch(PRIMAL_API, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify([
+            "user_search",
+            { query: query.trim(), limit: 10 }
+        ])
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to search`);
+    }
+
+    const data = await response.json();
+
+    const users: PseudoContact[] = [];
+
+    for (const object of data) {
+        if (object.kind === 0) {
+            try {
+                const profile = object as NostrProfile;
+                const contact = profileToPseudoContact(profile);
+                users.push(contact);
+            } catch (e) {
+                console.error("Failed to parse content: ", object.content);
+            }
+        }
+    }
+
+    return users;
+}
+
+export function profileToPseudoContact(profile: NostrProfile): PseudoContact {
+    const content = JSON.parse(profile.content);
+    const contact: Partial<PseudoContact> = {
+        hexpub: profile.pubkey
+    };
+    contact.name = content.display_name || content.name || profile.pubkey;
+    contact.ln_address = content.lud16 || undefined;
+    contact.image_url = content.picture || undefined;
+    return contact as PseudoContact;
+}
