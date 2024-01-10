@@ -86,6 +86,8 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.3"
 
       - name: Build APK
         working-directory: android
@@ -99,6 +101,8 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.3"
 
       # F-Droid APK
       - name: Upload F-Droid APK Universal Asset
