@@ -567,7 +567,8 @@ export function Send() {
                     lnurlp()!,
                     amountSats(),
                     undefined, // zap_npub
-                    tags
+                    tags,
+                    undefined // comment
                 );
                 sentDetails.payment_hash = payment?.payment_hash;
 
