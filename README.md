@@ -29,7 +29,7 @@ just test-ui
 
 ### Formatting
 
-Hopefully your editor picks up on the `.prettirrc` file and auto formats accordingly. If you want to format everything in the project run `pnpm run format`.
+Hopefully your editor picks up on the `prettier.config.mjs` file and auto formats accordingly. If you want to format everything in the project run `pnpm run format`.
 
 ### Deploying Web
 

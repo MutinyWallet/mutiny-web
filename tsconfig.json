@@ -27,7 +27,8 @@
         "vite.config.ts",
         ".eslintrc.cjs",
         "e2e/**/*",
-        "capacitor.config.ts"
+        "capacitor.config.ts",
+        "prettier.config.mjs"
     ],
     "exclude": [
         "node_modules",
