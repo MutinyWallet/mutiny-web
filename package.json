@@ -9,7 +9,7 @@
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
         "pre-commit": "pnpm run eslint && pnpm run check-types && pnpm run format",
-        "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
+        "format": "prettier --write \"{.,src/**,e2e/**}/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
         "check-format": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
     },
     "type": "module",
