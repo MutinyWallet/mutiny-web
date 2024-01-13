@@ -1,4 +1,4 @@
-export const WORDS_EN = [
+export const WORDS_EN: Set<string> = new Set([
     "abandon",
     "ability",
     "able",
@@ -2047,4 +2047,4 @@ export const WORDS_EN = [
     "zero",
     "zone",
     "zoo"
-];
+]);

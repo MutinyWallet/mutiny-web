@@ -41,8 +41,8 @@ const initialValues: SeedWordsForm = {
 };
 
 function validateWord(word?: string): boolean {
-    // return word?.trim() === "bacon";
-    return WORDS_EN.includes(word?.trim() ?? "");
+    const trimmed = word?.trim();
+    return trimmed ? WORDS_EN.has(trimmed) : false;
 }
 
 function SeedTextField(props: TextFieldProps) {
