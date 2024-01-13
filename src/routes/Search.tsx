@@ -91,10 +91,10 @@ function ActualSearch() {
         return (
             contacts()?.filter((c) => {
                 return (
-                    c.ln_address &&
-                    (c.name.toLowerCase().includes(s) ||
-                        c.ln_address?.toLowerCase().includes(s) ||
-                        c.npub?.includes(s))
+                    c.name.toLowerCase().includes(s) ||
+                    c.ln_address?.toLowerCase().includes(s) ||
+                    c.lnurl?.toLowerCase().includes(s) ||
+                    c.npub?.includes(s)
                 );
             }) || []
         );
@@ -279,27 +279,10 @@ function ActualSearch() {
                 <Show when={contacts.latest && contacts?.latest.length > 0}>
                     <For each={filteredContacts()}>
                         {(contact) => (
-                            <button
+                            <ContactButton
+                                contact={contact}
                                 onClick={() => sendToContact(contact)}
-                                class="flex items-center gap-2"
-                            >
-                                <LabelCircle
-                                    name={contact.name}
-                                    image_url={contact.image_url}
-                                    contact
-                                    label={false}
-                                    // Annoyingly the search input loses focus when the image load errors
-                                    onError={() => searchInputRef.focus()}
-                                />
-                                <div class="flex flex-col items-start">
-                                    <h2 class="overflow-hidden overflow-ellipsis text-base font-semibold">
-                                        {contact.name}
-                                    </h2>
-                                    <h3 class="overflow-hidden overflow-ellipsis text-sm font-normal text-neutral-500">
-                                        {contact.ln_address}
-                                    </h3>
-                                </div>
-                            </button>
+                            />
                         )}
                     </For>
                 </Show>
@@ -327,12 +310,12 @@ function GlobalSearch(props: {
     foundNpubs: (string | undefined)[];
 }) {
     const hexpubs = createMemo(() => {
-        const hexpubs: string[] = [];
+        const hexpubs: Set<string> = new Set();
         for (const npub of props.foundNpubs) {
             hexpubFromNpub(npub)
                 .then((h) => {
                     if (h) {
-                        hexpubs.push(h);
+                        hexpubs.add(h);
                     }
                 })
                 .catch((e) => {
@@ -342,10 +325,13 @@ function GlobalSearch(props: {
         return hexpubs;
     });
 
-    async function searchFetcher(args: { value?: string; hexpubs?: string[] }) {
+    async function searchFetcher(args: {
+        value?: string;
+        hexpubs?: Set<string>;
+    }) {
         try {
             // Handling case when value starts with "npub"
-            if (args.value?.startsWith("npub")) {
+            if (args.value?.toLowerCase().startsWith("npub")) {
                 const hexpub = await hexpubFromNpub(args.value);
                 if (!hexpub) return [];
 
@@ -353,14 +339,12 @@ function GlobalSearch(props: {
                 if (!profile) return [];
 
                 const contact = profileToPseudoContact(profile);
-                return contact.ln_address ? [contact] : [];
+                return [contact];
             }
 
             // Handling case for other values (name, nip-05, whatever else primal searches)
             const contacts = await searchProfiles(args.value!.toLowerCase());
-            return contacts.filter(
-                (c) => c.ln_address && !args.hexpubs?.includes(c.hexpub)
-            );
+            return contacts.filter((c) => !args.hexpubs?.has(c.hexpub));
         } catch (e) {
             console.error(e);
             return [];
@@ -415,6 +399,7 @@ function SingleContact(props: {
     sendToContact: (contact: TagItem) => void;
 }) {
     const [state, _actions] = useMegaStore();
+
     async function createContactFromSearchResult(contact: PseudoContact) {
         try {
             const contactId = await state.mutiny_wallet?.create_new_contact(
@@ -442,9 +427,30 @@ function SingleContact(props: {
     }
 
     return (
-        <button
+        <ContactButton
+            contact={props.contact}
             onClick={() => createContactFromSearchResult(props.contact)}
-            class="flex items-center gap-2"
+        />
+    );
+}
+
+function ContactButton(props: {
+    contact: PseudoContact | TagItem;
+    onClick: () => void;
+}) {
+    const i18n = useI18n();
+    return (
+        <button
+            onClick={() => props.onClick()}
+            class={
+                props.contact.ln_address || props.contact.lnurl
+                    ? "flex items-center gap-2"
+                    : "flex items-center gap-2 text-white/20 opacity-60"
+            }
+            disabled={
+                props.contact.ln_address === undefined &&
+                props.contact.lnurl === undefined
+            }
         >
             <LabelCircle
                 name={props.contact.name}
@@ -456,8 +462,19 @@ function SingleContact(props: {
                 <h2 class="overflow-hidden overflow-ellipsis text-base font-semibold">
                     {props.contact.name}
                 </h2>
-                <h3 class="overflow-hidden overflow-ellipsis text-sm font-normal text-neutral-500">
-                    {props.contact.ln_address}
+                <h3
+                    class={
+                        props.contact.ln_address || props.contact.lnurl
+                            ? "overflow-hidden overflow-ellipsis text-sm font-normal text-neutral-500"
+                            : "overflow-hidden overflow-ellipsis text-sm font-normal"
+                    }
+                >
+                    {props.contact.ln_address ||
+                        props.contact.lnurl
+                            ?.toLowerCase()
+                            .substring(0, 15)
+                            .concat("...") ||
+                        i18n.t("send.no_payment_info")}
                 </h3>
             </div>
         </button>

@@ -326,6 +326,7 @@ export type PseudoContact = {
     name: string;
     hexpub: string;
     ln_address?: string;
+    lnurl?: string;
     image_url?: string;
 };
 
@@ -372,6 +373,7 @@ export function profileToPseudoContact(profile: NostrProfile): PseudoContact {
     };
     contact.name = content.display_name || content.name || profile.pubkey;
     contact.ln_address = content.lud16 || undefined;
+    contact.lnurl = content.lud06 || undefined;
     contact.image_url = content.picture || undefined;
     return contact as PseudoContact;
 }
