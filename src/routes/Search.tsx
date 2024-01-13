@@ -3,6 +3,7 @@ import { Capacitor } from "@capacitor/core";
 import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate } from "@solidjs/router";
 import {
+    createEffect,
     createMemo,
     createResource,
     createSignal,
@@ -36,6 +37,7 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import {
     actuallyFetchNostrProfile,
+    debounce,
     hexpubFromNpub,
     profileToPseudoContact,
     PseudoContact,
@@ -69,9 +71,18 @@ export function Search() {
 
 function ActualSearch() {
     const [searchValue, setSearchValue] = createSignal("");
+    const [debouncedSearchValue, setDebouncedSearchValue] = createSignal("");
     const [state, actions] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
+
+    const trigger = debounce((message: string) => {
+        setDebouncedSearchValue(message);
+    }, 250);
+
+    createEffect(() => {
+        trigger(searchValue());
+    });
 
     async function contactsFetcher() {
         try {
@@ -87,7 +98,7 @@ function ActualSearch() {
     const [contacts] = createResource(contactsFetcher);
 
     const filteredContacts = createMemo(() => {
-        const s = searchValue().toLowerCase();
+        const s = debouncedSearchValue().toLowerCase();
         return (
             contacts()?.filter((c) => {
                 return (
@@ -109,10 +120,10 @@ function ActualSearch() {
     });
 
     const showSendButton = createMemo(() => {
-        if (searchValue() === "") {
+        if (debouncedSearchValue() === "") {
             return false;
         } else {
-            const text = searchValue().trim();
+            const text = debouncedSearchValue().trim();
             // Only want to check for something parseable if it's of reasonable length
             if (text.length < 6) {
                 return false;
@@ -133,7 +144,7 @@ function ActualSearch() {
 
     function handleContinue() {
         actions.handleIncomingString(
-            searchValue().trim(),
+            debouncedSearchValue().trim(),
             (error) => {
                 showToast(error);
             },
@@ -273,31 +284,35 @@ function ActualSearch() {
                 </Button>
             </Show>
             <div class="relative flex h-full max-h-[100svh] flex-col gap-3 overflow-y-scroll">
-                <div class="sticky top-0 z-50 bg-m-grey-900/90 py-2 backdrop-blur-sm">
-                    <h2 class="text-xl font-semibold">Contacts</h2>
-                </div>
-                <Show when={contacts.latest && contacts?.latest.length > 0}>
-                    <For each={filteredContacts()}>
-                        {(contact) => (
-                            <ContactButton
-                                contact={contact}
-                                onClick={() => sendToContact(contact)}
-                            />
-                        )}
-                    </For>
-                </Show>
+                <Suspense>
+                    <div class="sticky top-0 z-50 bg-m-grey-900/90 py-2 backdrop-blur-sm">
+                        <h2 class="text-xl font-semibold">Contacts</h2>
+                    </div>
+                    <Show when={contacts.latest && contacts?.latest.length > 0}>
+                        <For each={filteredContacts()}>
+                            {(contact) => (
+                                <ContactButton
+                                    contact={contact}
+                                    onClick={() => sendToContact(contact)}
+                                />
+                            )}
+                        </For>
+                    </Show>
+                </Suspense>
                 <ContactEditor createContact={createContact} />
 
-                <Show when={!!searchValue()}>
-                    <h2 class="py-2 text-xl font-semibold">Global Search</h2>
-                    <Suspense fallback={<LoadingShimmer />}>
+                <Suspense fallback={<LoadingShimmer />}>
+                    <Show when={!!debouncedSearchValue()}>
+                        <h2 class="py-2 text-xl font-semibold">
+                            Global Search
+                        </h2>
                         <GlobalSearch
-                            searchValue={searchValue()}
+                            searchValue={debouncedSearchValue()}
                             sendToContact={sendToContact}
                             foundNpubs={foundNpubs()}
                         />
-                    </Suspense>
-                </Show>
+                    </Show>
+                </Suspense>
                 <div class="h-4" />
             </div>
         </>

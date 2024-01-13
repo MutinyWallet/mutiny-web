@@ -18,3 +18,4 @@ export * from "./nostr";
 export * from "./currencies";
 export * from "./bech32";
 export * from "./keypad";
+export * from "./debounce";

@@ -11,7 +11,6 @@ export function LabelCircle(props: {
     contact: boolean;
     label: boolean;
     channel?: HackActivityType;
-    onError?: () => void;
 }) {
     const [gradient] = createResource(async () => {
         if (props.name && props.contact) {
@@ -44,8 +43,9 @@ export function LabelCircle(props: {
                     <img
                         src={props.image_url}
                         alt={"image"}
-                        onError={() => {
-                            props.onError && props.onError();
+                        onError={(e) => {
+                            // This doesn't stop the console errors from showing up
+                            e.stopPropagation();
                             setErrored(true);
                         }}
                     />
