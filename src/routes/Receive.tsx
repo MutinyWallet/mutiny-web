@@ -175,6 +175,8 @@ export function Receive() {
         setUnified("");
         setPaymentTx(undefined);
         setPaymentInvoice(undefined);
+        setError("");
+        setFlavor(state.preferredInvoiceType);
     }
 
     function openDetailsModal() {
@@ -352,7 +354,7 @@ export function Receive() {
             <DefaultMain>
                 <Show when={receiveState() === "show"} fallback={<BackLink />}>
                     <BackButton
-                        onClick={() => setReceiveState("edit")}
+                        onClick={() => clearAll()}
                         title={i18n.t("receive.edit")}
                         showOnDesktop
                     />
