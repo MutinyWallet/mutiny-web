@@ -1,4 +1,4 @@
-import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createEffect,
@@ -16,6 +16,7 @@ import {
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
 import close from "~/assets/icons/close.svg";
+import privateEye from "~/assets/icons/private-eye.svg";
 import {
     ActivityDetailsModal,
     AmountEditable,
@@ -36,6 +37,7 @@ import {
     MethodChoice,
     MutinyWalletGuard,
     NavBar,
+    SharpButton,
     showToast,
     SimpleInput,
     SmallHeader,
@@ -72,36 +74,18 @@ function DestinationShower(props: {
     nodePubkey?: string;
     lnurl?: string;
     lightning_address?: string;
-    contact_id?: string;
+    contact?: TagItem;
 }) {
-    const [state, _actions] = useMegaStore();
-
-    async function getContact(id: string) {
-        console.log("fetching contact", id);
-        try {
-            const contact = state.mutiny_wallet?.get_tag_item(id);
-            console.log("fetching contact", contact);
-            // This shouldn't happen
-            if (!contact) throw new Error("Contact not found");
-            return contact;
-        } catch (e) {
-            console.error(e);
-            showToast(eify(e));
-        }
-    }
-
-    const [contact] = createResource(() => props.contact_id, getContact);
-
     return (
         <Switch>
-            <Match when={contact.latest}>
+            <Match when={props.contact}>
                 <DestinationItem
-                    title={contact()?.name || ""}
-                    value={contact()?.ln_address}
+                    title={props.contact?.name || ""}
+                    value={props.contact?.ln_address}
                     icon={
                         <LabelCircle
-                            name={contact()?.name || ""}
-                            image_url={contact()?.image_url}
+                            name={props.contact?.name || ""}
+                            image_url={props.contact?.image_url}
                             contact
                             label={false}
                         />
@@ -253,6 +237,7 @@ export function Send() {
 
     // These can be derived from the destination or set by the user
     const [amountSats, setAmountSats] = createSignal(0n);
+    const [unparsedAmount, setUnparsedAmount] = createSignal(true);
 
     // These are derived from the incoming destination
     const [isAmtEditable, setIsAmtEditable] = createSignal(true);
@@ -509,8 +494,14 @@ export function Send() {
         } else {
             const parsed = BigInt(amountInput());
             console.log("parsed", parsed);
+            if (!parsed) {
+                setUnparsedAmount(true);
+            }
             if (parsed > 0n) {
                 setAmountSats(parsed);
+                setUnparsedAmount(false);
+            } else {
+                setUnparsedAmount(true);
             }
         }
     });
@@ -574,12 +565,18 @@ export function Send() {
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && lnurlp()) {
+                const zapNpub =
+                    visibility() === "anonzap" && contact()?.npub
+                        ? contact()?.npub
+                        : undefined;
+                console.log("zapnpub", zapNpub);
+                const comment = zapNpub ? whatForInput() : undefined;
                 const payment = await state.mutiny_wallet?.lnurl_pay(
                     lnurlp()!,
                     amountSats(),
-                    undefined, // zap_npub
+                    zapNpub, // zap_npub
                     tags,
-                    undefined // comment
+                    comment // comment
                 );
                 sentDetails.payment_hash = payment?.payment_hash;
 
@@ -646,9 +643,11 @@ export function Send() {
 
     const sendButtonDisabled = createMemo(() => {
         return (
+            unparsedAmount() ||
             parsingDestination() ||
             sending() ||
-            amountSats() === 0n ||
+            amountSats() == 0n ||
+            amountSats() === undefined ||
             !!error()
         );
     });
@@ -705,6 +704,34 @@ export function Send() {
             return onchainMethod();
         }
     });
+
+    const [visibility, setVisibility] = createSignal<"private" | "anonzap">(
+        "private"
+    );
+
+    function toggleVisibility() {
+        if (visibility() === "private") {
+            setVisibility("anonzap");
+        } else {
+            setVisibility("private");
+        }
+    }
+
+    async function getContact(id: string) {
+        console.log("fetching contact", id);
+        try {
+            const contact = state.mutiny_wallet?.get_tag_item(id);
+            console.log("fetching contact", contact);
+            // This shouldn't happen
+            if (!contact) throw new Error("Contact not found");
+            return contact;
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
+        }
+    }
+
+    const [contact] = createResource(contactId, getContact);
 
     return (
         <MutinyWalletGuard>
@@ -786,7 +813,7 @@ export function Send() {
                             nodePubkey={nodePubkey()}
                             lnurl={lnurlp()}
                             lightning_address={lnAddress()}
-                            contact_id={contactId()}
+                            contact={contact()}
                         />
                     </Suspense>
                     <div class="flex-1" />
@@ -843,6 +870,45 @@ export function Send() {
                     <div class="flex-1" />
 
                     <VStack>
+                        <Suspense>
+                            <div class="flex w-full">
+                                <SharpButton
+                                    onClick={toggleVisibility}
+                                    disabled={!contact()?.npub}
+                                >
+                                    <div class="flex items-center gap-2">
+                                        <Switch>
+                                            <Match
+                                                when={
+                                                    visibility() === "private"
+                                                }
+                                            >
+                                                <img
+                                                    src={privateEye}
+                                                    alt="Private"
+                                                />
+                                                <span>
+                                                    {i18n.t("send.private")}
+                                                </span>
+                                            </Match>
+                                            <Match
+                                                when={
+                                                    visibility() === "anonzap"
+                                                }
+                                            >
+                                                <img
+                                                    src={bolt}
+                                                    alt="Anon Zap"
+                                                />
+                                                <span>
+                                                    {i18n.t("send.anonzap")}
+                                                </span>
+                                            </Match>
+                                        </Switch>
+                                    </div>
+                                </SharpButton>
+                            </div>
+                        </Suspense>
                         <form
                             onSubmit={async (e) => {
                                 e.preventDefault();
@@ -853,7 +919,11 @@ export function Send() {
                         >
                             <SimpleInput
                                 type="text"
-                                placeholder={i18n.t("send.what_for")}
+                                placeholder={
+                                    visibility() === "private"
+                                        ? i18n.t("send.what_for")
+                                        : i18n.t("send.zap_note")
+                                }
                                 onInput={(e) =>
                                     setWhatForInput(e.currentTarget.value)
                                 }

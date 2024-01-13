@@ -50,3 +50,4 @@ export * from "./FeeDisplay";
 export * from "./ReceiveWarnings";
 export * from "./SimpleInput";
 export * from "./LabelCircle";
+export * from "./SharpButton";

@@ -103,7 +103,7 @@ export function BigMoney(props: {
                 <div
                     class="mb-2 mt-4 h-[2px] w-full rounded-full"
                     classList={{
-                        "bg-m-blue animate-pulse": props.inputFocused,
+                        "bg-m-blue": props.inputFocused,
                         "bg-m-blue/0": !props.inputFocused
                     }}
                 />
