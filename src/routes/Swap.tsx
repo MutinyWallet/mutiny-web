@@ -25,10 +25,8 @@ import {
     LargeHeader,
     MegaCheck,
     MegaEx,
-    MethodChooser,
     MutinyWalletGuard,
     NavBar,
-    SafeArea,
     showToast,
     SuccessModal,
     TextField,
@@ -36,7 +34,6 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { Network } from "~/logic/mutinyWalletSetup";
-import { SendSource } from "~/routes/Send";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
@@ -57,7 +54,6 @@ export function Swap() {
     const navigate = useNavigate();
     const i18n = useI18n();
 
-    const [source, setSource] = createSignal<SendSource>("onchain");
     const [amountSats, setAmountSats] = createSignal(0n);
     const [isConnecting, setIsConnecting] = createSignal(false);
 
@@ -92,7 +88,6 @@ export function Swap() {
     }
 
     function resetState() {
-        setSource("onchain");
         setAmountSats(0n);
         setIsConnecting(false);
         setLoading(false);
@@ -275,179 +270,172 @@ export function Swap() {
 
     return (
         <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain>
-                    <BackLink />
-                    <LargeHeader>{i18n.t("swap.header")}</LargeHeader>
-                    <SuccessModal
-                        confirmText={
-                            channelOpenResult()?.channel
-                                ? i18n.t("common.nice")
-                                : i18n.t("common.home")
-                        }
-                        open={!!channelOpenResult()}
-                        setOpen={(open: boolean) => {
-                            if (!open) resetState();
-                        }}
-                        onConfirm={() => {
-                            resetState();
-                            navigate("/");
-                        }}
-                    >
-                        <Switch>
-                            <Match when={channelOpenResult()?.failure_reason}>
-                                <MegaEx />
-                                <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
-                                    {channelOpenResult()?.failure_reason
-                                        ? channelOpenResult()?.failure_reason
-                                              ?.message
-                                        : ""}
-                                </h1>
-                                {/*TODO: Error hint needs to be added for possible failure reasons*/}
-                            </Match>
-                            <Match when={channelOpenResult()?.channel}>
-                                <Show when={detailsId() && detailsKind()}>
-                                    <ActivityDetailsModal
-                                        open={detailsOpen()}
-                                        kind={detailsKind()}
-                                        id={detailsId()}
-                                        setOpen={setDetailsOpen}
-                                    />
-                                </Show>
-                                <MegaCheck />
-                                <div class="flex flex-col justify-center">
-                                    <h1 class="mb-2 mt-4 w-full justify-center text-center text-2xl font-semibold md:text-3xl">
-                                        {i18n.t("swap.initiated")}
-                                    </h1>
-                                    <p class="text-center text-xl">
-                                        {i18n.t("swap.sats_added", {
-                                            amount: (
-                                                Number(
-                                                    channelOpenResult()?.channel
-                                                        ?.balance
-                                                ) +
-                                                Number(
-                                                    channelOpenResult()?.channel
-                                                        ?.reserve
-                                                )
-                                            ).toLocaleString()
-                                        })}
-                                    </p>
-                                    <div class="text-center text-sm text-white/70">
-                                        <AmountFiat
-                                            amountSats={
-                                                Number(
-                                                    channelOpenResult()?.channel
-                                                        ?.balance
-                                                ) +
-                                                Number(
-                                                    channelOpenResult()?.channel
-                                                        ?.reserve
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                                <hr class="w-16 bg-m-grey-400" />
-                                <p
-                                    class="cursor-pointer underline"
-                                    onClick={openDetailsModal}
-                                >
-                                    {i18n.t("common.view_payment_details")}
-                                </p>
-                                {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}
-                            </Match>
-                        </Switch>
-                    </SuccessModal>
-                    <VStack biggap>
-                        <MethodChooser
-                            source={source()}
-                            setSource={setSource}
-                            both={false}
-                        />
-                        <VStack>
-                            <Show when={!hasLsp()}>
-                                <Card>
-                                    <VStack>
-                                        <div class="flex w-full flex-col gap-2">
-                                            <label
-                                                for="peerselect"
-                                                class="text-sm font-semibold uppercase"
-                                            >
-                                                {i18n.t("swap.use_existing")}
-                                            </label>
-                                            <select
-                                                name="peerselect"
-                                                class="w-full truncate rounded bg-black px-4 py-2"
-                                                onChange={handlePeerSelect}
-                                                value={selectedPeer()}
-                                            >
-                                                <option
-                                                    value=""
-                                                    class=""
-                                                    selected
-                                                >
-                                                    {i18n.t("swap.choose_peer")}
-                                                </option>
-                                                <For each={peers()}>
-                                                    {(peer) => (
-                                                        <option
-                                                            value={peer.pubkey}
-                                                        >
-                                                            {peer.alias ??
-                                                                peer.pubkey}
-                                                        </option>
-                                                    )}
-                                                </For>
-                                            </select>
-                                        </div>
-                                        <Show when={!selectedPeer()}>
-                                            <Form
-                                                onSubmit={onSubmit}
-                                                class="flex flex-col gap-4"
-                                            >
-                                                <Field
-                                                    name="peer"
-                                                    validate={[required("")]}
-                                                >
-                                                    {(field, props) => (
-                                                        <TextField
-                                                            {...props}
-                                                            value={field.value}
-                                                            error={field.error}
-                                                            label={i18n.t(
-                                                                "swap.peer_connect_label"
-                                                            )}
-                                                            placeholder={i18n.t(
-                                                                "swap.peer_connect_placeholder"
-                                                            )}
-                                                        />
-                                                    )}
-                                                </Field>
-                                                <Button
-                                                    layout="small"
-                                                    type="submit"
-                                                    disabled={isConnecting()}
-                                                >
-                                                    {isConnecting()
-                                                        ? i18n.t(
-                                                              "swap.connecting"
-                                                          )
-                                                        : i18n.t(
-                                                              "swap.connect"
-                                                          )}
-                                                </Button>
-                                            </Form>
-                                        </Show>
-                                    </VStack>
-                                </Card>
+            <DefaultMain>
+                <BackLink />
+                <LargeHeader>{i18n.t("swap.header")}</LargeHeader>
+                <SuccessModal
+                    confirmText={
+                        channelOpenResult()?.channel
+                            ? i18n.t("common.nice")
+                            : i18n.t("common.home")
+                    }
+                    open={!!channelOpenResult()}
+                    setOpen={(open: boolean) => {
+                        if (!open) resetState();
+                    }}
+                    onConfirm={() => {
+                        resetState();
+                        navigate("/");
+                    }}
+                >
+                    <Switch>
+                        <Match when={channelOpenResult()?.failure_reason}>
+                            <MegaEx />
+                            <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
+                                {channelOpenResult()?.failure_reason
+                                    ? channelOpenResult()?.failure_reason
+                                          ?.message
+                                    : ""}
+                            </h1>
+                            {/*TODO: Error hint needs to be added for possible failure reasons*/}
+                        </Match>
+                        <Match when={channelOpenResult()?.channel}>
+                            <Show when={detailsId() && detailsKind()}>
+                                <ActivityDetailsModal
+                                    open={detailsOpen()}
+                                    kind={detailsKind()}
+                                    id={detailsId()}
+                                    setOpen={setDetailsOpen}
+                                />
                             </Show>
-                        </VStack>
+                            <MegaCheck />
+                            <div class="flex flex-col justify-center">
+                                <h1 class="mb-2 mt-4 w-full justify-center text-center text-2xl font-semibold md:text-3xl">
+                                    {i18n.t("swap.initiated")}
+                                </h1>
+                                <p class="text-center text-xl">
+                                    {i18n.t("swap.sats_added", {
+                                        amount: (
+                                            Number(
+                                                channelOpenResult()?.channel
+                                                    ?.balance
+                                            ) +
+                                            Number(
+                                                channelOpenResult()?.channel
+                                                    ?.reserve
+                                            )
+                                        ).toLocaleString()
+                                    })}
+                                </p>
+                                <div class="text-center text-sm text-white/70">
+                                    <AmountFiat
+                                        amountSats={
+                                            Number(
+                                                channelOpenResult()?.channel
+                                                    ?.balance
+                                            ) +
+                                            Number(
+                                                channelOpenResult()?.channel
+                                                    ?.reserve
+                                            )
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <hr class="w-16 bg-m-grey-400" />
+                            <p
+                                class="cursor-pointer underline"
+                                onClick={openDetailsModal}
+                            >
+                                {i18n.t("common.view_payment_details")}
+                            </p>
+                            {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}
+                        </Match>
+                    </Switch>
+                </SuccessModal>
+                <div class="flex flex-1 flex-col justify-between gap-2">
+                    <div class="flex-1" />
+                    <VStack biggap>
+                        <Show when={!hasLsp()}>
+                            <Card>
+                                <VStack>
+                                    <div class="flex w-full flex-col gap-2">
+                                        <label
+                                            for="peerselect"
+                                            class="text-sm font-semibold uppercase"
+                                        >
+                                            {i18n.t("swap.use_existing")}
+                                        </label>
+                                        <select
+                                            name="peerselect"
+                                            class="w-full truncate rounded bg-black px-4 py-2"
+                                            onChange={handlePeerSelect}
+                                            value={selectedPeer()}
+                                        >
+                                            <option value="" class="" selected>
+                                                {i18n.t("swap.choose_peer")}
+                                            </option>
+                                            <For each={peers()}>
+                                                {(peer) => (
+                                                    <option value={peer.pubkey}>
+                                                        {peer.alias ??
+                                                            peer.pubkey}
+                                                    </option>
+                                                )}
+                                            </For>
+                                        </select>
+                                    </div>
+                                    <Show when={!selectedPeer()}>
+                                        <Form
+                                            onSubmit={onSubmit}
+                                            class="flex flex-col gap-4"
+                                        >
+                                            <Field
+                                                name="peer"
+                                                validate={[required("")]}
+                                            >
+                                                {(field, props) => (
+                                                    <TextField
+                                                        {...props}
+                                                        value={field.value}
+                                                        error={field.error}
+                                                        label={i18n.t(
+                                                            "swap.peer_connect_label"
+                                                        )}
+                                                        placeholder={i18n.t(
+                                                            "swap.peer_connect_placeholder"
+                                                        )}
+                                                    />
+                                                )}
+                                            </Field>
+                                            <Button
+                                                layout="small"
+                                                type="submit"
+                                                disabled={isConnecting()}
+                                            >
+                                                {isConnecting()
+                                                    ? i18n.t("swap.connecting")
+                                                    : i18n.t("swap.connect")}
+                                            </Button>
+                                        </Form>
+                                    </Show>
+                                </VStack>
+                            </Card>
+                        </Show>
                         <AmountEditable
                             initialAmountSats={amountSats()}
                             setAmountSats={setAmountSats}
                             fee={feeEstimate()?.toString()}
-                            maxAmountSats={maxOnchain()}
+                            activeMethod={{
+                                method: "onchain",
+                                maxAmountSats: maxOnchain()
+                            }}
+                            methods={[
+                                {
+                                    method: "onchain",
+                                    maxAmountSats: maxOnchain()
+                                }
+                            ]}
                         />
                         <Show when={feeEstimate() && amountSats() > 0n}>
                             <FeeDisplay
@@ -471,9 +459,9 @@ export function Swap() {
                             {i18n.t("swap.confirm_swap")}
                         </Button>
                     </VStack>
-                </DefaultMain>
-                <NavBar activeTab="none" />
-            </SafeArea>
+                </div>
+            </DefaultMain>
+            <NavBar activeTab="none" />
         </MutinyWalletGuard>
     );
 }
