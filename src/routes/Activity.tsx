@@ -71,7 +71,6 @@ function ContactRow() {
         refetch();
     }
 
-    //
     async function saveContact(id: string, contact: ContactFormValues) {
         console.log("saving contact", id, contact);
         const hexpub = await hexpubFromNpub(contact.npub?.trim());
@@ -95,6 +94,16 @@ function ContactRow() {
         refetch();
     }
 
+    async function deleteContact(id: string) {
+        try {
+            await state.mutiny_wallet?.delete_contact(id);
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
+        }
+        refetch();
+    }
+
     return (
         <div class="flex gap-4">
             <ContactEditor list createContact={createContact} />
@@ -106,6 +115,7 @@ function ContactRow() {
                                 contact={contact}
                                 gradient={gradients()?.get(contact.name)}
                                 saveContact={saveContact}
+                                deleteContact={deleteContact}
                             />
                         )}
                     </For>
