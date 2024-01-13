@@ -119,27 +119,32 @@ function ActualSearch() {
         );
     });
 
-    const showSendButton = createMemo(() => {
+    type SearchState = "notsendable" | "sendable" | "sendableWithContact";
+
+    const searchState = createMemo<SearchState>(() => {
         if (debouncedSearchValue() === "") {
-            return false;
-        } else {
-            const text = debouncedSearchValue().trim();
-            // Only want to check for something parseable if it's of reasonable length
-            if (text.length < 6) {
-                return false;
-            }
-            let success = false;
-            actions.handleIncomingString(
-                text,
-                (_error) => {
-                    // noop
-                },
-                (_result) => {
-                    success = true;
-                }
-            );
-            return success;
+            return "notsendable";
         }
+        const text = debouncedSearchValue().trim();
+        // Only want to check for something parseable if it's of reasonable length
+        if (text.length < 6) {
+            return "notsendable";
+        }
+        let state: SearchState = "notsendable";
+        actions.handleIncomingString(
+            text,
+            (_error) => {
+                // noop
+            },
+            (result) => {
+                if (result.lightning_address || result.lnurl) {
+                    state = "sendableWithContact";
+                } else {
+                    state = "sendable";
+                }
+            }
+        );
+        return state;
     });
 
     function handleContinue() {
@@ -278,43 +283,49 @@ function ActualSearch() {
                     </button>
                 </Show>
             </div>
-            <Show when={showSendButton()}>
+            <Show when={searchState() !== "notsendable"}>
                 <Button intent="green" onClick={handleContinue}>
                     Continue
                 </Button>
             </Show>
-            <div class="relative flex h-full max-h-[100svh] flex-col gap-3 overflow-y-scroll">
-                <Suspense>
-                    <div class="sticky top-0 z-50 bg-m-grey-900/90 py-2 backdrop-blur-sm">
-                        <h2 class="text-xl font-semibold">Contacts</h2>
-                    </div>
-                    <Show when={contacts.latest && contacts?.latest.length > 0}>
-                        <For each={filteredContacts()}>
-                            {(contact) => (
-                                <ContactButton
-                                    contact={contact}
-                                    onClick={() => sendToContact(contact)}
-                                />
-                            )}
-                        </For>
-                    </Show>
-                </Suspense>
-                <ContactEditor createContact={createContact} />
+            <Show when={searchState() !== "sendable"}>
+                <div class="relative flex h-full max-h-[100svh] flex-col gap-3 overflow-y-scroll">
+                    <Suspense>
+                        <div class="sticky top-0 z-50 bg-m-grey-900/90 py-2 backdrop-blur-sm">
+                            <h2 class="text-xl font-semibold">Contacts</h2>
+                        </div>
+                        <Show
+                            when={
+                                contacts.latest && contacts?.latest.length > 0
+                            }
+                        >
+                            <For each={filteredContacts()}>
+                                {(contact) => (
+                                    <ContactButton
+                                        contact={contact}
+                                        onClick={() => sendToContact(contact)}
+                                    />
+                                )}
+                            </For>
+                        </Show>
+                    </Suspense>
+                    <ContactEditor createContact={createContact} />
 
-                <Suspense fallback={<LoadingShimmer />}>
-                    <Show when={!!debouncedSearchValue()}>
-                        <h2 class="py-2 text-xl font-semibold">
-                            Global Search
-                        </h2>
-                        <GlobalSearch
-                            searchValue={debouncedSearchValue()}
-                            sendToContact={sendToContact}
-                            foundNpubs={foundNpubs()}
-                        />
-                    </Show>
-                </Suspense>
-                <div class="h-4" />
-            </div>
+                    <Suspense fallback={<LoadingShimmer />}>
+                        <Show when={!!debouncedSearchValue()}>
+                            <h2 class="py-2 text-xl font-semibold">
+                                Global Search
+                            </h2>
+                            <GlobalSearch
+                                searchValue={debouncedSearchValue()}
+                                sendToContact={sendToContact}
+                                foundNpubs={foundNpubs()}
+                            />
+                        </Show>
+                    </Suspense>
+                    <div class="h-4" />
+                </div>
+            </Show>
         </>
     );
 }
