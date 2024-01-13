@@ -126,6 +126,7 @@ export default {
             sats_sent: "sats sent"
         },
         what_for: "What's this for?",
+        zap_note: "Zap note",
         error_low_balance:
             "We do not have enough balance to pay the given amount.",
         error_invoice_match:
@@ -142,7 +143,9 @@ export default {
         payment_pending_description:
             "It's taking a while, but it's possible this payment may still go through. Please check 'Activity' for the current status.",
         hodl_invoice_warning:
-            "This is a hodl invoice. Payments to hodl invoices can cause channel force closes, which results in high on-chain fees. Pay at your own risk!"
+            "This is a hodl invoice. Payments to hodl invoices can cause channel force closes, which results in high on-chain fees. Pay at your own risk!",
+        private: "Private",
+        anonzap: "Anon Zap"
     },
     feedback: {
         header: "Give us feedback!",

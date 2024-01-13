@@ -7,7 +7,7 @@ import {
     Show
 } from "solid-js";
 
-import { AmountSats, BigMoney } from "~/components";
+import { AmountSats, BigMoney, SharpButton } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 import {
     btcFloatRounding,
@@ -106,7 +106,6 @@ export const AmountEditable: ParentComponent<{
                 );
             }
         } else {
-            console.log("we're in the fiat branch");
             sane = fiatInputSanitizer(
                 value.replace(",", "."),
                 state.fiat.maxFractionalDigits
@@ -270,20 +269,17 @@ function MethodChooser(props: {
         props.setChosenMethod && props.setChosenMethod(nextMethod);
     }
     return (
-        <button
-            onClick={setNextMethod}
-            disabled={props.methods.length === 1}
-            class="flex gap-2 rounded px-2 py-1 text-sm font-light text-m-grey-400 md:text-base"
-            classList={{
-                "border-b border-t border-b-white/10 border-t-white/50 bg-neutral-700":
-                    props.methods?.length > 1
-            }}
-        >
-            <AmountSats
-                amountSats={props.activeMethod.maxAmountSats!}
-                denominationSize="sm"
-                icon={methodToIcon(props.activeMethod.method)}
-            />
-        </button>
+        <>
+            <SharpButton
+                onClick={setNextMethod}
+                disabled={props.methods.length === 1}
+            >
+                <AmountSats
+                    amountSats={props.activeMethod.maxAmountSats!}
+                    denominationSize="sm"
+                    icon={methodToIcon(props.activeMethod.method)}
+                />
+            </SharpButton>
+        </>
     );
 }
