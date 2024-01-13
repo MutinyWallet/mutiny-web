@@ -8,6 +8,7 @@ import {
     createEffect,
     createMemo,
     createResource,
+    createSignal,
     Match,
     Show,
     Suspense,
@@ -17,11 +18,13 @@ import {
 import bolt from "~/assets/icons/bolt.svg";
 import chain from "~/assets/icons/chain.svg";
 import copyIcon from "~/assets/icons/copy.svg";
+import pencilIcon from "~/assets/icons/pencil.svg";
 import shuffle from "~/assets/icons/shuffle.svg";
 import {
     ActivityAmount,
     AmountFiat,
     AmountSats,
+    Button,
     FancyCard,
     HackActivityType,
     Hr,
@@ -287,8 +290,17 @@ function OnchainDetails(props: {
         }
     });
 
+    const [feeBumpOpen, setFeeBumpOpen] = createSignal(false);
+
     return (
         <VStack>
+            <Show when={feeBumpOpen()}>
+                <FeeBumpDialog
+                    open={feeBumpOpen()}
+                    setOpen={(o) => setFeeBumpOpen(o)}
+                    txid={props.info.txid}
+                />
+            </Show>
             {/* <pre>{JSON.stringify(channelInfo() || "", null, 2)}</pre> */}
             <ul class="flex flex-col gap-4">
                 <Switch>
@@ -341,6 +353,23 @@ function OnchainDetails(props: {
                             amount={props.info.fee!.toString()}
                             price={state.price}
                         />
+                        <Show
+                            when={
+                                props.kind !== "ChannelOpen" &&
+                                !confirmationTime()
+                            }
+                        >
+                            <button
+                                class="min-w-[1.5rem] p-1"
+                                onClick={() => setFeeBumpOpen(true)}
+                            >
+                                <img
+                                    src={pencilIcon}
+                                    alt="edit"
+                                    class="h-4 w-4"
+                                />
+                            </button>
+                        </Show>
                     </KeyValue>
                 </Show>
                 <Show when={props.tags && props.kind === "OnChain"}>
@@ -418,6 +447,72 @@ function OnchainDetails(props: {
                 </KeyValue>
             </ul>
         </VStack>
+    );
+}
+
+export function FeeBumpDialog(props: {
+    open: boolean;
+    setOpen: (open: boolean) => void;
+    txid: string;
+}) {
+    const [state, _actions] = useMegaStore();
+
+    const low = state.mutiny_wallet?.estimate_fee_low() || 0;
+    let medium = state.mutiny_wallet?.estimate_fee_normal() || 0;
+    let high = state.mutiny_wallet?.estimate_fee_high() || 0;
+
+    // make sure they are all different values
+    // only really comes into effect on signet
+    if (medium <= low) {
+        medium = low + 1;
+    }
+    if (high <= low) {
+        high = medium + 1;
+    }
+
+    const onClick = async (fee_rate: number) => {
+        const txid = await state.mutiny_wallet?.bump_fee(props.txid, fee_rate);
+        if (txid) {
+            alert("succsesful fee bump: " + txid);
+        }
+    };
+
+    return (
+        <Dialog.Root open={props.open} onOpenChange={props.setOpen}>
+            <Dialog.Portal>
+                <Dialog.Overlay class={OVERLAY} />
+                <div class={DIALOG_POSITIONER}>
+                    <Dialog.Content class={DIALOG_CONTENT}>
+                        <Suspense>
+                            <div class="p-4">
+                                <div class="flex justify-between">
+                                    <div />
+                                    <Dialog.CloseButton>
+                                        <ModalCloseButton />
+                                    </Dialog.CloseButton>
+                                </div>
+                                <Dialog.Title>
+                                    <FancyCard>
+                                        <div>Bump Fee</div>
+                                    </FancyCard>
+                                </Dialog.Title>
+                                <Hr />
+
+                                <Button onClick={() => onClick(low)}>
+                                    Low {low} sats/vbyte
+                                </Button>
+                                <Button onClick={() => onClick(medium)}>
+                                    Medium {medium} sats/vbyte
+                                </Button>
+                                <Button onClick={() => onClick(high)}>
+                                    High {high} sats/vbyte
+                                </Button>
+                            </div>
+                        </Suspense>
+                    </Dialog.Content>
+                </div>
+            </Dialog.Portal>
+        </Dialog.Root>
     );
 }
 
