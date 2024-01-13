@@ -5,6 +5,8 @@ PODS:
     - Capacitor
   - CapacitorAppLauncher (5.0.6):
     - Capacitor
+  - CapacitorCamera (5.0.9):
+    - Capacitor
   - CapacitorClipboard (5.0.6):
     - Capacitor
   - CapacitorCordova (5.5.1)
@@ -15,6 +17,9 @@ PODS:
   - CapacitorMlkitBarcodeScanning (5.3.0):
     - Capacitor
     - GoogleMLKit/BarcodeScanning (= 4.0.0)
+  - CapacitorSecureStoragePlugin (0.9.0):
+    - Capacitor
+    - SwiftKeychainWrapper
   - CapacitorShare (5.0.6):
     - Capacitor
   - CapacitorStatusBar (5.0.6):
@@ -75,16 +80,19 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - PromisesObjC (2.3.1)
+  - SwiftKeychainWrapper (4.0.1)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app`)"
   - "CapacitorAppLauncher (from `../../node_modules/.pnpm/@capacitor+app-launcher@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app-launcher`)"
+  - "CapacitorCamera (from `../../node_modules/.pnpm/@capacitor+camera@5.0.9_@capacitor+core@5.5.1/node_modules/@capacitor/camera`)"
   - "CapacitorClipboard (from `../../node_modules/.pnpm/@capacitor+clipboard@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/clipboard`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.5.1_@capacitor+core@5.5.1/node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@5.1.4_@capacitor+core@5.5.1/node_modules/@capacitor/filesystem`)"
   - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/haptics`)"
   - "CapacitorMlkitBarcodeScanning (from `../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@5.3.0_@capacitor+core@5.5.1/node_modules/@capacitor-mlkit/barcode-scanning`)"
+  - "CapacitorSecureStoragePlugin (from `../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@5.5.1/node_modules/capacitor-secure-storage-plugin`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/share`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/status-bar`)"
   - "CapacitorToast (from `../../node_modules/.pnpm/@capacitor+toast@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/toast`)"
@@ -103,6 +111,7 @@ SPEC REPOS:
     - MLKitVision
     - nanopb
     - PromisesObjC
+    - SwiftKeychainWrapper
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -111,6 +120,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app"
   CapacitorAppLauncher:
     :path: "../../node_modules/.pnpm/@capacitor+app-launcher@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/app-launcher"
+  CapacitorCamera:
+    :path: "../../node_modules/.pnpm/@capacitor+camera@5.0.9_@capacitor+core@5.5.1/node_modules/@capacitor/camera"
   CapacitorClipboard:
     :path: "../../node_modules/.pnpm/@capacitor+clipboard@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/clipboard"
   CapacitorCordova:
@@ -121,6 +132,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+haptics@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/haptics"
   CapacitorMlkitBarcodeScanning:
     :path: "../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@5.3.0_@capacitor+core@5.5.1/node_modules/@capacitor-mlkit/barcode-scanning"
+  CapacitorSecureStoragePlugin:
+    :path: "../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@5.5.1/node_modules/capacitor-secure-storage-plugin"
   CapacitorShare:
     :path: "../../node_modules/.pnpm/@capacitor+share@5.0.6_@capacitor+core@5.5.1/node_modules/@capacitor/share"
   CapacitorStatusBar:
@@ -132,11 +145,13 @@ SPEC CHECKSUMS:
   Capacitor: 9da0a2415e3b6098511f8b5ffdb578d91ee79f8f
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
   CapacitorAppLauncher: 5a9f06c13c6b4f5d65b550a07128ef04f3a216b3
+  CapacitorCamera: 4892c5c392f60039d853dde78bc50ba19fbd113e
   CapacitorClipboard: 77edf49827ea21da2a9c05c690a4a6a4d07199c4
   CapacitorCordova: e128cc7688c070ca0bfa439898a5f609da8dbcfe
   CapacitorFilesystem: af704badfbc69f6f8623d9ed313e5490e3723dcb
   CapacitorHaptics: 1fffc1217c7e64a472d7845be50fb0c2f7d4204c
   CapacitorMlkitBarcodeScanning: ea08ef246e5d3511d5a231a59fae36b16ad9acb3
+  CapacitorSecureStoragePlugin: e91d7df060f2495a1acff9583641a6953e3aacba
   CapacitorShare: cd41743331cb71d217c029de54b681cbd91e0fcc
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
   CapacitorToast: bb0d79b78d9c27c0199b57f735dd50b8fc363489
@@ -152,7 +167,8 @@ SPEC CHECKSUMS:
   MLKitVision: 8baa5f46ee3352614169b85250574fde38c36f49
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
+  SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 0a4556c3ff620e7baf2e9aeba1f6e9f4fe406a0f
+PODFILE CHECKSUM: 49918019bef63fe6c45a1c0a4748457e705212b5
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.14.3

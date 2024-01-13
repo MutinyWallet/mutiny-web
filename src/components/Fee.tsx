@@ -20,7 +20,7 @@ export function Fee(props: { amountSats?: bigint | number }) {
                     </div>
                 </div>
                 <div>
-                    <FeesModal icon />
+                    <FeesModal />
                 </div>
             </div>
         </div>

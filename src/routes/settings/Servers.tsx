@@ -11,7 +11,6 @@ import {
     LoadingShimmer,
     NavBar,
     NiceP,
-    SafeArea,
     showToast,
     SimpleErrorDisplay,
     TextField
@@ -203,15 +202,13 @@ function AsyncSettingsEditor() {
 export function Servers() {
     const i18n = useI18n();
     return (
-        <SafeArea>
-            <DefaultMain>
-                <BackLink href="/settings" title={i18n.t("settings.header")} />
-                <LargeHeader>{i18n.t("settings.servers.title")}</LargeHeader>
-                <Suspense fallback={<LoadingShimmer />}>
-                    <AsyncSettingsEditor />
-                </Suspense>
-            </DefaultMain>
+        <DefaultMain>
+            <BackLink href="/settings" title={i18n.t("settings.header")} />
+            <LargeHeader>{i18n.t("settings.servers.title")}</LargeHeader>
+            <Suspense fallback={<LoadingShimmer />}>
+                <AsyncSettingsEditor />
+            </Suspense>
             <NavBar activeTab="settings" />
-        </SafeArea>
+        </DefaultMain>
     );
 }

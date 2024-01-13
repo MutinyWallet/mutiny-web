@@ -2,14 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply text-white;
-    @apply flex min-h-[100dvh] flex-col overflow-y-scroll overscroll-none safe-top safe-bottom disable-scrollbars;
+* {
+    touch-action: manipulation;
 }
 
 html {
-    @apply h-[100dvh] overscroll-none;
-    @apply bg-neutral-900;
+    @apply disable-scrollbars;
+    @apply bg-m-grey-975;
+}
+
+body {
+    -webkit-overflow-scrolling: touch;
+    /* After load we need to remove the bg so the qr scanner can show through */
+    @apply text-white;
+    @apply !bg-transparent;
+    @apply mx-auto flex w-full max-w-[600px] flex-1 flex-col safe-top safe-left safe-right safe-bottom min-h-device h-device;
 }
 
 #root {
@@ -78,5 +85,37 @@ select {
 }
 
 strong {
-    @apply font-semibold text-m-red;
+    @apply font-semibold;
+}
+
+@layer components {
+    .shiny-button {
+        @apply border-b border-t border-b-white/10 border-t-white/50 active:-mb-[1px] active:mt-[1px] active:opacity-70;
+    }
+}
+
+.crt::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
+        );
+    z-index: 2;
+    background-size:
+        100% 2px,
+        3px 100%;
+    pointer-events: none;
+    border-radius: 1rem;
 }

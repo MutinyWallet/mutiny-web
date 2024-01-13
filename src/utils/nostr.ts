@@ -62,3 +62,12 @@ export async function hexpubFromNpub(
         return undefined;
     }
 }
+
+export function getPrimalImageUrl(image_url?: string): string | undefined {
+    if (!image_url) {
+        return undefined;
+    }
+    return `https://primal.b-cdn.net/media-cache?s=s&a=1&u=${encodeURIComponent(
+        image_url
+    )}`;
+}

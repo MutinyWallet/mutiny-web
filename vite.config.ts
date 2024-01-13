@@ -1,7 +1,5 @@
-import * as child from "child_process";
-import * as path from "path";
-import autoprefixer from "autoprefixer";
-import tailwindcss from "tailwindcss";
+import child from "node:child_process";
+import path from "node:path";
 import { defineConfig } from "vite";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 import solid from "vite-plugin-solid";
@@ -71,11 +69,6 @@ export default defineConfig({
             "@capacitor/toast"
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
-        exclude: ["@mutinywallet/mutiny-wasm", "@mutinywallet/waila-wasm"]
-    },
-    css: {
-        postcss: {
-            plugins: [autoprefixer(), tailwindcss()]
-        }
+        exclude: ["@mutinywallet/mutiny-wasm"]
     }
 });

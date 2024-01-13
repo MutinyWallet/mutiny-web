@@ -1,11 +1,13 @@
 import { A } from "@solidjs/router";
-
-import airplane from "~/assets/icons/airplane.svg";
-import receive from "~/assets/icons/big-receive.svg";
-import mutiny_m from "~/assets/icons/m.svg";
-import scan from "~/assets/icons/scan.svg";
-import settings from "~/assets/icons/settings.svg";
-import userClock from "~/assets/icons/user-clock.svg";
+import {
+    ArrowDownLeft,
+    ArrowUpRight,
+    Scan,
+    Settings,
+    User,
+    Wallet
+} from "lucide-solid";
+import { JSX } from "solid-js";
 
 type ActiveTab =
     | "home"
@@ -13,14 +15,13 @@ type ActiveTab =
     | "send"
     | "receive"
     | "settings"
-    | "activity"
+    | "profile"
     | "none";
 
 function NavBarItem(props: {
     href: string;
-    icon: string;
+    icon: JSX.Element;
     active: boolean;
-    alt: string;
 }) {
     return (
         <li>
@@ -28,11 +29,12 @@ function NavBarItem(props: {
                 class="block rounded-lg p-2"
                 href={props.href}
                 classList={{
-                    "hover:bg-white/5 active:bg-m-blue": !props.active,
-                    "bg-black": props.active
+                    "hover:bg-white/20 active:bg-white/10 active:mt-[2px] active:-mb-[2px]":
+                        !props.active,
+                    "bg-m-red": props.active
                 }}
             >
-                <img src={props.icon} alt={props.alt} height={36} width={36} />
+                {props.icon}
             </A>
         </li>
     );
@@ -44,39 +46,33 @@ export function NavBar(props: { activeTab: ActiveTab }) {
             <ul class="mt-4 flex flex-col justify-start gap-4 px-4">
                 <NavBarItem
                     href="/"
-                    icon={mutiny_m}
+                    icon={<Wallet class="h-8 w-8" />}
                     active={props.activeTab === "home"}
-                    alt="home"
                 />
                 <NavBarItem
                     href="/search"
-                    icon={airplane}
+                    icon={<ArrowUpRight class="h-8 w-8" />}
                     active={props.activeTab === "send"}
-                    alt="send"
                 />
                 <NavBarItem
                     href="/receive"
-                    icon={receive}
+                    icon={<ArrowDownLeft class="h-8 w-8" />}
                     active={props.activeTab === "receive"}
-                    alt="receive"
-                />
-                <NavBarItem
-                    href="/activity"
-                    icon={userClock}
-                    active={props.activeTab === "activity"}
-                    alt="activity"
                 />
                 <NavBarItem
                     href="/scanner"
-                    icon={scan}
+                    icon={<Scan class="h-8 w-8" />}
                     active={false}
-                    alt="scan"
+                />
+                <NavBarItem
+                    href="/profile"
+                    icon={<User class="h-8 w-8" />}
+                    active={props.activeTab === "profile"}
                 />
                 <NavBarItem
                     href="/settings"
-                    icon={settings}
+                    icon={<Settings class="h-8 w-8" />}
                     active={props.activeTab === "settings"}
-                    alt="settings"
                 />
             </ul>
         </nav>

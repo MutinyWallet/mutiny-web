@@ -1,6 +1,6 @@
+import { ArrowDownUp } from "lucide-solid";
 import { Show } from "solid-js";
 
-import currencySwap from "~/assets/icons/currency-swap.svg";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { Currency } from "~/utils";
@@ -51,7 +51,7 @@ function SmallSubtleAmount(props: {
 
     return (
         <h2
-            class="flex flex-row items-end whitespace-nowrap text-xl font-light text-neutral-400"
+            class="flex flex-row items-center whitespace-nowrap text-xl font-light text-neutral-400"
             tabIndex={0}
         >
             <Show when={!props.loading || props.mode === "fiat"} fallback="…">
@@ -65,13 +65,7 @@ function SmallSubtleAmount(props: {
                 <span class="text-base">
                     {props.fiat ? props.fiat.value : i18n.t("common.sats")}
                 </span>
-                <img
-                    class={"pb-[4px] pl-[4px] hover:cursor-pointer"}
-                    src={currencySwap}
-                    height={24}
-                    width={24}
-                    alt="Swap currencies"
-                />
+                <ArrowDownUp class="flex-0 inline-block h-6 w-6 pl-2 hover:cursor-pointer" />
             </Show>
         </h2>
     );

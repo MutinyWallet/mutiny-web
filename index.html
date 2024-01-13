@@ -47,6 +47,9 @@
             #no-script {
                 margin: 1rem;
             }
+            body {
+                background-color: hsla(0, 0%, 5%, 1);
+            }
         </style>
     </head>
     <body>
@@ -63,8 +66,10 @@
                 Please update or enable WebAssembly to run this app.
             </p>
             <p>
-                If you're running iOS in lockdown mode you'll need to <a href="https://support.apple.com/en-us/HT212650">add an
-                exception for Mutiny Wallet.</a>
+                If you're running iOS in lockdown mode you'll need to
+                <a href="https://support.apple.com/en-us/HT212650"
+                    >add an exception for Mutiny Wallet.</a
+                >
             </p>
         </div>
         <noscript>
@@ -82,7 +87,7 @@
                 </p>
             </div>
         </noscript>
-    <div id="root"></div>
+        <div id="root"></div>
         <script type="module" src="/src/index.tsx"></script>
         <script>
             // Check for WebAssembly support

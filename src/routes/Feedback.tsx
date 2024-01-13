@@ -1,17 +1,15 @@
 import { createForm, required, SubmitHandler } from "@modular-forms/solid";
 import { A, useLocation } from "@solidjs/router";
+import { MessageSquareText } from "lucide-solid";
 import { createSignal, Match, Show, Switch } from "solid-js";
 
-import feedback from "~/assets/icons/feedback.svg";
 import { ExternalLink, InfoBox, MegaCheck, NavBar } from "~/components";
 import {
     BackPop,
     Button,
     ButtonLink,
-    DefaultMain,
     LargeHeader,
     NiceP,
-    SafeArea,
     TextField,
     VStack
 } from "~/components/layout";
@@ -35,7 +33,7 @@ export function FeedbackLink(props: { setupError?: boolean }) {
             href="/feedback"
         >
             {i18n.t("feedback.link")}
-            <img src={feedback} class="h-5 w-5" alt="Feedback" />
+            <MessageSquareText class="h-5 w-5" />
         </A>
     );
 }
@@ -174,46 +172,43 @@ export function Feedback() {
     const setupError = state?.setupError || undefined;
 
     return (
-        <SafeArea>
-            <DefaultMain>
-                <BackPop />
-
-                <Switch>
-                    <Match when={submitted()}>
-                        <div class="flex h-full flex-col items-center gap-4">
-                            <MegaCheck />
-                            <LargeHeader centered>
-                                {i18n.t("feedback.received")}
-                            </LargeHeader>
-                            <NiceP>{i18n.t("feedback.thanks")}</NiceP>
-                            <ButtonLink intent="blue" href="/" layout="full">
-                                {i18n.t("common.home")}
-                            </ButtonLink>
-                            <Button
-                                intent="text"
-                                layout="full"
-                                onClick={() => setSubmitted(false)}
-                            >
-                                {i18n.t("feedback.more")}
-                            </Button>
-                        </div>
-                    </Match>
-                    <Match when={true}>
-                        <LargeHeader>{i18n.t("feedback.header")}</LargeHeader>
-                        <NiceP>{i18n.t("feedback.tracking")}</NiceP>
-                        <NiceP>
-                            {i18n.t("feedback.github")}{" "}
-                            <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
-                                {i18n.t("feedback.create_issue")}
-                            </ExternalLink>
-                        </NiceP>
-                        <FeedbackForm onSubmitted={() => setSubmitted(true)} />
-                    </Match>
-                </Switch>
-            </DefaultMain>
+        <VStack>
+            <BackPop default="/" />
+            <Switch>
+                <Match when={submitted()}>
+                    <div class="flex h-full flex-col items-center gap-4">
+                        <MegaCheck />
+                        <LargeHeader centered>
+                            {i18n.t("feedback.received")}
+                        </LargeHeader>
+                        <NiceP>{i18n.t("feedback.thanks")}</NiceP>
+                        <ButtonLink intent="blue" href="/" layout="full">
+                            {i18n.t("common.home")}
+                        </ButtonLink>
+                        <Button
+                            intent="text"
+                            layout="full"
+                            onClick={() => setSubmitted(false)}
+                        >
+                            {i18n.t("feedback.more")}
+                        </Button>
+                    </div>
+                </Match>
+                <Match when={true}>
+                    <LargeHeader>{i18n.t("feedback.header")}</LargeHeader>
+                    <NiceP>{i18n.t("feedback.tracking")}</NiceP>
+                    <NiceP>
+                        {i18n.t("feedback.github")}{" "}
+                        <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/issues">
+                            {i18n.t("feedback.create_issue")}
+                        </ExternalLink>
+                    </NiceP>
+                    <FeedbackForm onSubmitted={() => setSubmitted(true)} />
+                </Match>
+            </Switch>
             <Show when={!setupError}>
                 <NavBar activeTab="send" />
             </Show>
-        </SafeArea>
+        </VStack>
     );
 }

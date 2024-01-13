@@ -1,6 +1,5 @@
+import { Info } from "lucide-solid";
 import { ParentComponent } from "solid-js";
-
-import info from "~/assets/icons/info.svg";
 
 export const InfoBox: ParentComponent<{
     accent: "red" | "blue" | "green" | "white";
@@ -16,7 +15,7 @@ export const InfoBox: ParentComponent<{
             }}
         >
             <div class="self-center">
-                <img src={info} alt="info" class="h-8 w-8" />
+                <Info class="h-8 w-8" />
             </div>
             <div class="flex items-center">
                 <p class="text-sm font-light">{props.children}</p>

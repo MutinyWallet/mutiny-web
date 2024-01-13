@@ -1,21 +1,26 @@
 import { expect, test } from "@playwright/test";
 
+import { loadHome } from "./utils";
+
 test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:3420/");
 });
 
 test("rountrip receive and send", async ({ page }) => {
-    // Click the receive button
-    await page.click("text=Receive");
+    await loadHome(page);
 
-    // Expect the url to conain receive
+    await page.locator("#fab").click();
+    await page.locator("text=Receive").last().click();
+
+    // Expect the url to contain receive
     await expect(page).toHaveURL(/.*receive/);
 
     // At least one h1 should show "0 sats"
     await expect(page.locator("h1")).toContainText(["0 SATS"]);
 
     // At least one h2 should show "0 USD"
-    await expect(page.locator("h2")).toContainText(["$0 USD"]);
+    // await expect(page.locator("h2")).toContainText(["$0 USD"]);
+    await page.waitForSelector("text=$0 USD");
 
     // Type 100000 into the input
     await page.locator("#sats-input").pressSequentially("100000");
@@ -72,7 +77,8 @@ test("rountrip receive and send", async ({ page }) => {
     await page.click("text=Nice");
 
     // Now we send
-    await page.click("text=Send");
+    await page.locator("#fab").click();
+    await page.locator("text=Send").click();
 
     // In the textarea with the placeholder "bitcoin:..." type refund@lnurl-staging.mutinywallet.com
     const sendInput = await page.locator("input");

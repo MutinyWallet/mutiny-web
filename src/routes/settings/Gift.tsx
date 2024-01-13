@@ -33,7 +33,6 @@ import {
     MutinyWalletGuard,
     NavBar,
     NiceP,
-    SafeArea,
     SettingsCard,
     TextField,
     VStack
@@ -206,127 +205,119 @@ export function Gift() {
 
     return (
         <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain>
-                    <BackPop />
-                    <Show when={!canGift}>
-                        <VStack>
-                            <LargeHeader>
-                                {i18n.t("settings.gift.send_header")}
-                            </LargeHeader>
-                            <NiceP>{i18n.t("settings.gift.need_plus")}</NiceP>
-                            <MutinyPlusCta />
-                        </VStack>
-                    </Show>
-                    <Show when={giftResult()}>
-                        <VStack>
-                            <Switch>
-                                <Match when={!freshProfile()}>
-                                    <LargeHeader>
-                                        {i18n.t(
-                                            "settings.gift.send_header_claimed"
-                                        )}
-                                    </LargeHeader>
-                                    <NiceP>
-                                        {i18n.t("settings.gift.send_claimed")}
-                                    </NiceP>
-                                </Match>
-                                <Match when={true}>
-                                    <LargeHeader>
-                                        {i18n.t(
-                                            "settings.gift.send_sharable_header"
-                                        )}
-                                    </LargeHeader>
-                                    <NiceP>
-                                        {i18n.t(
-                                            "settings.gift.send_instructions"
-                                        )}
-                                    </NiceP>
-                                    <InfoBox accent="green">
-                                        {i18n.t("settings.gift.send_tip")}
-                                    </InfoBox>
-                                    <SingleGift
-                                        profile={freshProfile()!}
-                                        onDelete={resetGifting}
-                                    />
-                                </Match>
-                            </Switch>
-                            <Button intent="green" onClick={resetGifting}>
-                                {i18n.t("settings.gift.send_another")}
-                            </Button>
-                        </VStack>
-                    </Show>
-                    <Show when={!giftResult() && canGift}>
+            <DefaultMain>
+                <BackPop default="/settings" />
+                <Show when={!canGift}>
+                    <VStack>
                         <LargeHeader>
                             {i18n.t("settings.gift.send_header")}
                         </LargeHeader>
-                        <Form onSubmit={handleSubmit}>
-                            <VStack>
+                        <NiceP>{i18n.t("settings.gift.need_plus")}</NiceP>
+                        <MutinyPlusCta />
+                    </VStack>
+                </Show>
+                <Show when={giftResult()}>
+                    <VStack>
+                        <Switch>
+                            <Match when={!freshProfile()}>
+                                <LargeHeader>
+                                    {i18n.t(
+                                        "settings.gift.send_header_claimed"
+                                    )}
+                                </LargeHeader>
                                 <NiceP>
-                                    {i18n.t("settings.gift.send_explainer")}
+                                    {i18n.t("settings.gift.send_claimed")}
                                 </NiceP>
-                                <Field name="amount">
-                                    {(field) => (
-                                        <AmountEditable
-                                            initialAmountSats={
-                                                field.value || "0"
-                                            }
-                                            setAmountSats={(newAmount) =>
-                                                setValue(
-                                                    giftForm,
-                                                    "amount",
-                                                    newAmount.toString()
-                                                )
-                                            }
-                                        />
+                            </Match>
+                            <Match when={true}>
+                                <LargeHeader>
+                                    {i18n.t(
+                                        "settings.gift.send_sharable_header"
                                     )}
-                                </Field>
-                                <Field
-                                    name="name"
-                                    validate={[
-                                        required(
-                                            i18n.t(
-                                                "settings.gift.send_name_required"
+                                </LargeHeader>
+                                <NiceP>
+                                    {i18n.t("settings.gift.send_instructions")}
+                                </NiceP>
+                                <InfoBox accent="green">
+                                    {i18n.t("settings.gift.send_tip")}
+                                </InfoBox>
+                                <SingleGift
+                                    profile={freshProfile()!}
+                                    onDelete={resetGifting}
+                                />
+                            </Match>
+                        </Switch>
+                        <Button intent="green" onClick={resetGifting}>
+                            {i18n.t("settings.gift.send_another")}
+                        </Button>
+                    </VStack>
+                </Show>
+                <Show when={!giftResult() && canGift}>
+                    <LargeHeader>
+                        {i18n.t("settings.gift.send_header")}
+                    </LargeHeader>
+                    <Form onSubmit={handleSubmit}>
+                        <VStack>
+                            <NiceP>
+                                {i18n.t("settings.gift.send_explainer")}
+                            </NiceP>
+                            <Field name="amount">
+                                {(field) => (
+                                    <AmountEditable
+                                        initialAmountSats={field.value || "0"}
+                                        setAmountSats={(newAmount) =>
+                                            setValue(
+                                                giftForm,
+                                                "amount",
+                                                newAmount.toString()
                                             )
+                                        }
+                                    />
+                                )}
+                            </Field>
+                            <Field
+                                name="name"
+                                validate={[
+                                    required(
+                                        i18n.t(
+                                            "settings.gift.send_name_required"
                                         )
-                                    ]}
-                                >
-                                    {(field, props) => (
-                                        <TextField
-                                            {...props}
-                                            value={field.value}
-                                            error={field.error}
-                                            label={i18n.t(
-                                                "settings.gift.send_name_label"
-                                            )}
-                                            placeholder="Satoshi Nakamoto"
-                                        />
-                                    )}
-                                </Field>
-
-                                <Show when={lessThanMinChannelSize()}>
-                                    <InfoBox accent="green">
-                                        {i18n.t(
-                                            "settings.gift.send_small_warning"
+                                    )
+                                ]}
+                            >
+                                {(field, props) => (
+                                    <TextField
+                                        {...props}
+                                        value={field.value}
+                                        error={field.error}
+                                        label={i18n.t(
+                                            "settings.gift.send_name_label"
                                         )}
-                                    </InfoBox>
-                                </Show>
-                                <Button
-                                    intent="blue"
-                                    type="submit"
-                                    loading={giftForm.submitting}
-                                >
-                                    {i18n.t("settings.gift.send_cta")}
-                                </Button>
-                            </VStack>
-                        </Form>
-                        <Suspense fallback={<LoadingSpinner />}>
-                            <ExistingGifts />
-                        </Suspense>
-                    </Show>
-                </DefaultMain>
-                <NavBar activeTab="settings" />
-            </SafeArea>
+                                        placeholder="Satoshi Nakamoto"
+                                    />
+                                )}
+                            </Field>
+
+                            <Show when={lessThanMinChannelSize()}>
+                                <InfoBox accent="green">
+                                    {i18n.t("settings.gift.send_small_warning")}
+                                </InfoBox>
+                            </Show>
+                            <Button
+                                intent="blue"
+                                type="submit"
+                                loading={giftForm.submitting}
+                            >
+                                {i18n.t("settings.gift.send_cta")}
+                            </Button>
+                        </VStack>
+                    </Form>
+                    <Suspense fallback={<LoadingSpinner />}>
+                        <ExistingGifts />
+                    </Suspense>
+                </Show>
+            </DefaultMain>
+            <NavBar activeTab="settings" />
         </MutinyWalletGuard>
     );
 }

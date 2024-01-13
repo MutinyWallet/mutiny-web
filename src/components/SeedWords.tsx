@@ -1,6 +1,6 @@
+import { Copy } from "lucide-solid";
 import { createMemo, createSignal, For, Match, Switch } from "solid-js";
 
-import copyIcon from "~/assets/icons/copy.svg";
 import { useI18n } from "~/i18n/context";
 import { useCopy } from "~/utils";
 
@@ -73,11 +73,7 @@ export function SeedWords(props: {
                                                   "settings.backup.seed_words.copy"
                                               )}
                                     </span>
-                                    <img
-                                        src={copyIcon}
-                                        alt="copy"
-                                        class="h-4 w-4"
-                                    />
+                                    <Copy class="h-4 w-4" />
                                 </div>
                             </button>
                         </div>

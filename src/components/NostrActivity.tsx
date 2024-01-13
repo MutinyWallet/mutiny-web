@@ -1,3 +1,6 @@
+import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { useNavigate } from "@solidjs/router";
+import { Search } from "lucide-solid";
 import {
     createEffect,
     createResource,
@@ -7,12 +10,13 @@ import {
     Switch
 } from "solid-js";
 
-import rightArrow from "~/assets/icons/right-arrow.svg";
-import { AmountSats, VStack } from "~/components";
+import { ButtonCard, NiceP } from "~/components/layout";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { fetchZaps, hexpubFromNpub } from "~/utils";
+import { fetchZaps, getPrimalImageUrl } from "~/utils";
 import { timeAgo } from "~/utils/prettyPrintTime";
+
+import { GenericItem } from "./GenericItem";
 
 export function Avatar(props: { image_url?: string; large?: boolean }) {
     return (
@@ -32,17 +36,11 @@ export function Avatar(props: { image_url?: string; large?: boolean }) {
     );
 }
 
-function formatProfileLink(hexpub: string): string {
-    return `https://primal.net/p/${hexpub}`;
-}
-
 export function NostrActivity() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
     const [data, { refetch }] = createResource(state.npub, fetchZaps);
-
-    const [userHexpub] = createResource(state.npub, hexpubFromNpub);
 
     function nameFromHexpub(hexpub: string): string {
         const profile = data.latest?.profiles[hexpub];
@@ -56,8 +54,8 @@ export function NostrActivity() {
         const profile = data.latest?.profiles[hexpub];
         if (!profile) return;
         const parsed = JSON.parse(profile.content);
-        const image_url = parsed.picture;
-        return image_url;
+        const image_url = parsed.image || parsed.picture;
+        return getPrimalImageUrl(image_url);
     }
 
     createEffect(() => {
@@ -67,105 +65,108 @@ export function NostrActivity() {
         }
     });
 
+    const navigate = useNavigate();
+
+    // TODO: can this be part of mutiny wallet?
+    async function newContactFromHexpub(hexpub: string) {
+        try {
+            const npub = await MutinyWallet.hexpub_to_npub(hexpub);
+
+            if (!npub) {
+                throw new Error("No npub for that hexpub");
+            }
+
+            const existingContact =
+                await state.mutiny_wallet?.get_contact_for_npub(npub);
+
+            if (existingContact) {
+                navigate(`/chat/${existingContact.id}`);
+                return;
+            }
+
+            const profile = data.latest?.profiles[hexpub];
+            if (!profile) return;
+            const parsed = JSON.parse(profile.content);
+            const name = parsed.display_name || parsed.name || profile.pubkey;
+            const image_url = parsed.image || parsed.picture || undefined;
+            const ln_address = parsed.lud16 || undefined;
+            const lnurl = parsed.lud06 || undefined;
+
+            const contactId = await state.mutiny_wallet?.create_new_contact(
+                name,
+                npub,
+                ln_address,
+                lnurl,
+                image_url
+            );
+
+            if (!contactId) {
+                throw new Error("no contact id returned");
+            }
+
+            const tagItem = await state.mutiny_wallet?.get_tag_item(contactId);
+
+            if (!tagItem) {
+                throw new Error("no contact returned");
+            }
+
+            navigate(`/chat/${contactId}`);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return (
-        <VStack>
+        <div class="flex w-full flex-col divide-y divide-m-grey-800 overflow-x-clip">
+            <Show when={!data.latest || data.latest?.zaps.length === 0}>
+                <ButtonCard onClick={() => navigate("/search")}>
+                    <div class="flex items-center gap-2">
+                        <Search class="inline-block text-m-red" />
+                        <NiceP>{i18n.t("home.find")}</NiceP>
+                    </div>
+                </ButtonCard>
+            </Show>
             <For each={data.latest?.zaps}>
                 {(zap) => (
-                    <div
-                        class="rounded-lg bg-m-grey-800 p-2"
-                        classList={{
-                            "outline outline-m-blue":
-                                userHexpub() === zap.to_hexpub
-                        }}
-                    >
-                        <div class="grid grid-cols-[1fr_auto_1fr] gap-4">
-                            <div class="grid gap-2 sm:grid-cols-[auto_1fr] sm:items-center">
-                                <Avatar
-                                    image_url={imageFromHexpub(zap.from_hexpub)}
-                                />
-                                <span class="truncate whitespace-nowrap text-left text-sm font-semibold uppercase">
-                                    <Switch>
-                                        <Match when={zap.kind === "public"}>
-                                            <a
-                                                href={formatProfileLink(
-                                                    zap.from_hexpub
-                                                )}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                class="no-underline"
-                                            >
-                                                {nameFromHexpub(
-                                                    zap.from_hexpub
-                                                )}
-                                            </a>
-                                        </Match>
-                                        <Match when={zap.kind === "private"}>
-                                            {i18n.t("activity.private")}
-                                        </Match>
-                                        <Match when={zap.kind === "anonymous"}>
-                                            {i18n.t("activity.anonymous")}
-                                        </Match>
-                                    </Switch>
-                                </span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center">
-                                <div class="flex items-center gap-1">
-                                    <AmountSats amountSats={zap.amount_sats} />
-                                    <img
-                                        src={rightArrow}
-                                        alt="right arrow"
-                                        class="h-4 w-4"
-                                    />
-                                </div>
-                                <time class="text-sm text-m-grey-400">
-                                    <Show
-                                        when={zap.event_id}
-                                        fallback={timeAgo(
-                                            zap.timestamp,
-                                            data.latest?.until
-                                        )}
-                                    >
-                                        <a
-                                            href={`https://primal.net/e/${zap.event_id}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {timeAgo(
-                                                zap.timestamp,
-                                                data.latest?.until
-                                            )}
-                                        </a>
-                                    </Show>
-                                </time>
-                            </div>
-                            <div class="grid gap-2 self-end sm:grid-cols-[1fr_auto] sm:items-center ">
-                                <div class="self-right flex justify-end">
-                                    <Avatar
-                                        image_url={imageFromHexpub(
-                                            zap.to_hexpub
-                                        )}
-                                    />
-                                </div>
-                                <a
-                                    href={formatProfileLink(zap.to_hexpub)}
-                                    class="truncate whitespace-nowrap text-right text-sm font-semibold uppercase no-underline sm:-order-1 sm:text-right"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {nameFromHexpub(zap.to_hexpub)}
-                                </a>
-                            </div>
-                        </div>
-                        <Show when={zap.content}>
-                            <hr class="my-2 border-m-grey-750" />
-                            <p
-                                class="truncate text-center text-sm font-light text-neutral-200"
-                                textContent={zap.content}
-                            />
-                        </Show>
-                    </div>
+                    <>
+                        <GenericItem
+                            primaryAvatarUrl={
+                                imageFromHexpub(zap.from_hexpub) || ""
+                            }
+                            primaryName={
+                                zap.kind === "anonymous"
+                                    ? i18n.t("activity.anonymous")
+                                    : zap.kind === "private"
+                                    ? i18n.t("activity.private")
+                                    : nameFromHexpub(zap.from_hexpub)
+                            }
+                            primaryOnClick={() => {
+                                newContactFromHexpub(zap.from_hexpub);
+                            }}
+                            secondaryAvatarUrl={
+                                imageFromHexpub(zap.to_hexpub) || ""
+                            }
+                            secondaryName={nameFromHexpub(zap.to_hexpub)}
+                            secondaryOnClick={() => {
+                                newContactFromHexpub(zap.to_hexpub);
+                            }}
+                            verb={"zapped"}
+                            amount={zap.amount_sats}
+                            message={zap.content ? zap.content : undefined}
+                            date={timeAgo(zap.timestamp, data.latest?.until)}
+                            visibility={
+                                zap.kind === "public" ? "public" : "private"
+                            }
+                            genericAvatar={
+                                zap.kind === "anonymous" ||
+                                zap.kind === "private"
+                            }
+                            forceSecondary
+                            link={`https://njump.me/e/${zap.event_id}`}
+                        />
+                    </>
                 )}
             </For>
-        </VStack>
+        </div>
     );
 }

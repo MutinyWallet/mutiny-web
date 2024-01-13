@@ -1,7 +1,14 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
 import { TagItem } from "@mutinywallet/mutiny-wasm";
-import { A, useNavigate } from "@solidjs/router";
+import {
+    A,
+    cache,
+    createAsync,
+    useNavigate,
+    useSearchParams
+} from "@solidjs/router";
+import { LucideClipboard, Scan, X } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -15,23 +22,20 @@ import {
     Switch
 } from "solid-js";
 
-import close from "~/assets/icons/close.svg";
-import paste from "~/assets/icons/paste.svg";
-import scan from "~/assets/icons/scan.svg";
 import {
+    ContactButton,
     ContactEditor,
     ContactFormValues,
-    LabelCircle,
     LoadingShimmer,
     NavBar,
-    showToast
+    showToast,
+    VStack
 } from "~/components";
 import {
     BackLink,
     Button,
     DefaultMain,
-    MutinyWalletGuard,
-    SafeArea
+    MutinyWalletGuard
 } from "~/components/layout";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
@@ -47,29 +51,27 @@ import {
 export function Search() {
     return (
         <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain zeroBottomPadding={true}>
-                    <div class="flex items-center justify-between">
-                        <BackLink />
-                        <A
-                            class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
-                            href="/scanner"
-                        >
-                            <img src={scan} alt="Scan" class="h-6 w-6" />
-                        </A>{" "}
-                    </div>
-                    {/* Need to put the search view in a supsense so it loads list on first nav */}
-                    <Suspense>
-                        <ActualSearch />
-                    </Suspense>
-                </DefaultMain>
-                <NavBar activeTab="send" />
-            </SafeArea>
+            <DefaultMain>
+                <div class="flex items-center justify-between">
+                    <BackLink />
+                    <A
+                        class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
+                        href="/scanner"
+                    >
+                        <Scan class="h-6 w-6" />
+                    </A>{" "}
+                </div>
+                {/* Need to put the search view in a supsense so it loads list on first nav */}
+                <Suspense>
+                    <ActualSearch />
+                </Suspense>
+            </DefaultMain>
+            <NavBar activeTab="send" />
         </MutinyWalletGuard>
     );
 }
 
-function ActualSearch() {
+function ActualSearch(props: { initialValue?: string }) {
     const [searchValue, setSearchValue] = createSignal("");
     const [debouncedSearchValue, setDebouncedSearchValue] = createSignal("");
     const [state, actions] = useMegaStore();
@@ -84,18 +86,19 @@ function ActualSearch() {
         trigger(searchValue());
     });
 
-    async function contactsFetcher() {
+    const getContacts = cache(async () => {
         try {
-            const contacts: TagItem[] =
-                await state.mutiny_wallet?.get_contacts_sorted();
-            return contacts || [];
+            const contacts = await state.mutiny_wallet?.get_contacts_sorted();
+            return contacts || ([] as TagItem[]);
         } catch (e) {
             console.error(e);
-            return [];
+            return [] as TagItem[];
         }
-    }
+    }, "contacts");
 
-    const [contacts] = createResource(contactsFetcher);
+    const contacts = createAsync<TagItem[]>(() => getContacts(), {
+        initialValue: []
+    });
 
     const filteredContacts = createMemo(() => {
         const s = debouncedSearchValue().toLowerCase();
@@ -147,6 +150,16 @@ function ActualSearch() {
         return state;
     });
 
+    function navWithSearchValue(to: string) {
+        navigate(to, {
+            state: {
+                previous: searchValue()
+                    ? `/search/?search=${searchValue().trim()}`
+                    : "/search"
+            }
+        });
+    }
+
     function handleContinue() {
         actions.handleIncomingString(
             debouncedSearchValue().trim(),
@@ -156,7 +169,11 @@ function ActualSearch() {
             (result) => {
                 if (result) {
                     actions.setScanResult(result);
-                    navigate("/send", { state: { previous: "/search" } });
+                    navigate("/send", {
+                        state: {
+                            previous: "/search"
+                        }
+                    });
                 } else {
                     showToast(new Error(i18n.t("send.error_address")));
                 }
@@ -165,28 +182,21 @@ function ActualSearch() {
     }
 
     function sendToContact(contact: TagItem) {
-        const address = contact.ln_address || contact.lnurl;
-        if (address) {
-            actions.handleIncomingString(
-                (address || "").trim(),
-                (error) => {
-                    showToast(error);
-                },
-                (result) => {
-                    actions.setScanResult({
-                        ...result,
-                        contact_id: contact.id
-                    });
-                    navigate("/send", { state: { previous: "/search" } });
-                }
-            );
-        } else {
-            console.error("no ln_address or lnurl");
-        }
+        navWithSearchValue(`/chat/${contact.id}`);
     }
 
     async function createContact(contact: ContactFormValues) {
         try {
+            // First check if the contact already exists
+            const existingContact = contacts()?.find(
+                (c) => c.npub === contact.npub?.trim().toLowerCase()
+            );
+
+            if (existingContact) {
+                sendToContact(existingContact);
+                return;
+            }
+
             const contactId = await state.mutiny_wallet?.create_new_contact(
                 contact.name,
                 contact.npub ? contact.npub.trim() : undefined,
@@ -249,7 +259,11 @@ function ActualSearch() {
 
     let searchInputRef!: HTMLInputElement;
 
+    const [_params, setParams] = useSearchParams();
+
     onMount(() => {
+        setSearchValue(props.initialValue || "");
+        setParams({ search: "" });
         searchInputRef.focus();
     });
 
@@ -261,17 +275,19 @@ function ActualSearch() {
                     type="text"
                     value={searchValue()}
                     onInput={(e) => setSearchValue(e.currentTarget.value)}
-                    placeholder={i18n.t("send.search.placeholder")}
+                    placeholder="Name, address, invoice..."
                     autofocus
+                    autocomplete="off"
+                    autocorrect="off"
                     ref={(el) => (searchInputRef = el)}
                 />
                 <Show when={!searchValue()}>
                     <button
-                        class="bg-m-grey- absolute right-1 top-1/2 flex -translate-y-1/2 items-center gap-1 py-1 pr-4"
+                        class="absolute right-1 top-1/2 flex -translate-y-1/2 items-center gap-1 py-1 pr-4"
                         onClick={handlePaste}
                     >
-                        <img src={paste} alt="Paste" class="h-4 w-4" />
-                        {i18n.t("send.search.paste")}
+                        <LucideClipboard class="h-4 w-4" />
+                        Paste
                     </button>
                 </Show>
                 <Show when={!!searchValue()}>
@@ -279,28 +295,22 @@ function ActualSearch() {
                         class="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded-full bg-m-grey-800 px-1 py-1"
                         onClick={() => setSearchValue("")}
                     >
-                        <img src={close} alt="Clear" class="h-4 w-4" />
+                        <X class="h-4 w-4" />
                     </button>
                 </Show>
             </div>
-            <Show when={searchState() !== "notsendable"}>
-                <Button intent="green" onClick={handleContinue}>
-                    {i18n.t("common.continue")}
-                </Button>
-            </Show>
+            <div class="flex-0 flex w-full">
+                <Show when={searchState() !== "notsendable"}>
+                    <Button intent="green" onClick={handleContinue}>
+                        Continue
+                    </Button>
+                </Show>
+            </div>
             <Show when={searchState() !== "sendable"}>
-                <div class="relative flex h-full max-h-[100svh] flex-col gap-3 overflow-y-scroll">
+                <VStack>
                     <Suspense>
-                        <div class="sticky top-0 z-50 bg-m-grey-900/90 py-2 backdrop-blur-sm">
-                            <h2 class="text-xl font-semibold">
-                                {i18n.t("send.search.contacts")}
-                            </h2>
-                        </div>
-                        <Show
-                            when={
-                                contacts.latest && contacts?.latest.length > 0
-                            }
-                        >
+                        <h2 class="text-xl font-semibold">Contacts</h2>
+                        <Show when={contacts() && contacts().length > 0}>
                             <For each={filteredContacts()}>
                                 {(contact) => (
                                     <ContactButton
@@ -316,7 +326,7 @@ function ActualSearch() {
                     <Suspense fallback={<LoadingShimmer />}>
                         <Show when={!!debouncedSearchValue()}>
                             <h2 class="py-2 text-xl font-semibold">
-                                {i18n.t("send.search.global_search")}
+                                Global Search
                             </h2>
                             <GlobalSearch
                                 searchValue={debouncedSearchValue()}
@@ -326,7 +336,7 @@ function ActualSearch() {
                         </Show>
                     </Suspense>
                     <div class="h-4" />
-                </div>
+                </VStack>
             </Show>
         </>
     );
@@ -337,7 +347,6 @@ function GlobalSearch(props: {
     sendToContact: (contact: TagItem) => void;
     foundNpubs: (string | undefined)[];
 }) {
-    const i18n = useI18n();
     const hexpubs = createMemo(() => {
         const hexpubs: Set<string> = new Set();
         for (const npub of props.foundNpubs) {
@@ -406,7 +415,7 @@ function GlobalSearch(props: {
                 }
             >
                 <p class="text-neutral-500">
-                    {i18n.t("send.search.no_results") + " " + props.searchValue}
+                    No results found for "{props.searchValue}"
                 </p>
             </Match>
             <Match when={true}>
@@ -460,62 +469,5 @@ function SingleContact(props: {
             contact={props.contact}
             onClick={() => createContactFromSearchResult(props.contact)}
         />
-    );
-}
-
-function ContactButton(props: {
-    contact: PseudoContact | TagItem;
-    onClick: () => void;
-}) {
-    const i18n = useI18n();
-
-    const primalUrl = createMemo(() => {
-        const originalUrl = props.contact.image_url;
-        if (!originalUrl) return undefined;
-
-        return `https://primal.b-cdn.net/media-cache?s=s&a=1&u=${encodeURIComponent(
-            originalUrl
-        )}`;
-    });
-
-    return (
-        <button
-            onClick={() => props.onClick()}
-            class={
-                props.contact.ln_address || props.contact.lnurl
-                    ? "flex items-center gap-2"
-                    : "flex items-center gap-2 text-white/20 opacity-60"
-            }
-            disabled={
-                props.contact.ln_address === undefined &&
-                props.contact.lnurl === undefined
-            }
-        >
-            <LabelCircle
-                name={props.contact.name}
-                image_url={primalUrl()}
-                contact
-                label={false}
-            />
-            <div class="flex flex-col items-start">
-                <h2 class="overflow-hidden overflow-ellipsis text-base font-semibold">
-                    {props.contact.name}
-                </h2>
-                <h3
-                    class={
-                        props.contact.ln_address || props.contact.lnurl
-                            ? "overflow-hidden overflow-ellipsis text-sm font-normal text-neutral-500"
-                            : "overflow-hidden overflow-ellipsis text-sm font-normal"
-                    }
-                >
-                    {props.contact.ln_address ||
-                        props.contact.lnurl
-                            ?.toLowerCase()
-                            .substring(0, 15)
-                            .concat("...") ||
-                        i18n.t("send.no_payment_info")}
-                </h3>
-            </div>
-        </button>
     );
 }

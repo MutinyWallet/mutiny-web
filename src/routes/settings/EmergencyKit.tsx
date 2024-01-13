@@ -9,7 +9,6 @@ import {
     Logs,
     NavBar,
     NiceP,
-    SafeArea,
     SmallHeader,
     VStack
 } from "~/components";
@@ -32,27 +31,21 @@ function EmergencyStack() {
 export function EmergencyKit() {
     const i18n = useI18n();
     return (
-        <SafeArea>
-            <DefaultMain>
-                <BackLink href="/settings" title={i18n.t("settings.header")} />
-                <LargeHeader>
-                    {i18n.t("settings.emergency_kit.title")}
-                </LargeHeader>
-                <VStack>
-                    <LoadingIndicator />
-                    <NiceP>
-                        {i18n.t("settings.emergency_kit.emergency_tip")}
-                    </NiceP>
-                    <NiceP>
-                        {i18n.t("settings.emergency_kit.questions")}{" "}
-                        <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
-                            {i18n.t("settings.emergency_kit.link")}
-                        </ExternalLink>
-                    </NiceP>
-                    <EmergencyStack />
-                </VStack>
-            </DefaultMain>
+        <DefaultMain>
+            <BackLink href="/settings" title={i18n.t("settings.header")} />
+            <LargeHeader>{i18n.t("settings.emergency_kit.title")}</LargeHeader>
+            <VStack>
+                <LoadingIndicator />
+                <NiceP>{i18n.t("settings.emergency_kit.emergency_tip")}</NiceP>
+                <NiceP>
+                    {i18n.t("settings.emergency_kit.questions")}{" "}
+                    <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
+                        {i18n.t("settings.emergency_kit.link")}
+                    </ExternalLink>
+                </NiceP>
+                <EmergencyStack />
+            </VStack>
             <NavBar activeTab="settings" />
-        </SafeArea>
+        </DefaultMain>
     );
 }

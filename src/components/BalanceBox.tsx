@@ -1,33 +1,41 @@
-import { A, useNavigate } from "@solidjs/router";
+import { A } from "@solidjs/router";
+import { Shuffle } from "lucide-solid";
 import { Match, Show, Switch } from "solid-js";
 
-import shuffle from "~/assets/icons/shuffle.svg";
 import {
     AmountFiat,
     AmountSats,
-    Button,
     FancyCard,
     Indicator,
-    InfoBox
+    InfoBox,
+    VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-export function LoadingShimmer(props: { center?: boolean }) {
+export function LoadingShimmer(props: { center?: boolean; small?: boolean }) {
     return (
         <div class="flex animate-pulse flex-col gap-2">
             <h1
                 class="text-4xl font-light"
                 classList={{ "flex justify-center": props.center }}
             >
-                <div class="h-[2.5rem] w-[12rem] rounded bg-neutral-700" />
+                <div
+                    class="rounded bg-neutral-700"
+                    classList={{
+                        "h-[2.5rem] w-[12rem]": !props.small,
+                        "h-[1rem] w-[8rem]": props.small
+                    }}
+                />
             </h1>
-            <h2
-                class="text-xl font-light text-white/70"
-                classList={{ "flex justify-center": props.center }}
-            >
-                <div class="h-[1.75rem] w-[8rem] rounded bg-neutral-700" />
-            </h2>
+            <Show when={!props.small}>
+                <h2
+                    class="text-xl font-light text-white/70"
+                    classList={{ "flex justify-center": props.center }}
+                >
+                    <div class="h-[1.75rem] w-[8rem] rounded bg-neutral-700" />
+                </h2>
+            </Show>
         </div>
     );
 }
@@ -35,18 +43,9 @@ export function LoadingShimmer(props: { center?: boolean }) {
 const STYLE =
     "px-2 py-1 rounded-xl text-sm flex gap-2 items-center font-semibold";
 
-export function BalanceBox(props: { loading?: boolean }) {
+export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
     const [state, _actions] = useMegaStore();
     const i18n = useI18n();
-
-    const emptyBalance = () =>
-        (state.balance?.confirmed || 0n) === 0n &&
-        (state.balance?.lightning || 0n) === 0n &&
-        (state.balance?.federation || 0n) === 0n &&
-        (state.balance?.force_close || 0n) === 0n &&
-        (state.balance?.unconfirmed || 0n) === 0n;
-
-    const navigate = useNavigate();
 
     const totalOnchain = () =>
         (state.balance?.confirmed || 0n) +
@@ -57,8 +56,8 @@ export function BalanceBox(props: { loading?: boolean }) {
         (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
 
     return (
-        <>
-            <FancyCard>
+        <VStack>
+            <FancyCard title="Lightning">
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
                     <Switch>
                         <Match when={state.safe_mode}>
@@ -91,15 +90,16 @@ export function BalanceBox(props: { loading?: boolean }) {
                         </Match>
                     </Switch>
                 </Show>
-                <Show when={state.federations && state.federations.length}>
+            </FancyCard>
+            <Show when={state.federations && state.federations.length}>
+                <FancyCard title="Fedimint">
                     <Show when={!props.loading} fallback={<LoadingShimmer />}>
-                        <hr class="my-2 border-m-grey-750" />
                         <div class="flex justify-between">
                             <div class="flex flex-col gap-1">
                                 <div class="text-2xl">
                                     <AmountSats
                                         amountSats={
-                                            state.balance?.federation || 0
+                                            state.balance?.federation || 0n
                                         }
                                         icon="community"
                                         denominationSize="lg"
@@ -115,21 +115,20 @@ export function BalanceBox(props: { loading?: boolean }) {
                                     />
                                 </div>
                             </div>
+
                             <Show when={state.balance?.federation || 0n > 0n}>
                                 <div class="self-end justify-self-end">
                                     <A href="/swaplightning" class={STYLE}>
-                                        <img
-                                            src={shuffle}
-                                            alt="swaplightning"
-                                            class="h-6 w-6"
-                                        />
+                                        <Shuffle class="h-6 w-6" />
                                     </A>
                                 </div>
                             </Show>
                         </div>
                     </Show>
-                </Show>
-                <hr class="my-2 border-m-grey-750" />
+                </FancyCard>
+            </Show>
+            <FancyCard title="On-chain">
+                {/* <hr class="my-2 border-m-grey-750" /> */}
                 <Show when={!props.loading} fallback={<LoadingShimmer />}>
                     <div class="flex justify-between">
                         <div class="flex flex-col gap-1">
@@ -159,11 +158,7 @@ export function BalanceBox(props: { loading?: boolean }) {
                             <Show when={usableOnchain() > 0n}>
                                 <div class="self-end justify-self-end">
                                     <A href="/swap" class={STYLE}>
-                                        <img
-                                            src={shuffle}
-                                            alt="swap"
-                                            class="h-6 w-6"
-                                        />
+                                        <Shuffle class="h-6 w-6" />
                                     </A>
                                 </div>
                             </Show>
@@ -171,22 +166,6 @@ export function BalanceBox(props: { loading?: boolean }) {
                     </div>
                 </Show>
             </FancyCard>
-            <div class="flex gap-2 py-4">
-                <Button
-                    onClick={() => navigate("/search")}
-                    disabled={emptyBalance() || props.loading}
-                    intent="green"
-                >
-                    {i18n.t("common.send")}
-                </Button>
-                <Button
-                    onClick={() => navigate("/receive")}
-                    disabled={props.loading}
-                    intent="blue"
-                >
-                    {i18n.t("common.receive")}
-                </Button>
-            </div>
-        </>
+        </VStack>
     );
 }

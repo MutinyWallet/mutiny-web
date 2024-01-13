@@ -15,8 +15,10 @@ function LoadingBar(props: { value: number; max: number }) {
             case 2:
                 return i18n.t("modals.loading.downloading");
             case 3:
-                return i18n.t("modals.loading.setup");
+                return i18n.t("modals.loading.existing_wallet");
             case 4:
+                return i18n.t("modals.loading.setup");
+            case 5:
                 return i18n.t("modals.loading.done");
             default:
                 return i18n.t("modals.loading.default");
@@ -51,10 +53,12 @@ export function LoadingIndicator() {
                 return 1;
             case "downloading":
                 return 2;
-            case "setup":
+            case "checking_for_existing_wallet":
                 return 3;
-            case "done":
+            case "setup":
                 return 4;
+            case "done":
+                return 5;
             default:
                 return 0;
         }
@@ -62,7 +66,7 @@ export function LoadingIndicator() {
 
     return (
         <Show when={state.load_stage !== "done"}>
-            <LoadingBar value={loadStageValue()} max={4} />
+            <LoadingBar value={loadStageValue()} max={5} />
         </Show>
     );
 }

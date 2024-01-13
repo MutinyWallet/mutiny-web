@@ -1,9 +1,8 @@
+import { RotateCw, X } from "lucide-solid";
 import { Show } from "solid-js";
 // eslint-disable-next-line import/no-unresolved
 import { useRegisterSW } from "virtual:pwa-register/solid";
 
-import close from "~/assets/icons/close.svg";
-import refresh from "~/assets/icons/refresh.svg";
 import { useI18n } from "~/i18n/context";
 
 import { SmallHeader } from "./layout";
@@ -38,7 +37,7 @@ export function ReloadPrompt() {
         <Show when={needRefresh()}>
             <div class="grid grid-cols-[auto_minmax(0,_1fr)_auto] gap-4 rounded-xl bg-neutral-950/50 p-4">
                 <div class="self-center">
-                    <img src={refresh} alt="refresh" class="h-8 w-8" />
+                    <RotateCw class="h-8 w-8" />
                 </div>
                 <div class="flex flex-row justify-between gap-4 max-md:items-center">
                     <div class="flex flex-col">
@@ -65,7 +64,7 @@ export function ReloadPrompt() {
                     onClick={dismissPrompt}
                     class="w-8 self-center rounded-lg hover:bg-white/10 active:bg-m-blue"
                 >
-                    <img src={close} alt="Close" />
+                    <X class="h-8 w-8" />
                 </button>
             </div>
         </Show>

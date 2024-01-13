@@ -32,12 +32,12 @@ export const Button: ParentComponent<ButtonProps> = (props) => {
         <button
             {...attrs}
             disabled={props.disabled || props.loading}
-            class="rounded-xl p-3 font-semibold transition disabled:bg-neutral-400/10 disabled:text-white/20 disabled:shadow-inner-button-disabled"
+            class="rounded-xl p-3 font-semibold transition active:-mb-[2px] active:mt-[2px] disabled:bg-neutral-400/10 disabled:text-white/20 disabled:shadow-inner-button-disabled"
             classList={{
                 "bg-white text-black": local.intent === "active",
-                "bg-neutral-900 text-white":
+                "bg-m-grey-800 text-white shadow-inner-button text-shadow-button":
                     !local.intent || local.intent === "inactive",
-                "border border-white hover:text-[#3B6CCC]":
+                "hover:text-m-grey-300 hover:bg-m-grey-900 bg-m-grey-800 text-white shadow-inner-button text-shadow-button":
                     !local.intent || !!local.intent.match(/(active|inactive)/),
                 "bg-m-blue hover:bg-m-blue-dark": local.intent === "blue",
                 "bg-m-red hover:bg-m-red-dark": local.intent === "red",
@@ -55,7 +55,12 @@ export const Button: ParentComponent<ButtonProps> = (props) => {
             <Show when={props.loading} fallback={local.children}>
                 <div class="flex justify-center">
                     {/* TODO: constrain this to the exact height of the button */}
-                    <LoadingSpinner wide />
+                    <Show when={local.layout !== "xs"}>
+                        <LoadingSpinner wide />
+                    </Show>
+                    <Show when={local.layout === "xs"}>
+                        <span>...</span>
+                    </Show>
                 </div>
             </Show>
         </button>
@@ -81,9 +86,9 @@ export const ButtonLink: ParentComponent<ButtonLinkProps> = (props) => {
             class="flex justify-center rounded-xl p-3 font-semibold no-underline transition disabled:bg-neutral-400/10 disabled:text-white/20 disabled:shadow-inner-button-disabled"
             classList={{
                 "bg-white text-black": local.intent === "active",
-                "bg-transparent text-white":
+                "bg-m-grey-800 text-white shadow-inner-button text-shadow-button":
                     !local.intent || local.intent === "inactive",
-                "border border-white hover:text-[#3B6CCC]":
+                "hover:text-m-grey-300 hover:bg-m-grey-900 bg-m-grey-800 text-white shadow-inner-button text-shadow-button":
                     !local.intent || !!local.intent.match(/(active|inactive)/),
                 "bg-m-blue hover:bg-m-blue-dark": local.intent === "blue",
                 "bg-m-red hover:bg-m-red-dark": local.intent === "red",
