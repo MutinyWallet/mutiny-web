@@ -19,7 +19,6 @@ export function SuccessModal(props: SuccessModalProps) {
         props.onConfirm ? props.onConfirm() : props.setOpen(false);
     };
 
-    // <div class="flex flex-col items-center gap-8 h-full max-w-[400px]">
     return (
         <Dialog.Root open={props.open} onOpenChange={props.setOpen}>
             <Dialog.Portal>

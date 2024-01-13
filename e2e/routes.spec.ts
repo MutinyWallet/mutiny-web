@@ -1,12 +1,14 @@
 import { expect, Page, test } from "@playwright/test";
 
+import { loadHome, visitSettings } from "./utils";
+
 const routes = [
     "/",
-    "/activity",
     "/feedback",
     "/gift",
     "/receive",
     "/scanner",
+    "/search",
     "/send",
     "/swap",
     "/settings"
@@ -57,25 +59,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("visit each route", async ({ page }) => {
-    // Start on the home page
-    // Expect a title "to contain" a substring.
-    await expect(page).toHaveTitle(/Mutiny Wallet/);
-
-    // Wait for an element matching the selector to appear in DOM.
-    await page.waitForSelector("text=0 SATS");
-
-    console.log("Page loaded.");
-
-    // Wait for a while just to make sure we can load everything
-    await page.waitForTimeout(1000);
+    await loadHome(page);
 
     checklist.set("/", true);
 
-    await checkRoute(page, "/activity", "Activity", checklist);
-    await page.goBack();
+    await visitSettings(page);
 
-    // Navigate to settings
-    await checkRoute(page, "/settings", "Settings", checklist);
+    checklist.set("/settings", true);
 
     // Mutiny+
     await checkRoute(page, "/settings/plus", "Mutiny+", checklist);
@@ -146,22 +136,43 @@ test("visit each route", async ({ page }) => {
     await checkRoute(page, "/settings/admin", "Secret Debug Tools", checklist);
     await page.goBack();
 
-    // Go back home
-    await page.goBack();
-
     // Feedback
     await checkRoute(page, "/feedback", "Give us feedback!", checklist);
     await page.goBack();
 
-    // Receive is covered in another test
-    checklist.set("/receive", true);
+    // Go back home
+    await page.goBack();
+
+    // Try the fab button
+    await page.locator("#fab").click();
+    await page.locator("text=Send").click();
+    await expect(page.locator("input").first()).toBeFocused();
 
     // Send is covered in another test
     checklist.set("/send", true);
 
+    await page.goBack();
+
+    // Try the fab button again
+    await page.locator("#fab").click();
+    // (There are actually two buttons with the "Receive text on first run)
+    await page.locator("text=Receive").last().click();
+
+    await expect(page.locator("h1").first()).toHaveText("Receive Bitcoin");
+
+    // Actual receive is covered in another test
+    checklist.set("/receive", true);
+
+    await page.goBack();
+
+    // Try the fab button again
+    await page.locator("#fab").click();
+    await page.locator("text=Scan").click();
+
     // Scanner
-    await page.locator(`a[href='/scanner']`).first().click();
-    await expect(page.locator("button").first()).toHaveText("Paste Something");
+    await expect(
+        page.locator("button:has-text('Paste Something')")
+    ).toBeVisible();
     checklist.set("/scanner", true);
 
     // Now we have to check routes that aren't linked to directly for whatever reason

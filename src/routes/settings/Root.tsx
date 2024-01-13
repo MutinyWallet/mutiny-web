@@ -1,8 +1,8 @@
 import { Capacitor } from "@capacitor/core";
 import { A } from "@solidjs/router";
+import { ChevronRight } from "lucide-solid";
 import { For, Show } from "solid-js";
 
-import forward from "~/assets/icons/forward.svg";
 import {
     BackLink,
     DefaultMain,
@@ -10,14 +10,13 @@ import {
     LargeHeader,
     MutinyPlusCta,
     NavBar,
-    SafeArea,
     SettingsCard,
     TinyText,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { FeedbackLink } from "~/routes/Feedback";
 import { useMegaStore } from "~/state/megaStore";
-import { isFreeGiftingDay } from "~/utils";
 
 function SettingsLinkList(props: {
     header: string;
@@ -50,7 +49,7 @@ function SettingsLinkList(props: {
                             >
                                 {link.text}
                             </span>
-                            <img src={forward} alt="go" />
+                            <ChevronRight />
                         </div>
                         <Show when={link.caption}>
                             <div class="text-sm text-m-grey-400">
@@ -75,127 +74,103 @@ export function Settings() {
     const COMMIT_HASH = import.meta.env.__COMMIT_HASH__;
 
     const selfHosted = state.settings?.selfhosted === "true";
-    const freeDay = isFreeGiftingDay();
 
     const ios = Capacitor.getPlatform() === "ios";
 
     return (
-        <SafeArea>
-            <DefaultMain>
-                <BackLink />
-                <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
-                <VStack biggap>
-                    <Show when={!selfHosted && !ios}>
-                        <MutinyPlusCta />
-                    </Show>
-                    <SettingsLinkList
-                        header={i18n.t("settings.general")}
-                        links={[
-                            {
-                                href: "/settings/channels",
-                                text: i18n.t("settings.channels.title")
-                            },
-                            {
-                                href: "/settings/backup",
-                                text: i18n.t("settings.backup.title"),
-                                accent: "green"
-                            },
-                            {
-                                href: "/settings/restore",
-                                text: i18n.t("settings.restore.title"),
-                                accent: "red"
-                            },
-                            {
-                                href: "/settings/encrypt",
-                                text: i18n.t("settings.encrypt.title"),
-                                disabled: !state.has_backed_up,
-                                caption: !state.has_backed_up
-                                    ? i18n.t("settings.encrypt.caption")
-                                    : undefined
-                            },
-                            {
-                                href: "/settings/currency",
-                                text: i18n.t("settings.currency.title"),
-                                caption: i18n.t("settings.currency.caption")
-                            },
-                            {
-                                href: "/settings/language",
-                                text: i18n.t("settings.language.title"),
-                                caption: i18n.t("settings.language.caption")
-                            },
-                            {
-                                href: "/settings/servers",
-                                text: i18n.t("settings.servers.title"),
-                                caption: i18n.t("settings.servers.caption")
-                            }
-                        ]}
-                    />
-                    <SettingsLinkList
-                        header={i18n.t("settings.experimental_features")}
-                        links={[
-                            {
-                                href: "/settings/connections",
-                                text: i18n.t("settings.connections.title")
-                            },
-                            {
-                                href: "/settings/gift",
-                                disabled: !(
-                                    state.mutiny_plus ||
-                                    selfHosted ||
-                                    freeDay
-                                ),
-                                text: i18n.t("settings.gift.title"),
-                                caption: !(
-                                    state.mutiny_plus ||
-                                    selfHosted ||
-                                    freeDay
-                                )
-                                    ? i18n.t("settings.gift.no_plus_caption")
-                                    : undefined
-                            },
-                            {
-                                href: "/settings/syncnostrcontacts",
-                                text: i18n.t("settings.nostr_contacts.title")
-                            },
-                            {
-                                href: "/settings/federations",
-                                text: i18n.t(
-                                    "settings.manage_federations.title"
-                                )
-                            }
-                        ]}
-                    />
-                    <SettingsLinkList
-                        header={i18n.t("settings.debug_tools")}
-                        links={[
-                            {
-                                href: "/settings/emergencykit",
-                                text: i18n.t("settings.emergency_kit.title"),
-                                caption: i18n.t(
-                                    "settings.emergency_kit.caption"
-                                )
-                            },
-                            {
-                                href: "/settings/admin",
-                                text: i18n.t("settings.admin.title"),
-                                caption: i18n.t("settings.admin.caption"),
-                                accent: "red"
-                            }
-                        ]}
-                    />
-                    <div class="flex justify-center pb-8">
-                        <TinyText>
-                            {i18n.t("settings.version")} {RELEASE_VERSION}{" "}
-                            <ExternalLink
-                                href={`https://github.com/MutinyWallet/mutiny-web/commits/${COMMIT_HASH}`}
-                            >
-                                {COMMIT_HASH}
-                            </ExternalLink>
-                        </TinyText>
-                    </div>
-                </VStack>
-            </DefaultMain>
+        <DefaultMain>
+            <BackLink />
+            <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
+            <VStack biggap>
+                <Show when={!selfHosted && !ios}>
+                    <MutinyPlusCta />
+                </Show>
+                <SettingsLinkList
+                    header={i18n.t("settings.general")}
+                    links={[
+                        {
+                            href: "/settings/channels",
+                            text: i18n.t("settings.channels.title")
+                        },
+                        {
+                            href: "/settings/backup",
+                            text: i18n.t("settings.backup.title"),
+                            accent: "green"
+                        },
+                        {
+                            href: "/settings/restore",
+                            text: i18n.t("settings.restore.title"),
+                            accent: "red"
+                        },
+                        {
+                            href: "/settings/encrypt",
+                            text: i18n.t("settings.encrypt.title"),
+                            disabled: !state.has_backed_up,
+                            caption: !state.has_backed_up
+                                ? i18n.t("settings.encrypt.caption")
+                                : undefined
+                        },
+                        {
+                            href: "/settings/currency",
+                            text: i18n.t("settings.currency.title"),
+                            caption: i18n.t("settings.currency.caption")
+                        },
+                        {
+                            href: "/settings/language",
+                            text: i18n.t("settings.language.title"),
+                            caption: i18n.t("settings.language.caption")
+                        },
+                        {
+                            href: "/settings/servers",
+                            text: i18n.t("settings.servers.title"),
+                            caption: i18n.t("settings.servers.caption")
+                        }
+                    ]}
+                />
+                <SettingsLinkList
+                    header={i18n.t("settings.experimental_features")}
+                    links={[
+                        {
+                            href: "/settings/syncnostrcontacts",
+                            text: i18n.t("settings.nostr_contacts.title")
+                        },
+                        {
+                            href: "/settings/federations",
+                            text: i18n.t("settings.manage_federations.title")
+                        }
+                    ]}
+                />
+                <SettingsLinkList
+                    header={i18n.t("settings.debug_tools")}
+                    links={[
+                        {
+                            href: "/settings/emergencykit",
+                            text: i18n.t("settings.emergency_kit.title"),
+                            caption: i18n.t("settings.emergency_kit.caption")
+                        },
+                        {
+                            href: "/settings/admin",
+                            text: i18n.t("settings.admin.title"),
+                            caption: i18n.t("settings.admin.caption"),
+                            accent: "red"
+                        }
+                    ]}
+                />
+                <div class="flex justify-center">
+                    <FeedbackLink />
+                </div>
+                <div class="flex justify-center pb-8">
+                    <TinyText>
+                        {i18n.t("settings.version")} {RELEASE_VERSION}{" "}
+                        <ExternalLink
+                            href={`https://github.com/MutinyWallet/mutiny-web/commits/${COMMIT_HASH}`}
+                        >
+                            {COMMIT_HASH}
+                        </ExternalLink>
+                    </TinyText>
+                </div>
+            </VStack>
             <NavBar activeTab="settings" />
-        </SafeArea>
+        </DefaultMain>
     );
 }

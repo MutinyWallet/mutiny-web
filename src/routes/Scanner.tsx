@@ -3,7 +3,7 @@ import { Capacitor } from "@capacitor/core";
 import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 
-import { Button, Scanner as Reader, showToast } from "~/components";
+import { Button, Reader, showToast } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
@@ -57,7 +57,7 @@ export function Scanner() {
     });
 
     return (
-        <div class="h-full safe-top safe-left safe-right safe-bottom">
+        <div class="absolute inset-0">
             <Reader onResult={onResult} />
             <div class="fixed bottom-[2rem] flex w-full flex-col items-center gap-8 px-8">
                 <div class="flex w-full max-w-[800px] flex-col gap-2">

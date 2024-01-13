@@ -33,9 +33,16 @@
     "find": "Find your friends on nostr",
     "backup": "Secure your funds!",
     "connection": "Create a wallet connection",
-    "federation": "Join a federation"
+    "connection_edit": "Edit wallet connections",
+    "federation": "Join a federation",
+    "subnav": {
+      "just_me": "Just Me",
+      "friends": "Friends",
+      "requests": "Requests"
+    }
   },
   "profile": {
+    "profile": "Profile",
     "nostr_identity": "Nostr Identity",
     "add_lightning_address": "Add Lightning Address",
     "edit_profile": "Edit Profile"
@@ -465,7 +472,8 @@
       "ios_testflight": "iOS TestFlight access",
       "more": "... and more to come",
       "cta_description": "Enjoy early access to new features and premium functionality.",
-      "cta_but_already_plus": "Thank you for your support!"
+      "cta_but_already_plus": "Thank you for your support!",
+      "lightning_address": "Your own lightning address"
     },
     "restore": {
       "title": "Restore",
@@ -524,7 +532,7 @@
       "remove": "Remove",
       "expires": "Expires",
       "federation_id": "Federation ID",
-      "description": "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. Store funds in a federation at your own risk!",
+      "description": "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. These funds are currently not backed up remotely. Store funds in a federation at your own risk!",
       "learn_more": "Learn more about Fedimint."
     },
     "gift": {

@@ -6,7 +6,8 @@ import {
     SubmitHandler
 } from "@modular-forms/solid";
 import { FederationBalance } from "@mutinywallet/mutiny-wasm";
-import { useSearchParams } from "@solidjs/router";
+import { A, useSearchParams } from "@solidjs/router";
+import { Scan } from "lucide-solid";
 import {
     createResource,
     createSignal,
@@ -34,7 +35,6 @@ import {
     MutinyWalletGuard,
     NavBar,
     NiceP,
-    SafeArea,
     TextField,
     VStack
 } from "~/components";
@@ -260,58 +260,63 @@ export function ManageFederations() {
 
     return (
         <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain>
+            <DefaultMain>
+                <div class="flex items-center justify-between">
                     <BackLink
-                        href="/settings"
-                        title={i18n.t("settings.header")}
+                        href="/profile"
+                        title={i18n.t("profile.profile")}
                     />
-                    <LargeHeader>
-                        {i18n.t("settings.manage_federations.title")}
-                    </LargeHeader>
-                    <NiceP>
-                        {i18n.t("settings.manage_federations.description")}{" "}
-                        <ExternalLink href="https://fedimint.org/">
-                            {i18n.t("settings.manage_federations.learn_more")}
-                        </ExternalLink>
-                    </NiceP>
+                    <A
+                        class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
+                        href="/scanner"
+                    >
+                        <Scan />
+                    </A>{" "}
+                </div>
+                {/* <BackLink href="/settings" title={i18n.t("settings.header")} /> */}
+                <LargeHeader>
+                    {i18n.t("settings.manage_federations.title")}
+                </LargeHeader>
+                <NiceP>
+                    {i18n.t("settings.manage_federations.description")}{" "}
+                    <ExternalLink href="https://fedimint.org/">
+                        {i18n.t("settings.manage_federations.learn_more")}
+                    </ExternalLink>
+                </NiceP>
+                <Suspense>
+                    <Show when={!state.federations?.length}>
+                        <AddFederationForm refetch={refetch} />
+                    </Show>
+                </Suspense>
+                <VStack>
                     <Suspense>
-                        <Show when={!state.federations?.length}>
-                            <AddFederationForm refetch={refetch} />
-                        </Show>
+                        <Switch>
+                            <Match when={balances()}>
+                                <For each={state.federations ?? []}>
+                                    {(fed) => (
+                                        <FederationListItem
+                                            fed={fed}
+                                            balance={
+                                                balances()?.find(
+                                                    (b) =>
+                                                        b.identity_federation_id ===
+                                                        fed.federation_id
+                                                )?.balance
+                                            }
+                                        />
+                                    )}
+                                </For>
+                            </Match>
+                            <Match when={true}>
+                                <For each={state.federations ?? []}>
+                                    {(fed) => <FederationListItem fed={fed} />}
+                                </For>
+                            </Match>
+                        </Switch>
                     </Suspense>
-                    <VStack>
-                        <Suspense>
-                            <Switch>
-                                <Match when={balances()}>
-                                    <For each={state.federations ?? []}>
-                                        {(fed) => (
-                                            <FederationListItem
-                                                fed={fed}
-                                                balance={
-                                                    balances()?.find(
-                                                        (b) =>
-                                                            b.identity_federation_id ===
-                                                            fed.federation_id
-                                                    )?.balance
-                                                }
-                                            />
-                                        )}
-                                    </For>
-                                </Match>
-                                <Match when={true}>
-                                    <For each={state.federations ?? []}>
-                                        {(fed) => (
-                                            <FederationListItem fed={fed} />
-                                        )}
-                                    </For>
-                                </Match>
-                            </Switch>
-                        </Suspense>
-                    </VStack>
-                </DefaultMain>
-                <NavBar activeTab="settings" />
-            </SafeArea>
+                </VStack>
+            </DefaultMain>
+            <NavBar activeTab="settings" />
         </MutinyWalletGuard>
     );
 }

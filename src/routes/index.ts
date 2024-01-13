@@ -1,5 +1,4 @@
 export * from "./[...404]";
-export * from "./Activity";
 export * from "./Feedback";
 export * from "./Gift";
 export * from "./Main";
@@ -10,3 +9,10 @@ export * from "./Swap";
 export * from "./SwapLightning";
 export * from "./Search";
 export * from "./Redeem";
+export * from "./Profile";
+export * from "./Chat";
+export * from "./Setup";
+export * from "./NewProfile";
+export * from "./Request";
+export * from "./ImportProfile";
+export * from "./EditProfile";

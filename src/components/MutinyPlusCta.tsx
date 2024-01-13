@@ -1,7 +1,7 @@
 import { A } from "@solidjs/router";
+import { ChevronRight } from "lucide-solid";
 import { ParentComponent, Show } from "solid-js";
 
-import forward from "~/assets/icons/forward.svg";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
@@ -32,7 +32,7 @@ export function MutinyPlusCta() {
                         {i18n.t("common.mutiny")}
                         <span class="text-m-red">+</span>
                     </span>
-                    <img src={forward} alt="go" />
+                    <ChevronRight />
                 </div>
                 <div class="text-sm text-m-grey-400">
                     <Show

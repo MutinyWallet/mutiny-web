@@ -1,6 +1,6 @@
+import { X } from "lucide-solid";
 import { Show } from "solid-js";
 
-import close from "~/assets/icons/black-close.svg";
 import { ButtonLink } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 
@@ -40,7 +40,7 @@ export function IOSbanner() {
                             onClick={closeBanner}
                             class="self-center justify-self-center rounded-lg hover:bg-white/10 active:bg-m-blue"
                         >
-                            <img src={close} alt="Close" class="h-8 w-8" />
+                            <X class="h-8 w-8 text-black" />
                         </button>{" "}
                     </div>
                 </div>

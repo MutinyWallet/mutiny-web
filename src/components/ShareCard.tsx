@@ -1,10 +1,6 @@
+import { Copy, Eye, Share } from "lucide-solid";
 import { createSignal, Show } from "solid-js";
 
-import copyBlack from "~/assets/icons/copy-black.svg";
-import copyIcon from "~/assets/icons/copy.svg";
-import eyeIcon from "~/assets/icons/eye.svg";
-import shareBlack from "~/assets/icons/share-black.svg";
-import shareIcon from "~/assets/icons/share.svg";
 import { Card, JsonModal, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useCopy } from "~/utils";
@@ -33,7 +29,7 @@ function ShareButton(props: { receiveString: string; whiteBg?: boolean }) {
     return (
         <button class={STYLE} onClick={(_) => share(props.receiveString)}>
             <span>{i18n.t("modals.share")}</span>
-            <img src={props.whiteBg ? shareBlack : shareIcon} alt="share" />
+            <Share />
         </button>
     );
 }
@@ -68,7 +64,7 @@ export function StringShower(props: { text: string }) {
             <div class="grid w-full grid-cols-[minmax(0,_1fr)_auto] items-center">
                 <TruncateMiddle text={props.text} />
                 <button class="w-[2rem]" onClick={() => setOpen(true)}>
-                    <img src={eyeIcon} alt="eye" />
+                    <Eye />
                 </button>
             </div>
         </>
@@ -92,7 +88,7 @@ export function CopyButton(props: {
             {copied()
                 ? i18n.t("common.copied")
                 : props.title ?? i18n.t("common.copy")}
-            <img src={props.whiteBg ? copyBlack : copyIcon} alt="copy" />
+            <Copy />
         </button>
     );
 }

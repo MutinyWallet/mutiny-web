@@ -1,10 +1,9 @@
-/* @refresh reload */
-
 import {
     MutinyBip21RawMaterials,
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
+import { ArrowLeftRight } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -16,7 +15,6 @@ import {
     Switch
 } from "solid-js";
 
-import side2side from "~/assets/icons/side-to-side.svg";
 import {
     ActivityDetailsModal,
     AmountEditable,
@@ -426,7 +424,7 @@ export function Receive() {
                                 onClick={() => setMethodChooserOpen(true)}
                             >
                                 <span>{i18n.t("receive.choose_format")}</span>
-                                <img class="h-4 w-4" src={side2side} />
+                                <ArrowLeftRight class="h-4 w-4" />
                             </button>
                             <SimpleDialog
                                 title={i18n.t("receive.choose_payment_format")}

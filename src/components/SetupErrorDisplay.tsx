@@ -1,5 +1,6 @@
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { Title } from "@solidjs/meta";
+import { MonitorSmartphone } from "lucide-solid";
 import { createResource, Match, Switch } from "solid-js";
 
 import nodevice from "~/assets/no-device.png";
@@ -12,7 +13,6 @@ import {
     LargeHeader,
     Logs,
     NiceP,
-    SafeArea,
     SmallHeader
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -75,74 +75,56 @@ export function SetupErrorDisplay(props: {
     }
 
     return (
-        <SafeArea>
+        <DefaultMain>
             <Switch>
                 <Match
                     when={error.message.startsWith("Network connection closed")}
                 >
-                    <DefaultMain>
-                        <LargeHeader>
-                            {i18n.t("error.on_boot.loading_failed.header")}
-                        </LargeHeader>
-                        <p class="rounded-xl bg-white/10 p-4 font-mono">
-                            <span class="font-bold">{error.name}</span>:{" "}
-                            {error.message}
-                        </p>
-                        <NiceP>
-                            {i18n.t(
-                                "error.on_boot.loading_failed.services_down"
-                            )}
-                        </NiceP>
-                        <NiceP>
-                            Follow us on{" "}
-                            <ExternalLink href="https://primal.net/p/npub1mutnyacc9uc4t5mmxvpprwsauj5p2qxq95v4a9j0jxl8wnkfvuyque23vg">
-                                Nostr
-                            </ExternalLink>{" "}
-                            or{" "}
-                            <ExternalLink href="https://twitter.com/MutinyWallet">
-                                Twitter
-                            </ExternalLink>{" "}
-                            for updates.
-                        </NiceP>
-                        <NiceP>
-                            {i18n.t(
-                                "error.on_boot.loading_failed.in_the_meantime"
-                            )}{" "}
-                            <a href="/?safe_mode=true">
-                                {" "}
-                                {i18n.t(
-                                    "error.on_boot.loading_failed.safe_mode"
-                                )}
-                            </a>
-                            .
-                        </NiceP>
+                    <LargeHeader>
+                        {i18n.t("error.on_boot.loading_failed.header")}
+                    </LargeHeader>
+                    <p class="rounded-xl bg-white/10 p-4 font-mono">
+                        <span class="font-bold">{error.name}</span>:{" "}
+                        {error.message}
+                    </p>
+                    <NiceP>
+                        {i18n.t("error.on_boot.loading_failed.services_down")}
+                    </NiceP>
+                    <NiceP>
+                        Follow us on{" "}
+                        <ExternalLink href="https://primal.net/p/npub1mutnyacc9uc4t5mmxvpprwsauj5p2qxq95v4a9j0jxl8wnkfvuyque23vg">
+                            Nostr
+                        </ExternalLink>{" "}
+                        or{" "}
+                        <ExternalLink href="https://twitter.com/MutinyWallet">
+                            Twitter
+                        </ExternalLink>{" "}
+                        for updates.
+                    </NiceP>
+                    <NiceP>
+                        {i18n.t("error.on_boot.loading_failed.in_the_meantime")}{" "}
+                        <a href="/?safe_mode=true">
+                            {" "}
+                            {i18n.t("error.on_boot.loading_failed.safe_mode")}
+                        </a>
+                        .
+                    </NiceP>
 
-                        <ErrorFooter />
-                    </DefaultMain>
+                    <ErrorFooter />
                 </Match>
                 <Match when={error.message.startsWith("Existing tab")}>
                     <Title>{i18n.t("error.on_boot.existing_tab.title")}</Title>
-                    <DefaultMain>
-                        <LargeHeader>
-                            {i18n.t("error.on_boot.existing_tab.title")}
-                        </LargeHeader>
-                        <img
-                            src={nodevice}
-                            alt="no device"
-                            class="mx-auto w-1/4 max-w-[25vh] flex-shrink"
-                        />
-                        <p class="rounded-xl bg-white/10 p-4 font-mono">
-                            <span class="font-bold">{error.name}</span>:{" "}
-                            {error.message}
-                        </p>
-                        <NiceP>
-                            {i18n.t("error.on_boot.existing_tab.description")}
-                        </NiceP>
-                        <Button onClick={() => window.location.reload()}>
-                            {i18n.t("error.reload")}
-                        </Button>
-                        <ErrorFooter />
-                    </DefaultMain>
+                    <LargeHeader>
+                        {i18n.t("error.on_boot.existing_tab.title")}
+                    </LargeHeader>
+                    <MonitorSmartphone class="mx-auto h-1/4 w-1/4 max-w-[25vh]" />
+                    <NiceP>
+                        {i18n.t("error.on_boot.existing_tab.description")}
+                    </NiceP>
+                    <Button onClick={() => window.location.reload()}>
+                        {i18n.t("error.reload")}
+                    </Button>
+                    <ErrorFooter />
                 </Match>
                 <Match
                     when={error.message.startsWith("Mutiny is already running")}
@@ -150,119 +132,105 @@ export function SetupErrorDisplay(props: {
                     <Title>
                         {i18n.t("error.on_boot.already_running.title")}
                     </Title>
-                    <DefaultMain>
-                        <LargeHeader>
-                            {i18n.t("error.on_boot.already_running.title")}
-                        </LargeHeader>
-                        <img
-                            src={nodevice}
-                            alt="no device"
-                            class="mx-auto w-1/4 max-w-[25vh] flex-shrink"
-                        />
-                        <p class="rounded-xl bg-white/10 p-4 font-mono">
-                            <span class="font-bold">{error.name}</span>:{" "}
-                            {error.message}
-                        </p>
-                        <NiceP>
-                            {i18n.t(
-                                "error.on_boot.already_running.description"
-                            )}
-                        </NiceP>
-                        <p class="rounded-xl bg-white/10 p-4 font-mono">
-                            {i18n.t(
-                                "error.on_boot.already_running.retry_again_in"
-                            )}{" "}
-                            {lockSeconds()}{" "}
-                            {i18n.t("error.on_boot.already_running.seconds")}
-                        </p>
-                        <Button onClick={() => window.location.reload()}>
-                            {i18n.t("error.reload")}
-                        </Button>
-                        <ErrorFooter />
-                    </DefaultMain>
+                    <LargeHeader>
+                        {i18n.t("error.on_boot.already_running.title")}
+                    </LargeHeader>
+                    <img
+                        src={nodevice}
+                        alt="no device"
+                        class="mx-auto w-1/4 max-w-[25vh] flex-shrink"
+                    />
+                    <p class="rounded-xl bg-white/10 p-4 font-mono">
+                        <span class="font-bold">{error.name}</span>:{" "}
+                        {error.message}
+                    </p>
+                    <NiceP>
+                        {i18n.t("error.on_boot.already_running.description")}
+                    </NiceP>
+                    <p class="rounded-xl bg-white/10 p-4 font-mono">
+                        {i18n.t("error.on_boot.already_running.retry_again_in")}{" "}
+                        {lockSeconds()}{" "}
+                        {i18n.t("error.on_boot.already_running.seconds")}
+                    </p>
+                    <Button onClick={() => window.location.reload()}>
+                        {i18n.t("error.reload")}
+                    </Button>
+                    <ErrorFooter />
                 </Match>
                 <Match when={error.message.startsWith("Browser error")}>
                     <Title>
                         {i18n.t("error.on_boot.incompatible_browser.title")}
                     </Title>
-                    <DefaultMain>
-                        <LargeHeader>
-                            {i18n.t(
-                                "error.on_boot.incompatible_browser.header"
-                            )}
-                        </LargeHeader>
-                        <p class="rounded-xl bg-white/10 p-4 font-mono">
-                            <span class="font-bold">{error.name}</span>:{" "}
-                            {error.message}
-                        </p>
-                        <NiceP>
-                            {i18n.t(
-                                "error.on_boot.incompatible_browser.description"
-                            )}
-                        </NiceP>
-                        <NiceP>
-                            {i18n.t(
-                                "error.on_boot.incompatible_browser.try_different_browser"
-                            )}
-                        </NiceP>
-                        <NiceP>
-                            {i18n.t(
-                                "error.on_boot.incompatible_browser.browser_storage"
-                            )}
-                        </NiceP>
-                        <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Browser-Compatibility">
-                            {i18n.t(
-                                "error.on_boot.incompatible_browser.browsers_link"
-                            )}
-                        </ExternalLink>
+                    <LargeHeader>
+                        {i18n.t("error.on_boot.incompatible_browser.header")}
+                    </LargeHeader>
+                    <p class="rounded-xl bg-white/10 p-4 font-mono">
+                        <span class="font-bold">{error.name}</span>:{" "}
+                        {error.message}
+                    </p>
+                    <NiceP>
+                        {i18n.t(
+                            "error.on_boot.incompatible_browser.description"
+                        )}
+                    </NiceP>
+                    <NiceP>
+                        {i18n.t(
+                            "error.on_boot.incompatible_browser.try_different_browser"
+                        )}
+                    </NiceP>
+                    <NiceP>
+                        {i18n.t(
+                            "error.on_boot.incompatible_browser.browser_storage"
+                        )}
+                    </NiceP>
+                    <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Browser-Compatibility">
+                        {i18n.t(
+                            "error.on_boot.incompatible_browser.browsers_link"
+                        )}
+                    </ExternalLink>
 
-                        <ErrorFooter />
-                    </DefaultMain>
+                    <ErrorFooter />
                 </Match>
                 <Match when={true}>
                     <Title>
                         {i18n.t("error.on_boot.loading_failed.title")}
                     </Title>
-                    <DefaultMain>
-                        <LargeHeader>
-                            {i18n.t("error.on_boot.loading_failed.header")}
-                        </LargeHeader>
-                        <p class="rounded-xl bg-white/10 p-4 font-mono">
-                            <span class="font-bold">{error.name}</span>:{" "}
-                            {error.message}
-                        </p>
-                        <NiceP>
-                            {i18n.t("error.on_boot.loading_failed.description")}
-                        </NiceP>
-                        <Button onClick={() => window.location.reload()}>
-                            {i18n.t("error.reload")}
-                        </Button>
-                        <NiceP>
+                    <LargeHeader>
+                        {i18n.t("error.on_boot.loading_failed.header")}
+                    </LargeHeader>
+                    <p class="rounded-xl bg-white/10 p-4 font-mono">
+                        <span class="font-bold">{error.name}</span>:{" "}
+                        {error.message}
+                    </p>
+                    <NiceP>
+                        {i18n.t("error.on_boot.loading_failed.description")}
+                    </NiceP>
+                    <Button onClick={() => window.location.reload()}>
+                        {i18n.t("error.reload")}
+                    </Button>
+                    <NiceP>
+                        {i18n.t("error.on_boot.loading_failed.repair_options")}
+                    </NiceP>
+                    <NiceP>
+                        {i18n.t("error.on_boot.loading_failed.questions")}{" "}
+                        <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
                             {i18n.t(
-                                "error.on_boot.loading_failed.repair_options"
+                                "error.on_boot.loading_failed.support_link"
                             )}
-                        </NiceP>
-                        <NiceP>
-                            {i18n.t("error.on_boot.loading_failed.questions")}{" "}
-                            <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
-                                {i18n.t(
-                                    "error.on_boot.loading_failed.support_link"
-                                )}
-                            </ExternalLink>
-                        </NiceP>
-                        <ImportExport emergency />
-                        <Logs />
-                        <div class="flex flex-col gap-2 rounded-xl bg-m-red p-4">
-                            <SmallHeader>
-                                {i18n.t("settings.danger_zone")}
-                            </SmallHeader>
-                            <DeleteEverything emergency />
-                        </div>
+                        </ExternalLink>
+                    </NiceP>
+                    <ImportExport emergency />
+                    <Logs />
+                    <div class="flex flex-col gap-2 rounded-xl bg-m-red p-4">
+                        <SmallHeader>
+                            {i18n.t("settings.danger_zone")}
+                        </SmallHeader>
+                        <DeleteEverything emergency />
+                    </div>
 
-                        <ErrorFooter />
-                    </DefaultMain>
+                    <ErrorFooter />
                 </Match>
             </Switch>
-        </SafeArea>
+        </DefaultMain>
     );
 }

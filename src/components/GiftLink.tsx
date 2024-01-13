@@ -1,6 +1,6 @@
 import { A, useLocation } from "@solidjs/router";
+import { Gift } from "lucide-solid";
 
-import gift from "~/assets/icons/gift.svg";
 import { useI18n } from "~/i18n/context";
 
 export function GiftLink() {
@@ -16,7 +16,7 @@ export function GiftLink() {
             }}
         >
             {i18n.t("settings.gift.give_sats_link")}
-            <img src={gift} class="h-5 w-5" alt="Gift" />
+            <Gift class="h-5 w-5" />
         </A>
     );
 }

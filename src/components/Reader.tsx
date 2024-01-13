@@ -8,7 +8,7 @@ import { Capacitor } from "@capacitor/core";
 import QrScanner from "qr-scanner";
 import { onCleanup, onMount } from "solid-js";
 
-export function Scanner(props: { onResult: (result: string) => void }) {
+export function Reader(props: { onResult: (result: string) => void }) {
     let container: HTMLVideoElement | undefined;
     let scanner: QrScanner | undefined;
 

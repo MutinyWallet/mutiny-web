@@ -1,8 +1,6 @@
+import { Link, Users, Zap } from "lucide-solid";
 import { Show } from "solid-js";
 
-import bolt from "~/assets/icons/bolt.svg";
-import chain from "~/assets/icons/chain.svg";
-import community from "~/assets/icons/community.svg";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { satsToFormattedFiat } from "~/utils";
@@ -24,13 +22,13 @@ export function AmountSats(props: {
     return (
         <div class="flex items-center gap-2">
             <Show when={props.icon === "lightning"}>
-                <img src={bolt} alt="lightning" class="h-[18px]" />
+                <Zap class="w-[18px]" />
             </Show>
             <Show when={props.icon === "community"}>
-                <img src={community} alt="community" class="h-[18px]" />
+                <Users class="w-[18px]" />
             </Show>
             <Show when={props.icon === "chain"}>
-                <img src={chain} alt="chain" class="h-[18px]" />
+                <Link class="w-[18px]" />
             </Show>
             <h1 class="whitespace-nowrap text-right font-light">
                 <Show when={props.icon === "plus"}>

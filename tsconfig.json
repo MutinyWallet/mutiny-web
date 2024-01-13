@@ -7,11 +7,11 @@
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "node",
+        "jsx": "preserve",
         "jsxImportSource": "solid-js",
         "noEmit": true,
-        "jsx": "preserve",
         "strict": true,
-        "types": ["node", "vite-plugin-pwa/client"],
+        "types": ["vite/client", "vite-plugin-pwa/client"],
         "baseUrl": "./",
         "paths": {
             "~/*": ["./src/*"]

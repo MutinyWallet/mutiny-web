@@ -1,10 +1,13 @@
-/* @refresh reload */
-
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ResourceFetcher } from "solid-js";
 
 import { useMegaStore } from "~/state/megaStore";
-import { hexpubFromNpub, NostrKind, NostrTag } from "~/utils/nostr";
+import {
+    getPrimalImageUrl,
+    hexpubFromNpub,
+    NostrKind,
+    NostrTag
+} from "~/utils/nostr";
 
 type NostrEvent = {
     created_at: number;
@@ -123,60 +126,17 @@ async function simpleZapFromEvent(
     }
 }
 
+// todo remove
 const PRIMAL_API = import.meta.env.VITE_PRIMAL;
-
-async function fetchFollows(npub: string): Promise<string[]> {
-    let pubkey = undefined;
-    try {
-        pubkey = await hexpubFromNpub(npub);
-    } catch (err) {
-        console.error("Failed to get hexpub from npub");
-        throw err;
-    }
-
-    const response = await fetch(PRIMAL_API, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify([
-            "contact_list",
-            { pubkey: pubkey, extended_response: false }
-        ])
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to load follows`);
-    }
-
-    const data = await response.json();
-
-    const follows: string[] = [];
-    const pubkeyRegex = new RegExp(/[0-9a-fA-F]{64}/);
-
-    for (const event of data) {
-        if (event.kind === 3) {
-            for (const tag of event.tags) {
-                if (tag[0] === "p") {
-                    // make sure it's actually a pubkey
-                    if (pubkeyRegex.test(tag[1])) {
-                        follows.push(tag[1]);
-                    }
-                }
-            }
-        }
-    }
-
-    return follows;
-}
 
 type PrimalResponse = NostrEvent | NostrProfile;
 
 async function fetchZapsFromPrimal(
     follows: string[],
+    primal_url?: string,
     until?: number
 ): Promise<PrimalResponse[]> {
-    if (!PRIMAL_API) throw new Error("Missing PRIMAL_API environment variable");
+    if (!primal_url) throw new Error("Missing PRIMAL_API environment variable");
 
     const query = {
         kinds: [9735, 0, 10000113],
@@ -190,7 +150,7 @@ async function fetchZapsFromPrimal(
         until ? { ...query, since: until } : query
     ]);
 
-    const response = await fetch(PRIMAL_API, {
+    const response = await fetch(primal_url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -231,21 +191,36 @@ export const fetchZaps: ResourceFetcher<
             info.value?.profiles || {};
         let newUntil = undefined;
 
-        if (!PRIMAL_API)
+        const primal_url = state.settings?.primal_api;
+        if (!primal_url)
             throw new Error("Missing PRIMAL_API environment variable");
 
         // Only have to ask the relays for follows one time
         if (follows.length === 0) {
-            follows = await fetchFollows(npub);
+            const contacts = await state.mutiny_wallet?.get_contacts_sorted();
+            const hexpubs = [];
+            for (const contact of contacts) {
+                if (contact.npub) {
+                    const hexpub = await hexpubFromNpub(contact.npub);
+                    if (hexpub) {
+                        hexpubs.push(hexpub);
+                    }
+                }
+            }
+            follows = hexpubs;
         }
 
         // Ask primal for all the zaps for these follow pubkeys
-        const data = await fetchZapsFromPrimal(follows, info?.value?.until);
+        const data = await fetchZapsFromPrimal(
+            follows,
+            primal_url,
+            info?.value?.until
+        );
 
         // Parse the primal response
         for (const object of data) {
             if (object.kind === 10000113) {
-                console.log("got a 10000113 object", object);
+                // console.log("got a 10000113 object", object);
                 try {
                     const content = JSON.parse(object.content);
                     if (content?.until) {
@@ -257,12 +232,12 @@ export const fetchZaps: ResourceFetcher<
             }
 
             if (object.kind === 0) {
-                console.log("got a 0 object", object);
+                // console.log("got a 0 object", object);
                 profiles[object.pubkey] = object as NostrProfile;
             }
 
             if (object.kind === 9735) {
-                console.log("got a 9735 object", object);
+                // console.log("got a 9735 object", object);
                 try {
                     const event = await simpleZapFromEvent(
                         object,
@@ -335,6 +310,7 @@ export type PseudoContact = {
     ln_address?: string;
     lnurl?: string;
     image_url?: string;
+    primal_image_url?: string;
 };
 
 export async function searchProfiles(query: string): Promise<PseudoContact[]> {
@@ -381,6 +357,8 @@ export function profileToPseudoContact(profile: NostrProfile): PseudoContact {
     contact.name = content.display_name || content.name || profile.pubkey;
     contact.ln_address = content.lud16 || undefined;
     contact.lnurl = content.lud06 || undefined;
-    contact.image_url = content.picture || undefined;
+    contact.image_url = content.image || content.picture || undefined;
+    contact.primal_image_url = getPrimalImageUrl(contact.image_url);
+
     return contact as PseudoContact;
 }

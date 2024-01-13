@@ -23,7 +23,6 @@ import {
     MutinyWalletGuard,
     NavBar,
     NiceP,
-    SafeArea,
     SettingsCard,
     showToast,
     SmallHeader,
@@ -300,21 +299,14 @@ export function Channels() {
     const i18n = useI18n();
     return (
         <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain>
-                    <BackLink
-                        href="/settings"
-                        title={i18n.t("settings.header")}
-                    />
-                    <LargeHeader>
-                        {i18n.t("settings.channels.title")}
-                    </LargeHeader>
-                    <Suspense>
-                        <LiquidityMonitor />
-                    </Suspense>
-                </DefaultMain>
-                <NavBar activeTab="settings" />
-            </SafeArea>
+            <DefaultMain>
+                <BackLink href="/settings" title={i18n.t("settings.header")} />
+                <LargeHeader>{i18n.t("settings.channels.title")}</LargeHeader>
+                <Suspense>
+                    <LiquidityMonitor />
+                </Suspense>
+            </DefaultMain>
+            <NavBar activeTab="settings" />
         </MutinyWalletGuard>
     );
 }

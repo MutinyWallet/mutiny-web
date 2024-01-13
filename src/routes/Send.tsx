@@ -1,5 +1,6 @@
 import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
-import { useNavigate, useSearchParams } from "@solidjs/router";
+import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
+import { EyeOff, Link, X, Zap } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -13,10 +14,6 @@ import {
     Switch
 } from "solid-js";
 
-import bolt from "~/assets/icons/bolt.svg";
-import chain from "~/assets/icons/chain.svg";
-import close from "~/assets/icons/close.svg";
-import privateEye from "~/assets/icons/private-eye.svg";
 import {
     ActivityDetailsModal,
     AmountEditable,
@@ -95,26 +92,14 @@ function DestinationShower(props: {
                 <DestinationItem
                     title="On-chain"
                     value={<StringShower text={props.address || ""} />}
-                    icon={
-                        <img
-                            class="h-[1rem] w-[1rem]"
-                            src={chain}
-                            alt="blockchain"
-                        />
-                    }
+                    icon={<Link class="h-4 w-4" />}
                 />
             </Match>
             <Match when={props.invoice && props.source === "lightning"}>
                 <DestinationItem
                     title="Lightning"
                     value={<StringShower text={props.invoice?.bolt11 || ""} />}
-                    icon={
-                        <img
-                            class="h-[1rem] w-[1rem]"
-                            src={bolt}
-                            alt="lightning"
-                        />
-                    }
+                    icon={<Zap class="h-4 w-4" />}
                 />
             </Match>
             <Match
@@ -123,26 +108,14 @@ function DestinationShower(props: {
                 <DestinationItem
                     title="Lightning"
                     value={props.lightning_address || ""}
-                    icon={
-                        <img
-                            class="h-[1rem] w-[1rem]"
-                            src={bolt}
-                            alt="lightning"
-                        />
-                    }
+                    icon={<Zap class="h-4 w-4" />}
                 />
             </Match>
             <Match when={props.nodePubkey && props.source === "lightning"}>
                 <DestinationItem
                     title="Lightning"
                     value={<StringShower text={props.nodePubkey || ""} />}
-                    icon={
-                        <img
-                            class="h-[1rem] w-[1rem]"
-                            src={bolt}
-                            alt="lightning"
-                        />
-                    }
+                    icon={<Zap class="h-4 w-4" />}
                 />
             </Match>
             <Match
@@ -155,20 +128,14 @@ function DestinationShower(props: {
                 <DestinationItem
                     title="Lightning"
                     value={<StringShower text={props.lnurl || ""} />}
-                    icon={
-                        <img
-                            class="h-[1rem] w-[1rem]"
-                            src={bolt}
-                            alt="lightning"
-                        />
-                    }
+                    icon={<Zap class="h-4 w-4" />}
                 />
             </Match>
         </Switch>
     );
 }
 
-function DestinationItem(props: {
+export function DestinationItem(props: {
     title: string;
     value: JSX.Element;
     icon: JSX.Element;
@@ -180,9 +147,9 @@ function DestinationItem(props: {
                 <SmallHeader>{props.title}</SmallHeader>
                 <div class="text-sm text-neutral-500">{props.value}</div>
             </div>
-            <UnstyledBackPop>
+            <UnstyledBackPop default="/">
                 <div class="h-8 w-8 rounded-full bg-m-grey-800 px-1 py-1">
-                    <img src={close} alt="Clear" class="h-6 w-6" />
+                    <X class="h-6 w-6" />
                 </div>
             </UnstyledBackPop>
         </div>
@@ -704,11 +671,12 @@ export function Send() {
     }
 
     const [contact] = createResource(contactId, getContact);
+    const location = useLocation();
 
     return (
         <MutinyWalletGuard>
             <DefaultMain>
-                <BackPop />
+                <BackPop default="/" />
                 <SuccessModal
                     confirmText={
                         sentDetails()?.amount
@@ -721,7 +689,12 @@ export function Send() {
                     }}
                     onConfirm={() => {
                         setSentDetails(undefined);
-                        navigate("/");
+                        const state = location.state as { previous?: string };
+                        if (state?.previous) {
+                            navigate(state?.previous);
+                        } else {
+                            navigate("/");
+                        }
                     }}
                 >
                     <Switch>
@@ -846,7 +819,8 @@ export function Send() {
                             <div class="flex w-full">
                                 <SharpButton
                                     onClick={toggleVisibility}
-                                    disabled={!contact()?.npub}
+                                    // If there's no npub, or if there's an invoice, don't let switch to zap
+                                    disabled={!contact()?.npub || !!invoice()}
                                 >
                                     <div class="flex items-center gap-2">
                                         <Switch>
@@ -855,10 +829,7 @@ export function Send() {
                                                     visibility() === "private"
                                                 }
                                             >
-                                                <img
-                                                    src={privateEye}
-                                                    alt="Private"
-                                                />
+                                                <EyeOff class="h-4 w-4" />
                                                 <span>
                                                     {i18n.t("send.private")}
                                                 </span>
@@ -868,10 +839,7 @@ export function Send() {
                                                     visibility() === "anonzap"
                                                 }
                                             >
-                                                <img
-                                                    src={bolt}
-                                                    alt="Anon Zap"
-                                                />
+                                                <Zap class="h-4 w-4" />
                                                 <span>
                                                     {i18n.t("send.anonzap")}
                                                 </span>

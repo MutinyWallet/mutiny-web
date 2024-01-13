@@ -1,3 +1,6 @@
+import { TagItem } from "@mutinywallet/mutiny-wasm";
+import { useNavigate } from "@solidjs/router";
+import { Check, PlugZap, X } from "lucide-solid";
 import {
     createEffect,
     createResource,
@@ -8,22 +11,13 @@ import {
     Switch
 } from "solid-js";
 
-import bolt from "~/assets/icons/bolt.svg";
-import greenCheck from "~/assets/icons/green-check.svg";
-import redClose from "~/assets/icons/red-close.svg";
-import {
-    ActivityAmount,
-    Card,
-    InfoBox,
-    LoadingSpinner,
-    VStack
-} from "~/components";
+import { ButtonCard, GenericItem, InfoBox, NiceP } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import {
     createDeepSignal,
     eify,
-    formatExpiration,
+    veryShortTimeStamp,
     vibrateSuccess
 } from "~/utils";
 
@@ -40,9 +34,15 @@ export function PendingNwc() {
 
     const [error, setError] = createSignal<Error>();
 
+    const navigate = useNavigate();
+
     async function fetchPendingRequests() {
         const profiles = await state.mutiny_wallet?.get_nwc_profiles();
         if (!profiles) return [];
+
+        const contacts: TagItem[] | undefined =
+            await state.mutiny_wallet?.get_contacts_sorted();
+        if (!contacts) return [];
 
         const pending = await state.mutiny_wallet?.get_pending_nwc_invoices();
         if (!pending) return [];
@@ -59,6 +59,16 @@ export function PendingNwc() {
                     date: p.expiry,
                     amount_sats: p.amount_sats
                 });
+            } else {
+                const contact = contacts.find((c) => c.npub === p.npub);
+                if (contact) {
+                    pendingItems.push({
+                        id: p.id,
+                        name_of_connection: contact.name,
+                        date: p.expiry,
+                        amount_sats: p.amount_sats
+                    });
+                }
             }
         }
         return pendingItems;
@@ -70,11 +80,12 @@ export function PendingNwc() {
         { storage: createDeepSignal }
     );
 
-    const [paying, setPaying] = createSignal<string>("");
+    const [payList, setPayList] = createSignal<string[]>([]);
 
     async function payItem(item: PendingItem) {
         try {
-            setPaying(item.id);
+            // setPaying(item.id);
+            setPayList([...payList(), item.id]);
             await state.mutiny_wallet?.approve_invoice(item.id);
             await vibrateSuccess();
         } catch (e) {
@@ -93,7 +104,7 @@ export function PendingNwc() {
                 console.error(e);
             }
         } finally {
-            setPaying("");
+            setPayList(payList().filter((id) => id !== item.id));
             refetch();
         }
     }
@@ -119,13 +130,13 @@ export function PendingNwc() {
 
     async function rejectItem(item: PendingItem) {
         try {
-            setPaying(item.id);
+            setPayList([...payList(), item.id]);
             await state.mutiny_wallet?.deny_invoice(item.id);
         } catch (e) {
             setError(eify(e));
             console.error(e);
         } finally {
-            setPaying("");
+            setPayList(payList().filter((id) => id !== item.id));
             refetch();
         }
     }
@@ -147,92 +158,70 @@ export function PendingNwc() {
     });
 
     return (
-        <Show when={pendingRequests() && pendingRequests()!.length > 0}>
-            <Card title={i18n.t("settings.connections.pending_nwc.title")}>
-                <div class="p-1" />
-                <VStack>
+        <Switch>
+            <Match when={pendingRequests() && pendingRequests()!.length > 0}>
+                <ButtonCard onClick={() => navigate("/settings/connections")}>
+                    <div class="flex items-center gap-2">
+                        <PlugZap class="inline-block text-m-red" />
+                        <NiceP>{i18n.t("home.connection_edit")}</NiceP>
+                    </div>
+                </ButtonCard>
+                <div class="flex w-full justify-around">
+                    <button
+                        class="flex items-center gap-1 font-semibold text-m-green active:-mb-[1px] active:mt-[1px] active:text-m-green/80"
+                        onClick={approveAll}
+                    >
+                        <Check />
+                        <span>
+                            {i18n.t(
+                                "settings.connections.pending_nwc.approve_all"
+                            )}
+                        </span>
+                    </button>
+                    <button
+                        class="flex items-center gap-1 font-semibold text-m-red active:-mb-[1px] active:mt-[1px] active:text-m-red/80"
+                        onClick={denyAll}
+                    >
+                        <X />
+                        <span>
+                            {i18n.t(
+                                "settings.connections.pending_nwc.deny_all"
+                            )}
+                        </span>
+                    </button>
+                </div>
+                <div class="flex w-full flex-col divide-y divide-m-grey-800 overflow-x-clip">
                     <Show when={error()}>
                         <InfoBox accent="red">{error()?.message}</InfoBox>
                     </Show>
+
                     <For each={pendingRequests()}>
                         {(pendingItem) => (
-                            <div class="grid grid-cols-[auto_minmax(0,_1fr)_minmax(0,_max-content)_auto] items-center gap-4 border-b border-neutral-800 pb-4 last:border-b-0">
-                                <img
-                                    class="w-[1rem]"
-                                    src={bolt}
-                                    alt="onchain"
-                                />
-                                <div class="flex flex-col">
-                                    <span class="truncate text-base font-semibold">
-                                        {pendingItem.name_of_connection}
-                                    </span>
-                                    <time class="text-sm text-neutral-500">
-                                        {formatExpiration(pendingItem.date)}
-                                    </time>
-                                </div>
-                                <div>
-                                    <ActivityAmount
-                                        amount={
-                                            pendingItem.amount_sats?.toString() ||
-                                            "0"
-                                        }
-                                        price={state.price}
-                                    />
-                                </div>
-                                <div class="flex w-[5rem] gap-2">
-                                    <Switch>
-                                        <Match
-                                            when={paying() !== pendingItem.id}
-                                        >
-                                            <button
-                                                onClick={() =>
-                                                    payItem(pendingItem)
-                                                }
-                                            >
-                                                <img
-                                                    class="h-[2.5rem] w-[2.5rem]"
-                                                    src={greenCheck}
-                                                    alt="Approve"
-                                                />
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    rejectItem(pendingItem)
-                                                }
-                                            >
-                                                <img
-                                                    class="h-[2rem] w-[2rem]"
-                                                    src={redClose}
-                                                    alt="Reject"
-                                                />
-                                            </button>
-                                        </Match>
-                                        <Match
-                                            when={paying() === pendingItem.id}
-                                        >
-                                            <LoadingSpinner wide />
-                                        </Match>
-                                    </Switch>
-                                </div>
-                            </div>
+                            <GenericItem
+                                primaryAvatarUrl=""
+                                verb="requested"
+                                amount={pendingItem.amount_sats || 0n}
+                                due={veryShortTimeStamp(pendingItem.date)}
+                                genericAvatar
+                                primaryName={pendingItem.name_of_connection}
+                                approveAction={() => payItem(pendingItem)}
+                                rejectAction={() => rejectItem(pendingItem)}
+                                shouldSpinny={payList().includes(
+                                    pendingItem.id
+                                )}
+                            />
                         )}
                     </For>
-                </VStack>
-                <div class="flex w-full justify-around">
-                    <button
-                        class="font-semibold text-m-green active:text-m-red/80"
-                        onClick={approveAll}
-                    >
-                        {i18n.t("settings.connections.pending_nwc.approve_all")}
-                    </button>
-                    <button
-                        class="font-semibold text-m-red active:text-m-red/80"
-                        onClick={denyAll}
-                    >
-                        {i18n.t("settings.connections.pending_nwc.deny_all")}
-                    </button>
                 </div>
-            </Card>
-        </Show>
+            </Match>
+            <Match when={true}>
+                <ButtonCard onClick={() => navigate("/settings/connections")}>
+                    <div class="flex items-center gap-2">
+                        <PlugZap class="inline-block text-m-red" />
+                        <NiceP>{i18n.t("home.connection")}</NiceP>
+                    </div>
+                </ButtonCard>
+            </Match>
+        </Switch>
     );
 }

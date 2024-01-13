@@ -20,6 +20,9 @@ export function DeleteEverything(props: { emergency?: boolean }) {
     async function resetNode() {
         try {
             setConfirmLoading(true);
+
+            localStorage.removeItem("profile_setup_stage");
+
             // If we're in a context where the wallet is loaded we want to use the regular action to delete it
             // Otherwise we just call the import_json method directly
             if (state.mutiny_wallet && !props.emergency) {

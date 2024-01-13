@@ -40,6 +40,7 @@ type LoadStage =
     | "fresh"
     | "checking_double_init"
     | "downloading"
+    | "checking_for_existing_wallet"
     | "setup"
     | "done";
 
@@ -72,6 +73,7 @@ type MegaStore = [
         testflightPromptDismissed: boolean;
         should_zap_hodl: boolean;
         federations?: MutinyFederationIdentity[];
+        balanceView: "sats" | "fiat" | "hidden";
     },
     {
         setup(password?: string): Promise<void>;
@@ -97,6 +99,7 @@ type MegaStore = [
         toggleHodl(): void;
         dropMutinyWallet(): void;
         refreshFederations(): Promise<void>;
+        cycleBalanceView(): void;
     }
 ];
 
@@ -138,7 +141,8 @@ export const Provider: ParentComponent = (props) => {
         should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
-        federations: undefined as MutinyFederationIdentity[] | undefined
+        federations: undefined as MutinyFederationIdentity[] | undefined,
+        balanceView: localStorage.getItem("balanceView") || "sats"
     });
 
     const actions = {
@@ -158,7 +162,7 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
             }
         },
-        async setup(password?: string): Promise<void> {
+        async preSetup(): Promise<void> {
             try {
                 // If we're already in an error state there should be no reason to continue
                 if (state.setup_error) {
@@ -183,9 +187,15 @@ export const Provider: ParentComponent = (props) => {
                 await doubleInitDefense();
                 setState({ load_stage: "downloading" });
                 await initializeWasm();
-                setState({ load_stage: "setup" });
-
+            } catch (e) {
+                console.error(e);
+                setState({ setup_error: eify(e) });
+            }
+        },
+        async setup(password?: string): Promise<void> {
+            try {
                 const settings = await getSettings();
+                setState({ load_stage: "setup" });
 
                 const mutinyWallet = await setupMutinyWallet(
                     settings,
@@ -199,18 +209,6 @@ export const Provider: ParentComponent = (props) => {
 
                 // If we get this far then we don't need the password anymore
                 setState({ needs_password: false });
-
-                // Check if we're subscribed and update the timestamp
-                try {
-                    const timestamp = await mutinyWallet?.check_subscribed();
-
-                    // Check that timestamp is a number
-                    if (timestamp && !isNaN(Number(timestamp))) {
-                        setState({ subscription_timestamp: Number(timestamp) });
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
 
                 // Get balance
                 const balance = await mutinyWallet.get_balance();
@@ -226,6 +224,8 @@ export const Provider: ParentComponent = (props) => {
                     balance,
                     federations
                 });
+
+                await actions.postSetup();
             } catch (e) {
                 console.error(e);
                 if (eify(e).message === "Incorrect password entered.") {
@@ -235,6 +235,50 @@ export const Provider: ParentComponent = (props) => {
                     setState({ setup_error: eify(e), password: password });
                 }
             }
+        },
+        async postSetup(): Promise<void> {
+            if (!state.mutiny_wallet) {
+                console.error(
+                    "Unable to run post setup, no mutiny_wallet is set"
+                );
+                return;
+            }
+
+            // Sync our nostr profile info
+            try {
+                await state.mutiny_wallet.sync_nostr();
+            } catch (e) {
+                console.error("error syncing nostr profile", e);
+            }
+
+            // Check if we're subscribed and update the timestamp
+            try {
+                const timestamp = await state.mutiny_wallet.check_subscribed();
+
+                // Check that timestamp is a number
+                if (timestamp && !isNaN(Number(timestamp))) {
+                    setState({ subscription_timestamp: Number(timestamp) });
+                }
+            } catch (e) {
+                console.error("error checking subscription", e);
+            }
+
+            // Set up syncing
+            setInterval(async () => {
+                await actions.sync();
+            }, 3 * 1000); // Poll every 3 seconds
+
+            // Run our first price check
+            console.log("running first price check");
+            await actions.priceCheck();
+
+            // Set up price checking every minute
+            setInterval(
+                async () => {
+                    await actions.priceCheck();
+                },
+                60 * 1000 * state.price_sync_backoff_multiple
+            ); // Poll every minute * backoff multiple
         },
         async deleteMutinyWallet(): Promise<void> {
             try {
@@ -423,6 +467,18 @@ export const Provider: ParentComponent = (props) => {
             const federations =
                 (await state.mutiny_wallet?.list_federations()) as MutinyFederationIdentity[];
             setState({ federations });
+        },
+        cycleBalanceView() {
+            if (state.balanceView === "sats") {
+                localStorage.setItem("balanceView", "fiat");
+                setState({ balanceView: "fiat" });
+            } else if (state.balanceView === "fiat") {
+                localStorage.setItem("balanceView", "hidden");
+                setState({ balanceView: "hidden" });
+            } else {
+                localStorage.setItem("balanceView", "sats");
+                setState({ balanceView: "sats" });
+            }
         }
     };
 
@@ -439,7 +495,7 @@ export const Provider: ParentComponent = (props) => {
             });
     });
 
-    onMount(async () => {
+    async function checkForExistingTab() {
         // Set up existing tab detector
         const channel = new BroadcastChannel("tab-detector");
 
@@ -465,12 +521,29 @@ export const Provider: ParentComponent = (props) => {
                 channel.postMessage({ type: "EXISTING_TAB" });
             }
         };
+    }
+
+    onMount(async () => {
+        await checkForExistingTab();
+        if (state.existing_tab_detected) {
+            return;
+        }
 
         console.log("checking for browser compatibility");
         try {
             await checkBrowserCompatibility();
         } catch (e) {
             setState({ setup_error: eify(e) });
+            return;
+        }
+
+        await actions.preSetup();
+
+        setState({ load_stage: "checking_for_existing_wallet" });
+        const existing = await MutinyWallet.has_node_manager();
+
+        if (!existing) {
+            navigate("/setup");
             return;
         }
 
@@ -485,33 +558,13 @@ export const Provider: ParentComponent = (props) => {
             await actions.setup();
         } else {
             console.warn("setup aborted");
+            return;
         }
 
+        // After we have the mutiny wallet we still need to check for subscription and sync nostr
+        // await actions.postSetup();
+
         console.log("node manager setup done");
-
-        // Setup an event listener to stop the mutiny wallet when the page unloads
-        window.onunload = async (_e) => {
-            console.log("stopping mutiny_wallet");
-            await state.mutiny_wallet?.stop();
-            console.log("mutiny_wallet stopped");
-            sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
-        };
-
-        // Set up syncing
-        setInterval(async () => {
-            await actions.sync();
-        }, 3 * 1000); // Poll every 3 seconds
-
-        // Run our first price check
-        await actions.priceCheck();
-
-        // Set up price checking every minute
-        setInterval(
-            async () => {
-                await actions.priceCheck();
-            },
-            60 * 1000 * state.price_sync_backoff_multiple
-        ); // Poll every minute * backoff multiple
     });
 
     const store = [state, actions] as MegaStore;

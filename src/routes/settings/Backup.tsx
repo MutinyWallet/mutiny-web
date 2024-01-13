@@ -10,7 +10,6 @@ import {
     MutinyWalletGuard,
     NavBar,
     NiceP,
-    SafeArea,
     SeedWords,
     VStack
 } from "~/components";
@@ -64,46 +63,39 @@ export function Backup() {
     function wroteDownTheWords() {
         setLoading(true);
         actions.setHasBackedUp();
-        navigate("/settings/encrypt");
+        navigate("/");
         setLoading(false);
     }
 
     return (
         <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain>
-                    <BackLink
-                        href="/settings"
-                        title={i18n.t("settings.header")}
-                    />
-                    <LargeHeader>{i18n.t("settings.backup.title")}</LargeHeader>
+            <DefaultMain>
+                <BackLink href="/settings" title={i18n.t("settings.header")} />
+                <LargeHeader>{i18n.t("settings.backup.title")}</LargeHeader>
 
-                    <VStack>
-                        <NiceP>{i18n.t("settings.backup.secure_funds")}</NiceP>
-                        <NiceP>
-                            {i18n.t("settings.backup.twelve_words_tip")}
-                        </NiceP>
-                        <NiceP>{i18n.t("settings.backup.warning_one")}</NiceP>
-                        <NiceP>{i18n.t("settings.backup.warning_two")}</NiceP>
-                        <SeedWords
-                            words={store.mutiny_wallet?.show_seed() || ""}
-                            setHasSeen={setHasSeenBackup}
-                        />
-                        <Show when={hasSeenBackup()}>
-                            <Quiz setHasCheckedAll={setHasCheckedAll} />
-                        </Show>
-                        <Button
-                            disabled={!hasSeenBackup() || !hasCheckedAll()}
-                            intent="blue"
-                            onClick={wroteDownTheWords}
-                            loading={loading()}
-                        >
-                            {i18n.t("settings.backup.confirm")}
-                        </Button>
-                    </VStack>
-                </DefaultMain>
-                <NavBar activeTab="settings" />
-            </SafeArea>
+                <VStack>
+                    <NiceP>{i18n.t("settings.backup.secure_funds")}</NiceP>
+                    <NiceP>{i18n.t("settings.backup.twelve_words_tip")}</NiceP>
+                    <NiceP>{i18n.t("settings.backup.warning_one")}</NiceP>
+                    <NiceP>{i18n.t("settings.backup.warning_two")}</NiceP>
+                    <SeedWords
+                        words={store.mutiny_wallet?.show_seed() || ""}
+                        setHasSeen={setHasSeenBackup}
+                    />
+                    <Show when={hasSeenBackup()}>
+                        <Quiz setHasCheckedAll={setHasCheckedAll} />
+                    </Show>
+                    <Button
+                        disabled={!hasSeenBackup() || !hasCheckedAll()}
+                        intent="blue"
+                        onClick={wroteDownTheWords}
+                        loading={loading()}
+                    >
+                        {i18n.t("settings.backup.confirm")}
+                    </Button>
+                </VStack>
+            </DefaultMain>
+            <NavBar activeTab="settings" />
         </MutinyWalletGuard>
     );
 }

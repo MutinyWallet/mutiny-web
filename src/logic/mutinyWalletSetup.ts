@@ -1,6 +1,5 @@
-/* @refresh reload */
-
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 
@@ -256,6 +255,29 @@ export async function setupMutinyWallet(
         primal_api
     } = settings;
 
+    let nsec;
+    // get nsec from secure storage
+    // TODO: might have to check Capacitor.isNativePlatform but I think it's fine
+    try {
+        const value = await SecureStoragePlugin.get({ key: "nsec" });
+        nsec = value.value;
+    } catch (e) {
+        console.log("No nsec stored");
+    }
+
+    // if we didn't get an nsec from storage, try to use extension
+    let extension_key;
+
+    if (!nsec && Object.prototype.hasOwnProperty.call(window, "nostr")) {
+        try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore ignore nostr not existing, only does if they have extension
+            extension_key = await window.nostr.getPublicKey();
+        } catch (_) {
+            console.log("No NIP-07 extension");
+        }
+    }
+
     console.log("Initializing Mutiny Manager");
     console.log("Using network", network);
     console.log("Using proxy", proxy);
@@ -300,9 +322,9 @@ export async function setupMutinyWallet(
         // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
         shouldZapHodl ? false : undefined,
         // Nsec override
-        undefined,
+        nsec,
         // Nip7
-        undefined,
+        extension_key ? extension_key : undefined,
         // primal URL
         primal_api || "https://primal-cache.mutinywallet.com/api"
     );

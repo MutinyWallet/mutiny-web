@@ -25,7 +25,6 @@ import {
     MutinyWalletGuard,
     NavBar,
     NiceP,
-    SafeArea,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -62,7 +61,9 @@ function InboundWarning() {
             return undefined;
         }
 
-        const amount = BigInt(searchParams.amount);
+        const amountNumber = Number(searchParams.amount);
+
+        const amount = BigInt(amountNumber);
 
         const network = state.mutiny_wallet?.get_network() as Network;
 
@@ -107,6 +108,9 @@ export function Gift() {
         const amount = Number(searchParams.amount);
         const nwc = searchParams.nwc_uri;
         setLoading(true);
+        if (!nwc) {
+            throw new Error(i18n.t("settings.gift.something_went_wrong"));
+        }
         try {
             const claimResult = await state.mutiny_wallet?.claim_single_use_nwc(
                 BigInt(amount),
@@ -150,122 +154,117 @@ export function Gift() {
 
     return (
         <MutinyWalletGuard>
-            <SafeArea>
-                <DefaultMain>
-                    <BackLink />
-                    <Show when={searchParams.nwc_uri && searchParams.amount}>
-                        <VStack>
-                            <FancyCard>
-                                <VStack>
-                                    <div class="flex items-start justify-between">
-                                        <VStack smallgap>
-                                            <span class="text-3xl">
-                                                <AmountSats
-                                                    denominationSize="xl"
-                                                    amountSats={Number(
-                                                        searchParams.amount
-                                                    )}
-                                                />
-                                            </span>
-                                            <span class="text-xl text-white/70">
-                                                <AmountFiat
-                                                    denominationSize="xl"
-                                                    amountSats={Number(
-                                                        searchParams.amount
-                                                    )}
-                                                />
-                                            </span>
-                                        </VStack>
-                                        <Logo />
-                                    </div>
+            <DefaultMain>
+                <BackLink />
+                <Show when={searchParams.nwc_uri && searchParams.amount}>
+                    <VStack>
+                        <FancyCard>
+                            <VStack>
+                                <div class="flex items-start justify-between">
+                                    <VStack smallgap>
+                                        <span class="text-3xl">
+                                            <AmountSats
+                                                denominationSize="xl"
+                                                amountSats={Number(
+                                                    searchParams.amount
+                                                )}
+                                            />
+                                        </span>
+                                        <span class="text-xl text-white/70">
+                                            <AmountFiat
+                                                denominationSize="xl"
+                                                amountSats={Number(
+                                                    searchParams.amount
+                                                )}
+                                            />
+                                        </span>
+                                    </VStack>
+                                    <Logo />
+                                </div>
 
-                                    <div
-                                        class="relative transition-all duration-500"
+                                <div
+                                    class="relative transition-all duration-500"
+                                    classList={{
+                                        "grayscale filter opacity-75":
+                                            !claimSuccess()
+                                    }}
+                                >
+                                    <img
+                                        src={treasureClosed}
+                                        fetchpriority="high"
+                                        class="mx-auto w-1/2"
                                         classList={{
-                                            "grayscale filter opacity-75":
-                                                !claimSuccess()
+                                            hidden: !!claimSuccess()
                                         }}
-                                    >
-                                        <img
-                                            src={treasureClosed}
-                                            fetchpriority="high"
-                                            class="mx-auto w-1/2"
-                                            classList={{
-                                                hidden: !!claimSuccess()
-                                            }}
-                                        />
-                                        <img
-                                            src={treasure}
-                                            fetchpriority="high"
-                                            class="mx-auto w-1/2"
-                                            classList={{
-                                                hidden: !claimSuccess()
-                                            }}
-                                        />
-                                    </div>
-                                    <h2 class="text-center text-3xl font-semibold">
-                                        {i18n.t("settings.gift.receive_header")}
-                                    </h2>
-                                    <NiceP>
-                                        {i18n.t(
-                                            "settings.gift.receive_description"
-                                        )}
-                                    </NiceP>
-                                    <Show when={!claimSuccess()}>
-                                        <Suspense>
-                                            <InboundWarning />
-                                        </Suspense>
-                                    </Show>
-                                    <Switch>
-                                        <Match when={error()}>
-                                            <InfoBox accent="red">
-                                                {error()?.message}
-                                            </InfoBox>
-                                            <ButtonLink href="/" intent="red">
-                                                {i18n.t("common.dangit")}
-                                            </ButtonLink>
-                                            <Button
-                                                intent="inactive"
-                                                onClick={tryAgain}
-                                                loading={loading()}
-                                            >
-                                                {i18n.t(
-                                                    "settings.gift.receive_try_again"
-                                                )}
-                                            </Button>
-                                        </Match>
-                                        <Match when={claimSuccess()}>
-                                            <InfoBox accent="green">
-                                                {i18n.t(
-                                                    "settings.gift.receive_claimed"
-                                                )}
-                                            </InfoBox>
-                                            <ButtonLink
-                                                href="/"
-                                                intent="inactive"
-                                            >
-                                                {i18n.t("common.nice")}
-                                            </ButtonLink>
-                                        </Match>
-                                        <Match when={true}>
-                                            <Button
-                                                intent="inactive"
-                                                onClick={claim}
-                                                loading={loading()}
-                                            >
-                                                {i18n.t(
-                                                    "settings.gift.receive_cta"
-                                                )}
-                                            </Button>
-                                        </Match>
-                                    </Switch>
-                                </VStack>
-                            </FancyCard>
-                        </VStack>
-                    </Show>
-                </DefaultMain>
-                <NavBar activeTab="none" />
-            </SafeArea>
+                                    />
+                                    <img
+                                        src={treasure}
+                                        fetchpriority="high"
+                                        class="mx-auto w-1/2"
+                                        classList={{
+                                            hidden: !claimSuccess()
+                                        }}
+                                    />
+                                </div>
+                                <h2 class="text-center text-3xl font-semibold">
+                                    {i18n.t("settings.gift.receive_header")}
+                                </h2>
+                                <NiceP>
+                                    {i18n.t(
+                                        "settings.gift.receive_description"
+                                    )}
+                                </NiceP>
+                                <Show when={!claimSuccess()}>
+                                    <Suspense>
+                                        <InboundWarning />
+                                    </Suspense>
+                                </Show>
+                                <Switch>
+                                    <Match when={error()}>
+                                        <InfoBox accent="red">
+                                            {error()?.message}
+                                        </InfoBox>
+                                        <ButtonLink href="/" intent="red">
+                                            {i18n.t("common.dangit")}
+                                        </ButtonLink>
+                                        <Button
+                                            intent="inactive"
+                                            onClick={tryAgain}
+                                            loading={loading()}
+                                        >
+                                            {i18n.t(
+                                                "settings.gift.receive_try_again"
+                                            )}
+                                        </Button>
+                                    </Match>
+                                    <Match when={claimSuccess()}>
+                                        <InfoBox accent="green">
+                                            {i18n.t(
+                                                "settings.gift.receive_claimed"
+                                            )}
+                                        </InfoBox>
+                                        <ButtonLink href="/" intent="inactive">
+                                            {i18n.t("common.nice")}
+                                        </ButtonLink>
+                                    </Match>
+                                    <Match when={true}>
+                                        <Button
+                                            intent="inactive"
+                                            onClick={claim}
+                                            loading={loading()}
+                                        >
+                                            {i18n.t(
+                                                "settings.gift.receive_cta"
+                                            )}
+                                        </Button>
+                                    </Match>
+                                </Switch>
+                            </VStack>
+                        </FancyCard>
+                    </VStack>
+                </Show>
+            </DefaultMain>
+            <NavBar activeTab="none" />
         </MutinyWalletGuard>
     );
 }
