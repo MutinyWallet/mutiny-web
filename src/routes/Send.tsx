@@ -446,6 +446,11 @@ export function Send() {
         state.mutiny_wallet
             ?.decode_invoice(source.invoice!)
             .then((invoice) => {
+                if (invoice.expire <= Date.now() / 1000) {
+                    navigate("/search");
+                    throw new Error(i18n.t("send.error_expired"));
+                }
+
                 if (invoice?.amount_sats) {
                     setAmountSats(invoice.amount_sats);
                     setIsAmtEditable(false);
