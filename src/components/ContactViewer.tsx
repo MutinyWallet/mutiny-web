@@ -5,6 +5,7 @@ import { createSignal, Match, Show, Switch } from "solid-js";
 
 import {
     Button,
+    ConfirmDialog,
     ContactForm,
     KeyValue,
     MiniStringShower,
@@ -27,12 +28,14 @@ export function ContactViewer(props: {
     contact: TagItem;
     gradient: string;
     saveContact: (id: string, contact: ContactFormValues) => void;
+    deleteContact: (id: string) => Promise<void>;
 }) {
     const i18n = useI18n();
     const [isOpen, setIsOpen] = createSignal(false);
     const [isEditing, setIsEditing] = createSignal(false);
     const [state, actions] = useMegaStore();
     const navigate = useNavigate();
+    const [confirmOpen, setConfirmOpen] = createSignal(false);
 
     const handleSubmit: SubmitHandler<ContactFormValues> = (
         c: ContactFormValues
@@ -41,6 +44,13 @@ export function ContactViewer(props: {
 
         props.saveContact(id, c);
         setIsEditing(false);
+    };
+
+    const handleDelete = async () => {
+        const id = props.contact.id;
+
+        await props.deleteContact(id);
+        setIsOpen(false);
     };
 
     const handlePay = () => {
@@ -101,6 +111,20 @@ export function ContactViewer(props: {
                             handleSubmit={handleSubmit}
                             initialValues={props.contact}
                         />
+                        <Button
+                            intent="red"
+                            onClick={() => setConfirmOpen(true)}
+                        >
+                            Delete
+                        </Button>
+                        <ConfirmDialog
+                            open={confirmOpen()}
+                            loading={false}
+                            onConfirm={handleDelete}
+                            onCancel={() => setConfirmOpen(false)}
+                        >
+                            Are you sure you want to delete this contact?
+                        </ConfirmDialog>
                     </Match>
                     <Match when={!isEditing()}>
                         <div class="mx-auto flex w-full max-w-[400px] flex-1 flex-col items-center justify-around gap-4">

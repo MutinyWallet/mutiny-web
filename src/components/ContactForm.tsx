@@ -38,7 +38,7 @@ export function ContactForm(props: {
     return (
         <Form
             onSubmit={props.handleSubmit}
-            class="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-around gap-4"
+            class="mx-auto flex w-full flex-1 flex-col justify-around gap-4"
         >
             <div>
                 <VStack>
