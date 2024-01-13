@@ -120,6 +120,7 @@ export default {
         payment_initiated: "Payment Initiated",
         payment_sent: "Payment Sent",
         destination: "Destination",
+        no_payment_info: "No payment info",
         progress_bar: {
             of: "of",
             sats_sent: "sats sent"
