@@ -49,5 +49,4 @@ export * from "./BigMoney";
 export * from "./FeeDisplay";
 export * from "./ReceiveWarnings";
 export * from "./SimpleInput";
-export * from "./MethodChooser";
 export * from "./LabelCircle";

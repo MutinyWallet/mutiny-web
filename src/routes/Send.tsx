@@ -33,6 +33,7 @@ import {
     MegaCheck,
     MegaClock,
     MegaEx,
+    MethodChoice,
     MutinyWalletGuard,
     NavBar,
     showToast,
@@ -637,6 +638,59 @@ export function Send() {
         );
     });
 
+    const lightningMethod = createMemo<MethodChoice>(() => {
+        return {
+            method: "lightning",
+            maxAmountSats: maxLightning()
+        };
+    });
+
+    const onchainMethod = createMemo<MethodChoice>(() => {
+        return {
+            method: "onchain",
+            maxAmountSats: maxOnchain()
+        };
+    });
+
+    const sendMethods = createMemo<MethodChoice[]>(() => {
+        if (lnAddress() || lnurlp() || nodePubkey()) {
+            return [lightningMethod()];
+        }
+
+        if (invoice() && address()) {
+            return [lightningMethod(), onchainMethod()];
+        }
+
+        if (invoice()) {
+            return [lightningMethod()];
+        }
+
+        if (address()) {
+            return [onchainMethod()];
+        }
+
+        // We should never get here
+        console.error("No send methods found");
+
+        return [];
+    });
+
+    function setSourceFromMethod(method: MethodChoice) {
+        if (method.method === "lightning") {
+            setSource("lightning");
+        } else if (method.method === "onchain") {
+            setSource("onchain");
+        }
+    }
+
+    const activeMethod = createMemo(() => {
+        if (source() === "lightning") {
+            return lightningMethod();
+        } else if (source() === "onchain") {
+            return onchainMethod();
+        }
+    });
+
     return (
         <MutinyWalletGuard>
             <DefaultMain>
@@ -726,23 +780,27 @@ export function Send() {
                         <AmountEditable
                             initialAmountSats={amountSats()}
                             setAmountSats={setAmountInput}
-                            maxAmountSats={maxAmountSats()}
                             fee={feeEstimate()?.toString()}
                             onSubmit={() =>
                                 sendButtonDisabled() ? undefined : handleSend()
                             }
+                            activeMethod={activeMethod()}
+                            methods={sendMethods()}
+                            setChosenMethod={setSourceFromMethod}
                         />
                     </Show>
                     <Show when={!isAmtEditable()}>
                         <AmountEditable
                             initialAmountSats={amountSats()}
                             setAmountSats={setAmountInput}
-                            maxAmountSats={maxAmountSats()}
                             fee={feeEstimate()?.toString()}
                             frozenAmount={true}
                             onSubmit={() =>
                                 sendButtonDisabled() ? undefined : handleSend()
                             }
+                            activeMethod={activeMethod()}
+                            methods={sendMethods()}
+                            setChosenMethod={setSourceFromMethod}
                         />
                     </Show>
                     <Show when={feeEstimate()}>
