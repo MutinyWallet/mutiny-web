@@ -84,7 +84,7 @@ export default {
             "Something went wrong when creating the on-chain address",
         amount_editable: {
             receive_too_small:
-                "A setup fee will be deducted from the requested amount.",
+                "A lightning setup fee might be deducted from the requested amount.",
             setup_fee_lightning:
                 "A lightning setup fee will be charged if paid over lightning.",
             too_big_for_beta:
