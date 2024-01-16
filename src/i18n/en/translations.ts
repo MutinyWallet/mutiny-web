@@ -151,7 +151,7 @@ export default {
         more: "Got more to say?",
         tracking:
             "Mutiny doesn't track or spy on your behavior, so your feedback is incredibly helpful.",
-        github: "If you'd like support please",
+        github: "We will not respond to this feedback. If you'd like support please",
         create_issue: "create a GitHub issue.",
         link: "Feedback?",
         feedback_placeholder: "Bugs, feature requests, feedback, etc.",
