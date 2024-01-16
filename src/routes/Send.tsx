@@ -1,4 +1,4 @@
-import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
+import { LnUrlParams, MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createEffect,
@@ -361,7 +361,10 @@ export function Send() {
 
     const [parsingDestination, setParsingDestination] = createSignal(false);
 
-    function handleDestination(source: ParsedParams | undefined) {
+    function handleDestination(
+        source: ParsedParams | undefined,
+        lnUrlParams: LnUrlParams | undefined
+    ) {
         if (!source) return;
         setParsingDestination(true);
         setOriginalScan(source.original);
@@ -380,7 +383,10 @@ export function Send() {
                 );
             } else if (source.lnurl) {
                 console.log("processing lnurl");
-                processLnurl(source as ParsedParams & { lnurl: string });
+                processLnurl(
+                    source as ParsedParams & { lnurl: string },
+                    lnUrlParams
+                );
             } else {
                 setAmountSats(source.amount_sats || 0n);
                 if (source.amount_sats) setIsAmtEditable(false);
@@ -424,31 +430,30 @@ export function Send() {
     }
 
     // A ParsedParams with an lnurl in it
-    function processLnurl(source: ParsedParams & { lnurl: string }) {
-        state.mutiny_wallet
-            ?.decode_lnurl(source.lnurl)
-            .then((lnurlParams) => {
-                if (lnurlParams.tag === "payRequest") {
-                    if (lnurlParams.min == lnurlParams.max) {
-                        setAmountSats(lnurlParams.min / 1000n);
-                        setIsAmtEditable(false);
-                    } else {
-                        setAmountSats(source.amount_sats || 0n);
-                    }
+    function processLnurl(
+        source: ParsedParams & { lnurl: string },
+        lnurlParams?: LnUrlParams
+    ) {
+        console.log("processing lnurl", source.lnurl, lnurlParams);
+        if (lnurlParams) {
+            if (lnurlParams.min == lnurlParams.max) {
+                setAmountSats(lnurlParams.min / 1000n);
+                setIsAmtEditable(false);
+            } else {
+                setAmountSats(source.amount_sats || 0n);
+            }
 
-                    if (source.lightning_address) {
-                        setLnAddress(source.lightning_address);
-                        setIsHodlInvoice(
-                            source.lightning_address
-                                .toLowerCase()
-                                .includes("zeuspay.com")
-                        );
-                    }
-                    setLnurlp(source.lnurl);
-                    setSource("lightning");
-                }
-            })
-            .catch((e) => showToast(eify(e)));
+            if (source.lightning_address) {
+                setLnAddress(source.lightning_address);
+                setIsHodlInvoice(
+                    source.lightning_address
+                        .toLowerCase()
+                        .includes("zeuspay.com")
+                );
+            }
+            setLnurlp(source.lnurl);
+            setSource("lightning");
+        }
     }
 
     createEffect(() => {
@@ -472,8 +477,9 @@ export function Send() {
     // If we got here from a scan or search
     onMount(() => {
         if (state.scan_result) {
-            handleDestination(state.scan_result);
+            handleDestination(state.scan_result, state.lnUrlParams);
             actions.setScanResult(undefined);
+            actions.setLnUrlParams(undefined);
         }
     });
 

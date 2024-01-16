@@ -1,15 +1,17 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import { LnUrlParams } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 
 import { Button, Scanner as Reader, showToast } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
+import { eify } from "~/utils";
 
 export function Scanner() {
     const i18n = useI18n();
-    const [_state, actions] = useMegaStore();
+    const [state, actions] = useMegaStore();
     const [scanResult, setScanResult] = createSignal<string>();
     const navigate = useNavigate();
 
@@ -40,7 +42,19 @@ export function Scanner() {
         }
     }
 
-    // When we have a nice result we can head over to the send screen
+    function handleLnUrl(
+        lnUrl: string,
+        success: (result: LnUrlParams) => void
+    ) {
+        state.mutiny_wallet
+            ?.decode_lnurl(lnUrl)
+            .then((lnurlParams) => {
+                success(lnurlParams);
+            })
+            .catch((e) => showToast(eify(e)));
+    }
+
+    // When we have a nice result we can head over to the next screen
     createEffect(() => {
         if (scanResult()) {
             actions.handleIncomingString(
@@ -49,8 +63,20 @@ export function Scanner() {
                     showToast(error);
                 },
                 (result) => {
-                    actions.setScanResult(result);
-                    navigate("/send");
+                    if (result.lnurl && !result.is_lnurl_auth) {
+                        handleLnUrl(result.lnurl, (lnurlParams) => {
+                            actions.setScanResult(result);
+                            actions.setLnUrlParams(lnurlParams);
+                            if (lnurlParams.tag === "withdrawRequest") {
+                                navigate("/receive");
+                            } else {
+                                navigate("/send");
+                            }
+                        });
+                    } else {
+                        actions.setScanResult(result);
+                        navigate("/send");
+                    }
                 }
             );
         }

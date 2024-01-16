@@ -2,6 +2,7 @@
 
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
 import {
+    LnUrlParams,
     MutinyBalance,
     MutinyWallet,
     TagItem
@@ -73,11 +74,13 @@ type MegaStore = [
         testflightPromptDismissed: boolean;
         should_zap_hodl: boolean;
         federations?: MutinyFederationIdentity[];
+        lnUrlParams?: LnUrlParams;
     },
     {
         setup(password?: string): Promise<void>;
         deleteMutinyWallet(): Promise<void>;
         setScanResult(scan_result: ParsedParams | undefined): void;
+        setLnUrlParams(lnUrlParams: LnUrlParams | undefined): void;
         sync(): Promise<void>;
         setHasBackedUp(): void;
         listTags(): Promise<TagItem[]>;
@@ -141,7 +144,8 @@ export const Provider: ParentComponent = (props) => {
         should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
-        federations: undefined as MutinyFederationIdentity[] | undefined
+        federations: undefined as MutinyFederationIdentity[] | undefined,
+        lnUrlParams: undefined as LnUrlParams | undefined
     });
 
     const actions = {
@@ -326,6 +330,9 @@ export const Provider: ParentComponent = (props) => {
                 console.error(e);
                 return [];
             }
+        },
+        setLnUrlParams(lnUrlParams: LnUrlParams | undefined) {
+            setState({ lnUrlParams });
         },
         async saveFiat(fiat: Currency) {
             localStorage.setItem("fiat_currency", JSON.stringify(fiat));

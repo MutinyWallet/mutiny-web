@@ -1,6 +1,7 @@
 /* @refresh reload */
 
 import {
+    LnUrlParams,
     MutinyBip21RawMaterials,
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
@@ -12,6 +13,7 @@ import {
     createSignal,
     Match,
     onCleanup,
+    onMount,
     Show,
     Switch
 } from "solid-js";
@@ -324,6 +326,40 @@ export function Receive() {
                 }
             } catch (e) {
                 console.error(e);
+            }
+        }
+    }
+
+    // If we got here from an LNUrl withdrawal request
+    onMount(() => {
+        if (state.scan_result && state.scan_result.lnurl && state.lnUrlParams) {
+            handleLnUrlWithdrawal(state.scan_result.lnurl, state.lnUrlParams);
+            actions.setScanResult(undefined);
+            actions.setLnUrlParams(undefined);
+        }
+    });
+
+    async function handleLnUrlWithdrawal(
+        lnurl: string,
+        lnUrlParams: LnUrlParams
+    ) {
+        console.log("handleLnUrlWithdrawal", lnurl, lnUrlParams);
+        setError("");
+        setFlavor("lightning");
+        setLoading(true);
+        setAmount(lnUrlParams.max);
+        setReceiveState("show");
+        if (lnUrlParams.min === lnUrlParams.max) {
+            const success = await state.mutiny_wallet?.lnurl_withdraw(
+                lnurl,
+                lnUrlParams.max / 1000n
+            );
+            if (success) {
+                setReceiveState("paid");
+                setLoading(false);
+                await vibrateSuccess();
+            } else {
+                setError("lnurl_withdraw failed");
             }
         }
     }
