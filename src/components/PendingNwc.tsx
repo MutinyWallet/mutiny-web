@@ -1,3 +1,4 @@
+import { TagItem } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
     createResource,
@@ -44,6 +45,10 @@ export function PendingNwc() {
         const profiles = await state.mutiny_wallet?.get_nwc_profiles();
         if (!profiles) return [];
 
+        const contacts: TagItem[] | undefined =
+            await state.mutiny_wallet?.get_contacts_sorted();
+        if (!contacts) return [];
+
         const pending = await state.mutiny_wallet?.get_pending_nwc_invoices();
         if (!pending) return [];
 
@@ -59,6 +64,16 @@ export function PendingNwc() {
                     date: p.expiry,
                     amount_sats: p.amount_sats
                 });
+            } else {
+                const contact = contacts.find((c) => c.npub === p.npub);
+                if (contact) {
+                    pendingItems.push({
+                        id: p.id,
+                        name_of_connection: contact.name,
+                        date: p.expiry,
+                        amount_sats: p.amount_sats
+                    });
+                }
             }
         }
         return pendingItems;
