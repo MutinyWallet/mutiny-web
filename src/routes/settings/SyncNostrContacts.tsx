@@ -1,5 +1,8 @@
+import { Capacitor } from "@capacitor/core";
 import { createForm, required, SubmitHandler } from "@modular-forms/solid";
-import { createSignal, Match, Show, Switch } from "solid-js";
+import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
+import { createResource, createSignal, Match, Show, Switch } from "solid-js";
 
 import {
     BackPop,
@@ -31,6 +34,8 @@ function SyncContactsForm() {
     const [state, actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
 
+    const allowNsec = Capacitor.isNativePlatform();
+
     const [feedbackForm, { Form, Field }] = createForm<NostrContactsForm>({
         initialValues: {
             npub: ""
@@ -41,7 +46,26 @@ function SyncContactsForm() {
         f: NostrContactsForm
     ) => {
         try {
-            const npub = f.npub.trim();
+            const string = f.npub.trim();
+            let npub = string;
+
+            // if it is an nsec, save it into secure storage
+            if (string.startsWith("nsec")) {
+                if (!allowNsec) {
+                    throw new Error(
+                        "nsec not allowed in web version, please install the app"
+                    );
+                }
+
+                // set in storage
+                SecureStoragePlugin.set({ key: "nsec", value: string }).then(
+                    (success) => console.log(success)
+                );
+
+                // set npub and continue
+                npub = await MutinyWallet.nsec_to_npub(string);
+            }
+
             if (!PRIMAL_API) throw new Error("PRIMAL_API not set");
             await state.mutiny_wallet?.sync_nostr_contacts(PRIMAL_API, npub);
             actions.saveNpub(npub);
@@ -68,7 +92,7 @@ function SyncContactsForm() {
                             value={field.value}
                             error={field.error}
                             label={i18n.t("settings.nostr_contacts.npub_label")}
-                            placeholder="npub..."
+                            placeholder={allowNsec ? "npub/nsec..." : "npub..."}
                         />
                     )}
                 </Field>
@@ -97,9 +121,25 @@ export function SyncNostrContacts() {
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<Error>();
 
-    function clearNpub() {
+    async function clearNpub() {
         actions.saveNpub("");
+        if (Capacitor.isNativePlatform()) {
+            await SecureStoragePlugin.remove({ key: "nsec" });
+        }
     }
+
+    const [hasNsec] = createResource(async () => {
+        if (Capacitor.isNativePlatform()) {
+            try {
+                await SecureStoragePlugin.get({ key: "nsec" });
+                return true;
+            } catch (_e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    });
 
     async function resync() {
         setError(undefined);

@@ -68,6 +68,9 @@ importers:
       '@solidjs/router':
         specifier: ^0.9.0
         version: 0.9.0(solid-js@1.8.5)
+      capacitor-secure-storage-plugin:
+        specifier: ^0.9.0
+        version: 0.9.0(@capacitor/core@5.5.1)
       i18next:
         specifier: ^22.5.1
         version: 22.5.1
@@ -6319,6 +6322,14 @@ packages:
 
   /caniuse-lite@1.0.30001559:
     resolution: {integrity: sha512-cPiMKZgqgkg5LY3/ntGeLFUpi6tzddBNS58A4tnTgQw1zON7u2sZMU7SzOeVH4tj20++9ggL+V6FDOFMTaFFYA==}
+
+  /capacitor-secure-storage-plugin@0.9.0(@capacitor/core@5.5.1):
+    resolution: {integrity: sha512-P5fiC94opcLHu41vceo9weXH+20g0SPYKkeAx+qm9eKNcVFqpcuI4dqwivXlGXYNMDygyjSQuAaFwZ4gW0Y91Q==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.5.1
+    dev: false
 
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}

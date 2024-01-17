@@ -1,6 +1,8 @@
 /* @refresh reload */
 
+import { Capacitor } from "@capacitor/core";
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 
@@ -249,6 +251,17 @@ export async function setupMutinyWallet(
         scorer
     } = settings;
 
+    let nsec;
+    // get nsec from secure storage
+    if (Capacitor.isNativePlatform()) {
+        try {
+            const value = await SecureStoragePlugin.get({ key: "nsec" });
+            nsec = value.value;
+        } catch (e) {
+            console.log("No nsec stored");
+        }
+    }
+
     console.log("Initializing Mutiny Manager");
     console.log("Using network", network);
     console.log("Using proxy", proxy);
@@ -290,7 +303,8 @@ export async function setupMutinyWallet(
         // Safe mode
         safeMode || undefined,
         // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
-        shouldZapHodl ? false : undefined
+        shouldZapHodl ? false : undefined,
+        nsec
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
