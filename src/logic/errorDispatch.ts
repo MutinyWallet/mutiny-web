@@ -14,6 +14,7 @@ type MutinyError =
     | "An invoice must not get payed twice."
     | "Payment timed out."
     | "The given invoice is invalid."
+    | "The given invoice is expired."
     | "Failed to create invoice."
     | "Channel reserve amount is too high."
     | "We do not have enough balance to pay the given amount."
@@ -22,6 +23,7 @@ type MutinyError =
     | "Failed to request channel from LSP due to funding error."
     | "Failed to request channel from LSP due to amount being too high."
     | "Failed to have a connection to the LSP node."
+    | "Failed to provide an invoice to the LSP."
     | "Subscription Client Not Configured"
     | "Invalid Parameter"
     | "Called incorrect lnurl function."
@@ -49,6 +51,9 @@ type MutinyError =
     | "Invalid Arguments were given"
     | "Incorrect password entered."
     | "Cannot change password to the same password."
+    | "Failed to create payjoin request."
+    | "Payjoin response error: {0}"
+    | "Payjoin configuration failed."
     | "Unknown Error";
 
 export function matchError(e: unknown): Error {
