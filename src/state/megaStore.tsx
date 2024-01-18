@@ -74,13 +74,13 @@ type MegaStore = [
         testflightPromptDismissed: boolean;
         should_zap_hodl: boolean;
         federations?: MutinyFederationIdentity[];
-        lnUrlParams?: LnUrlParams;
+        lnUrlData?: LnUrlData;
     },
     {
         setup(password?: string): Promise<void>;
         deleteMutinyWallet(): Promise<void>;
         setScanResult(scan_result: ParsedParams | undefined): void;
-        setLnUrlParams(lnUrlParams: LnUrlParams | undefined): void;
+        setLnUrlData(lnUrlData: LnUrlData | undefined): void;
         sync(): Promise<void>;
         setHasBackedUp(): void;
         listTags(): Promise<TagItem[]>;
@@ -104,6 +104,11 @@ type MegaStore = [
         refreshFederations(): Promise<void>;
     }
 ];
+
+export interface LnUrlData {
+    lnurl: string;
+    params: LnUrlParams;
+}
 
 export const Provider: ParentComponent = (props) => {
     const [searchParams] = useSearchParams();
@@ -145,7 +150,7 @@ export const Provider: ParentComponent = (props) => {
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
         federations: undefined as MutinyFederationIdentity[] | undefined,
-        lnUrlParams: undefined as LnUrlParams | undefined
+        lnUrlData: undefined as LnUrlData | undefined
     });
 
     const actions = {
@@ -331,8 +336,8 @@ export const Provider: ParentComponent = (props) => {
                 return [];
             }
         },
-        setLnUrlParams(lnUrlParams: LnUrlParams | undefined) {
-            setState({ lnUrlParams });
+        setLnUrlData(lnUrlData: LnUrlData | undefined) {
+            setState({ lnUrlData });
         },
         async saveFiat(fiat: Currency) {
             localStorage.setItem("fiat_currency", JSON.stringify(fiat));

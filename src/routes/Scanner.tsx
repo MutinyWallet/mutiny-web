@@ -64,9 +64,13 @@ export function Scanner() {
                 },
                 (result) => {
                     if (result.lnurl && !result.is_lnurl_auth) {
+                        const lnurl = result.lnurl;
                         handleLnUrl(result.lnurl, (lnurlParams) => {
                             actions.setScanResult(result);
-                            actions.setLnUrlParams(lnurlParams);
+                            actions.setLnUrlData({
+                                lnurl: lnurl,
+                                params: lnurlParams
+                            });
                             if (lnurlParams.tag === "withdrawRequest") {
                                 navigate("/receive");
                             } else {

@@ -47,7 +47,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { ParsedParams } from "~/logic/waila";
-import { useMegaStore } from "~/state/megaStore";
+import { LnUrlData, useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
 export type SendSource = "lightning" | "onchain";
@@ -363,7 +363,7 @@ export function Send() {
 
     function handleDestination(
         source: ParsedParams | undefined,
-        lnUrlParams: LnUrlParams | undefined
+        lnUrlParams: LnUrlData | undefined
     ) {
         if (!source) return;
         setParsingDestination(true);
@@ -432,28 +432,34 @@ export function Send() {
     // A ParsedParams with an lnurl in it
     function processLnurl(
         source: ParsedParams & { lnurl: string },
-        lnurlParams?: LnUrlParams
+        lnurlData?: LnUrlData
     ) {
-        console.log("processing lnurl", source.lnurl, lnurlParams);
-        if (lnurlParams) {
-            if (lnurlParams.min == lnurlParams.max) {
-                setAmountSats(lnurlParams.min / 1000n);
-                setIsAmtEditable(false);
-            } else {
-                setAmountSats(source.amount_sats || 0n);
-            }
+        const promise = lnurlData
+            ? Promise.resolve(lnurlData.params)
+            : state.mutiny_wallet?.decode_lnurl(source.lnurl);
+        promise
+            ?.then((lnurlParams) => {
+                if (lnurlParams.tag === "payRequest") {
+                    if (lnurlParams.min == lnurlParams.max) {
+                        setAmountSats(lnurlParams.min / 1000n);
+                        setIsAmtEditable(false);
+                    } else {
+                        setAmountSats(source.amount_sats || 0n);
+                    }
 
-            if (source.lightning_address) {
-                setLnAddress(source.lightning_address);
-                setIsHodlInvoice(
-                    source.lightning_address
-                        .toLowerCase()
-                        .includes("zeuspay.com")
-                );
-            }
-            setLnurlp(source.lnurl);
-            setSource("lightning");
-        }
+                    if (source.lightning_address) {
+                        setLnAddress(source.lightning_address);
+                        setIsHodlInvoice(
+                            source.lightning_address
+                                .toLowerCase()
+                                .includes("zeuspay.com")
+                        );
+                    }
+                    setLnurlp(source.lnurl);
+                    setSource("lightning");
+                }
+            })
+            .catch((e) => showToast(eify(e)));
     }
 
     createEffect(() => {
@@ -477,9 +483,9 @@ export function Send() {
     // If we got here from a scan or search
     onMount(() => {
         if (state.scan_result) {
-            handleDestination(state.scan_result, state.lnUrlParams);
+            handleDestination(state.scan_result, state.lnUrlData);
             actions.setScanResult(undefined);
-            actions.setLnUrlParams(undefined);
+            actions.setLnUrlData(undefined);
         }
     });
 

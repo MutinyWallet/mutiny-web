@@ -48,7 +48,7 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { useMegaStore } from "~/state/megaStore";
+import { LnUrlData, useMegaStore } from "~/state/megaStore";
 import { eify, objectToSearchParams, vibrateSuccess } from "~/utils";
 
 type OnChainTx = {
@@ -137,6 +137,9 @@ export function Receive() {
     const [detailsOpen, setDetailsOpen] = createSignal(false);
     const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
     const [detailsId, setDetailsId] = createSignal<string>("");
+    const [lnUrlData, setLnUrlData] = createSignal<LnUrlData>();
+    const [fixedAmount, setFixedAmount] = createSignal(false);
+    const [lnUrlExecuted, setLnUrlExecuted] = createSignal(false);
 
     const RECEIVE_FLAVORS = [
         {
@@ -179,6 +182,7 @@ export function Receive() {
         setPaymentInvoice(undefined);
         setError("");
         setFlavor(state.preferredInvoiceType);
+        setLnUrlData(undefined);
     }
 
     function openDetailsModal() {
@@ -274,8 +278,12 @@ export function Receive() {
 
     async function onSubmit(e: Event) {
         e.preventDefault();
-
-        await getQr();
+        const lnUrl = lnUrlData();
+        if (!lnUrl) {
+            await getQr();
+        } else {
+            await handleLnUrlWithdrawalSubmit(lnUrl);
+        }
     }
 
     async function getQr() {
@@ -332,36 +340,78 @@ export function Receive() {
 
     // If we got here from an LNUrl withdrawal request
     onMount(() => {
-        if (state.scan_result && state.scan_result.lnurl && state.lnUrlParams) {
-            handleLnUrlWithdrawal(state.scan_result.lnurl, state.lnUrlParams);
+        if (state.lnUrlData) {
+            handleLnUrlWithdrawal(state.lnUrlData);
             actions.setScanResult(undefined);
-            actions.setLnUrlParams(undefined);
+            actions.setLnUrlData(undefined);
         }
     });
 
-    async function handleLnUrlWithdrawal(
-        lnurl: string,
-        lnUrlParams: LnUrlParams
-    ) {
-        console.log("handleLnUrlWithdrawal", lnurl, lnUrlParams);
+    function handleLnUrlWithdrawal(lnUrlData: LnUrlData) {
+        console.log("handleLnUrlWithdrawal", lnUrlData.lnurl, lnUrlData.params);
+        setLnUrlData(lnUrlData);
         setError("");
         setFlavor("lightning");
-        setLoading(true);
-        setAmount(lnUrlParams.max);
-        setReceiveState("show");
+        const lnUrlParams = lnUrlData.params;
+
         if (lnUrlParams.min === lnUrlParams.max) {
-            const success = await state.mutiny_wallet?.lnurl_withdraw(
-                lnurl,
-                lnUrlParams.max / 1000n
+            setAmount(mSatsToSats(lnUrlParams.max));
+        } else {
+            setAmount(mSatsToSats(lnUrlParams.min));
+        }
+
+        setReceiveState("edit");
+    }
+
+    async function handleLnUrlWithdrawalSubmit(lnUrlData: LnUrlData) {
+        if (lnUrlData) {
+            const lnurl = lnUrlData.lnurl;
+            const lnUrlParams = lnUrlData.params;
+            const amt = amount();
+            const amtError = validateAmount(
+                amt,
+                mSatsToSats(lnUrlParams.min),
+                mSatsToSats(lnUrlParams.max)
             );
-            if (success) {
-                setReceiveState("paid");
+            if (amtError) {
+                showToast(new Error(amtError));
+                return;
+            }
+            setLoading(true);
+            setReceiveState("show");
+            try {
+                const success = await state.mutiny_wallet?.lnurl_withdraw(
+                    lnurl,
+                    amount()
+                );
+                if (!success) {
+                    setError("lnurl_withdraw failed");
+                } else {
+                    setReceiveState("paid");
+                }
+            } catch (e) {
+                console.error("lnurl_withdraw failed", e);
+                showToast(eify(e));
+            } finally {
+                setLnUrlExecuted(true);
                 setLoading(false);
-                await vibrateSuccess();
-            } else {
-                setError("lnurl_withdraw failed");
             }
         }
+    }
+
+    function validateAmount(
+        amount: bigint,
+        min: bigint,
+        max: bigint
+    ): string | undefined {
+        console.log("validateAmount", amount, min, max);
+        if (amount === 0n) return "amount is zero";
+        if (amount < min) return "amount smaller min";
+        if (amount > max * 1000n) return "amount greater max";
+    }
+
+    function mSatsToSats(mSats: bigint) {
+        return mSats / 1000n;
     }
 
     function selectFlavor(flavor: string) {
