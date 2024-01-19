@@ -1,7 +1,6 @@
 /* @refresh reload */
 
 import {
-    LnUrlParams,
     MutinyBip21RawMaterials,
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
