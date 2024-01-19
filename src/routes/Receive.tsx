@@ -279,11 +279,10 @@ export function Receive() {
     async function onSubmit(e: Event) {
         e.preventDefault();
         const lnUrl = lnUrlData();
-        if (!lnUrl) {
-            await getQr();
-        } else {
-            await handleLnUrlWithdrawalSubmit(lnUrl);
+        if (lnUrl) {
+            return await handleLnUrlWithdrawal(lnUrl);
         }
+        await getQr();
     }
 
     async function getQr() {
@@ -341,13 +340,13 @@ export function Receive() {
     // If we got here from an LNUrl withdrawal request
     onMount(() => {
         if (state.lnUrlData) {
-            handleLnUrlWithdrawal(state.lnUrlData);
+            initLnUrlWithdrawal(state.lnUrlData);
             actions.setScanResult(undefined);
             actions.setLnUrlData(undefined);
         }
     });
 
-    function handleLnUrlWithdrawal(lnUrlData: LnUrlData) {
+    function initLnUrlWithdrawal(lnUrlData: LnUrlData) {
         console.log("handleLnUrlWithdrawal", lnUrlData.lnurl, lnUrlData.params);
         setLnUrlData(lnUrlData);
         setError("");
@@ -356,46 +355,48 @@ export function Receive() {
 
         if (lnUrlParams.min === lnUrlParams.max) {
             setAmount(mSatsToSats(lnUrlParams.max));
+            setFixedAmount(true);
         } else {
             setAmount(mSatsToSats(lnUrlParams.min));
+            setFixedAmount(false);
         }
 
         setReceiveState("edit");
     }
 
-    async function handleLnUrlWithdrawalSubmit(lnUrlData: LnUrlData) {
-        if (lnUrlData) {
-            const lnurl = lnUrlData.lnurl;
-            const lnUrlParams = lnUrlData.params;
-            const amt = amount();
-            const amtError = validateAmount(
-                amt,
-                mSatsToSats(lnUrlParams.min),
-                mSatsToSats(lnUrlParams.max)
+    async function handleLnUrlWithdrawal(lnUrlData: LnUrlData) {
+        const lnurl = lnUrlData.lnurl;
+        const lnUrlParams = lnUrlData.params;
+        const amt = amount();
+        const amtError = validateAmount(
+            amt,
+            mSatsToSats(lnUrlParams.min),
+            mSatsToSats(lnUrlParams.max)
+        );
+        if (amtError) {
+            showToast(new Error(amtError));
+            return;
+        }
+        setLoading(true);
+        setReceiveState("show");
+        try {
+            const success = await state.mutiny_wallet?.lnurl_withdraw(
+                lnurl,
+                amount()
             );
-            if (amtError) {
-                showToast(new Error(amtError));
-                return;
+            if (!success) {
+                console.error("lnurl_withdraw failed result was false");
+                setError("lnurl_withdraw failed");
+            } else {
+                console.log("lnurl_withdraw success");
+                setReceiveState("paid");
             }
-            setLoading(true);
-            setReceiveState("show");
-            try {
-                const success = await state.mutiny_wallet?.lnurl_withdraw(
-                    lnurl,
-                    amount()
-                );
-                if (!success) {
-                    setError("lnurl_withdraw failed");
-                } else {
-                    setReceiveState("paid");
-                }
-            } catch (e) {
-                console.error("lnurl_withdraw failed", e);
-                showToast(eify(e));
-            } finally {
-                setLnUrlExecuted(true);
-                setLoading(false);
-            }
+        } catch (e) {
+            console.error("lnurl_withdraw failed", e);
+            showToast(eify(e));
+        } finally {
+            setLnUrlExecuted(true);
+            setLoading(false);
         }
     }
 
@@ -420,6 +421,18 @@ export function Receive() {
             actions.setPreferredInvoiceType(flavor as ReceiveFlavor);
         }
         setMethodChooserOpen(false);
+    }
+
+    function satsReceived() {
+        if (receiveState() === "paid" && paidState() === "lightning_paid") {
+            return paymentInvoice()?.amount_sats;
+        }
+
+        if (lnUrlExecuted()) {
+            return amount();
+        }
+
+        return paymentTx()?.received;
     }
 
     const [paidState, { refetch }] = createResource(bip21Raw, checkIfPaid);
@@ -455,13 +468,20 @@ export function Receive() {
                     {i18n.t("receive.receive_bitcoin")}
                 </LargeHeader>
                 <Switch>
-                    <Match when={!unified() || receiveState() === "edit"}>
+                    <Match
+                        when={
+                            (!unified() && !lnUrlData()) ||
+                            receiveState() === "edit"
+                        }
+                    >
+                        <h1>EDIT {amount().toString()}</h1>
                         <div class="flex-1" />
                         <VStack>
                             <AmountEditable
                                 initialAmountSats={amount() || "0"}
                                 setAmountSats={setAmount}
                                 onSubmit={getQr}
+                                frozenAmount={fixedAmount()}
                             />
                             <ReceiveWarnings
                                 amountSats={amount() || "0"}
@@ -490,7 +510,12 @@ export function Receive() {
                             </Button>
                         </VStack>
                     </Match>
-                    <Match when={unified() && receiveState() === "show"}>
+                    <Match
+                        when={
+                            (unified() || lnUrlData()) &&
+                            receiveState() === "show"
+                        }
+                    >
                         <FeeWarning fee={lspFee()} flavor={flavor()} />
                         <Show when={error()}>
                             <InfoBox accent="red">
@@ -502,6 +527,9 @@ export function Receive() {
                             amountSats={amount() ? amount().toString() : "0"}
                             kind={flavor()}
                         />
+                        <p class="text-center text-neutral-400">
+                            LNUrl withdrawal in progress...
+                        </p>
                         <p class="text-center text-neutral-400">
                             {i18n.t("receive.keep_mutiny_open")}
                         </p>
@@ -536,8 +564,9 @@ export function Receive() {
                         </Show>
                     </Match>
                     <Match when={receiveState() === "paid"}>
+                        <h1>PAID {amount().toString()}</h1>
                         <SuccessModal
-                            open={!!paidState()}
+                            open={!!paidState() || lnUrlExecuted()}
                             setOpen={(open: boolean) => {
                                 if (!open) clearAll();
                             }}
@@ -557,30 +586,21 @@ export function Receive() {
                             <MegaCheck />
                             <h1 class="mb-2 mt-4 w-full text-center text-2xl font-semibold md:text-3xl">
                                 {receiveState() === "paid" &&
-                                paidState() === "lightning_paid"
+                                (paidState() === "lightning_paid" ||
+                                    lnUrlData())
                                     ? i18n.t("receive.payment_received")
                                     : i18n.t("receive.payment_initiated")}
                             </h1>
                             <div class="flex flex-col items-center gap-1">
                                 <div class="text-xl">
                                     <AmountSats
-                                        amountSats={
-                                            receiveState() === "paid" &&
-                                            paidState() === "lightning_paid"
-                                                ? paymentInvoice()?.amount_sats
-                                                : paymentTx()?.received
-                                        }
+                                        amountSats={satsReceived()}
                                         icon="plus"
                                     />
                                 </div>
                                 <div class="text-white/70">
                                     <AmountFiat
-                                        amountSats={
-                                            receiveState() === "paid" &&
-                                            paidState() === "lightning_paid"
-                                                ? paymentInvoice()?.amount_sats
-                                                : paymentTx()?.received
-                                        }
+                                        amountSats={satsReceived()}
                                         denominationSize="sm"
                                     />
                                 </div>
@@ -595,7 +615,12 @@ export function Receive() {
                                 <Fee amountSats={lspFee()} />
                             </Show>
                             {/*TODO: Confirmation time estimate still not possible needs to be implemented in mutiny-node first*/}
-                            <Show when={receiveState() === "paid"}>
+                            <Show
+                                when={
+                                    receiveState() === "paid" &&
+                                    !lnUrlExecuted()
+                                }
+                            >
                                 <p
                                     class="cursor-pointer underline"
                                     onClick={openDetailsModal}
