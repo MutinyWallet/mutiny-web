@@ -262,6 +262,16 @@ export async function setupMutinyWallet(
         }
     }
 
+    // if we didn't get an nsec from storage, try to use extension
+    let extension_key;
+    if (!nsec) {
+        try {
+            extension_key = await window.nostr.getPublicKey();
+        } catch (_) {
+            console.log("No NIP-07 extension")
+        }
+    }
+
     console.log("Initializing Mutiny Manager");
     console.log("Using network", network);
     console.log("Using proxy", proxy);
@@ -304,7 +314,8 @@ export async function setupMutinyWallet(
         safeMode || undefined,
         // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
         shouldZapHodl ? false : undefined,
-        nsec
+        nsec,
+        extension_key ? extension_key : undefined
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());

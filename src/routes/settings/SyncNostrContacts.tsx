@@ -128,19 +128,6 @@ export function SyncNostrContacts() {
         }
     }
 
-    const [hasNsec] = createResource(async () => {
-        if (Capacitor.isNativePlatform()) {
-            try {
-                await SecureStoragePlugin.get({ key: "nsec" });
-                return true;
-            } catch (_e) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    });
-
     async function resync() {
         setError(undefined);
         setLoading(true);
