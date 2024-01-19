@@ -413,6 +413,13 @@ export function Receive() {
         return mSats / 1000n;
     }
 
+    function lnUrlAmountText(lnUrlData: LnUrlData) {
+        return i18n.t("receive.lnurl_amount_message", {
+            min: mSatsToSats(lnUrlData.params.min).toLocaleString(),
+            max: mSatsToSats(lnUrlData.params.max).toLocaleString()
+        });
+    }
+
     function selectFlavor(flavor: string) {
         setFlavor(flavor as ReceiveFlavor);
         if (rememberChoice()) {
@@ -473,6 +480,11 @@ export function Receive() {
                         }
                     >
                         <div class="flex-1" />
+                        <Show when={lnUrlData()}>
+                            <InfoBox accent="white">
+                                <p>{lnUrlAmountText(lnUrlData()!)}</p>
+                            </InfoBox>
+                        </Show>
                         <VStack>
                             <AmountEditable
                                 initialAmountSats={amount() || "0"}

@@ -114,7 +114,9 @@ export default {
         },
         remember_choice: "Remember my choice next time",
         what_for: "What's this for?",
-        lnurl_withdrawal_in_progress: "LNUrl withdrawal in progress"
+        lnurl_withdrawal_in_progress: "LNUrl withdrawal in progress",
+        lnurl_amount_message:
+            "Enter LNUrl withdrawal amount between min: {{min}} and max: {{max}}"
     },
     send: {
         search: {
