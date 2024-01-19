@@ -402,10 +402,9 @@ export function Receive() {
         min: bigint,
         max: bigint
     ): string | undefined {
-        console.log("validateAmount", amount, min, max);
         if (amount === 0n) return "amount is zero";
         if (amount < min) return "amount smaller min";
-        if (amount > max * 1000n) return "amount greater max";
+        if (amount > max) return "amount greater max";
     }
 
     function mSatsToSats(mSats: bigint) {
