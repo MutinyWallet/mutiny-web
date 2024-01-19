@@ -6,9 +6,19 @@ import {
     SubmitHandler
 } from "@modular-forms/solid";
 import { useSearchParams } from "@solidjs/router";
-import { createSignal, For, onMount, Show } from "solid-js";
+import {
+    createResource,
+    createSignal,
+    For,
+    Match,
+    onMount,
+    Show,
+    Suspense,
+    Switch
+} from "solid-js";
 
 import {
+    AmountSats,
     BackLink,
     Button,
     ConfirmDialog,
@@ -130,7 +140,10 @@ function AddFederationForm() {
     );
 }
 
-function FederationListItem(props: { fed: MutinyFederationIdentity }) {
+function FederationListItem(props: {
+    fed: MutinyFederationIdentity;
+    balance?: bigint;
+}) {
     const i18n = useI18n();
     const [state, actions] = useMegaStore();
 
@@ -164,6 +177,16 @@ function FederationListItem(props: { fed: MutinyFederationIdentity }) {
                 </Show>
                 <Show when={props.fed.welcome_message}>
                     <p>{props.fed.welcome_message}</p>
+                </Show>
+                <Show when={props.balance !== undefined}>
+                    <KeyValue
+                        key={i18n.t("activity.transaction_details.balance")}
+                    >
+                        <AmountSats
+                            amountSats={props.balance}
+                            denominationSize={"sm"}
+                        />
+                    </KeyValue>
                 </Show>
                 <Show when={props.fed.federation_expiry_timestamp}>
                     <KeyValue
@@ -201,6 +224,17 @@ export function ManageFederations() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
+    const [balances] = createResource(async () => {
+        try {
+            const balances =
+                await state.mutiny_wallet?.get_federation_balances();
+            return balances?.balances || [];
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+    });
+
     return (
         <MutinyWalletGuard>
             <SafeArea>
@@ -220,9 +254,33 @@ export function ManageFederations() {
                     </NiceP>
                     <AddFederationForm />
                     <VStack>
-                        <For each={state.federations ?? []}>
-                            {(fed) => <FederationListItem fed={fed} />}
-                        </For>
+                        <Suspense>
+                            <Switch>
+                                <Match when={balances()}>
+                                    <For each={state.federations ?? []}>
+                                        {(fed) => (
+                                            <FederationListItem
+                                                fed={fed}
+                                                balance={
+                                                    balances()?.find(
+                                                        (b) =>
+                                                            b.identity_federation_id ===
+                                                            fed.federation_id
+                                                    )?.balance
+                                                }
+                                            />
+                                        )}
+                                    </For>
+                                </Match>
+                                <Match when={true}>
+                                    <For each={state.federations ?? []}>
+                                        {(fed) => (
+                                            <FederationListItem fed={fed} />
+                                        )}
+                                    </For>
+                                </Match>
+                            </Switch>
+                        </Suspense>
                     </VStack>
                 </DefaultMain>
                 <NavBar activeTab="settings" />
