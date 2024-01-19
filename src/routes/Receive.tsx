@@ -385,10 +385,8 @@ export function Receive() {
                 amount()
             );
             if (!success) {
-                console.error("lnurl_withdraw failed result was false");
                 setError("lnurl_withdraw failed");
             } else {
-                console.log("lnurl_withdraw success");
                 setReceiveState("paid");
             }
         } catch (e) {
@@ -474,7 +472,6 @@ export function Receive() {
                             receiveState() === "edit"
                         }
                     >
-                        <h1>EDIT {amount().toString()}</h1>
                         <div class="flex-1" />
                         <VStack>
                             <AmountEditable
@@ -528,7 +525,7 @@ export function Receive() {
                             kind={flavor()}
                         />
                         <p class="text-center text-neutral-400">
-                            LNUrl withdrawal in progress...
+                            {i18n.t("receive.lnurl_withdrawal_in_progress")} ...
                         </p>
                         <p class="text-center text-neutral-400">
                             {i18n.t("receive.keep_mutiny_open")}
@@ -564,7 +561,6 @@ export function Receive() {
                         </Show>
                     </Match>
                     <Match when={receiveState() === "paid"}>
-                        <h1>PAID {amount().toString()}</h1>
                         <SuccessModal
                             open={!!paidState() || lnUrlExecuted()}
                             setOpen={(open: boolean) => {

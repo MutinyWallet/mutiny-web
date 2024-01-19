@@ -113,7 +113,8 @@ export default {
             gift: "Lightning Gift"
         },
         remember_choice: "Remember my choice next time",
-        what_for: "What's this for?"
+        what_for: "What's this for?",
+        lnurl_withdrawal_in_progress: "LNUrl withdrawal in progress"
     },
     send: {
         search: {
