@@ -12,7 +12,6 @@ import {
     createSignal,
     Match,
     onCleanup,
-    onMount,
     Show,
     Switch
 } from "solid-js";
@@ -534,9 +533,13 @@ export function Receive() {
                             amountSats={amount() ? amount().toString() : "0"}
                             kind={flavor()}
                         />
-                        <p class="text-center text-neutral-400">
-                            {i18n.t("receive.lnurl_withdrawal_in_progress")} ...
-                        </p>
+                        <Show when={lnUrlData()}>
+                            <p class="text-center text-neutral-400">
+                                {i18n.t("receive.lnurl_withdrawal_in_progress")}{" "}
+                                ...
+                            </p>
+                        </Show>
+
                         <p class="text-center text-neutral-400">
                             {i18n.t("receive.keep_mutiny_open")}
                         </p>
