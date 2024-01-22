@@ -136,9 +136,14 @@ export function Receive() {
     const [detailsOpen, setDetailsOpen] = createSignal(false);
     const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
     const [detailsId, setDetailsId] = createSignal<string>("");
+
     const [lnUrlData, setLnUrlData] = createSignal<LnUrlData>();
     const [fixedAmount, setFixedAmount] = createSignal(false);
     const [lnUrlExecuted, setLnUrlExecuted] = createSignal(false);
+
+    if (state.lnUrlData) {
+        initLnUrlWithdrawal(state.lnUrlData);
+    }
 
     const RECEIVE_FLAVORS = [
         {
@@ -182,6 +187,8 @@ export function Receive() {
         setError("");
         setFlavor(state.preferredInvoiceType);
         setLnUrlData(undefined);
+        setLnUrlExecuted(false);
+        setFixedAmount(false);
     }
 
     function openDetailsModal() {
@@ -336,17 +343,10 @@ export function Receive() {
         }
     }
 
-    // If we got here from an LNUrl withdrawal request
-    onMount(() => {
-        if (state.lnUrlData) {
-            initLnUrlWithdrawal(state.lnUrlData);
-            actions.setScanResult(undefined);
-            actions.setLnUrlData(undefined);
-        }
-    });
-
     function initLnUrlWithdrawal(lnUrlData: LnUrlData) {
         console.log("handleLnUrlWithdrawal", lnUrlData.lnurl, lnUrlData.params);
+        actions.setScanResult(undefined);
+        actions.setLnUrlData(undefined);
         setLnUrlData(lnUrlData);
         setError("");
         setFlavor("lightning");
