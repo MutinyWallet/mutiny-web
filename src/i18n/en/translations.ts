@@ -432,6 +432,16 @@ export default {
                 "Request support for more currencies",
             error_unsupported_currency: "Please Select a supported currency."
         },
+        language: {
+            title: "Language",
+            caption: "Choose your preferred language",
+            select_language: "Select Language",
+            select_language_label: "Language",
+            select_language_caption:
+                "Choosing a new currency will change the wallet language, ignoring current browser language",
+            request_language_support_link: "Request support for more languages",
+            error_unsupported_language: "Please Select a supported language."
+        },
         lnurl_auth: {
             title: "LNURL Auth",
             auth: "Auth",

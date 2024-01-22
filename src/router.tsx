@@ -27,6 +27,7 @@ import {
     EmergencyKit,
     Encrypt,
     Gift,
+    Language,
     ManageFederations,
     Plus,
     Restore,
@@ -111,6 +112,7 @@ export function Router() {
                         <Route path="/channels" component={Channels} />
                         <Route path="/connections" component={Connections} />
                         <Route path="/currency" component={Currency} />
+                        <Route path="/language" component={Language} />
                         <Route path="/emergencykit" component={EmergencyKit} />
                         <Route path="/encrypt" component={Encrypt} />
                         <Route path="/gift" component={Gift} />

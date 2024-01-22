@@ -4,6 +4,7 @@ export * from "./Backup";
 export * from "./Channels";
 export * from "./Connections";
 export * from "./Currency";
+export * from "./Language";
 export * from "./EmergencyKit";
 export * from "./Encrypt";
 export * from "./Gift";
