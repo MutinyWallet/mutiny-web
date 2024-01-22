@@ -18,6 +18,7 @@ export type MutinyWalletSettingStrings = {
     subscriptions?: string;
     storage?: string;
     scorer?: string;
+    primal?: string;
     selfhosted?: string;
 };
 
@@ -76,6 +77,11 @@ const SETTINGS_KEYS = [
         name: "scorer",
         storageKey: "USER_SETTINGS_scorer",
         default: import.meta.env.VITE_SCORER
+    },
+    {
+        name: "primal",
+        storageKey: "USER_SETTINGS_primal",
+        default: import.meta.env.VITE_PRIMAL
     },
     {
         name: "selfhosted",
@@ -248,7 +254,8 @@ export async function setupMutinyWallet(
         auth,
         subscriptions,
         storage,
-        scorer
+        scorer,
+        primal
     } = settings;
 
     let nsec;
@@ -266,9 +273,11 @@ export async function setupMutinyWallet(
     let extension_key;
     if (!nsec) {
         try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore ignore nostr not existing, only does if they have extension
             extension_key = await window.nostr.getPublicKey();
         } catch (_) {
-            console.log("No NIP-07 extension")
+            console.log("No NIP-07 extension");
         }
     }
 
@@ -284,6 +293,7 @@ export async function setupMutinyWallet(
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
     console.log("Using scorer address", scorer);
+    console.log("Using primal address", primal);
     console.log(safeMode ? "Safe mode enabled" : "Safe mode disabled");
     console.log(shouldZapHodl ? "Hodl zaps enabled" : "Hodl zaps disabled");
 
@@ -315,7 +325,8 @@ export async function setupMutinyWallet(
         // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
         shouldZapHodl ? false : undefined,
         nsec,
-        extension_key ? extension_key : undefined
+        extension_key ? extension_key : undefined,
+        primal
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());

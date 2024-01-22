@@ -2,7 +2,7 @@ import { Capacitor } from "@capacitor/core";
 import { createForm, required, SubmitHandler } from "@modular-forms/solid";
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
-import { createResource, createSignal, Match, Show, Switch } from "solid-js";
+import { createSignal, Match, Show, Switch } from "solid-js";
 
 import {
     BackPop,
@@ -26,8 +26,6 @@ import { eify } from "~/utils";
 type NostrContactsForm = {
     npub: string;
 };
-
-const PRIMAL_API = import.meta.env.VITE_PRIMAL;
 
 function SyncContactsForm() {
     const i18n = useI18n();
@@ -66,8 +64,7 @@ function SyncContactsForm() {
                 npub = await MutinyWallet.nsec_to_npub(string);
             }
 
-            if (!PRIMAL_API) throw new Error("PRIMAL_API not set");
-            await state.mutiny_wallet?.sync_nostr_contacts(PRIMAL_API, npub);
+            await state.mutiny_wallet?.sync_nostr_contacts(npub);
             actions.saveNpub(npub);
         } catch (e) {
             console.error(e);
@@ -132,9 +129,7 @@ export function SyncNostrContacts() {
         setError(undefined);
         setLoading(true);
         try {
-            if (!PRIMAL_API) throw new Error("PRIMAL_API not set");
             await state.mutiny_wallet?.sync_nostr_contacts(
-                PRIMAL_API,
                 // We can only see the resync button if there's an npub set
                 state.npub!
             );

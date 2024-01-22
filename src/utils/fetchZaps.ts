@@ -116,9 +116,13 @@ async function simpleZapFromEvent(
     }
 }
 
+// todo remove
 const PRIMAL_API = import.meta.env.VITE_PRIMAL;
 
-async function fetchFollows(npub: string): Promise<string[]> {
+async function fetchFollows(
+    primal_url: string,
+    npub: string
+): Promise<string[]> {
     let pubkey = undefined;
     try {
         pubkey = await hexpubFromNpub(npub);
@@ -127,7 +131,7 @@ async function fetchFollows(npub: string): Promise<string[]> {
         throw err;
     }
 
-    const response = await fetch(PRIMAL_API, {
+    const response = await fetch(primal_url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -167,9 +171,10 @@ type PrimalResponse = NostrEvent | NostrProfile;
 
 async function fetchZapsFromPrimal(
     follows: string[],
+    primal_url?: string,
     until?: number
 ): Promise<PrimalResponse[]> {
-    if (!PRIMAL_API) throw new Error("Missing PRIMAL_API environment variable");
+    if (!primal_url) throw new Error("Missing PRIMAL_API environment variable");
 
     const query = {
         kinds: [9735, 0, 10000113],
@@ -183,7 +188,7 @@ async function fetchZapsFromPrimal(
         until ? { ...query, since: until } : query
     ]);
 
-    const response = await fetch(PRIMAL_API, {
+    const response = await fetch(primal_url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -224,16 +229,21 @@ export const fetchZaps: ResourceFetcher<
             info.value?.profiles || {};
         let newUntil = undefined;
 
-        if (!PRIMAL_API)
+        const primal_url = state.settings?.primal;
+        if (!primal_url)
             throw new Error("Missing PRIMAL_API environment variable");
 
         // Only have to ask the relays for follows one time
         if (follows.length === 0) {
-            follows = await fetchFollows(npub);
+            follows = await fetchFollows(primal_url, npub);
         }
 
         // Ask primal for all the zaps for these follow pubkeys
-        const data = await fetchZapsFromPrimal(follows, info?.value?.until);
+        const data = await fetchZapsFromPrimal(
+            follows,
+            primal_url,
+            info?.value?.until
+        );
 
         // Parse the primal response
         for (const object of data) {
