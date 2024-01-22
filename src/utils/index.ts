@@ -16,6 +16,7 @@ export * from "./vibrate";
 export * from "./openLinkProgrammatically";
 export * from "./nostr";
 export * from "./currencies";
+export * from "./languages";
 export * from "./bech32";
 export * from "./keypad";
 export * from "./debounce";
