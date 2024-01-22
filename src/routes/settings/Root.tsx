@@ -119,6 +119,11 @@ export function Settings() {
                                 caption: i18n.t("settings.currency.caption")
                             },
                             {
+                                href: "/settings/language",
+                                text: i18n.t("settings.language.title"),
+                                caption: i18n.t("settings.language.caption")
+                            },
+                            {
                                 href: "/settings/servers",
                                 text: i18n.t("settings.servers.title"),
                                 caption: i18n.t("settings.servers.caption")

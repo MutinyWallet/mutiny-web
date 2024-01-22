@@ -54,6 +54,7 @@ type MegaStore = [
         price_sync_backoff_multiple?: number;
         price: number;
         fiat: Currency;
+        lang?: string;
         has_backed_up: boolean;
         wallet_loading: boolean;
         setup_error?: Error;
@@ -83,6 +84,7 @@ type MegaStore = [
         checkForSubscription(justPaid?: boolean): Promise<void>;
         fetchPrice(fiat: Currency): Promise<number>;
         saveFiat(fiat: Currency): void;
+        saveLanguage(lang: string): void;
         saveNpub(npub: string): void;
         setPreferredInvoiceType(
             type: "unified" | "lightning" | "onchain"
@@ -132,6 +134,7 @@ export const Provider: ParentComponent = (props) => {
         load_stage: "fresh" as LoadStage,
         settings: undefined as MutinyWalletSettingStrings | undefined,
         safe_mode: searchParams.safe_mode === "true",
+        lang: localStorage.getItem("i18nexLng") || undefined,
         npub: localStorage.getItem("npub") || undefined,
         preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
         betaWarned: localStorage.getItem("betaWarned") === "true",
@@ -331,6 +334,10 @@ export const Provider: ParentComponent = (props) => {
                 price: price,
                 fiat: fiat
             });
+        },
+        saveLanguage(lang: string) {
+            localStorage.setItem("i18nextLng", lang);
+            setState({ lang });
         },
         saveNpub(npub: string) {
             localStorage.setItem("npub", npub);

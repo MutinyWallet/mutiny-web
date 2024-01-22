@@ -32,8 +32,10 @@ const i18n = use(LanguageDetector).init(
         fallbackNS: false,
         debug: true,
         detection: {
-            order: ["querystring", "navigator", "htmlTag"],
-            lookupQuerystring: "lang"
+            order: ["localStorage", "querystring", "navigator", "htmlTag"],
+            lookupQuerystring: "lang",
+            lookupLocalStorage: "i18nextLng",
+            caches: ["localStorage"]
         },
         resources: resources
         // FIXME: this doesn't work when deployed
