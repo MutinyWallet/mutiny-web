@@ -435,6 +435,7 @@ export function Send() {
                 processLnurl(source as ParsedParams & { lnurl: string });
             } else {
                 setAmountSats(source.amount_sats || 0n);
+                if (source.amount_sats) setIsAmtEditable(false);
                 setSource("onchain");
             }
             // Return the source just to trigger `decodedDestination` as not undefined
