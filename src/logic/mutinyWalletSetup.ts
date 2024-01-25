@@ -17,6 +17,7 @@ export type MutinyWalletSettingStrings = {
     storage?: string;
     scorer?: string;
     selfhosted?: string;
+    primal_api?: string;
 };
 
 const SETTINGS_KEYS = [
@@ -79,6 +80,11 @@ const SETTINGS_KEYS = [
         name: "selfhosted",
         storageKey: "USER_SETTINGS_selfhosted",
         default: import.meta.env.VITE_SELFHOSTED
+    },
+    {
+        name: "primal_api",
+        storageKey: "USER_SETTINGS_primal_api",
+        default: import.meta.env.VITE_PRIMAL
     }
 ];
 
@@ -246,7 +252,8 @@ export async function setupMutinyWallet(
         auth,
         subscriptions,
         storage,
-        scorer
+        scorer,
+        primal_api
     } = settings;
 
     console.log("Initializing Mutiny Manager");
@@ -261,6 +268,7 @@ export async function setupMutinyWallet(
     console.log("Using subscriptions address", subscriptions);
     console.log("Using storage address", storage);
     console.log("Using scorer address", scorer);
+    console.log("Using primal api", primal_api);
     console.log(safeMode ? "Safe mode enabled" : "Safe mode disabled");
     console.log(shouldZapHodl ? "Hodl zaps enabled" : "Hodl zaps disabled");
 
@@ -290,7 +298,13 @@ export async function setupMutinyWallet(
         // Safe mode
         safeMode || undefined,
         // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
-        shouldZapHodl ? false : undefined
+        shouldZapHodl ? false : undefined,
+        // Nsec override
+        undefined,
+        // Nip7
+        undefined,
+        // primal URL
+        primal_api || "https://primal-cache.mutinywallet.com/api"
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
