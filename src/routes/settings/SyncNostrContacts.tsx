@@ -24,8 +24,6 @@ type NostrContactsForm = {
     npub: string;
 };
 
-const PRIMAL_API = import.meta.env.VITE_PRIMAL;
-
 function SyncContactsForm() {
     const i18n = useI18n();
     const [state, actions] = useMegaStore();
@@ -42,8 +40,7 @@ function SyncContactsForm() {
     ) => {
         try {
             const npub = f.npub.trim();
-            if (!PRIMAL_API) throw new Error("PRIMAL_API not set");
-            await state.mutiny_wallet?.sync_nostr_contacts(PRIMAL_API, npub);
+            await state.mutiny_wallet?.sync_nostr_contacts(npub);
             actions.saveNpub(npub);
         } catch (e) {
             console.error(e);
@@ -105,12 +102,7 @@ export function SyncNostrContacts() {
         setError(undefined);
         setLoading(true);
         try {
-            if (!PRIMAL_API) throw new Error("PRIMAL_API not set");
-            await state.mutiny_wallet?.sync_nostr_contacts(
-                PRIMAL_API,
-                // We can only see the resync button if there's an npub set
-                state.npub!
-            );
+            await state.mutiny_wallet?.sync_nostr_contacts(state.npub!);
         } catch (e) {
             console.error(e);
         }
