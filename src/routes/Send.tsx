@@ -1,4 +1,4 @@
-import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
+import { MutinyInvoice, MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createEffect,
@@ -451,11 +451,15 @@ export function Send() {
     function processInvoice(source: ParsedParams & { invoice: string }) {
         state.mutiny_wallet
             ?.decode_invoice(source.invoice!)
-            .then((invoice) => {
+            .then(async (invoice) => {
                 if (invoice.expire <= Date.now() / 1000) {
                     navigate("/search");
                     throw new Error(i18n.t("send.error_expired"));
                 }
+                const isHodl = await MutinyWallet.is_potential_hodl_invoice(
+                    source.invoice!
+                );
+                setIsHodlInvoice(isHodl);
 
                 if (invoice?.amount_sats) {
                     setAmountSats(invoice.amount_sats);
