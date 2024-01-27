@@ -804,7 +804,7 @@ export function Send() {
                             setChosenMethod={setSourceFromMethod}
                         />
                     </Show>
-                    <Show when={payjoinEnabled()}>
+                    <Show when={payjoinEnabled() && source() === "onchain"}>
                         <InfoBox accent="green">
                             <p>{i18n.t("send.payjoin_send")}</p>
                         </InfoBox>
