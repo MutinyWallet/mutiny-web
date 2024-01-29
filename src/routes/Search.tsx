@@ -465,6 +465,16 @@ function ContactButton(props: {
     onClick: () => void;
 }) {
     const i18n = useI18n();
+
+    const primalUrl = createMemo(() => {
+        const originalUrl = props.contact.image_url;
+        if (!originalUrl) return undefined;
+
+        return `https://primal.b-cdn.net/media-cache?s=s&a=1&u=${encodeURIComponent(
+            originalUrl
+        )}`;
+    });
+
     return (
         <button
             onClick={() => props.onClick()}
@@ -480,7 +490,7 @@ function ContactButton(props: {
         >
             <LabelCircle
                 name={props.contact.name}
-                image_url={props.contact.image_url}
+                image_url={primalUrl()}
                 contact
                 label={false}
             />
