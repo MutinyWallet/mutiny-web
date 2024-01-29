@@ -34,6 +34,7 @@ export * from "./Reload";
 export * from "./ResetRouter";
 export * from "./Restart";
 export * from "./ResyncOnchain";
+export * from "./ScanFederation";
 export * from "./SeedWords";
 export * from "./SetupErrorDisplay";
 export * from "./ShareCard";

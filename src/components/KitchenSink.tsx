@@ -22,6 +22,7 @@ import {
     ResetRouter,
     Restart,
     ResyncOnchain,
+    ScanFederation,
     showToast,
     SimpleErrorDisplay,
     ToggleHodl,
@@ -574,6 +575,7 @@ export function KitchenSink() {
             <ToggleHodl />
             <Hr />
             <ResyncOnchain />
+            <ScanFederation />
             <Hr />
             <ResetRouter />
             <Hr />
