@@ -5,7 +5,10 @@ import { FeesModal } from "~/components/MoreInfoModal";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
-export function ReceiveWarnings(props: { amountSats: string | bigint }) {
+export function ReceiveWarnings(props: {
+    amountSats: string | bigint;
+    from_fedi_to_ln: boolean;
+}) {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
@@ -26,7 +29,7 @@ export function ReceiveWarnings(props: { amountSats: string | bigint }) {
     });
 
     const warningText = () => {
-        if (state.federations?.length !== 0) {
+        if (state.federations?.length !== 0 && props.from_fedi_to_ln != true) {
             return undefined;
         }
         if ((state.balance?.lightning || 0n) === 0n) {

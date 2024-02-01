@@ -606,7 +606,8 @@ export default {
         completed: "Swap Completed",
         sats_added: "+{{amount}} sats have been added to your Lightning balance",
         sats_fee: "+{{amount}} sats fee",
-        confirm_swap: "Confirm Swap"
+        confirm_swap: "Confirm Swap",
+        preview_swap: "Preview Swap Fee"
     },
     reload: {
         mutiny_update: "Mutiny Update",

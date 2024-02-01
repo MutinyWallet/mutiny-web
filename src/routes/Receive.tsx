@@ -377,7 +377,10 @@ export function Receive() {
                                 setAmountSats={setAmount}
                                 onSubmit={getQr}
                             />
-                            <ReceiveWarnings amountSats={amount() || "0"} />
+                            <ReceiveWarnings
+                                amountSats={amount() || "0"}
+                                from_fedi_to_ln={false}
+                            />
                         </VStack>
                         <div class="flex-1" />
                         <VStack>
