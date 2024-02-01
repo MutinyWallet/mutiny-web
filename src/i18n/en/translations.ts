@@ -600,6 +600,14 @@ export default {
         connecting: "Connecting...",
         confirm_swap: "Confirm Swap"
     },
+    swap_lightning: {
+        insufficient_funds: "You don't have enough funds to swap to lightning",
+        header: "Swap to Lightning",
+        completed: "Swap Completed",
+        sats_added: "+{{amount}} sats have been added to your Lightning balance",
+        sats_fee: "+{{amount}} sats fee",
+        confirm_swap: "Confirm Swap"
+    },
     reload: {
         mutiny_update: "Mutiny Update",
         new_version_description:

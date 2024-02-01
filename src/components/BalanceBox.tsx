@@ -94,21 +94,38 @@ export function BalanceBox(props: { loading?: boolean }) {
                 <Show when={state.federations && state.federations.length}>
                     <Show when={!props.loading} fallback={<LoadingShimmer />}>
                         <hr class="my-2 border-m-grey-750" />
-                        <div class="flex flex-col gap-1">
-                            <div class="text-2xl">
-                                <AmountSats
-                                    amountSats={state.balance?.federation || 0}
-                                    icon="community"
-                                    denominationSize="lg"
-                                    isFederation
-                                />
+                        <div class="flex justify-between">
+                            <div class="flex flex-col gap-1">
+                                <div class="text-2xl">
+                                    <AmountSats
+                                        amountSats={
+                                            state.balance?.federation || 0
+                                        }
+                                        icon="community"
+                                        denominationSize="lg"
+                                        isFederation
+                                    />
+                                </div>
+                                <div class="text-lg text-white/70">
+                                    <AmountFiat
+                                        amountSats={
+                                            state.balance?.federation || 0n
+                                        }
+                                        denominationSize="sm"
+                                    />
+                                </div>
                             </div>
-                            <div class="text-lg text-white/70">
-                                <AmountFiat
-                                    amountSats={state.balance?.federation || 0n}
-                                    denominationSize="sm"
-                                />
-                            </div>
+                            <Show when={state.balance?.federation || 0n > 0n}>
+                                <div class="self-end justify-self-end">
+                                    <A href="/swaplightning" class={STYLE}>
+                                        <img
+                                            src={shuffle}
+                                            alt="swaplightning"
+                                            class="h-6 w-6"
+                                        />
+                                    </A>
+                                </div>
+                            </Show>
                         </div>
                     </Show>
                 </Show>

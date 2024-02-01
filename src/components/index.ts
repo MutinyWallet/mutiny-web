@@ -36,6 +36,7 @@ export * from "./Restart";
 export * from "./ResyncOnchain";
 export * from "./SeedWords";
 export * from "./SetupErrorDisplay";
+export * from "./Failure";
 export * from "./ShareCard";
 export * from "./Toaster";
 export * from "./NostrActivity";
