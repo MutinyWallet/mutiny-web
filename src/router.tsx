@@ -15,7 +15,8 @@ import {
     Scanner,
     Search,
     Send,
-    Swap
+    Swap,
+    SwapLightning
 } from "~/routes";
 import {
     Admin,
@@ -101,6 +102,7 @@ export function Router() {
                     <Route path="/scanner" component={Scanner} />
                     <Route path="/send" component={Send} />
                     <Route path="/swap" component={Swap} />
+                    <Route path="/swaplightning" component={SwapLightning} />
                     <Route path="/search" component={Search} />
                     <Route path="/settings">
                         <Route path="/" component={Settings} />
