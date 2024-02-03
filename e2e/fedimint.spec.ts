@@ -118,7 +118,7 @@ test("fedmint join, receive, send", async ({ page }) => {
     await expect(
         page
             .locator("div")
-            .filter({ hasText: /^100 SATS$/ })
+            .filter({ hasText: /^100 eSATS$/ })
             .nth(1)
     ).toBeVisible();
 

@@ -3,6 +3,8 @@ export default {
         title: "Mutiny Wallet",
         nice: "Nice",
         home: "Home",
+        e_sats: "eSATS",
+        e_sat: "eSat",
         sats: "SATS",
         sat: "SAT",
         fee: "Fee",

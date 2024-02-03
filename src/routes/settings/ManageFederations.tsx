@@ -185,6 +185,7 @@ function FederationListItem(props: {
                         <AmountSats
                             amountSats={props.balance}
                             denominationSize={"sm"}
+                            isFederation
                         />
                     </KeyValue>
                 </Show>

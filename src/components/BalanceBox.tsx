@@ -100,6 +100,7 @@ export function BalanceBox(props: { loading?: boolean }) {
                                     amountSats={state.balance?.federation || 0}
                                     icon="community"
                                     denominationSize="lg"
+                                    isFederation
                                 />
                             </div>
                             <div class="text-lg text-white/70">
