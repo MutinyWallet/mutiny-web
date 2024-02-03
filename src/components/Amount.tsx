@@ -18,6 +18,7 @@ export function AmountSats(props: {
     amountSats: bigint | number | undefined;
     icon?: "lightning" | "community" | "chain" | "plus" | "minus";
     denominationSize?: "sm" | "lg" | "xl";
+    isFederation?: boolean;
 }) {
     const i18n = useI18n();
     return (
@@ -54,14 +55,18 @@ export function AmountSats(props: {
                             Number(props.amountSats) === 0
                         }
                     >
-                        {i18n.t("common.sats")}
+                        {props.isFederation
+                            ? i18n.t("common.e_sats")
+                            : i18n.t("common.sats")}
                     </Show>
                     <Show
                         when={
                             props.amountSats && Number(props.amountSats) === 1
                         }
                     >
-                        {i18n.t("common.sat")}
+                        {props.isFederation
+                            ? i18n.t("common.e_sat")
+                            : i18n.t("common.sat")}
                     </Show>
                 </span>
             </h1>
