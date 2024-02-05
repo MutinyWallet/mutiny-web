@@ -1,23 +1,13 @@
-import { createForm, required } from "@modular-forms/solid";
 import { FedimintSweepResult } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
-import {
-    createMemo,
-    createResource,
-    createSignal,
-    For,
-    Match,
-    Show,
-    Switch
-} from "solid-js";
+import { createMemo, createSignal, Match, Show, Switch } from "solid-js";
 
 import {
-    ActivityDetailsModal,
     AmountEditable,
     AmountFiat,
+    BackButton,
     BackLink,
     Button,
-    Card,
     DefaultMain,
     Failure,
     Fee,
@@ -25,17 +15,13 @@ import {
     InfoBox,
     LargeHeader,
     MegaCheck,
-    MegaEx,
     MutinyWalletGuard,
     NavBar,
     ReceiveWarnings,
-    showToast,
     SuccessModal,
-    TextField,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
@@ -49,11 +35,14 @@ export function SwapLightning() {
     const navigate = useNavigate();
     const i18n = useI18n();
 
+    const [stage, setStage] = createSignal<"start" | "preview" | "done">(
+        "start"
+    );
+
     const [amountSats, setAmountSats] = createSignal(0n);
     const [feeSats, setFeeSats] = createSignal(0n);
     const [maxFederationBalanceBeforeSwap, setMaxFederationBalanceBeforeSwap] =
         createSignal(0n);
-    const [previewFee, setPreviewFee] = createSignal(false);
 
     const [loading, setLoading] = createSignal(false);
 
@@ -62,49 +51,46 @@ export function SwapLightning() {
     function resetState() {
         setAmountSats(0n);
         setFeeSats(0n);
-        setPreviewFee(false);
         setMaxFederationBalanceBeforeSwap(0n);
         setLoading(false);
         setSweepResult(undefined);
+        setStage("start");
     }
 
     const handleSwap = async () => {
-        if (canSwap()) {
-            try {
-                setLoading(true);
+        try {
+            setLoading(true);
+            setFeeEstimateWarning(undefined);
 
-                if (isMax()) {
-                    const result =
-                        await state.mutiny_wallet?.sweep_federation_balance(
-                            undefined
-                        );
+            if (isMax()) {
+                const result =
+                    await state.mutiny_wallet?.sweep_federation_balance(
+                        undefined
+                    );
 
-                    setSweepResult({ result: result });
-                } else {
-                    const result =
-                        await state.mutiny_wallet?.sweep_federation_balance(
-                            amountSats()
-                        );
+                setSweepResult({ result: result });
+            } else {
+                const result =
+                    await state.mutiny_wallet?.sweep_federation_balance(
+                        amountSats()
+                    );
 
-                    setSweepResult({ result: result });
-                }
-
-                await vibrateSuccess();
-            } catch (e) {
-                const error = eify(e);
-                setSweepResult({ failure_reason: error.message });
-                console.error(e);
-            } finally {
-                setLoading(false);
+                setSweepResult({ result: result });
             }
+
+            await vibrateSuccess();
+        } catch (e) {
+            const error = eify(e);
+            setSweepResult({ failure_reason: error.message });
+            console.error(e);
+        } finally {
+            setLoading(false);
         }
     };
 
     const canSwap = () => {
         const balance = state.balance?.federation || 0n;
-        const network = state.mutiny_wallet?.get_network() as Network;
-
-        return amountSats() <= balance;
+        return amountSats() > 0n && amountSats() <= balance;
     };
 
     const amountWarning = () => {
@@ -135,43 +121,53 @@ export function SwapLightning() {
         return feeSats() !== 0n;
     });
 
-    const feeEstimate = async () => {
-        if (canSwap()) {
-            try {
-                setLoading(true);
-                if (isMax()) {
-                    const fee =
-                        await state.mutiny_wallet?.estimate_sweep_federation_fee(
-                            undefined
-                        );
-                    setFeeSats(fee);
-                    setMaxFederationBalanceBeforeSwap(calculateMaxFederation());
-                    setPreviewFee(true);
-                } else {
-                    const fee =
-                        await state.mutiny_wallet?.estimate_sweep_federation_fee(
-                            amountSats()
-                        );
-                    setFeeSats(fee);
-                    setMaxFederationBalanceBeforeSwap(calculateMaxFederation());
-                    setPreviewFee(true);
-                }
-            } catch (e) {
-                console.error(e);
-                return undefined;
-            } finally {
-                setLoading(false);
-            }
-        }
+    const [feeEstimateWarning, setFeeEstimateWarning] = createSignal<string>();
 
-        return undefined;
+    const feeEstimate = async () => {
+        try {
+            setLoading(true);
+            setFeeEstimateWarning(undefined);
+
+            const fee =
+                await state.mutiny_wallet?.estimate_sweep_federation_fee(
+                    isMax() ? undefined : amountSats()
+                );
+
+            if (fee) {
+                setFeeSats(fee);
+            }
+            setMaxFederationBalanceBeforeSwap(calculateMaxFederation());
+
+            setStage("preview");
+        } catch (e) {
+            console.error(e);
+            setFeeEstimateWarning(i18n.t("swap_lightning.too_small"));
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <MutinyWalletGuard>
             <DefaultMain>
-                <BackLink />
-                <LargeHeader>{i18n.t("swap_lightning.header")}</LargeHeader>
+                <Switch>
+                    <Match when={stage() === "start"}>
+                        <BackLink />
+                        <LargeHeader>
+                            {i18n.t("swap_lightning.header")}
+                        </LargeHeader>
+                    </Match>
+                    <Match when={stage() === "preview"}>
+                        <BackButton
+                            title={i18n.t("receive.edit")}
+                            onClick={() => setStage("start")}
+                            showOnDesktop
+                        />
+                        <LargeHeader>
+                            {i18n.t("swap_lightning.header_preview")}
+                        </LargeHeader>
+                    </Match>
+                </Switch>
                 <SuccessModal
                     confirmText={
                         sweepResult()?.result
@@ -189,7 +185,7 @@ export function SwapLightning() {
                 >
                     <Switch>
                         <Match when={sweepResult()?.failure_reason}>
-                            <Failure reason={sweepResult()?.failure_reason} />
+                            <Failure reason={sweepResult()!.failure_reason!} />
                         </Match>
                         <Match when={sweepResult()?.result}>
                             <MegaCheck />
@@ -221,55 +217,101 @@ export function SwapLightning() {
                 </SuccessModal>
                 <div class="flex flex-1 flex-col justify-between gap-2">
                     <div class="flex-1" />
-                    <VStack biggap>
-                        <AmountEditable
-                            initialAmountSats={amountSats()}
-                            setAmountSats={setAmountSats}
-                            activeMethod={{
-                                method: "lightning",
-                                maxAmountSats: maxFederationBalance()
-                            }}
-                            methods={[
-                                {
-                                    method: "lightning",
-                                    maxAmountSats: maxFederationBalance()
-                                }
-                            ]}
-                        />
-                        <Show when={feeIsSet()}>
-                            <FeeDisplay
-                                amountSats={amountSats().toString()}
-                                fee={feeSats()!.toString()}
-                                maxAmountSats={maxFederationBalanceBeforeSwap()!.toString()}
-                            />
-                        </Show>
-                        <ReceiveWarnings
-                            amountSats={amountSats() || "0"}
-                            from_fedi_to_ln={true}
-                        />
-                        <Show when={amountWarning() && amountSats() > 0n}>
-                            <InfoBox accent={"red"}>{amountWarning()}</InfoBox>
-                        </Show>
-                    </VStack>
-                    <div class="flex-1" />
-                    <VStack>
-                        <Button
-                            disabled={!canSwap()}
-                            intent="blue"
-                            onClick={() => {
-                                if (!previewFee()) {
-                                    feeEstimate();
-                                } else {
-                                    handleSwap();
-                                }
-                            }}
-                            loading={loading()}
-                        >
-                            {!previewFee()
-                                ? i18n.t("swap_lightning.preview_swap")
-                                : i18n.t("swap_lightning.confirm_swap")}
-                        </Button>
-                    </VStack>
+                    <Switch>
+                        <Match when={stage() === "start"}>
+                            <VStack biggap>
+                                <AmountEditable
+                                    initialAmountSats={amountSats()}
+                                    setAmountSats={setAmountSats}
+                                    activeMethod={{
+                                        method: "lightning",
+                                        maxAmountSats: maxFederationBalance()
+                                    }}
+                                    methods={[
+                                        {
+                                            method: "lightning",
+                                            maxAmountSats:
+                                                maxFederationBalance()
+                                        }
+                                    ]}
+                                />
+                                <ReceiveWarnings
+                                    amountSats={amountSats() || "0"}
+                                    from_fedi_to_ln={true}
+                                />
+                                <Show
+                                    when={amountWarning() && amountSats() > 0n}
+                                >
+                                    <InfoBox accent={"red"}>
+                                        {amountWarning()}
+                                    </InfoBox>
+                                </Show>
+                                <Show when={feeEstimateWarning()}>
+                                    <InfoBox accent={"red"}>
+                                        {feeEstimateWarning()}
+                                    </InfoBox>
+                                </Show>
+                            </VStack>
+                            <div class="flex-1" />
+                            <VStack>
+                                <Button
+                                    disabled={!canSwap()}
+                                    intent="blue"
+                                    onClick={feeEstimate}
+                                    loading={loading()}
+                                >
+                                    {i18n.t("swap_lightning.preview_swap")}
+                                </Button>
+                            </VStack>
+                        </Match>
+                        <Match when={stage() === "preview"}>
+                            <VStack biggap>
+                                <AmountEditable
+                                    frozenAmount
+                                    initialAmountSats={amountSats()}
+                                    setAmountSats={setAmountSats}
+                                    activeMethod={{
+                                        method: "lightning",
+                                        maxAmountSats: maxFederationBalance()
+                                    }}
+                                    methods={[
+                                        {
+                                            method: "lightning",
+                                            maxAmountSats:
+                                                maxFederationBalance()
+                                        }
+                                    ]}
+                                />
+                                <Show when={feeIsSet()}>
+                                    <FeeDisplay
+                                        amountSats={amountSats().toString()}
+                                        fee={feeSats()!.toString()}
+                                        maxAmountSats={
+                                            maxFederationBalanceBeforeSwap()!
+                                        }
+                                    />
+                                </Show>
+                                <Show
+                                    when={amountWarning() && amountSats() > 0n}
+                                >
+                                    <InfoBox accent={"red"}>
+                                        {amountWarning()}
+                                    </InfoBox>
+                                </Show>
+                            </VStack>
+                            <div class="flex-1" />
+                            <VStack>
+                                <Button
+                                    disabled={!canSwap()}
+                                    intent="blue"
+                                    onClick={handleSwap}
+                                    loading={loading()}
+                                >
+                                    {i18n.t("swap_lightning.confirm_swap")}
+                                </Button>
+                            </VStack>
+                        </Match>
+                    </Switch>
                 </div>
             </DefaultMain>
             <NavBar activeTab="none" />
