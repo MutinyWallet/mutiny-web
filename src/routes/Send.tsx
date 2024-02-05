@@ -1,5 +1,5 @@
 import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
-import { A, useNavigate, useSearchParams } from "@solidjs/router";
+import { useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createEffect,
     createMemo,
@@ -33,8 +33,6 @@ import {
     LabelCircle,
     LoadingShimmer,
     MegaCheck,
-    MegaClock,
-    MegaEx,
     MethodChoice,
     MutinyWalletGuard,
     NavBar,
@@ -236,8 +234,8 @@ export function Send() {
                 ? sentDetails()?.txid
                 : undefined
             : sentDetails()
-            ? sentDetails()?.payment_hash
-            : undefined;
+              ? sentDetails()?.payment_hash
+              : undefined;
         const kind = sentDetails()?.txid ? "OnChain" : "Lightning";
 
         console.log("Opening details modal: ", paymentTxId, kind);

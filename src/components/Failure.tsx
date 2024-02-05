@@ -1,53 +1,8 @@
-import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
-import { A, useNavigate, useSearchParams } from "@solidjs/router";
-import {
-    createEffect,
-    createMemo,
-    createResource,
-    createSignal,
-    JSX,
-    Match,
-    onMount,
-    Show,
-    Suspense,
-    Switch
-} from "solid-js";
+import { A } from "@solidjs/router";
+import { Match, Switch } from "solid-js";
 
-import bolt from "~/assets/icons/bolt.svg";
-import chain from "~/assets/icons/chain.svg";
-import close from "~/assets/icons/close.svg";
-import {
-    ActivityDetailsModal,
-    AmountEditable,
-    AmountFiat,
-    AmountSats,
-    BackPop,
-    Button,
-    DefaultMain,
-    Fee,
-    FeeDisplay,
-    HackActivityType,
-    InfoBox,
-    LabelCircle,
-    LoadingShimmer,
-    MegaCheck,
-    MegaClock,
-    MegaEx,
-    MethodChoice,
-    MutinyWalletGuard,
-    NavBar,
-    showToast,
-    SimpleInput,
-    SmallHeader,
-    StringShower,
-    SuccessModal,
-    UnstyledBackPop,
-    VStack
-} from "~/components";
+import { InfoBox, MegaClock, MegaEx } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { ParsedParams } from "~/logic/waila";
-import { useMegaStore } from "~/state/megaStore";
-import { eify, vibrateSuccess } from "~/utils";
 
 export function Failure(props: { reason: string }) {
     const i18n = useI18n();
