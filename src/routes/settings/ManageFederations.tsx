@@ -5,6 +5,7 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
+import { FederationBalance } from "@mutinywallet/mutiny-wasm";
 import { useSearchParams } from "@solidjs/router";
 import {
     createResource,
@@ -51,7 +52,15 @@ export type MutinyFederationIdentity = {
     federation_expiry_timestamp: number;
 };
 
-function AddFederationForm() {
+type RefetchType = (
+    info?: unknown
+) =>
+    | FederationBalance[]
+    | Promise<FederationBalance[] | undefined>
+    | null
+    | undefined;
+
+function AddFederationForm(props: { refetch?: RefetchType }) {
     const i18n = useI18n();
     const [state, actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
@@ -88,6 +97,9 @@ function AddFederationForm() {
                 i18n.t("settings.manage_federations.federation_added_success")
             );
             await actions.refreshFederations();
+            if (props.refetch) {
+                await props.refetch();
+            }
             reset(feedbackForm);
         } catch (e) {
             console.error("Error submitting federation:", e);
@@ -225,7 +237,7 @@ export function ManageFederations() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
-    const [balances] = createResource(async () => {
+    const [balances, { refetch }] = createResource(async () => {
         try {
             const balances =
                 await state.mutiny_wallet?.get_federation_balances();
@@ -253,7 +265,7 @@ export function ManageFederations() {
                             {i18n.t("settings.manage_federations.learn_more")}
                         </ExternalLink>
                     </NiceP>
-                    <AddFederationForm />
+                    <AddFederationForm refetch={refetch} />
                     <VStack>
                         <Suspense>
                             <Switch>
