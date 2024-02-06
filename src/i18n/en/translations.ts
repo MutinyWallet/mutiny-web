@@ -607,7 +607,8 @@ export default {
         completed: "Swap Completed",
         too_small:
             "Invalid amount entered. You need to swap at least 100k sats.",
-        sats_added: "+{{amount}} sats have been added to your Lightning balance",
+        sats_added:
+            "+{{amount}} sats have been added to your Lightning balance",
         sats_fee: "+{{amount}} sats fee",
         confirm_swap: "Confirm Swap",
         preview_swap: "Preview Swap Fee"
