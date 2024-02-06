@@ -4,7 +4,7 @@ export default {
         nice: "Nice",
         home: "Home",
         e_sats: "eSATS",
-        e_sat: "eSat",
+        e_sat: "eSAT",
         sats: "SATS",
         sat: "SAT",
         fee: "Fee",
