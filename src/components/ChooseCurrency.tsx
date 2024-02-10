@@ -23,7 +23,7 @@ const COMBINED_OPTIONS: Currency[] = [USD_OPTION, BTC_OPTION, ...FIAT_OPTIONS];
 export function ChooseCurrency() {
     const i18n = useI18n();
     const [error, setError] = createSignal<Error>();
-    const [_state, actions] = useMegaStore();
+    const [state, actions] = useMegaStore();
     const [loading, setLoading] = createSignal(false);
     const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ export function ChooseCurrency() {
     const [_chooseCurrencyForm, { Form, Field }] =
         createForm<ChooseCurrencyForm>({
             initialValues: {
-                fiatCurrency: ""
+                fiatCurrency: state.fiat.value
             },
             validate: (values) => {
                 const errors: Record<string, string> = {};
@@ -82,7 +82,12 @@ export function ChooseCurrency() {
                             >
                                 <For each={COMBINED_OPTIONS}>
                                     {({ value, label }) => (
-                                        <option value={value}>{label}</option>
+                                        <option
+                                            selected={field.value === value}
+                                            value={value}
+                                        >
+                                            {label}
+                                        </option>
                                     )}
                                 </For>
                             </select>
