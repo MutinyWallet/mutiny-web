@@ -30,7 +30,7 @@ export function ChooseLanguage() {
     const [_chooseLanguageForm, { Form, Field }] =
         createForm<ChooseLanguageForm>({
             initialValues: {
-                selectedLanguage: findLanguageByValue(state.lang ?? "").value,
+                selectedLanguage: findLanguageByValue(state.lang ?? "").value
             },
             validate: (values) => {
                 const errors: Record<string, string> = {};
@@ -46,7 +46,7 @@ export function ChooseLanguage() {
     const handleFormSubmit = async (f: ChooseLanguageForm) => {
         setLoading(true);
         try {
-            actions.saveLanguage(findLanguageByValue(f.selectedLanguage).label);
+            actions.saveLanguage(findLanguageByValue(f.selectedLanguage).value);
 
             await i18n.changeLanguage(
                 findLanguageByValue(f.selectedLanguage).label
@@ -79,7 +79,12 @@ export function ChooseLanguage() {
                             >
                                 <For each={COMBINED_OPTIONS}>
                                     {({ value }) => (
-                                        <option value={value}>{value}</option>
+                                        <option
+                                            selected={field.value === value}
+                                            value={value}
+                                        >
+                                            {value}
+                                        </option>
                                     )}
                                 </For>
                             </select>
