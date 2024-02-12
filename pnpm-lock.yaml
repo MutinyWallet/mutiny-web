@@ -57,8 +57,8 @@ importers:
         specifier: 0.5.9
         version: 0.5.9
       '@mutinywallet/waila-wasm':
-        specifier: ^0.2.6
-        version: 0.2.6
+        specifier: ^0.4.0
+        version: 0.4.0
       '@solid-primitives/upload':
         specifier: ^0.0.111
         version: 0.0.111(solid-js@1.8.5)
@@ -2574,8 +2574,8 @@ packages:
     resolution: {integrity: sha512-skSSpMprn/iA6Zsk092S1UVCkgjaCfXZXdvzVahFLDDS/89GtxyHtSsY64Oy3KFCULB6X+UfFp9nRFHtWA7sIw==}
     dev: false
 
-  /@mutinywallet/waila-wasm@0.2.6:
-    resolution: {integrity: sha512-qiyhaWX/zDKuh23VXIzeWGlmXne9IdRIx+ldGdse15JwEiC97OjATXMECX3Xo0tc3RTOo50cKyMlouKKRbLYpQ==}
+  /@mutinywallet/waila-wasm@0.4.0:
+    resolution: {integrity: sha512-KYpsbgy3sixudZm36q9hJgZzQNs33Jg8vQd4Zvslfd3x+pT2vz0Nh462mA7ZeBu9irH4PsRTH5aDbsAcUYVfgQ==}
     dev: false
 
   /@ndelangen/get-tarball@3.0.9:
@@ -13644,6 +13644,7 @@ packages:
 
   /workbox-google-analytics@7.0.0:
     resolution: {integrity: sha512-MEYM1JTn/qiC3DbpvP2BVhyIH+dV/5BjHk756u9VbwuAhu0QHyKscTnisQuz21lfRpOwiS9z4XdqeVAKol0bzg==}
+    deprecated: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
     dependencies:
       workbox-background-sync: 7.0.0
       workbox-core: 7.0.0
