@@ -1,6 +1,7 @@
 export default {
     common: {
         title: "Mutiny Wallet",
+        mutiny: "Mutiny",
         nice: "Nice",
         home: "Home",
         e_sats: "eSATS",
@@ -33,6 +34,8 @@ export default {
         create_contact: "Create contact",
         edit_contact: "Edit contact",
         save_contact: "Save contact",
+        delete: "Delete",
+        confirm_delete: "Are you sure you want to delete this contact?",
         payment_history: "Payment history",
         no_payments: "No payments yet with",
         edit: "Edit",
@@ -47,7 +50,8 @@ export default {
         email_error: "That doesn't look like a lightning address",
         npub_error: "That doesn't look like a nostr npub",
         error_ln_address_missing: "New contacts need a lightning address",
-        npub: "Nostr Npub"
+        npub: "Nostr Npub",
+        link_to_nostr_sync: "Import Nostr Contacts"
     },
     receive: {
         receive_bitcoin: "Receive Bitcoin",
@@ -112,6 +116,13 @@ export default {
         what_for: "What's this for?"
     },
     send: {
+        search: {
+            placeholder: "Name, address, invoice",
+            paste: "Paste",
+            contacts: "Contacts",
+            global_search: "Global search",
+            no_results: "No results found for"
+        },
         sending: "Sending...",
         confirm_send: "Confirm Send",
         contact_placeholder: "Add the receiver for your records",
@@ -394,6 +405,8 @@ export default {
             }
         },
         encrypt: {
+            title: "Change Password",
+            caption: "Backup first to unlock encryption",
             header: "Encrypt your seed words",
             hot_wallet_warning:
                 'Mutiny is a "hot wallet" so it needs your seed word to operate, but you can optionally encrypt those words with a password.',
@@ -530,10 +543,12 @@ export default {
             save: "Save"
         },
         nostr_contacts: {
-            title: "Nostr Contacts",
+            title: "Sync Nostr Contacts",
             npub_label: "Nostr npub",
             npub_required: "Npub can't be blank",
-            sync: "Sync"
+            sync: "Sync",
+            resync: "Resync",
+            remove: "Remove"
         },
         manage_federations: {
             title: "Manage Federations",

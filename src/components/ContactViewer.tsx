@@ -115,7 +115,7 @@ export function ContactViewer(props: {
                             intent="red"
                             onClick={() => setConfirmOpen(true)}
                         >
-                            Delete
+                            {i18n.t("contacts.delete")}
                         </Button>
                         <ConfirmDialog
                             open={confirmOpen()}
@@ -123,7 +123,7 @@ export function ContactViewer(props: {
                             onConfirm={handleDelete}
                             onCancel={() => setConfirmOpen(false)}
                         >
-                            Are you sure you want to delete this contact?
+                            {i18n.t("contacts.confirm_delete")}
                         </ConfirmDialog>
                     </Match>
                     <Match when={!isEditing()}>

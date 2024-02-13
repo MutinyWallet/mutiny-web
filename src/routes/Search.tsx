@@ -261,7 +261,7 @@ function ActualSearch() {
                     type="text"
                     value={searchValue()}
                     onInput={(e) => setSearchValue(e.currentTarget.value)}
-                    placeholder="Name, address, invoice..."
+                    placeholder={i18n.t("send.search.placeholder")}
                     autofocus
                     ref={(el) => (searchInputRef = el)}
                 />
@@ -271,7 +271,7 @@ function ActualSearch() {
                         onClick={handlePaste}
                     >
                         <img src={paste} alt="Paste" class="h-4 w-4" />
-                        Paste
+                        {i18n.t("send.search.paste")}
                     </button>
                 </Show>
                 <Show when={!!searchValue()}>
@@ -285,14 +285,16 @@ function ActualSearch() {
             </div>
             <Show when={searchState() !== "notsendable"}>
                 <Button intent="green" onClick={handleContinue}>
-                    Continue
+                    {i18n.t("common.continue")}
                 </Button>
             </Show>
             <Show when={searchState() !== "sendable"}>
                 <div class="relative flex h-full max-h-[100svh] flex-col gap-3 overflow-y-scroll">
                     <Suspense>
                         <div class="sticky top-0 z-50 bg-m-grey-900/90 py-2 backdrop-blur-sm">
-                            <h2 class="text-xl font-semibold">Contacts</h2>
+                            <h2 class="text-xl font-semibold">
+                                {i18n.t("send.search.contacts")}
+                            </h2>
                         </div>
                         <Show
                             when={
@@ -314,7 +316,7 @@ function ActualSearch() {
                     <Suspense fallback={<LoadingShimmer />}>
                         <Show when={!!debouncedSearchValue()}>
                             <h2 class="py-2 text-xl font-semibold">
-                                Global Search
+                                {i18n.t("send.search.global_search")}
                             </h2>
                             <GlobalSearch
                                 searchValue={debouncedSearchValue()}
@@ -335,6 +337,7 @@ function GlobalSearch(props: {
     sendToContact: (contact: TagItem) => void;
     foundNpubs: (string | undefined)[];
 }) {
+    const i18n = useI18n();
     const hexpubs = createMemo(() => {
         const hexpubs: Set<string> = new Set();
         for (const npub of props.foundNpubs) {
@@ -403,7 +406,7 @@ function GlobalSearch(props: {
                 }
             >
                 <p class="text-neutral-500">
-                    No results found for "{props.searchValue}"
+                    {i18n.t("send.search.no_results") + " " + props.searchValue}
                 </p>
             </Match>
             <Match when={true}>
