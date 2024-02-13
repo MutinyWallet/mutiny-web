@@ -14,7 +14,7 @@ export const LANGUAGE_OPTIONS: Language[] = [
         shortName: "pt"
     },
     {
-        value: "Korean",
+        value: "한국어",
         shortName: "ko"
     }
 ];

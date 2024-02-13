@@ -107,10 +107,10 @@ export function Settings() {
                             },
                             {
                                 href: "/settings/encrypt",
-                                text: "Change Password",
+                                text: i18n.t("settings.encrypt.title"),
                                 disabled: !state.has_backed_up,
                                 caption: !state.has_backed_up
-                                    ? "Backup first to unlock encryption"
+                                    ? i18n.t("settings.encrypt.caption")
                                     : undefined
                             },
                             {
@@ -155,11 +155,13 @@ export function Settings() {
                             },
                             {
                                 href: "/settings/syncnostrcontacts",
-                                text: "Sync Nostr Contacts"
+                                text: i18n.t("settings.nostr_contacts.title")
                             },
                             {
                                 href: "/settings/federations",
-                                text: "Manage Federations"
+                                text: i18n.t(
+                                    "settings.manage_federations.title"
+                                )
                             }
                         ]}
                     />

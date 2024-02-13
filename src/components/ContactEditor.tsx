@@ -68,7 +68,7 @@ export function ContactEditor(props: {
                         previous: location.pathname
                     }}
                 >
-                    Import Nostr Contacts
+                    {i18n.t("contacts.link_to_nostr_sync")}
                 </A>
             </SimpleDialog>
         </>

@@ -29,7 +29,8 @@ export function MutinyPlusCta() {
             >
                 <div class="flex justify-between">
                     <span>
-                        Mutiny<span class="text-m-red">+</span>
+                        {i18n.t("common.mutiny")}
+                        <span class="text-m-red">+</span>
                     </span>
                     <img src={forward} alt="go" />
                 </div>

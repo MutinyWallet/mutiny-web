@@ -90,6 +90,7 @@ function SyncContactsForm() {
 }
 
 export function SyncNostrContacts() {
+    const i18n = useI18n();
     const [state, actions] = useMegaStore();
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<Error>();
@@ -114,7 +115,9 @@ export function SyncNostrContacts() {
             <SafeArea>
                 <DefaultMain>
                     <BackPop />
-                    <LargeHeader>Sync Nostr Contacts</LargeHeader>
+                    <LargeHeader>
+                        {i18n.t("settings.nostr_contacts.title")}
+                    </LargeHeader>
                     <Switch>
                         <Match when={state.npub}>
                             <VStack>
@@ -135,13 +138,17 @@ export function SyncNostrContacts() {
                                             onClick={resync}
                                             loading={loading()}
                                         >
-                                            Resync
+                                            {i18n.t(
+                                                "settings.nostr_contacts.resync"
+                                            )}
                                         </Button>
                                         <Button
                                             intent="red"
                                             onClick={clearNpub}
                                         >
-                                            Remove
+                                            {i18n.t(
+                                                "settings.nostr_contacts.remove"
+                                            )}
                                         </Button>
                                     </VStack>
                                 </FancyCard>

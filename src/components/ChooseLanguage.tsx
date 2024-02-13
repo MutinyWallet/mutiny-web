@@ -23,7 +23,7 @@ export function ChooseLanguage() {
     const [_chooseLanguageForm, { Form, Field }] =
         createForm<ChooseLanguageForm>({
             initialValues: {
-                selectedLanguage: state.lang ?? ""
+                selectedLanguage: state.lang ?? i18n.language
             },
             validate: (values) => {
                 const errors: Record<string, string> = {};
