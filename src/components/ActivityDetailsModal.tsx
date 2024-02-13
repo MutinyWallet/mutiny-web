@@ -571,8 +571,8 @@ export function ActivityDetailsModal(props: {
                                     </FancyCard>
                                 </Dialog.Title>
                                 <Hr />
-                                <Switch>
-                                    <Show when={data.latest}>
+                                <Show when={data.latest}>
+                                    <Switch>
                                         <Match when={kind() === "Lightning"}>
                                             <LightningDetails
                                                 info={data() as MutinyInvoice}
@@ -596,8 +596,8 @@ export function ActivityDetailsModal(props: {
                                                 info={data() as ChannelClosure}
                                             />
                                         </Match>
-                                    </Show>
-                                </Switch>
+                                    </Switch>
+                                </Show>
                             </div>
                         </Suspense>
                     </Dialog.Content>
