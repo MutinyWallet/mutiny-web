@@ -1,6 +1,6 @@
 {
     "name": "mutiny-wallet",
-    "version": "0.5.8",
+    "version": "0.5.9",
     "license": "MIT",
     "packageManager": "pnpm@8.6.6",
     "scripts": {
@@ -55,7 +55,7 @@
         "@kobalte/core": "^0.9.8",
         "@kobalte/tailwindcss": "^0.5.0",
         "@modular-forms/solid": "^0.18.1",
-        "@mutinywallet/mutiny-wasm": "0.5.8",
+        "@mutinywallet/mutiny-wasm": "0.5.9",
         "@mutinywallet/waila-wasm": "^0.2.6",
         "@solid-primitives/upload": "^0.0.111",
         "@solidjs/meta": "^0.29.1",
