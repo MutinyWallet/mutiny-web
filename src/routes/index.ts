@@ -9,3 +9,4 @@ export * from "./Send";
 export * from "./Swap";
 export * from "./SwapLightning";
 export * from "./Search";
+export * from "./RedeemCashu";

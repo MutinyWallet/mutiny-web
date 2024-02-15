@@ -408,6 +408,10 @@ export const Provider: ParentComponent = (props) => {
                             encodeURIComponent(result.value?.nostr_wallet_auth)
                     );
                 }
+                if (result.value?.cashu_token) {
+                    actions.setScanResult(result.value);
+                    navigate("/redeemcashu");
+                }
             }
         },
         setBetaWarned() {
