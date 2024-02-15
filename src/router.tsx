@@ -12,6 +12,7 @@ import {
     Main,
     NotFound,
     Receive,
+    RedeemCashu,
     Scanner,
     Search,
     Send,
@@ -128,6 +129,7 @@ export function Router() {
                             component={ManageFederations}
                         />
                     </Route>
+                    <Route path="/redeemcashu" component={RedeemCashu} />
                     <Route path="/*all" component={NotFound} />
                 </Routes>
                 <Toaster />

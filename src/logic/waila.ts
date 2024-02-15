@@ -21,6 +21,7 @@ export type ParsedParams = {
     fedimint_invite?: string;
     is_lnurl_auth?: boolean;
     contact_id?: string;
+    cashu_token?: string;
 };
 
 export function toParsedParams(
@@ -67,7 +68,8 @@ export function toParsedParams(
             lightning_address: params.lightning_address,
             nostr_wallet_auth: params.nostr_wallet_auth,
             is_lnurl_auth: params.is_lnurl_auth,
-            fedimint_invite: params.fedimint_invite_code
+            fedimint_invite: params.fedimint_invite_code,
+            cashu_token: params.cashu_token
         }
     };
 }
