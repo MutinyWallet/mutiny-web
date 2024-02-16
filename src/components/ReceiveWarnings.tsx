@@ -50,7 +50,7 @@ export function ReceiveWarnings(props: {
         return undefined;
     };
 
-    const betaWarning = () => {
+    const sillyAmountWarning = () => {
         const parsed = Number(props.amountSats);
         if (isNaN(parsed)) {
             return undefined;
@@ -59,16 +59,13 @@ export function ReceiveWarnings(props: {
         if (parsed >= 2099999997690000) {
             // If over 21 million bitcoin, warn that too much
             return i18n.t("receive.amount_editable.more_than_21m");
-        } else if (parsed >= 4000000) {
-            // If over 4 million sats, warn that it's a beta bro
-            return i18n.t("receive.amount_editable.too_big_for_beta");
         }
     };
 
     return (
         <Switch>
-            <Match when={betaWarning()}>
-                <InfoBox accent="red">{betaWarning()}</InfoBox>
+            <Match when={sillyAmountWarning()}>
+                <InfoBox accent="red">{sillyAmountWarning()}</InfoBox>
             </Match>
             <Match when={warningText()}>
                 <InfoBox accent="blue">

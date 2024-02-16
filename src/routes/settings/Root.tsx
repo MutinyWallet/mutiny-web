@@ -131,7 +131,7 @@ export function Settings() {
                         ]}
                     />
                     <SettingsLinkList
-                        header={i18n.t("settings.beta_features")}
+                        header={i18n.t("settings.experimental_features")}
                         links={[
                             {
                                 href: "/settings/connections",

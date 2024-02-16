@@ -5,7 +5,6 @@ import scan from "~/assets/icons/scan.svg";
 import settings from "~/assets/icons/settings.svg";
 import {
     BalanceBox,
-    BetaWarningModal,
     Card,
     CombinedActivity,
     DecryptDialog,
@@ -106,7 +105,6 @@ export function Main() {
                 </div>
             </DefaultMain>
             <DecryptDialog />
-            <BetaWarningModal />
             <HomePrompt />
             <NavBar activeTab="home" />
         </SafeArea>
