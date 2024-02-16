@@ -7,7 +7,6 @@ export * from "./ActivityItem";
 export * from "./Amount";
 export * from "./AmountEditable";
 export * from "./BalanceBox";
-export * from "./BetaWarningModal";
 export * from "./ChooseCurrency";
 export * from "./ChooseLanguage";
 export * from "./ContactEditor";

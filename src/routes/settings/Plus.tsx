@@ -41,10 +41,10 @@ function Perks(props: { alreadySubbed?: boolean }) {
             <li>
                 <Show
                     when={props.alreadySubbed}
-                    fallback={i18n.t("settings.plus.ios_beta_access")}
+                    fallback={i18n.t("settings.plus.ios_testflight")}
                 >
                     <ExternalLink href="https://testflight.apple.com/join/9g23f0Mc">
-                        {i18n.t("settings.plus.ios_beta_access")}
+                        {i18n.t("settings.plus.ios_testflight")}
                     </ExternalLink>
                 </Show>
             </li>

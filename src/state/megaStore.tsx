@@ -69,7 +69,6 @@ type MegaStore = [
         safe_mode?: boolean;
         npub?: string;
         preferredInvoiceType: "unified" | "lightning" | "onchain";
-        betaWarned: boolean;
         testflightPromptDismissed: boolean;
         should_zap_hodl: boolean;
         federations?: MutinyFederationIdentity[];
@@ -94,7 +93,6 @@ type MegaStore = [
             onError: (e: Error) => void,
             onSuccess: (value: ParsedParams) => void
         ): void;
-        setBetaWarned(): void;
         setTestFlightPromptDismissed(): void;
         toggleHodl(): void;
         dropMutinyWallet(): void;
@@ -137,7 +135,6 @@ export const Provider: ParentComponent = (props) => {
         lang: localStorage.getItem("i18nexLng") || undefined,
         npub: localStorage.getItem("npub") || undefined,
         preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
-        betaWarned: localStorage.getItem("betaWarned") === "true",
         should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
@@ -409,10 +406,6 @@ export const Provider: ParentComponent = (props) => {
                     );
                 }
             }
-        },
-        setBetaWarned() {
-            localStorage.setItem("betaWarned", "true");
-            setState({ betaWarned: true });
         },
         setTestFlightPromptDismissed() {
             localStorage.setItem("testflightPromptDismissed", "true");

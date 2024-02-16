@@ -93,8 +93,6 @@ export default {
                 "A lightning setup fee might be deducted from the requested amount.",
             setup_fee_lightning:
                 "A lightning setup fee will be charged if paid over lightning.",
-            too_big_for_beta:
-                "That's a lot of sats. You do know Mutiny Wallet is still in beta, yeah?",
             more_than_21m: "There are only 21 million bitcoin.",
             set_amount: "Set amount",
             max: "MAX",
@@ -244,7 +242,7 @@ export default {
     settings: {
         header: "Settings",
         support: "Learn how to support Mutiny",
-        beta_features: "BETA FEATURES",
+        experimental_features: "Experiments",
         debug_tools: "DEBUG TOOLS",
         danger_zone: "Danger zone",
         general: "General",
@@ -487,7 +485,7 @@ export default {
             satisfaction: "Smug satisfaction",
             gifting: "Gifting",
             multi_device: "Multi-device access",
-            ios_beta_access: "iOS beta access",
+            ios_testflight: "iOS TestFlight access",
             more: "... and more to come",
             cta_description:
                 "Enjoy early access to new features and premium functionality.",
@@ -737,17 +735,6 @@ export default {
                 "If you've used Mutiny before you can restore from a backup. Otherwise you can skip this and enjoy your new wallet!",
             not_available: "We don't do that yet",
             secure_your_funds: "Secure your funds"
-        },
-        beta_warning: {
-            title: "Warning: beta software",
-            beta_warning:
-                "We're so glad you're here. But we do want to warn you: Mutiny Wallet is in beta, and there are still bugs and rough edges.",
-            be_careful:
-                "Please be careful and don't put more money into Mutiny than you're willing to lose.",
-            beta_link: "Learn more about the beta",
-            pretend_money:
-                "If you want to use pretend money to test out Mutiny without risk,",
-            signet_link: "check out our Signet version."
         },
         more_info: {
             whats_with_the_fees: "What's with the fees?",

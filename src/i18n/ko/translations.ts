@@ -71,8 +71,6 @@ export default {
                 "첫 라이트닝 받기는 {{amount}} SATS 이상이어야 합니다. 요청한 금액에서 설정 비용이 차감됩니다.",
             setup_fee_lightning:
                 "라이트닝으로 지불하는 경우 라이트닝 설치 비용이 부과됩니다.",
-            too_big_for_beta:
-                "많은 SATS입니다. Mutiny Wallet이 여전히 베타 버전임을 알고 계시겠죠?",
             more_than_21m: "비트코인은 총 2,100만 개밖에 없습니다.",
             set_amount: "금액 설정",
             max: "최대",
@@ -183,7 +181,7 @@ export default {
         header: "설정",
         support: "Mutiny 지원 방법 알아보기",
         general: "일반",
-        beta_features: "베타 기능",
+        experimental_features: "실험",
         debug_tools: "디버그 도구",
         danger_zone: "위험 지역",
         admin: {
@@ -494,17 +492,6 @@ export default {
                 "이미 Mutiny를 사용한 적이 있으시다면 백업에서 복원할 수 있습니다. 그렇지 않다면 이 단계를 건너뛰고 새로운 지갑을 즐기실 수 있습니다!",
             not_available: "아직 이 기능은 지원하지 않습니다",
             secure_your_funds: "자금을 안전하게 보호하세요"
-        },
-        beta_warning: {
-            title: "경고: 베타 버전 소프트웨어",
-            beta_warning:
-                "저희가 여러분을 여기서 맞이할 수 있게 되어 기쁩니다. 그러나 경고하고 싶습니다: Mutiny Wallet은 베타 버전이며 여전히 버그와 미흡한 점이 있을 수 있습니다.",
-            be_careful:
-                "Mutiny에 지금보다 더 많은 자금을 투자하지 않도록 주의하세요.",
-            beta_Link: "베타 버전에 대해 자세히 알아보기",
-            pretend_money:
-                "위험 없이 Mutiny를 테스트하려면 가상 자금을 사용하려면",
-            signet_link: "Signet 버전을 확인하세요."
         },
         more_info: {
             whats_with_the_fees: "수수료는 어떻게 되나요?",
