@@ -120,6 +120,9 @@ importers:
       eslint-plugin-import:
         specifier: 2.27.5
         version: 2.27.5(@typescript-eslint/parser@6.9.1)(eslint-import-resolver-typescript@2.7.1)(eslint@8.52.0)
+      eslint-plugin-internal-rules:
+        specifier: file:tools/internal-rules
+        version: file:tools/internal-rules(eslint@8.52.0)
       eslint-plugin-prettier:
         specifier: 4.2.1
         version: 4.2.1(eslint@8.52.0)(prettier@3.0.3)
@@ -11565,6 +11568,11 @@ packages:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
     dev: true
 
+  /requireindex@1.2.0:
+    resolution: {integrity: sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==}
+    engines: {node: '>=0.10.5'}
+    dev: true
+
   /resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -13933,4 +13941,16 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  file:tools/internal-rules(eslint@8.52.0):
+    resolution: {directory: tools/internal-rules, type: directory}
+    id: file:tools/internal-rules
+    name: eslint-plugin-internal-rules
+    engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
+    peerDependencies:
+      eslint: '>=7'
+    dependencies:
+      eslint: 8.52.0
+      requireindex: 1.2.0
     dev: true

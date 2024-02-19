@@ -20,7 +20,13 @@ module.exports = {
             rules: {
                 "@typescript-eslint/no-var-requires": "off" // Disable this specific rule for CJS files
             }
-        }
+        },
+        {
+            files: ['src/i18n/**/translations.ts'],
+            rules: {
+                "internal-rules/check-i18n-keys": "off" //Disabled so no warnings are presented everytime pre-commit is run
+            }
+        },      
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
@@ -32,7 +38,7 @@ module.exports = {
             jsx: true
         }
     },
-    plugins: ["@typescript-eslint", "solid", "import"],
+    plugins: ["@typescript-eslint", "solid", "import", "internal-rules"],
     rules: {
         "@typescript-eslint/no-unused-vars": [
             "warn",
