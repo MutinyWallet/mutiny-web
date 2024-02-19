@@ -11,6 +11,7 @@ export default {
         fee: "Fee",
         send: "Send",
         receive: "Receive",
+        reissue: "Reissue",
         dangit: "Dangit",
         back: "Back",
         coming_soon: "(coming soon)",
@@ -93,6 +94,69 @@ export default {
                 "A lightning setup fee might be deducted from the requested amount.",
             setup_fee_lightning:
                 "A lightning setup fee will be charged if paid over lightning.",
+            more_than_21m: "There are only 21 million bitcoin.",
+            set_amount: "Set amount",
+            max: "MAX",
+            fix_amounts: {
+                ten_k: "10k",
+                one_hundred_k: "100k",
+                one_million: "1m"
+            },
+            del: "DEL",
+            balance: "Balance"
+        },
+        integrated_qr: {
+            onchain: "On-chain",
+            lightning: "Lightning",
+            unified: "Unified",
+            gift: "Lightning Gift"
+        },
+        remember_choice: "Remember my choice next time",
+        what_for: "What's this for?"
+    },
+    reissue: {
+        reissue_bitcoin: "Receive Bitcoin",
+        reissue_ecash: "Reissue Ecash",
+        edit: "Edit",
+        checking: "Checking",
+        choose_format: "Choose format",
+        payment_received: "Payment Received",
+        payment_initiated: "Payment Initiated",
+        receive_add_the_sender: "Add the sender for your records",
+        keep_mutiny_open: "Keep Mutiny open to complete the payment.",
+        choose_payment_format: "Choose payment format",
+        unified_label: "Unified",
+        unified_caption:
+            "Combines a bitcoin address and a lightning invoice. Sender chooses payment method.",
+        lightning_label: "Lightning invoice",
+        lightning_caption:
+            "Ideal for small transactions. Usually lower fees than on-chain.",
+        onchain_label: "Bitcoin address",
+        onchain_caption:
+            "On-chain, just like Satoshi did it. Ideal for very large transactions.",
+        unified_setup_fee:
+            "A lightning setup fee of {{amount}} SATS will be charged if paid over lightning.",
+        lightning_setup_fee:
+            "A lightning setup fee of {{amount}} SATS will be charged for this reissue.",
+        amount: "Amount",
+        fee: "+ Fee",
+        total: "Total",
+        spendable: "Spendable",
+        channel_size: "Channel size",
+        channel_reserve: "- Channel reserve",
+        error_under_min_lightning:
+            "Defaulting to On-chain. Amount is too small for your initial Lightning reissue.",
+        error_creating_unified:
+            "Defaulting to On-chain. Something went wrong when creating the unified address",
+        error_creating_address:
+            "Something went wrong when creating the on-chain address",
+        amount_editable: {
+            receive_too_small:
+                "A lightning setup fee might be deducted from the requested amount.",
+            setup_fee_lightning:
+                "A lightning setup fee will be charged if paid over lightning.",
+            too_big_for_beta:
+                "That's a lot of sats. You do know Mutiny Wallet is still in beta, yeah?",
             more_than_21m: "There are only 21 million bitcoin.",
             set_amount: "Set amount",
             max: "MAX",

@@ -4,6 +4,7 @@ export * from "./Feedback";
 export * from "./Gift";
 export * from "./Main";
 export * from "./Receive";
+export * from "./Reissue";
 export * from "./Scanner";
 export * from "./Send";
 export * from "./Swap";

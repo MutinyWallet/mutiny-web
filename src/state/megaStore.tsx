@@ -391,9 +391,15 @@ export const Provider: ParentComponent = (props) => {
                 if (result.value?.fedimint_invite) {
                     navigate(
                         "/settings/federations?fedimint_invite=" +
-                            encodeURIComponent(result.value?.fedimint_invite)
+                        encodeURIComponent(result.value?.fedimint_invite)
                     );
                     actions.setScanResult(undefined);
+                }
+                if (result.value?.fedimint_oob_notes) {
+                    actions.setScanResult(result.value);
+                    navigate(
+                        "/reissue"
+                    );
                 }
                 if (result.value?.nostr_wallet_auth) {
                     console.log(
@@ -402,7 +408,7 @@ export const Provider: ParentComponent = (props) => {
                     );
                     navigate(
                         "/settings/connections/?nwa=" +
-                            encodeURIComponent(result.value?.nostr_wallet_auth)
+                        encodeURIComponent(result.value?.nostr_wallet_auth)
                     );
                 }
             }
