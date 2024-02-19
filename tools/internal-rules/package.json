@@ -1,0 +1,32 @@
+{
+    "name": "eslint-plugin-internal-rules",
+    "version": "0.0.0",
+    "description": "internal eslint rules",
+    "keywords": [
+        "eslint",
+        "eslintplugin",
+        "eslint-plugin"
+    ],
+    "author": "",
+    "main": "./lib/index.js",
+    "exports": "./lib/index.js",
+    "scripts": {
+        "lint": "npm-run-all \"lint:*\"",
+        "lint:js": "eslint ."
+    },
+    "dependencies": {
+        "requireindex": "^1.2.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.19.0",
+        "eslint-plugin-eslint-plugin": "^5.0.0",
+        "eslint-plugin-node": "^11.1.0"
+    },
+    "engines": {
+        "node": "^14.17.0 || ^16.0.0 || >= 18.0.0"
+    },
+    "peerDependencies": {
+        "eslint": ">=7"
+    },
+    "license": "ISC"
+}
