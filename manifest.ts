@@ -517,6 +517,12 @@ const manifest: Partial<ManifestOptions> = {
                 }
             ]
         }
+    ],
+    protocol_handlers: [
+        {
+            protocol: "bitcoin",
+            url: "/send?invoice=%s"
+        }
     ]
 };
 
