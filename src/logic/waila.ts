@@ -1,9 +1,6 @@
-import initWaila, { PaymentParams } from "@mutinywallet/waila-wasm";
+import { PaymentParams } from "@mutinywallet/mutiny-wasm";
 
 import { Result } from "~/utils";
-
-// Make sure we've initialzied waila before we try to use it
-await initWaila();
 
 export type ParsedParams = {
     original: string;
