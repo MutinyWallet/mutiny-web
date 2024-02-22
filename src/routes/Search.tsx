@@ -87,7 +87,7 @@ function ActualSearch() {
     async function contactsFetcher() {
         try {
             const contacts: TagItem[] =
-                state.mutiny_wallet?.get_contacts_sorted();
+                await state.mutiny_wallet?.get_contacts_sorted();
             return contacts || [];
         } catch (e) {
             console.error(e);
