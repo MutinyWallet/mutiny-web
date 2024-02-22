@@ -40,7 +40,7 @@ function ContactRow() {
     const [contacts, { refetch }] = createResource(async () => {
         try {
             const contacts: TagItem[] =
-                state.mutiny_wallet?.get_contacts_sorted();
+                await state.mutiny_wallet?.get_contacts_sorted();
             return contacts || [];
         } catch (e) {
             console.error(e);
