@@ -265,7 +265,11 @@ export function ManageFederations() {
                             {i18n.t("settings.manage_federations.learn_more")}
                         </ExternalLink>
                     </NiceP>
-                    <AddFederationForm refetch={refetch} />
+                    <Suspense>
+                        <Show when={!state.federations?.length}>
+                            <AddFederationForm refetch={refetch} />
+                        </Show>
+                    </Suspense>
                     <VStack>
                         <Suspense>
                             <Switch>
