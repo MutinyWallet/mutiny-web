@@ -1,22 +1,13 @@
 /* @refresh reload */
 
-import {
-    MutinyBip21RawMaterials,
-    MutinyInvoice
-} from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import {
-    createEffect,
-    createMemo,
-    createResource,
     createSignal,
     Match,
-    onCleanup,
     Show,
     Switch
 } from "solid-js";
 
-import side2side from "~/assets/icons/side-to-side.svg";
 import {
     ActivityDetailsModal,
     AmountEditable,
@@ -25,84 +16,21 @@ import {
     BackButton,
     BackLink,
     Button,
-    Checkbox,
     DefaultMain,
-    Fee,
-    FeesModal,
     HackActivityType,
     Indicator,
     InfoBox,
-    IntegratedQr,
     LargeHeader,
     MegaCheck,
     MutinyWalletGuard,
     NavBar,
-    ReceiveWarnings,
-    showToast,
-    SimpleDialog,
-    SimpleInput,
-    StyledRadioGroup,
     SuccessModal,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, objectToSearchParams, vibrateSuccess } from "~/utils";
 
-type OnChainTx = {
-    transaction: {
-        version: number;
-        lock_time: number;
-        input: Array<{
-            previous_output: string;
-            script_sig: string;
-            sequence: number;
-            witness: Array<string>;
-        }>;
-        output: Array<{
-            value: number;
-            script_pubkey: string;
-        }>;
-    };
-    txid: string;
-    received: number;
-    sent: number;
-    confirmation_time: {
-        height: number;
-        timestamp: number;
-    };
-};
-
-export type ReceiveFlavor = "unified" | "lightning" | "onchain";
 type ReissueState = "show" | "success" | "failed";
-type reissueState = "lightning_paid" | "onchain_paid";
-
-function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
-    const i18n = useI18n();
-    return (
-        // TODO: probably won't always be fixed 2500?
-        <Show when={props.fee > 1000n}>
-            <Switch>
-                <Match when={props.flavor === "unified"}>
-                    <InfoBox accent="blue">
-                        {i18n.t("reissue.unified_setup_fee", {
-                            amount: props.fee.toLocaleString()
-                        })}
-                        <FeesModal />
-                    </InfoBox>
-                </Match>
-                <Match when={props.flavor === "lightning"}>
-                    <InfoBox accent="blue">
-                        {i18n.t("reissue.lightning_setup_fee", {
-                            amount: props.fee.toLocaleString()
-                        })}
-                        <FeesModal />
-                    </InfoBox>
-                </Match>
-            </Switch>
-        </Show>
-    );
-}
 
 export function Reissue() {
     const [state, actions] = useMegaStore();
@@ -110,22 +38,8 @@ export function Reissue() {
     const i18n = useI18n();
 
     const [amount, setAmount] = createSignal<bigint>(0n);
-    const [whatForInput, setWhatForInput] = createSignal("");
 
     const [reissueState, setReissueState] = createSignal<ReissueState>("show");
-    const [bip21Raw, setBip21Raw] = createSignal<MutinyBip21RawMaterials>();
-    const [unified, setUnified] = createSignal("");
-
-    const [lspFee, setLspFee] = createSignal(0n);
-
-    // The data we get after a payment
-    const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
-    const [paymentInvoice, setPaymentInvoice] = createSignal<MutinyInvoice>();
-
-    // The flavor of the reissue (defaults to unified)
-    const [flavor, setFlavor] = createSignal<ReceiveFlavor>(
-        state.preferredInvoiceType
-    );
 
     // loading state for the continue button
     const [loading, setLoading] = createSignal(false);
@@ -139,12 +53,7 @@ export function Reissue() {
     function clearAll() {
         setAmount(0n);
         setReissueState("show");
-        setBip21Raw(undefined);
-        setUnified("");
-        setPaymentTx(undefined);
-        setPaymentInvoice(undefined);
         setError("");
-        setFlavor(state.preferredInvoiceType);
     }
 
     async function onSubmit(e: Event) {
@@ -164,24 +73,13 @@ export function Reissue() {
             const currState = reissueState();
             console.log(currState);
         } catch (e) {
-            // TODO: (@leonardo) how to handle the errors properly ?
             setReissueState("failed");
-            console.log(error);
+            setError(e);
+            console.log(e);
         }
         setLoading(false);
 
     }
-
-    // const [paidState, { refetch }] = createResource(bip21Raw, checkIfPaid);
-
-    // createEffect(() => {
-    //     const interval = setInterval(() => {
-    //         if (receiveState() === "show") refetch();
-    //     }, 1000); // Poll every second
-    //     onCleanup(() => {
-    //         clearInterval(interval);
-    //     });
-    // });
 
     return (
         <MutinyWalletGuard>
@@ -211,10 +109,6 @@ export function Reissue() {
                                 frozenAmount={true}
                                 setAmountSats={() => { }}>
                             </AmountEditable>
-                            {/* <ReceiveWarnings
-                                    amountSats={amount() || "0"}
-                                    from_fedi_to_ln={false}
-                                /> */}
                         </VStack>
                         <div class="flex-1" />
                         <VStack>
@@ -276,16 +170,12 @@ export function Reissue() {
                             >
                                 <Fee amountSats={lspFee()} />
                             </Show> */}
-                            {/*TODO: Confirmation time estimate still not possible needs to be implemented in mutiny-node first*/}
-                            {/* <Show when={receiveState() === "paid"}>
-                                <p
-                                    class="cursor-pointer underline"
-                                    onClick={openDetailsModal}
-                                >
-                                    {i18n.t("common.view_payment_details")}
-                                </p>
-                            </Show> */}
                         </SuccessModal>
+                    </Match>
+                    <Match when={reissueState() === "failed"}>
+                        <Show when={error}>
+                            <InfoBox accent="red">{error}</InfoBox>
+                        </Show>
                     </Match>
                 </Switch>
             </DefaultMain>

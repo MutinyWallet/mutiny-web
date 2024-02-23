@@ -2570,13 +2570,6 @@ packages:
       solid-js: 1.8.5
     dev: false
 
-<<<<<<< HEAD
-  /@mutinywallet/mutiny-wasm@0.6.0-rc2:
-    resolution: {integrity: sha512-6Dw2kJac3F7/26BjXmNSUAguStinEqdR9vwgQDQeJVEPu3sJkl4y7+aPhfuBYhMijO4avL/vkwKVcA4ISXPFkA==}
-    dev: false
-
-=======
->>>>>>> 10d1b76 (wip(feat): add oob notes reissuance)
   /@ndelangen/get-tarball@3.0.9:
     resolution: {integrity: sha512-9JKTEik4vq+yGosHYhZ1tiH/3WpUS0Nh0kej4Agndhox8pAdWhEx5knFVRcb/ya9knCRCs1rPxNrSXTDdfVqpA==}
     dependencies:
@@ -13940,7 +13933,11 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-<<<<<<< HEAD
+  file:../mutiny-node/mutiny-wasm/pkg:
+    resolution: {directory: ../mutiny-node/mutiny-wasm/pkg, type: directory}
+    name: '@mutinywallet/mutiny-wasm'
+    dev: false
+
   file:tools/internal-rules(eslint@8.52.0):
     resolution: {directory: tools/internal-rules, type: directory}
     id: file:tools/internal-rules
@@ -13952,14 +13949,3 @@ packages:
       eslint: 8.52.0
       requireindex: 1.2.0
     dev: true
-=======
-  file:../bitcoin-waila/waila-wasm/pkg:
-    resolution: {directory: ../bitcoin-waila/waila-wasm/pkg, type: directory}
-    name: '@mutinywallet/waila-wasm'
-    dev: false
-
-  file:../mutiny-node/mutiny-wasm/pkg:
-    resolution: {directory: ../mutiny-node/mutiny-wasm/pkg, type: directory}
-    name: '@mutinywallet/mutiny-wasm'
-    dev: false
->>>>>>> 10d1b76 (wip(feat): add oob notes reissuance)
