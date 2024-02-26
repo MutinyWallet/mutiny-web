@@ -54,8 +54,11 @@ importers:
         specifier: ^0.18.1
         version: 0.18.1(solid-js@1.8.5)
       '@mutinywallet/mutiny-wasm':
-        specifier: 0.6.0-rc2
-        version: 0.6.0-rc2
+        specifier: 0.5.10
+        version: 0.5.10
+      '@mutinywallet/waila-wasm':
+        specifier: ^0.2.6
+        version: 0.2.6
       '@solid-primitives/upload':
         specifier: ^0.0.111
         version: 0.0.111(solid-js@1.8.5)
@@ -2570,8 +2573,12 @@ packages:
       solid-js: 1.8.5
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.6.0-rc2:
-    resolution: {integrity: sha512-6Dw2kJac3F7/26BjXmNSUAguStinEqdR9vwgQDQeJVEPu3sJkl4y7+aPhfuBYhMijO4avL/vkwKVcA4ISXPFkA==}
+  /@mutinywallet/mutiny-wasm@0.5.10:
+    resolution: {integrity: sha512-wPyl0aUMThgAHZ47qMhpsoVK+o4UW77VfYTJ9cQtaO0xkt5FX0+9rQ7DMfA/8805f8O4xwItkRJqgy2N3FoeIw==}
+    dev: false
+
+  /@mutinywallet/waila-wasm@0.2.6:
+    resolution: {integrity: sha512-qiyhaWX/zDKuh23VXIzeWGlmXne9IdRIx+ldGdse15JwEiC97OjATXMECX3Xo0tc3RTOo50cKyMlouKKRbLYpQ==}
     dev: false
 
   /@ndelangen/get-tarball@3.0.9:
