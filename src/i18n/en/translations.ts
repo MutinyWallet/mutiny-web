@@ -53,6 +53,13 @@ export default {
         npub: "Nostr Npub",
         link_to_nostr_sync: "Import Nostr Contacts"
     },
+    redeem: {
+        redeem_bitcoin: "Redeem Bitcoin",
+        lnurl_amount_message:
+            "Enter withdrawal amount between {{min}} and {{max}} sats",
+        lnurl_redeem_failed: "Withdrawal Failed",
+        lnurl_redeem_success: "Payment Received"
+    },
     receive: {
         receive_bitcoin: "Receive Bitcoin",
         edit: "Edit",
