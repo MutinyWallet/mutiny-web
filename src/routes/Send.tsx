@@ -447,6 +447,11 @@ export function Send() {
                     setLnurlp(source.lnurl);
                     setSource("lightning");
                 }
+                // TODO: this is a bit of a hack, ideally we do more nav from the megastore
+                if (lnurlParams.tag === "withdrawRequest") {
+                    actions.setScanResult(source);
+                    navigate("/redeem");
+                }
             })
             .catch((e) => showToast(eify(e)));
     }
