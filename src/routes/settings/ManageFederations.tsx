@@ -17,6 +17,7 @@ import {
     Suspense,
     Switch
 } from "solid-js";
+import { QRCodeSVG } from "solid-qr-code";
 
 import {
     AmountSats,
@@ -50,6 +51,7 @@ export type MutinyFederationIdentity = {
     federation_name: string;
     welcome_message: string;
     federation_expiry_timestamp: number;
+    invite_code: string;
 };
 
 type RefetchType = (
@@ -215,9 +217,17 @@ function FederationListItem(props: {
                 >
                     <MiniStringShower text={props.fed.federation_id} />
                 </KeyValue>
-                <Button intent="red" onClick={confirmRemove}>
-                    {i18n.t("settings.manage_federations.remove")}
-                </Button>
+                <VStack>
+                    <div class="w-full rounded-xl bg-white">
+                        <QRCodeSVG
+                            value={props.fed.invite_code}
+                            class="h-full max-h-[256px] w-full p-8"
+                        />
+                    </div>
+                    <Button intent="red" onClick={confirmRemove}>
+                        {i18n.t("settings.manage_federations.remove")}
+                    </Button>
+                </VStack>
             </FancyCard>
             <ConfirmDialog
                 loading={confirmLoading()}
