@@ -10,6 +10,10 @@ export const EN_OPTION: Language = {
 
 export const LANGUAGE_OPTIONS: Language[] = [
     {
+        value: "Español",
+        shortName: "es"
+    },
+    {
         value: "Português",
         shortName: "pt"
     },

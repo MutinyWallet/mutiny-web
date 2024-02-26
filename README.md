@@ -141,7 +141,7 @@ just i18n $lang
 If you want to add Japanese you will create a file `/src/i18n/jp/translations.ts` and populate it with keys like so:
 ```
 export default {
-    Common: {
+    common: {
         continue: "続ける",
         ...
     }
