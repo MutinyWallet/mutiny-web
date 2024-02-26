@@ -361,6 +361,8 @@ export function Send() {
 
     const [parsingDestination, setParsingDestination] = createSignal(false);
 
+    const [decodingLnUrl, setDecodingLnUrl] = createSignal(false);
+
     function handleDestination(source: ParsedParams | undefined) {
         if (!source) return;
         setParsingDestination(true);
@@ -425,9 +427,11 @@ export function Send() {
 
     // A ParsedParams with an lnurl in it
     function processLnurl(source: ParsedParams & { lnurl: string }) {
+        setDecodingLnUrl(true);
         state.mutiny_wallet
             ?.decode_lnurl(source.lnurl)
             .then((lnurlParams) => {
+                setDecodingLnUrl(false);
                 if (lnurlParams.tag === "payRequest") {
                     if (lnurlParams.min == lnurlParams.max) {
                         setAmountSats(lnurlParams.min / 1000n);
@@ -830,7 +834,7 @@ export function Send() {
                             <p>{i18n.t("send.hodl_invoice_warning")}</p>
                         </InfoBox>
                     </Show>
-                    <Show when={error()}>
+                    <Show when={error() && !decodingLnUrl()}>
                         <InfoBox accent="red">
                             <p>{error()}</p>
                         </InfoBox>
