@@ -12,6 +12,7 @@ import {
     Main,
     NotFound,
     Receive,
+    Reissue,
     Scanner,
     Search,
     Send,
@@ -100,6 +101,7 @@ export function Router() {
                     <Route path="/feedback" component={Feedback} />
                     <Route path="/gift" component={GiftReceive} />
                     <Route path="/receive" component={Receive} />
+                    <Route path="/reissue" component={Reissue} />
                     <Route path="/scanner" component={Scanner} />
                     <Route path="/send" component={Send} />
                     <Route path="/swap" component={Swap} />

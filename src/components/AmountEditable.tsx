@@ -41,6 +41,7 @@ export const AmountEditable: ParentComponent<{
     activeMethod?: MethodChoice;
     methods?: MethodChoice[];
     setChosenMethod?: (method: MethodChoice) => void;
+    isFederation?: boolean;
 }> = (props) => {
     const [state, _actions] = useMegaStore();
     const [mode, setMode] = createSignal<"fiat" | "sats">("sats");

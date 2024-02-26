@@ -16,6 +16,7 @@ export type ParsedParams = {
     lightning_address?: string;
     nostr_wallet_auth?: string;
     fedimint_invite?: string;
+    fedimint_oob_notes?: string;
     is_lnurl_auth?: boolean;
     contact_id?: string;
 };
@@ -37,8 +38,8 @@ export function toParsedParams(
     const network = !params.network
         ? ourNetwork
         : params.network === "testnet" && ourNetwork === "signet"
-        ? "signet"
-        : params.network;
+            ? "signet"
+            : params.network;
 
     if (network !== ourNetwork) {
         return {
@@ -64,7 +65,8 @@ export function toParsedParams(
             lightning_address: params.lightning_address,
             nostr_wallet_auth: params.nostr_wallet_auth,
             is_lnurl_auth: params.is_lnurl_auth,
-            fedimint_invite: params.fedimint_invite_code
+            fedimint_invite: params.fedimint_invite_code,
+            fedimint_oob_notes: params.fedimint_oob_notes
         }
     };
 }
