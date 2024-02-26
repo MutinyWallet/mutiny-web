@@ -49,7 +49,8 @@ export default {
         error_name: "Necesitamos por lo menos un nombre",
         email_error: "Eso no parece una dirección lightning",
         npub_error: "Eso no parece un npub de nostr",
-        error_ln_address_missing: "Los contactos nuevos necesitan una dirección lightning",
+        error_ln_address_missing:
+            "Los contactos nuevos necesitan una dirección lightning",
         npub: "Npub Nostr",
         link_to_nostr_sync: "Importar Contactos de Nostr"
     },
@@ -170,7 +171,8 @@ export default {
         github: "No responderemos a esta retroalimentación. Si desea soporte por favor",
         create_issue: "cree una issue en GitHub.",
         link: "¿Retroalimentación?",
-        feedback_placeholder: "Bugs, solicitud de funcionalidad, retroalimentación, etc.",
+        feedback_placeholder:
+            "Bugs, solicitud de funcionalidad, retroalimentación, etc.",
         info_label: "Incluir información de contacto",
         info_caption: "Si necesita que le demos seguimiento a este problema",
         email: "Correo electrónico",
@@ -249,7 +251,8 @@ export default {
         version: "Versión:",
         admin: {
             title: "Página de Administración",
-            caption: "Nuestras herramientas internas de depuración ¡Úselas sabiamente!",
+            caption:
+                "Nuestras herramientas internas de depuración ¡Úselas sabiamente!",
             header: "Herramientas Secretas de Depuración",
             warning_one:
                 "Si sabe lo que está haciendo está en el lugar adecuado.",
@@ -439,9 +442,9 @@ export default {
             select_currency_label: "Par de Moneda",
             select_currency_caption:
                 "Al escoger una nueva moneda se resincronizará la billetera para obtener una actualización del precio",
-            request_currency_support_link:
-                "Solicite soporte para más monedas",
-            error_unsupported_currency: "Por favor seleccione una moneda soportada."
+            request_currency_support_link: "Solicite soporte para más monedas",
+            error_unsupported_currency:
+                "Por favor seleccione una moneda soportada."
         },
         language: {
             title: "Idioma",
@@ -451,7 +454,8 @@ export default {
             select_language_caption:
                 "Al escoger un nuevo idioma se cambiará el lenguaje de la billetera, ignorando el idioma actual del navegador",
             request_language_support_link: "Solicite soporte para más idiomas",
-            error_unsupported_language: "Por favor seleccione un idioma soportado."
+            error_unsupported_language:
+                "Por favor seleccione un idioma soportado."
         },
         lnurl_auth: {
             title: "LNURL Auth",
@@ -508,7 +512,8 @@ export default {
         },
         servers: {
             title: "Servidores",
-            caption: "¡No confíe en nosotros! Use sus propios servidores para respaldar Mutiny.",
+            caption:
+                "¡No confíe en nosotros! Use sus propios servidores para respaldar Mutiny.",
             link: "Aprenda más acerca de auto-hospedaje",
             proxy_label: "Proxy de Websockets",
             proxy_caption:
@@ -524,7 +529,8 @@ export default {
             lsp_label: "LSP",
             lsp_caption:
                 "Lightning Service Provider. Automáticamente abre canales hacia usted para liquidez entrante. También envuelve facturas para privacidad.",
-            lsps_connection_string_label: "Cadena de Caracteres de Conexión LSPS",
+            lsps_connection_string_label:
+                "Cadena de Caracteres de Conexión LSPS",
             lsps_connection_string_caption:
                 "Lightning Service Provider. Automáticamente abre canales hacia usted para liquidez entrante. Usando la especificación LSP.",
             error_lsps_connection_string:
@@ -624,7 +630,8 @@ export default {
         confirm_swap: "Confirmar Swap"
     },
     swap_lightning: {
-        insufficient_funds: "No tiene fondos suficientes para hacer swap a lightning",
+        insufficient_funds:
+            "No tiene fondos suficientes para hacer swap a lightning",
         header: "Hacer Swap a Lightning",
         header_preview: "Previsualizar Swap",
         completed: "Swap Completado",
@@ -703,8 +710,7 @@ export default {
             loading_failed: {
                 title: "Fallo al cargar",
                 header: "Fallo al cargar Mutiny",
-                description:
-                    "Algo no funcionó al iniciar la Billetera Mutiny.",
+                description: "Algo no funcionó al iniciar la Billetera Mutiny.",
                 repair_options:
                     "Si su billetera parece dañada, aquí hay algunas herramientas para tratar depurarla y repararla.",
                 questions:
