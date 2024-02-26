@@ -143,7 +143,7 @@ If you want to add Japanese you will create a file `/src/i18n/jp/translations.ts
 
 ```
 export default {
-    Common: {
+    common: {
         continue: "続ける",
         ...
     }

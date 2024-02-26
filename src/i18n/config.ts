@@ -4,12 +4,16 @@ import { use } from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 import en from "~/i18n/en/translations";
+import es from "~/i18n/es/translations";
 import ko from "~/i18n/ko/translations";
 import pt from "~/i18n/pt/translations";
 
 export const resources = {
     en: {
         translations: en
+    },
+    es: {
+        translations: es
     },
     pt: {
         translations: pt
