@@ -1,10 +1,17 @@
 // @refresh reload
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
-import { Route, Routes, useNavigate } from "@solidjs/router";
-import { Match, onCleanup, Switch } from "solid-js";
+import {
+    Route,
+    Routes,
+    useLocation,
+    useNavigate,
+    useSearchParams
+} from "@solidjs/router";
+import { Match, onCleanup, onMount, Switch } from "solid-js";
 
-import { SetupErrorDisplay, Toaster } from "~/components";
+import { SetupErrorDisplay, showToast, Toaster } from "~/components";
+import { setSettings } from "~/logic/mutinyWalletSetup";
 import {
     Activity,
     Feedback,
@@ -37,6 +44,7 @@ import {
 } from "~/routes/settings";
 
 import { useMegaStore } from "./state/megaStore";
+import { eify } from "./utils";
 
 function GlobalListeners() {
     // listeners for native navigation handling
@@ -83,6 +91,33 @@ function GlobalListeners() {
 
 export function Router() {
     const [state, _] = useMegaStore();
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+
+    if (searchParams.lsps) {
+        const values = {
+            lsp: "",
+            lsps_connection_string: searchParams.lsps,
+            lsps_token: searchParams.token
+        };
+        onMount(async () => {
+            try {
+                await state.mutiny_wallet?.change_lsp(
+                    values.lsp ? values.lsp : undefined,
+                    values.lsps_connection_string
+                        ? values.lsps_connection_string
+                        : undefined,
+                    values.lsps_token ? values.lsps_token : undefined
+                );
+                await setSettings(values);
+                navigate(location.pathname, { replace: true });
+            } catch (e) {
+                console.error("Error changing lsp:", e);
+                showToast(eify(e));
+            }
+        });
+    }
 
     return (
         <Switch>
