@@ -683,6 +683,11 @@ export default {
                 "On-chain balance seems incorrect? Try re-syncing the on-chain wallet.",
             resync_wallet: "Resync wallet"
         },
+        scan_federation: {
+            incorrect_balance:
+                "Federation balance seems incorrect? Try scanning the federations.",
+            scan: "Scan federations"
+        },
         on_boot: {
             existing_tab: {
                 title: "Multiple tabs detected",
