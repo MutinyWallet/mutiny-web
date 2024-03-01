@@ -1,3 +1,4 @@
+import { FederationBalance } from "@johncantrell97/mutiny-wasm";
 import {
     createForm,
     required,
@@ -5,7 +6,6 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { FederationBalance } from "@mutinywallet/mutiny-wasm";
 import { useSearchParams } from "@solidjs/router";
 import {
     createResource,

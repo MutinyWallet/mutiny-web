@@ -1,4 +1,4 @@
-import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
+import { MutinyInvoice, TagItem } from "@johncantrell97/mutiny-wasm";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import {
     createEffect,

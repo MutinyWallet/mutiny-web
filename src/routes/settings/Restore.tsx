@@ -1,5 +1,6 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { Capacitor } from "@capacitor/core";
+import { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import { TextField as KTextField } from "@kobalte/core";
 import {
     createForm,
@@ -9,7 +10,6 @@ import {
     SubmitHandler,
     validate
 } from "@modular-forms/solid";
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { createSignal, For, Show, splitProps } from "solid-js";
 
 import pasteIcon from "~/assets/icons/paste.svg";

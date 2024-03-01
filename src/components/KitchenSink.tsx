@@ -1,6 +1,6 @@
+import { MutinyChannel, MutinyPeer } from "@johncantrell97/mutiny-wasm";
 import { Collapsible, TextField } from "@kobalte/core";
 import { createForm, url } from "@modular-forms/solid";
-import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
 import {
     createResource,
     createSignal,

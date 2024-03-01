@@ -3,7 +3,7 @@
 import {
     MutinyBip21RawMaterials,
     MutinyInvoice
-} from "@mutinywallet/mutiny-wasm";
+} from "@johncantrell97/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import {
     createEffect,

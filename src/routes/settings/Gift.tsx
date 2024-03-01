@@ -1,3 +1,4 @@
+import { NwcProfile } from "@johncantrell97/mutiny-wasm";
 import {
     createForm,
     getValue,
@@ -6,7 +7,6 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { NwcProfile } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
     createResource,

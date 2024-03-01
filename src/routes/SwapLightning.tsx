@@ -1,4 +1,4 @@
-import { FedimintSweepResult } from "@mutinywallet/mutiny-wasm";
+import { FedimintSweepResult } from "@johncantrell97/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import { createMemo, createSignal, Match, Show, Switch } from "solid-js";
 

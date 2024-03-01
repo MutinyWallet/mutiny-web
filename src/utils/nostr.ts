@@ -1,4 +1,4 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 
 export type NostrTag = string[];
 export declare enum NostrKind {

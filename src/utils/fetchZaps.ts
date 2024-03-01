@@ -1,6 +1,6 @@
 /* @refresh reload */
 
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import { ResourceFetcher } from "solid-js";
 
 import { useMegaStore } from "~/state/megaStore";

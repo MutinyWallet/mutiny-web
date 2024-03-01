@@ -1,4 +1,4 @@
-import { TagItem } from "@mutinywallet/mutiny-wasm";
+import { TagItem } from "@johncantrell97/mutiny-wasm";
 import { Match, ParentComponent, Switch } from "solid-js";
 
 import bolt from "~/assets/icons/bolt.svg";

@@ -1,4 +1,4 @@
-import { NwcProfile } from "@mutinywallet/mutiny-wasm";
+import { NwcProfile } from "@johncantrell97/mutiny-wasm";
 import { A, useSearchParams } from "@solidjs/router";
 import {
     createResource,

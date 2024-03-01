@@ -1,4 +1,4 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import { Title } from "@solidjs/meta";
 import { createResource, Match, Switch } from "solid-js";
 

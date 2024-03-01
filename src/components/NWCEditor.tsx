@@ -1,3 +1,4 @@
+import { BudgetPeriod, NwcProfile, TagItem } from "@johncantrell97/mutiny-wasm";
 import {
     createForm,
     getValue,
@@ -5,7 +6,6 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { BudgetPeriod, NwcProfile, TagItem } from "@mutinywallet/mutiny-wasm";
 import {
     createMemo,
     createResource,

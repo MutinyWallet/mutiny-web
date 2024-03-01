@@ -1,4 +1,4 @@
-import { PaymentParams } from "@mutinywallet/mutiny-wasm";
+import { PaymentParams } from "@johncantrell97/mutiny-wasm";
 
 import { Result } from "~/utils";
 

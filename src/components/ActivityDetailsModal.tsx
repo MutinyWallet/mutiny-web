@@ -1,9 +1,9 @@
-import { Dialog } from "@kobalte/core";
 import {
     MutinyChannel,
     MutinyInvoice,
     TagItem
-} from "@mutinywallet/mutiny-wasm";
+} from "@johncantrell97/mutiny-wasm";
+import { Dialog } from "@kobalte/core";
 import {
     createEffect,
     createMemo,

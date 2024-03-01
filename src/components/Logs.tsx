@@ -1,4 +1,4 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { MutinyWallet } from "@johncantrell97/mutiny-wasm";
 import { createSignal, Show } from "solid-js";
 
 import { Button, InfoBox, InnerCard, NiceP, VStack } from "~/components";

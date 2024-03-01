@@ -1,5 +1,5 @@
+import { TagItem } from "@johncantrell97/mutiny-wasm";
 import { SubmitHandler } from "@modular-forms/solid";
-import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import { createSignal, Match, Show, Switch } from "solid-js";
 

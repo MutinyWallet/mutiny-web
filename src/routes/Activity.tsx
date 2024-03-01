@@ -1,5 +1,5 @@
+import { TagItem } from "@johncantrell97/mutiny-wasm";
 import { Tabs } from "@kobalte/core";
-import { TagItem } from "@mutinywallet/mutiny-wasm";
 import {
     createEffect,
     createResource,
