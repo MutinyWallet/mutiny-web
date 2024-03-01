@@ -44,6 +44,9 @@ importers:
       '@capacitor/toast':
         specifier: ^5.0.6
         version: 5.0.6(@capacitor/core@5.5.1)
+      '@johncantrell97/mutiny-wasm':
+        specifier: 0.6.0-rc2
+        version: 0.6.0-rc2
       '@kobalte/core':
         specifier: ^0.9.8
         version: 0.9.8(solid-js@1.8.5)
@@ -53,9 +56,6 @@ importers:
       '@modular-forms/solid':
         specifier: ^0.18.1
         version: 0.18.1(solid-js@1.8.5)
-      '@mutinywallet/mutiny-wasm':
-        specifier: 0.6.0-rc2
-        version: 0.6.0-rc2
       '@solid-primitives/upload':
         specifier: ^0.0.111
         version: 0.0.111(solid-js@1.8.5)
@@ -2448,6 +2448,10 @@ packages:
       chalk: 4.1.2
     dev: true
 
+  /@johncantrell97/mutiny-wasm@0.6.0-rc2:
+    resolution: {integrity: sha512-B4jQM/l0dYVNlDudnc11WddzPjIn1ChwbsaYSMes/uaXTrxL9C9SKzFQwL1am/I0qepZxiOyciPyQbE5QvM9ng==}
+    dev: false
+
   /@jridgewell/gen-mapping@0.3.3:
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
     engines: {node: '>=6.0.0'}
@@ -2568,10 +2572,6 @@ packages:
       solid-js: ^1.3.1
     dependencies:
       solid-js: 1.8.5
-    dev: false
-
-  /@mutinywallet/mutiny-wasm@0.6.0-rc2:
-    resolution: {integrity: sha512-6Dw2kJac3F7/26BjXmNSUAguStinEqdR9vwgQDQeJVEPu3sJkl4y7+aPhfuBYhMijO4avL/vkwKVcA4ISXPFkA==}
     dev: false
 
   /@ndelangen/get-tarball@3.0.9:
