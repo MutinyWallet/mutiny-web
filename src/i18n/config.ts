@@ -1,55 +1,32 @@
 import { use } from "i18next";
-// FIXME: this doesn't work when deployed
-// import HttpApi from 'i18next-http-backend';
 import LanguageDetector from "i18next-browser-languagedetector";
-
-import en from "~/i18n/en/translations";
-import es from "~/i18n/es/translations";
-import ko from "~/i18n/ko/translations";
-import pt from "~/i18n/pt/translations";
-
-export const resources = {
-    en: {
-        translations: en
-    },
-    es: {
-        translations: es
-    },
-    pt: {
-        translations: pt
-    },
-    ko: {
-        translations: ko
-    }
-};
+import HttpApi from "i18next-http-backend";
 
 export const defaultNS = "translations";
 
-const i18n = use(LanguageDetector).init(
-    {
-        returnNull: false,
-        fallbackLng: "en",
-        preload: ["en"],
-        load: "languageOnly",
-        ns: ["translations"],
-        defaultNS: defaultNS,
-        fallbackNS: false,
-        debug: true,
-        detection: {
-            order: ["localStorage", "querystring", "navigator", "htmlTag"],
-            lookupQuerystring: "lang",
-            lookupLocalStorage: "i18nextLng",
-            caches: ["localStorage"]
+const i18n = use(HttpApi)
+    .use(LanguageDetector)
+    .init(
+        {
+            returnNull: false,
+            fallbackLng: "en",
+            preload: ["en"],
+            load: "languageOnly",
+            fallbackNS: false,
+            debug: true,
+            detection: {
+                order: ["localStorage", "querystring", "navigator", "htmlTag"],
+                lookupQuerystring: "lang",
+                lookupLocalStorage: "i18nextLng",
+                caches: ["localStorage"]
+            },
+            backend: {
+                loadPath: "/i18n/{{lng}}.json"
+            }
         },
-        resources: resources
-        // FIXME: this doesn't work when deployed
-        // backend: {
-        //   loadPath: 'src/i18n/{{lng}}/{{ns}}.json',
-        // }
-    },
-    (err, _t) => {
-        // Do we actually wanna log something in case of an unsupported language?
-        if (err) return console.error(err);
-    }
-);
+        (err, _t) => {
+            // Do we actually wanna log something in case of an unsupported language?
+            if (err) return console.error(err);
+        }
+    );
 export default i18n;

@@ -131,20 +131,18 @@ just i18n $lang
 
 ### Adding new languages or keys
 
-1. In `src/i18n/` locate your desired language folder or create one if one does not exist
+1. In `public/i18n/` locate your desired language .json file or create one if one does not exist
 
-    - When creating a new language dir ensure it follows the ISO 639 2-letter standard
+    - When creating a new language file ensure it follows the ISO 639 2-letter standard
 
-2. In this folder create a file called `translations.ts`, this is where the translation keys for your desired language will be located
+2. Populate your translation file with a translation object where all of the keys will be located
 
-3. Populate your translation file with a translation object where all of the keys will be located
-
-If you want to add Japanese you will create a file `/src/i18n/jp/translations.ts` and populate it with keys like so:
+If you want to add Japanese you will create a file `/public/i18n/jp.json` and populate it with keys like so:
 
 ```
-export default {
-    common: {
-        continue: "続ける",
+{
+  "common": {
+        "continue": "続ける",
         ...
     }
 }
@@ -152,20 +150,9 @@ export default {
 
 (You should compare your translations against the English language as all other languages are not the master and are likely deprecated)
 
-4. Add your new translation file to the `/src/i18n/config.ts` so you can begin to see them in the app
+If you're using VS Code there are some nice extensions that can make this easier like i18n-ally and i18n-json-editor
 
-```
-import fa from "~/i18n/jp/translations.ts"
-
-export const resources: {
-    ...
-    jp: {
-        translations: jp
-    }
-}
-```
-
-5. Add your language to the `Language` object in `/src/utils/languages.ts`. This will allow you to select the language via the language selector in the UI. If your desired language is set as your primary language in your browser it will be selected automatically
+3. Add your language to the `Language` object in `/src/utils/languages.ts`. This will allow you to select the language via the language selector in the UI. If your desired language is set as your primary language in your browser it will be selected automatically
 
 ```
 export const LANGUAGE_OPTIONS: Language[] = [
@@ -175,4 +162,4 @@ export const LANGUAGE_OPTIONS: Language[] = [
     },
 ```
 
-6. That's it! You should now be able to see your translation keys populating the app in your desired language. When youre ready go ahead and open a PR to have you language merged for others!
+4. That's it! You should now be able to see your translation keys populating the app in your desired language. When youre ready go ahead and open a PR to have you language merged for others!
