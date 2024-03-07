@@ -28,7 +28,8 @@
         ".eslintrc.cjs",
         "e2e/**/*",
         "capacitor.config.ts",
-        "prettier.config.mjs"
+        "prettier.config.mjs",
+        "public/i18n/*.json"
     ],
     "exclude": [
         "node_modules",
@@ -38,7 +39,6 @@
         "./node_modules/@types/node/index.d.ts",
         "node_modules/.pnpm/solid-js@1.7.7/node_modules/solid-js/types/*",
         "build",
-        "dist",
-        "public"
+        "dist"
     ]
 }
