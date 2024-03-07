@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
     env: {
         browser: true,
@@ -9,7 +11,8 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:solid/typescript",
         "plugin:import/typescript",
-        "plugin:import/recommended"
+        "plugin:import/recommended",
+        "plugin:i18n-json/recommended"
     ],
     overrides: [
         {
@@ -20,7 +23,24 @@ module.exports = {
             rules: {
                 "@typescript-eslint/no-var-requires": "off" // Disable this specific rule for CJS files
             }
-        }
+        },
+        {
+            files: ['public/i18n/**.json'],
+            parserOptions: {
+                tsconfigRootDir: "./",
+                project: "tsconfig.json",
+                extraFileExtensions: [".json"],
+            },
+            rules: {
+                //valid-message-syntax should be off until we add a custom syntax for handling interpolation
+                "i18n-json/valid-message-syntax": [ "off", { "syntax": "icu" }],
+                "i18n-json/valid-json": "error",
+                "i18n-json/sorted-keys": [ "error", { "order": "asc", "indentSpaces": 2 }],
+                "i18n-json/identical-keys": ["warn", {
+                    filePath: path.resolve("./public/i18n/en.json")
+                }]
+            }
+        }     
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {

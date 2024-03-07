@@ -6,6 +6,10 @@ dev:
 pre:
     pnpm run pre-commit
 
+i18n LANG:
+    #!/usr/bin/env bash
+    pnpm eslint-path "./public/i18n/{{LANG}}.json"
+
 local:
     pnpm install && pnpm link --global "@mutinywallet/mutiny-wasm"
 
