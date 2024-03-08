@@ -78,9 +78,11 @@ export const FancyCard: ParentComponent<{
 }> = (props) => {
     return (
         <VStack smallgap>
-            <div class="mt-2 pl-4">
-                <SmallHeader>{props.title}</SmallHeader>
-            </div>
+            <Show when={props.title}>
+                <div class="mt-2 pl-4">
+                    <SmallHeader>{props.title}</SmallHeader>
+                </div>
+            </Show>
             <div class="flex flex-col gap-2 rounded-xl border border-b-4 border-black/50 bg-m-grey-900 p-4 shadow-fancy-card">
                 {props.children}
             </div>

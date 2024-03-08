@@ -5,7 +5,7 @@ import {
     setValue,
     SubmitHandler
 } from "@modular-forms/solid";
-import { FederationBalance } from "@mutinywallet/mutiny-wasm";
+import { FederationBalance, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useSearchParams } from "@solidjs/router";
 import { Scan } from "lucide-solid";
 import {
@@ -30,7 +30,10 @@ import {
     FancyCard,
     InfoBox,
     KeyValue,
+    LabelCircle,
     LargeHeader,
+    LoadingSpinner,
+    MediumHeader,
     MiniStringShower,
     MutinyWalletGuard,
     NavBar,
@@ -54,6 +57,22 @@ export type MutinyFederationIdentity = {
     invite_code: string;
 };
 
+export type Metadata = {
+    name: string;
+    picture?: string;
+    about?: string;
+};
+
+export type DiscoveredFederation = {
+    id: string;
+    invite_codes: string[];
+    pubkey: string;
+    created_at: number;
+    event_id: string;
+    metadata: Metadata | undefined;
+    recommendations: TagItem[]; // fixme, not the best type to use here
+};
+
 type RefetchType = (
     info?: unknown
 ) =>
@@ -67,6 +86,8 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
     const [state, actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
+
+    const [loadingFederation, setLoadingFederation] = createSignal("");
 
     const [params, setParams] = useSearchParams();
 
@@ -88,12 +109,28 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
     const handleSubmit: SubmitHandler<FederationForm> = async (
         f: FederationForm
     ) => {
+        const federation_code = f.federation_code.trim();
+        await onSelect(federation_code);
+    };
+
+    const [federations] = createResource(async () => {
+        try {
+            const federations: DiscoveredFederation[] =
+                await state.mutiny_wallet?.discover_federations();
+            return federations;
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+    });
+
+    const onSelect = async (inviteCode: string) => {
         setSuccess("");
         setError(undefined);
+        setLoadingFederation(inviteCode);
         try {
-            const federation_code = f.federation_code.trim();
             const newFederation =
-                await state.mutiny_wallet?.new_federation(federation_code);
+                await state.mutiny_wallet?.new_federation(inviteCode);
             console.log("New federation added:", newFederation);
             setSuccess(
                 i18n.t("settings.manage_federations.federation_added_success")
@@ -107,50 +144,163 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
             console.error("Error submitting federation:", e);
             setError(eify(e));
         }
+        setLoadingFederation("");
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <VStack>
-                <Field
-                    name="federation_code"
-                    validate={[
-                        required(
-                            i18n.t(
-                                "settings.manage_federations.federation_code_required"
+        <>
+            <MediumHeader>
+                {i18n.t("settings.manage_federations.manual")}
+            </MediumHeader>
+            <Form onSubmit={handleSubmit}>
+                <VStack>
+                    <Field
+                        name="federation_code"
+                        validate={[
+                            required(
+                                i18n.t(
+                                    "settings.manage_federations.federation_code_required"
+                                )
                             )
-                        )
-                    ]}
-                >
-                    {(field, props) => (
-                        <TextField
-                            {...props}
-                            {...field}
-                            error={field.error}
-                            label={i18n.t(
-                                "settings.manage_federations.federation_code_label"
+                        ]}
+                    >
+                        {(field, props) => (
+                            <TextField
+                                {...props}
+                                {...field}
+                                error={field.error}
+                                placeholder="fed11..."
+                                required
+                            />
+                        )}
+                    </Field>
+                    <Button
+                        loading={feedbackForm.submitting}
+                        disabled={feedbackForm.invalid || !feedbackForm.dirty}
+                        intent="blue"
+                        type="submit"
+                    >
+                        {i18n.t("settings.manage_federations.add")}
+                    </Button>
+                    <Show when={error()}>
+                        <InfoBox accent="red">{error()?.message}</InfoBox>
+                    </Show>
+                    <Show when={success()}>
+                        <InfoBox accent="green">{success()}</InfoBox>
+                    </Show>
+                </VStack>
+            </Form>
+            <MediumHeader>
+                {i18n.t("settings.manage_federations.discover")}
+            </MediumHeader>
+            <Suspense>
+                <Switch>
+                    <Match when={federations.loading}>
+                        <div class="flex flex-col items-center justify-center">
+                            <LoadingSpinner wide />
+                        </div>
+                    </Match>
+                    <Match when={federations.latest}>
+                        <For each={federations()}>
+                            {(fed) => (
+                                <FancyCard>
+                                    <VStack>
+                                        <div class="flex items-center gap-2 md:gap-4">
+                                            <LabelCircle
+                                                name={fed.metadata?.name}
+                                                image_url={
+                                                    fed.metadata?.picture
+                                                }
+                                                contact={false}
+                                                label={false}
+                                            />
+                                            <div>
+                                                <header class={`font-semibold`}>
+                                                    {fed.metadata?.name}
+                                                </header>
+                                                <Show
+                                                    when={fed.metadata?.about}
+                                                >
+                                                    <p>{fed.metadata?.about}</p>
+                                                </Show>
+                                            </div>
+                                        </div>
+                                        <KeyValue
+                                            key={i18n.t(
+                                                "settings.manage_federations.federation_id"
+                                            )}
+                                        >
+                                            <MiniStringShower text={fed.id} />
+                                        </KeyValue>
+                                        <Show when={fed.created_at}>
+                                            <KeyValue key="created at">
+                                                {/* todo i18n */}
+                                                <time>
+                                                    {timeAgo(fed.created_at)}
+                                                </time>
+                                            </KeyValue>
+                                        </Show>
+                                        <KeyValue key={"invite code"}>
+                                            {/* todo i18n, handle singular vs plural */}
+                                            <For each={fed.invite_codes}>
+                                                {(invite) => (
+                                                    <MiniStringShower
+                                                        text={invite}
+                                                    />
+                                                )}
+                                            </For>
+                                        </KeyValue>
+                                        <Show
+                                            when={
+                                                fed.recommendations.length > 0
+                                            }
+                                        >
+                                            <KeyValue key={"recommended by"}>
+                                                {/* todo i18n */}
+                                                <div class="flex items-center gap-2 md:gap-4">
+                                                    <For
+                                                        each={
+                                                            fed.recommendations
+                                                        }
+                                                    >
+                                                        {(contact) => (
+                                                            <LabelCircle
+                                                                name={
+                                                                    contact.name
+                                                                }
+                                                                image_url={
+                                                                    contact.image_url
+                                                                }
+                                                                contact={true}
+                                                                label={false}
+                                                            />
+                                                        )}
+                                                    </For>
+                                                </div>
+                                            </KeyValue>
+                                        </Show>
+                                        {/* FIXME: do something smarter than just taking first code */}
+                                        <Button
+                                            intent="blue"
+                                            onClick={() =>
+                                                onSelect(fed.invite_codes[0])
+                                            }
+                                            loading={fed.invite_codes.includes(
+                                                loadingFederation()
+                                            )}
+                                        >
+                                            {i18n.t(
+                                                "settings.manage_federations.add"
+                                            )}
+                                        </Button>
+                                    </VStack>
+                                </FancyCard>
                             )}
-                            placeholder="fed11..."
-                            required
-                        />
-                    )}
-                </Field>
-                <Button
-                    loading={feedbackForm.submitting}
-                    disabled={feedbackForm.invalid}
-                    intent="blue"
-                    type="submit"
-                >
-                    {i18n.t("settings.manage_federations.add")}
-                </Button>
-                <Show when={error()}>
-                    <InfoBox accent="red">{error()?.message}</InfoBox>
-                </Show>
-                <Show when={success()}>
-                    <InfoBox accent="green">{success()}</InfoBox>
-                </Show>
-            </VStack>
-        </Form>
+                        </For>
+                    </Match>
+                </Switch>
+            </Suspense>
+        </>
     );
 }
 
@@ -174,50 +324,73 @@ function FederationListItem(props: {
         setConfirmLoading(false);
     }
 
+    async function recommendFederation() {
+        setRecommendLoading(true);
+        try {
+            const event_id = await state.mutiny_wallet?.recommend_federation(
+                props.fed.invite_code
+            );
+            console.log("Recommended federation: ", event_id);
+        } catch (e) {
+            console.error("Error recommending federation: ", e);
+        }
+        setRecommendLoading(false);
+    }
+
     async function confirmRemove() {
         setConfirmOpen(true);
     }
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
     const [confirmLoading, setConfirmLoading] = createSignal(false);
+    const [recommendLoading, setRecommendLoading] = createSignal(false);
 
     return (
         <>
             <FancyCard>
-                <Show when={props.fed.federation_name}>
-                    <header class={`font-semibold`}>
-                        {props.fed.federation_name}
-                    </header>
-                </Show>
-                <Show when={props.fed.welcome_message}>
-                    <p>{props.fed.welcome_message}</p>
-                </Show>
-                <Show when={props.balance !== undefined}>
-                    <KeyValue
-                        key={i18n.t("activity.transaction_details.balance")}
-                    >
-                        <AmountSats
-                            amountSats={props.balance}
-                            denominationSize={"sm"}
-                            isFederation
-                        />
-                    </KeyValue>
-                </Show>
-                <Show when={props.fed.federation_expiry_timestamp}>
-                    <KeyValue
-                        key={i18n.t("settings.manage_federations.expires")}
-                    >
-                        <time>
-                            {timeAgo(props.fed.federation_expiry_timestamp)}
-                        </time>
-                    </KeyValue>
-                </Show>
-                <KeyValue
-                    key={i18n.t("settings.manage_federations.federation_id")}
-                >
-                    <MiniStringShower text={props.fed.federation_id} />
-                </KeyValue>
                 <VStack>
+                    <Show when={props.fed.federation_name}>
+                        <header class={`font-semibold`}>
+                            {props.fed.federation_name}
+                        </header>
+                    </Show>
+                    <Show when={props.fed.welcome_message}>
+                        <p>{props.fed.welcome_message}</p>
+                    </Show>
+                    <Show when={props.balance !== undefined}>
+                        <KeyValue
+                            key={i18n.t("activity.transaction_details.balance")}
+                        >
+                            <AmountSats
+                                amountSats={props.balance}
+                                denominationSize={"sm"}
+                                isFederation
+                            />
+                        </KeyValue>
+                    </Show>
+                    <Show when={props.fed.federation_expiry_timestamp}>
+                        <KeyValue
+                            key={i18n.t("settings.manage_federations.expires")}
+                        >
+                            <time>
+                                {timeAgo(props.fed.federation_expiry_timestamp)}
+                            </time>
+                        </KeyValue>
+                    </Show>
+                    <KeyValue
+                        key={i18n.t(
+                            "settings.manage_federations.federation_id"
+                        )}
+                    >
+                        <MiniStringShower text={props.fed.federation_id} />
+                    </KeyValue>
+                    <Button
+                        intent="blue"
+                        onClick={recommendFederation}
+                        loading={recommendLoading()}
+                    >
+                        Recommend
+                    </Button>
                     <div class="w-full rounded-xl bg-white">
                         <QRCodeSVG
                             value={props.fed.invite_code}
@@ -279,9 +452,6 @@ export function ManageFederations() {
                 </LargeHeader>
                 <NiceP>
                     {i18n.t("settings.manage_federations.description")}{" "}
-                    <ExternalLink href="https://fedimint.org/">
-                        {i18n.t("settings.manage_federations.learn_more")}
-                    </ExternalLink>
                 </NiceP>
                 <Suspense>
                     <Show when={!state.federations?.length}>

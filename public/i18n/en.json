@@ -540,8 +540,10 @@
       "remove": "Remove",
       "expires": "Expires",
       "federation_id": "Federation ID",
-      "description": "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. Store funds in a federation at your own risk!",
-      "learn_more": "Learn more about Fedimint."
+      "description": "Mutiny has experimental support for the Fedimint protocol. Store funds in a federation at your own risk!",
+      "learn_more": "Learn more about Fedimint.",
+      "discover": "Discover Federations",
+      "manual": "Invite Code"
     },
     "gift": {
       "give_sats_link": "Give sats as a gift",
