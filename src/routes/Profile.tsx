@@ -103,17 +103,6 @@ export function Profile() {
                         </FancyCard>
                     </Show>
                 </div>
-                {/* <div>
-                    <MediumHeader>{i18n.t("profile.social")}</MediumHeader>
-                    <FancyCard>
-                        <KeyValue key="LN Address">
-                            <MiniStringShower text={profile().lud16 || ""} />
-                        </KeyValue>
-                        <KeyValue key="npub">
-                            <MiniStringShower text={npub() || ""} />
-                        </KeyValue>
-                    </FancyCard>
-                </div> */}
                 <ButtonCard onClick={() => navigate("/editprofile")}>
                     <div class="flex items-center gap-2">
                         {/* <Users class="inline-block text-m-red" /> */}
@@ -122,7 +111,6 @@ export function Profile() {
                     </div>
                 </ButtonCard>
                 <BalanceBox loading={state.wallet_loading} />
-
                 <NavBar activeTab="profile" />
             </DefaultMain>
         </MutinyWalletGuard>
