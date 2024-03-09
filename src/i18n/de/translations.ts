@@ -10,757 +10,758 @@ export default {
         sat: "SAT",
         fee: "Gebühren",
         send: "Senden",
-        receive: "Empfangen",
-        dangit: "schade",
+        receive: "Erhalten",
+        dangit: "Mist",
         back: "Zurück",
-        coming_soon: "demnächst verfügbar",
+        coming_soon: "(demnächst)",
         copy: "Kopieren",
         copied: "Kopiert",
         continue: "Weiter",
-        error_unimplemented: "Noch nicht umgesetzt",
-        why: "Warum",
+        error_unimplemented: "Nicht implementiert",
+        why: "Warum?",
         private_tags: "Private Schlagwörter",
-        view_transaction: "Transaktionen anzeigen",
-        view_payment_details: "Zahlungsdetails",
+        view_transaction: "Transaction anzeigen",
+        view_payment_details: "Zahlungsdetails anzeigen",
         pending: "Ausstehend",
         error_safe_mode:
-            "Mutiny ist im Safemodus. Lightning ist deaktiviert.",
-        self_hosted: "Selbst verwahrend"
+            "Mutiny läuft im Safemode. Lightning ist deaktiviert.",
+        self_hosted: "Selbst gehostet"
     },
     contacts: {
-        new: "Neu",
+        new: "neu",
         add_contact: "Kontakt hinzufügen",
         new_contact: "Neuer Kontakt",
-        create_contact: "Kontakt erstellen",
-        edit_contact: "Kontakt editieren",
+        create_contact: "Kontakt hinzufügen",
+        edit_contact: "Kontakt ändern",
         save_contact: "Kontakt speichern",
         delete: "Löschen",
-        confirm_delete: "Bist du sicher, dass du den Kontakt löschen möchtest?",
+        confirm_delete: "Bist du sicher, dass der Kontakt gelöscht werden soll?",
         payment_history: "Zahlungshistorie",
-        no_payments: "Es sind keine Zahlungen vorhanden.",
-        edit: "Editieren",
+        no_payments: "Bisher keine Zahlungen mit",
+        edit: "Ändern",
         pay: "Bezahlen",
         name: "Name",
         ln_address: "Lightning Adresse",
         placeholder: "Satoshi",
         lightning_address: "Lightning Adresse",
-        unimplemented: "Nicht umgesetzt",
-        not_available: "Nicht verfügbar",
-        error_name: "Wir benötigen mindestens einen Namen.",
-        email_error: "Dies scheint keine Lightning Adresse zu sein.",
-        npub_error: "Dies scheint kein Nostr npub zu sein.",
-        error_ln_address_missing:
-            "Neue Kontakte benötigen eine Lightning Adresse.",
-        npub: "Nostr npub",
-        link_to_nostr_sync: "Kontakte aus Nostr importieren"
+        unimplemented: "Nicht implementiert",
+        not_available: "Noch nicht verfügbar",
+        error_name: "Wir benötigen mindestens einen Namen",
+        email_error: "Das sieht nicht nach einer Lightning Adresse aus",
+        npub_error: "Das sieht nicht nach einem Nostr npub aus",
+        error_ln_address_missing: "Neue Kontakte benötigen eine Lightning Adresse",
+        npub: "Nostr Npub",
+        link_to_nostr_sync: "Nostr Kontakte importieren"
+    },
+    redeem: {
+        redeem_bitcoin: "Redeem Bitcoin",
+        lnurl_amount_message:
+            "Enter withdrawal amount between {{min}} and {{max}} sats",
+        lnurl_redeem_failed: "Withdrawal Failed",
+        lnurl_redeem_success: "Payment Received"
     },
     receive: {
-        receive_bitcoin: "Bitcoin erhalten",
-        edit: "Editieren",
-        checking: "Verifizieren",
-        choose_format: "Format wählen",
-        payment_received: "Zahlung erhalten",
-        payment_initiated: "Zahlung initiiert",
-        receive_add_the_sender: "Den Absender hinzufügen",
-        keep_mutiny_open: "Deje Mutiny abierto para completar el pago.",
-        choose_payment_format: "Escoja el formato de pago",
-        unified_label: "Unificado",
+        receive_bitcoin: "Receive Bitcoin",
+        edit: "Edit",
+        checking: "Checking",
+        choose_format: "Choose format",
+        payment_received: "Payment Received",
+        payment_initiated: "Payment Initiated",
+        receive_add_the_sender: "Add the sender for your records",
+        keep_mutiny_open: "Keep Mutiny open to complete the payment.",
+        choose_payment_format: "Choose payment format",
+        unified_label: "Unified",
         unified_caption:
-            "Combina una dirección de bitcoin y una factura lightning. El remitente escoge el método de pago.",
-        lightning_label: "Factura Lightning",
+            "Combines a bitcoin address and a lightning invoice. Sender chooses payment method.",
+        lightning_label: "Lightning invoice",
         lightning_caption:
-            "Ideal para transacciones pequeñas. Usualmente comisiones más bajas que en-cadena.",
-        onchain_label: "Dirección bitcoin",
+            "Ideal for small transactions. Usually lower fees than on-chain.",
+        onchain_label: "Bitcoin address",
         onchain_caption:
-            "En-cadena, tal como lo hizo Satoshi. Ideal para transacciones muy grandes.",
+            "On-chain, just like Satoshi did it. Ideal for very large transactions.",
         unified_setup_fee:
-            "Una comisión de instalación de lightning por {{amount}} SATS se cobrará si pagado a través de lightning.",
+            "A lightning setup fee of {{amount}} SATS will be charged if paid over lightning.",
         lightning_setup_fee:
-            "Una comisión de instalación de lightning por {{amount}} SATS se cobrará para esta recepción.",
-        amount: "Monto",
-        fee: "+ Comisión",
+            "A lightning setup fee of {{amount}} SATS will be charged for this receive.",
+        amount: "Amount",
+        fee: "+ Fee",
         total: "Total",
-        spendable: "Gastable",
-        channel_size: "Tamaño canal",
-        channel_reserve: "- Reserva canal",
+        spendable: "Spendable",
+        channel_size: "Channel size",
+        channel_reserve: "- Channel reserve",
         error_under_min_lightning:
-            "En-cadena por defecto. El monto es demasiado pequeño para su recepción en Lightning.",
+            "Defaulting to On-chain. Amount is too small for your initial Lightning receive.",
         error_creating_unified:
-            "En-cadena por defecto. Also salió mal al crear la dirección unificada",
+            "Defaulting to On-chain. Something went wrong when creating the unified address",
         error_creating_address:
-            "Also salió mal al crear la dirección en-cadena",
+            "Something went wrong when creating the on-chain address",
         amount_editable: {
             receive_too_small:
-                "Una comisión de instalación de lightning puede ser deducida del monto solicitado.",
+                "A lightning setup fee might be deducted from the requested amount.",
             setup_fee_lightning:
-                "Se cargará una comisión de instalación de lightning si se paga por lightning.",
-            more_than_21m: "Hay solo 21 millones bitcoins.",
-            set_amount: "Establecer monto",
+                "A lightning setup fee will be charged if paid over lightning.",
+            more_than_21m: "There are only 21 million bitcoin.",
+            set_amount: "Set amount",
             max: "MAX",
             fix_amounts: {
                 ten_k: "10k",
                 one_hundred_k: "100k",
                 one_million: "1m"
             },
-            del: "BORR",
+            del: "DEL",
             balance: "Balance"
         },
         integrated_qr: {
-            onchain: "En-cadena",
+            onchain: "On-chain",
             lightning: "Lightning",
-            unified: "Unificado",
-            gift: "Regalo Lightning"
+            unified: "Unified",
+            gift: "Lightning Gift"
         },
-        remember_choice: "Recordar my selección para la próxima vez",
-        what_for: "¿Para qué es esto?"
+        remember_choice: "Remember my choice next time",
+        what_for: "What's this for?"
     },
     send: {
         search: {
-            placeholder: "Nombre, dirección, factura",
-            paste: "Pegar",
-            contacts: "Contactos",
-            global_search: "Búsqueda global",
-            no_results: "No hay resultados para"
+            placeholder: "Name, address, invoice",
+            paste: "Paste",
+            contacts: "Contacts",
+            global_search: "Global search",
+            no_results: "No results found for"
         },
-        sending: "Enviando...",
-        confirm_send: "Confirmar Envío",
-        contact_placeholder: "Aggregar el recipiente para su registro",
-        start_over: "Comenzar de Nuevo",
-        send_bitcoin: "Enviar Bitcoin",
-        paste: "Pegar",
-        scan_qr: "Escanear QR",
-        payment_initiated: "Pago Iniciado",
-        payment_sent: "Pago Enviado",
-        destination: "Destino",
-        no_payment_info: "No hay información de pago",
+        sending: "Sending...",
+        confirm_send: "Confirm Send",
+        contact_placeholder: "Add the receiver for your records",
+        start_over: "Start Over",
+        send_bitcoin: "Send Bitcoin",
+        paste: "Paste",
+        scan_qr: "Scan QR",
+        payment_initiated: "Payment Initiated",
+        payment_sent: "Payment Sent",
+        destination: "Destination",
+        no_payment_info: "No payment info",
         progress_bar: {
-            of: "de",
-            sats_sent: "sats enviados"
+            of: "of",
+            sats_sent: "sats sent"
         },
-        what_for: "¿Para qué es esto?",
-        zap_note: "Zapear nota",
+        what_for: "What's this for?",
+        zap_note: "Zap note",
         error_low_balance:
-            "No tenemos saldo suficiente para pagar el monto indicada.",
+            "We do not have enough balance to pay the given amount.",
         error_invoice_match:
-            "Monto solicitado, {{amount}} SATS, no es igual al monto establecido.",
-        error_channel_reserves: "No hay suficientes fondos disponibles.",
-        error_address: "Dirección Lightning Inválida",
+            "Amount requested, {{amount}} SATS, does not equal amount set.",
+        error_channel_reserves: "Not enough available funds.",
+        error_address: "Invalid Lightning Address",
         error_channel_reserves_explained:
-            "Una porción del balance de su canal es reservada para comisiones. Intente enviar un monto más pequeño o agregue fondos.",
-        error_clipboard: "Portapapeles no soportado",
-        error_keysend: "Keysend falló",
-        error_LNURL: "Pago LNURL falló",
-        error_expired: "La factura está expirada",
+            "A portion of your channel balance is reserved for fees. Try sending a smaller amount or adding funds.",
+        error_clipboard: "Clipboard not supported",
+        error_keysend: "Keysend failed",
+        error_LNURL: "LNURL Pay failed",
+        error_expired: "Invoice is expired",
         payjoin_send:
-            "Esto es un payjoin! El Mutiny continuará hasta que la privacidad mejore",
-        payment_pending: "Pago pendiente",
+            "This is a payjoin! The Mutiny will continue until privacy improves",
+        payment_pending: "Payment pending",
         payment_pending_description:
-            "Se esta tomando un tiempo, pero es posible que este pago todavía se realice. Por favor verifique 'Actividad' para el estado actual.",
+            "It's taking a while, but it's possible this payment may still go through. Please check 'Activity' for the current status.",
         hodl_invoice_warning:
-            "Esta es una factura hodl. Los pagos a facturas hodl pueden causar cierres forzosos del canal, lo que resulta en comisiones altas en-cadena ¡Pague bajo su propio riesgo!",
-        private: "Privado",
-        anonzap: "Zap Anon"
+            "This is a hodl invoice. Payments to hodl invoices can cause channel force closes, which results in high on-chain fees. Pay at your own risk!",
+        private: "Private",
+        anonzap: "Anon Zap"
     },
     feedback: {
-        header: "¡Denos retroalimentación!",
-        received: "¡Retroalimentacion recibida!",
-        thanks: "Gracias por decirnos lo que está sucediendo.",
-        more: "¿Tiene algo más que decir?",
+        header: "Give us feedback!",
+        received: "Feedback received!",
+        thanks: "Thank you for letting us know what's going on.",
+        more: "Got more to say?",
         tracking:
-            "Mutiny no rastrea n espía su comportamiento, por lo que su retroalimentación es increíblemente útil.",
-        github: "No responderemos a esta retroalimentación. Si desea soporte por favor",
-        create_issue: "cree una issue en GitHub.",
-        link: "¿Retroalimentación?",
-        feedback_placeholder:
-            "Bugs, solicitud de funcionalidad, retroalimentación, etc.",
-        info_label: "Incluir información de contacto",
-        info_caption: "Si necesita que le demos seguimiento a este problema",
-        email: "Correo electrónico",
-        email_caption: "Direcciones desechables son bienvenidas",
+            "Mutiny doesn't track or spy on your behavior, so your feedback is incredibly helpful.",
+        github: "We will not respond to this feedback. If you'd like support please",
+        create_issue: "create a GitHub issue.",
+        link: "Feedback?",
+        feedback_placeholder: "Bugs, feature requests, feedback, etc.",
+        info_label: "Include contact info",
+        info_caption: "If you need us to follow-up on this issue",
+        email: "Email",
+        email_caption: "Burners welcome",
         nostr: "Nostr",
-        nostr_caption: "Su npub más fresco",
-        nostr_label: "npub de Nostr o NIP-05",
-        send_feedback: "Enviar Retroalimentación",
-        invalid_feedback: "¡Por favor diga algo!",
-        need_contact: "Necesitamos alguna forma de contactarlo",
-        invalid_email: "Eso no me parece una dirección de correo electrónico",
-        error: "Error enviando retroalimentación {{error}}",
-        try_again: "Por favor intente de nuevo más tarde."
+        nostr_caption: "Your freshest npub",
+        nostr_label: "Nostr npub or NIP-05",
+        send_feedback: "Send Feedback",
+        invalid_feedback: "Please say something!",
+        need_contact: "We need some way to contact you",
+        invalid_email: "That doesn't look like an email address to me",
+        error: "Error submitting feedback {{error}}",
+        try_again: "Please try again later."
     },
     activity: {
-        title: "Actividad",
+        title: "Activity",
         mutiny: "Mutiny",
-        wallet: "Billetera",
+        wallet: "Wallet",
         nostr: "Nostr",
-        view_all: "Ver todo",
-        receive_some_sats_to_get_started: "Reciba algunos sats para comenzar",
-        channel_open: "Canal Abierto",
-        channel_close: "Canal Cerrado",
-        unknown: "Desconocido",
+        view_all: "View all",
+        receive_some_sats_to_get_started: "Receive some sats to get started",
+        channel_open: "Channel Open",
+        channel_close: "Channel Close",
+        unknown: "Unknown",
         import_contacts:
-            "Importe sus contactos desde nostr para ver a quién están zapeando.",
-        coming_soon: "Muy pronto",
-        private: "Privado",
-        anonymous: "Anónimo",
-        from: "De:",
+            "Import your contacts from nostr to see who they're zapping.",
+        coming_soon: "Coming soon",
+        private: "Private",
+        anonymous: "Anonymous",
+        from: "From:",
         transaction_details: {
-            lightning_receive: "Recibido via Lightning",
-            lightning_send: "Enviado via Lightning",
-            channel_open: "Canal abierto",
-            channel_close: "Canal cerrado",
-            onchain_receive: "Recibido en-cadena",
-            onchain_send: "Enviado en-cadena",
-            paid: "Pagado",
-            unpaid: "Sin pagar",
-            status: "Estado",
-            date: "Fecha",
-            tagged_to: "Etiquetado a",
-            description: "Descripción",
-            fee: "Comisión",
-            onchain_fee: "Comisión En-cadena",
-            invoice: "Factura",
-            payment_hash: "Hash de Pago",
-            payment_preimage: "Preimagen",
+            lightning_receive: "Received via Lightning",
+            lightning_send: "Sent via Lightning",
+            channel_open: "Channel open",
+            channel_close: "Channel close",
+            onchain_receive: "On-chain receive",
+            onchain_send: "On-chain send",
+            paid: "Paid",
+            unpaid: "Unpaid",
+            status: "Status",
+            date: "Date",
+            tagged_to: "Tagged to",
+            description: "Description",
+            fee: "Fee",
+            onchain_fee: "On-chain Fee",
+            invoice: "Invoice",
+            payment_hash: "Payment Hash",
+            payment_preimage: "Preimage",
             txid: "Txid",
-            total: "Monto Solicitado",
+            total: "Amount Requested",
             balance: "Balance",
-            reserve: "Reserva",
-            peer: "Par",
-            channel_id: "ID Canal",
-            reason: "Razón",
-            confirmed: "Confirmado",
-            unconfirmed: "Sin Confirmar",
+            reserve: "Reserve",
+            peer: "Peer",
+            channel_id: "Channel ID",
+            reason: "Reason",
+            confirmed: "Confirmed",
+            unconfirmed: "Unconfirmed",
             sweep_delay:
-                "Los fondos pueden tomar algunos días en regresar a la billetera",
+                "Funds may take a few days to be swept back into the wallet",
             no_details:
-                "No se encontraron detalles del canal, lo que significa que probablemente el canal ha sido cerrado.",
-            back_home: "regresar a inicio"
+                "No channel details found, which means this channel has likely been closed.",
+            back_home: "back home"
         }
     },
     scanner: {
-        paste: "Pegar Algo",
-        cancel: "Cancelar"
+        paste: "Paste Something",
+        cancel: "Cancel"
     },
     settings: {
-        header: "Ajustes",
-        support: "Entérese como apoyar a Mutiny",
-        experimental_features: "Experimentos",
-        debug_tools: "HERRAMIENTAS DE DEPURACIÓN",
-        danger_zone: "Zona de peligro",
+        header: "Settings",
+        support: "Learn how to support Mutiny",
+        experimental_features: "Experiments",
+        debug_tools: "DEBUG TOOLS",
+        danger_zone: "Danger zone",
         general: "General",
-        version: "Versión:",
+        version: "Version:",
         admin: {
-            title: "Página de Administración",
-            caption:
-                "Nuestras herramientas internas de depuración ¡Úselas sabiamente!",
-            header: "Herramientas Secretas de Depuración",
+            title: "Admin Page",
+            caption: "Our internal debug tools. Use wisely!",
+            header: "Secret Debug Tools",
             warning_one:
-                "Si sabe lo que está haciendo está en el lugar adecuado.",
+                "If you know what you're doing you're in the right place.",
             warning_two:
-                "Estas son herramientas internas que usamos para depurar y probar la aplicación ¡Por favor tenga cuidado!",
+                "These are internal tools we use to debug and test the app. Please be careful!",
             kitchen_sink: {
-                disconnect: "Desconectar",
-                peers: "Pares",
-                no_peers: "No hay pares",
-                refresh_peers: "Refrescar Pares",
-                connect_peer: "Conectar a Par",
-                expect_a_value: "Esperando un valor...",
-                connect: "Conectar",
-                close_channel: "Cerrar Canal",
-                force_close: "Forzar cierre de canal",
-                abandon_channel: "Abandonar Canal",
+                disconnect: "Disconnect",
+                peers: "Peers",
+                no_peers: "No peers",
+                refresh_peers: "Refresh Peers",
+                connect_peer: "Connect Peer",
+                expect_a_value: "Expecting a value...",
+                connect: "Connect",
+                close_channel: "Close Channel",
+                force_close: "Force close Channel",
+                abandon_channel: "Abandon Channel",
                 confirm_close_channel:
-                    "¿Está seguro de querer cerrar este canal?",
+                    "Are you sure you want to close this channel?",
                 confirm_force_close:
-                    "¿Está seguro de querer forzar el cierre de este canal? Sus fondos tardarán unos días en ser redimidos en la cadena.",
+                    "Are you sure you want to force close this channel? Your funds will take a few days to redeem on chain.",
                 confirm_abandon_channel:
-                    "¿Está seguro de querer abandonar este canal? Típicamente haga esto solo si la transacción de apertura no se confirma nunca. De lo contrario, perderá fondos.",
-                channels: "Canales",
-                no_channels: "No hay Canales",
-                refresh_channels: "Refrescar Canales",
+                    "Are you sure you want to abandon this channel? Typically only do this if the opening transaction will never confirm. Otherwise, you will lose funds.",
+                channels: "Channels",
+                no_channels: "No Channels",
+                refresh_channels: "Refresh Channels",
                 pubkey: "Pubkey",
-                amount: "Monto",
-                open_channel: "Abrir Canal",
-                nodes: "Nodos",
-                no_nodes: "No hay nodos",
-                enable_zaps_to_hodl: "¿Habilitar zaps a facturas hodl?",
+                amount: "Amount",
+                open_channel: "Open Channel",
+                nodes: "Nodes",
+                no_nodes: "No nodes",
+                enable_zaps_to_hodl: "Enable zaps to hodl invoices?",
                 zaps_to_hodl_desc:
-                    "Zaps a facturas hodl pueden resultar en el cierre forzoso de canales, lo que resulta en altas comisiones en-cadena ¡Use bajo su propio riesgo!",
-                zaps_to_hodl_enable: "Habilitar zaps hodl",
-                zaps_to_hodl_disable: "Deshabilitar zaps hodl"
+                    "Zaps to hodl invoices can result in channel force closes, which results in high on-chain fees. Use at your own risk!",
+                zaps_to_hodl_enable: "Enable hodl zaps",
+                zaps_to_hodl_disable: "Disable hodl zaps"
             }
         },
         backup: {
-            title: "Respaldo",
-            secure_funds: "Aseguremos estos fondos.",
+            title: "Backup",
+            secure_funds: "Let's get these funds secured.",
             twelve_words_tip:
-                "Le mostraremos 12 palabras. Usted escribe esas 12 palabras.",
+                "We'll show you 12 words. You write down the 12 words.",
             warning_one:
-                "Si limpia el historial de su navegador, o pierde su dispositivo, estas 12 palabras son la única manera de restaurar su billetera.",
-            warning_two: "Mutiny es auto-custodial. Todo depende de usted...",
-            confirm: "Escribí las palabras",
-            responsibility: "Entiendo que mis fondos son mi responsabilidad",
-            liar: "No estoy mintiendo solo para terminar con esto",
+                "If you clear your browser history, or lose your device, these 12 words are the only way you can restore your wallet.",
+            warning_two: "Mutiny is self-custodial. It's all up to you...",
+            confirm: "I wrote down the words",
+            responsibility: "I understand that my funds are my responsibility",
+            liar: "I'm not lying just to get this over with",
             seed_words: {
-                reveal: "TOQUE PARA REVELAR LAS PALABRAS SEMILLA",
-                hide: "ESCONDER",
-                copy: "Peligrosamente Copiar al Portapapeles",
-                copied: "Copiado!"
+                reveal: "TAP TO REVEAL SEED WORDS",
+                hide: "HIDE",
+                copy: "Dangerously Copy to Clipboard",
+                copied: "Copied!"
             }
         },
         channels: {
-            title: "Canales Lightning",
-            outbound: "Saliente",
-            inbound: "Entrante",
-            reserve: "Reserva",
-            have_channels: "Tiene",
-            have_channels_one: "canal lightning.",
-            have_channels_many: "canales lightning.",
+            title: "Lightning Channels",
+            outbound: "Outbound",
+            inbound: "Inbound",
+            reserve: "Reserve",
+            have_channels: "You have",
+            have_channels_one: "lightning channel.",
+            have_channels_many: "lightning channels.",
             inbound_outbound_tip:
-                "Saliente es el monto de dinero que puede gastar en lightning. Entrante es el monto que puede recibir sin incurrir en una comisión de servicio de lightning.",
+                "Outbound is the amount of money you can spend on lightning. Inbound is the amount you can receive without incurring a lightning service fee.",
             reserve_tip:
-                "Alrededor del 1% del balance de su canal está reservado en lightning para comisiones. Reservas adicionales son requeridas para canales que abrió usando swap.",
+                "About 1% of your channel balance is reserved on lightning for fees. Additional reserves are required for channels you opened via swap.",
             no_channels:
-                "Parece que todavía no tiene ningún canal. Para empezar, reciba algunos sats port lightning, o haga un swap para mover fondos en-cadena hacia un canal ¡Manos a la obra!",
-            close_channel: "Cerrar",
-            online_channels: "Canales en Línea",
-            offline_channels: "Canales Fuera de Línea",
+                "It looks like you don't have any channels yet. To get started, receive some sats over lightning, or swap some on-chain funds into a channel. Get your hands dirty!",
+            close_channel: "Close",
+            online_channels: "Online Channels",
+            offline_channels: "Offline Channels",
             close_channel_confirm:
-                "Cerrar este canal moverá el saldo en-cadena e incurrirá en una comisión en-cadena."
+                "Closing this channel will move the balance on-chain and incur an on-chain fee."
         },
         connections: {
-            title: "Conexiones Billetera",
-            error_name: "El nombre no puede estar vacío",
-            error_connection: "Fallo al crear Conexión Billetera",
-            error_budget_zero: "El presupuesto debe ser mayor a cero",
-            add_connection: "Agregar Conexión",
-            manage_connections: "Manejar Conexiones",
-            manage_gifts: "Manejar Regalos",
-            delete_connection: "Eliminar",
-            new_connection: "Nueva Conexión",
-            edit_connection: "Editar Conexión",
-            new_connection_label: "Nombre",
-            new_connection_placeholder: "Mi cliente nostr favorito...",
-            create_connection: "Crear Conexión",
-            save_connection: "Guardar Cambios",
-            edit_budget: "Editar Presupuesto",
-            open_app: "Abrir Aplicación",
-            open_in_nostr_client: "Abrir en Cliente Nostr",
-            open_in_primal: "Abrir en Primal",
-            nostr_client_not_found: "Cliente nostr no encontrado",
+            title: "Wallet Connections",
+            error_name: "Name cannot be empty",
+            error_connection: "Failed to create Wallet Connection",
+            error_budget_zero: "Budget must be greater than zero",
+            add_connection: "Add Connection",
+            manage_connections: "Manage Connections",
+            manage_gifts: "Manage Gifts",
+            delete_connection: "Delete",
+            new_connection: "New Connection",
+            edit_connection: "Edit Connection",
+            new_connection_label: "Name",
+            new_connection_placeholder: "My favorite nostr client...",
+            create_connection: "Create Connection",
+            save_connection: "Save Changes",
+            edit_budget: "Edit Budget",
+            open_app: "Open App",
+            open_in_nostr_client: "Open in Nostr Client",
+            open_in_primal: "Open in Primal",
+            nostr_client_not_found: "Nostr client not found",
             client_not_found_description:
-                "Instale un cliente nostr como Primal, Amethyst, o Damus para abrir este enlace.",
-            relay: "Relé",
+                "Install a nostr client like Primal, Amethyst, or Damus to open this link.",
+            relay: "Relay",
             authorize:
-                "Autoriza servicios externos para solicitar pagos desde su billetera. Combina muy bien con clientes Nostr.",
+                "Authorize external services to request payments from your wallet. Pairs great with Nostr clients.",
             pending_nwc: {
-                title: "Solicitudes Pendientes",
-                approve_all: "Aprovar Todo",
-                deny_all: "Denegar Todo"
+                title: "Pending Requests",
+                approve_all: "Approve All",
+                deny_all: "Deny All"
             },
             careful:
-                "¡Tenga cuidado dónde comparte esta conexión! Solicitudes dentro del presupuesto serán pagadas automáticamente.",
-            spent: "Gastado",
-            remaining: "Restante",
-            confirm_delete: "¿Está seguro de querer eliminar esta conexión?",
-            budget: "Presupuesto",
-            resets_every: "Se restablece cada",
-            resubscribe_date: "Suscribirse de nuevo en"
+                "Be careful where you share this connection! Requests within budget will paid automatically.",
+            spent: "Spent",
+            remaining: "Remaining",
+            confirm_delete: "Are you sure you want to delete this connection?",
+            budget: "Budget",
+            resets_every: "Resets every",
+            resubscribe_date: "Resubscribe on"
         },
         emergency_kit: {
-            title: "Kit de Emergencia",
-            caption: "Diagnostique y resuelva problemas con su billetera.",
+            title: "Emergency Kit",
+            caption: "Diagnose and solve problems with your wallet.",
             emergency_tip:
-                "Si su billetera parece dañada, aquí hay algunas herramientas para tratar depurarla y repararla.",
+                "If your wallet seems broken, here are some tools to try to debug and repair it.",
             questions:
-                "Si tiene preguntas acerca de qué hacen estos botones, por favor",
-            link: "contáctenos para recibir soporte.",
+                "If you have any questions on what these buttons do, please",
+            link: "reach out to us for support.",
             import_export: {
-                title: "Exportar estado de la billetera",
-                error_password: "Contraseña requerida",
-                error_read_file: "Error al leer archivo",
-                error_no_text: "No se encontró texto en el archivo",
-                tip: "Puede exportar todo el estado de su Billetera Mutiny a un archivo e importarlo a otro navegador ¡Usualmente funciona!",
-                caveat_header: "Advertencias importantes:",
-                caveat: "después de exportar no realice ninguna operación en el navegador original. Si lo hace, tendrá que exportar de nuevo. Después de una importación exitosa, una buena práctica es borrar el estado del navegador original solo para asegurarse de no crear conflictos.",
-                save_state: "Guardar Estado a Archivo",
-                import_state: "Importar Estado desde Archivo",
-                confirm_replace: "¿Desea reemplazar su estado con",
-                password: "Ingrese su contraseña para descifrar",
-                decrypt_wallet: "Descifrar Billetera"
+                title: "Export wallet state",
+                error_password: "Password is required",
+                error_read_file: "File read error",
+                error_no_text: "No text found in file",
+                tip: "You can export your entire Mutiny Wallet state to a file and import it into a new browser. It usually works!",
+                caveat_header: "Important caveats:",
+                caveat: "after exporting don't do any operations in the original browser. If you do, you'll need to export again. After a successful import, a best practice is to clear the state of the original browser just to make sure you don't create conflicts.",
+                save_state: "Save State As File",
+                import_state: "Import State From File",
+                confirm_replace: "Do you want to replace your state with",
+                password: "Enter your password to decrypt",
+                decrypt_wallet: "Decrypt Wallet"
             },
             logs: {
-                title: "Descargar logs de depuración",
+                title: "Download debug logs",
                 something_screwy:
-                    "Algo raro está sucediendo? ¡Verifique los logs!",
-                download_logs: "Descargar logs",
-                password: "Ingrese su contraseña para cifrar",
-                confirm_password_label: "Confirme la Contraseña"
+                    "Something screwy going on? Check out the logs!",
+                download_logs: "Download Logs",
+                password: "Enter your password to decrypt",
+                confirm_password_label: "Confirm Password"
             },
             delete_everything: {
-                delete: "Eliminar Todo",
+                delete: "Delete Everything",
                 confirm:
-                    "Esto eliminará el estado de su nodo ¡Esto no puede ser deshecho!",
-                deleted: "Eliminado",
-                deleted_description: "Eliminados todos los datos"
+                    "This will delete your node's state. This can't be undone!",
+                deleted: "Deleted",
+                deleted_description: "Deleted all data"
             }
         },
         encrypt: {
-            title: "Cambiar Contraseña",
-            caption: "Haga un respaldo primero para desbloquear el cifrado",
-            header: "Cifre sus palabras semilla",
+            title: "Change Password",
+            caption: "Backup first to unlock encryption",
+            header: "Encrypt your seed words",
             hot_wallet_warning:
-                'Mutiny es una "billetera caliente" por lo que necesita sus palabras semilla para operar, pero usted puede opcionalmente cifrar esas palabras con una contraseña.',
+                'Mutiny is a "hot wallet" so it needs your seed word to operate, but you can optionally encrypt those words with a password.',
             password_tip:
-                "De esa manera, si alguien consigue acceder a su navegador, de todas maneras no tendrá acceso a sus fondos.",
-            optional: "(opcional)",
-            existing_password: "Constraseña existente",
+                "That way, if someone gets access to your browser, they still won't have access to your funds.",
+            optional: "(optional)",
+            existing_password: "Existing password",
             existing_password_caption:
-                "Deje vacío si no ha establecido una contraseña todavía.",
-            new_password_label: "Contraseña",
-            new_password_placeholder: "Ingrese una contraseña",
+                "Leave blank if you haven't set a password yet.",
+            new_password_label: "Password",
+            new_password_placeholder: "Enter a password",
             new_password_caption:
-                "Esta contraseña será usada para cifrar sus palabras semilla. Si se le olvida, necesitará reingresar sus palabras semilla para acceder a sus fondos. Usted si escribió sus palabras semilla ¿correcto?",
-            confirm_password_label: "Confirme Contraseña",
-            confirm_password_placeholder: "Ingrese la misma contraseña",
-            encrypt: "Cifrar",
-            skip: "Saltar",
-            error_match: "Las contraseñas no coinciden",
+                "This password will be used to encrypt your seed words. If you forget it, you will need to re-enter your seed words to access your funds. You did write down your seed words, right?",
+            confirm_password_label: "Confirm Password",
+            confirm_password_placeholder: "Enter the same password",
+            encrypt: "Encrypt",
+            skip: "Skip",
+            error_match: "Passwords do not match",
             error_same_as_existingpassword:
-                "La nueva contraseña no debe coincidir con la contraseña existente"
+                "New password must not match existing password"
         },
         decrypt: {
-            title: "Ingrese su contraseña",
-            decrypt_wallet: "Descifrar Billetera",
-            forgot_password_link: "¿Olvidó la Contraseña?",
-            error_wrong_password: "Contraseña Inválida"
+            title: "Enter your password",
+            decrypt_wallet: "Decrypt Wallet",
+            forgot_password_link: "Forgot Password?",
+            error_wrong_password: "Invalid Password"
         },
         currency: {
-            title: "Moneda",
-            caption: "Escoja su par de monedas preferida",
-            select_currency: "Seleccione Moneda",
-            select_currency_label: "Par de Moneda",
+            title: "Currency",
+            caption: "Choose your preferred currency pair",
+            select_currency: "Select Currency",
+            select_currency_label: "Currency Pair",
             select_currency_caption:
-                "Al escoger una nueva moneda se resincronizará la billetera para obtener una actualización del precio",
-            request_currency_support_link: "Solicite soporte para más monedas",
-            error_unsupported_currency:
-                "Por favor seleccione una moneda soportada."
+                "Choosing a new currency will resync the wallet to fetch a price update",
+            request_currency_support_link:
+                "Request support for more currencies",
+            error_unsupported_currency: "Please Select a supported currency."
         },
         language: {
-            title: "Idioma",
-            caption: "Escoja su idioma preferido",
-            select_language: "Seleccione Idioma",
-            select_language_label: "Idioma",
+            title: "Language",
+            caption: "Choose your preferred language",
+            select_language: "Select Language",
+            select_language_label: "Language",
             select_language_caption:
-                "Al escoger un nuevo idioma se cambiará el lenguaje de la billetera, ignorando el idioma actual del navegador",
-            request_language_support_link: "Solicite soporte para más idiomas",
-            error_unsupported_language:
-                "Por favor seleccione un idioma soportado."
+                "Choosing a new currency will change the wallet language, ignoring current browser language",
+            request_language_support_link: "Request support for more languages",
+            error_unsupported_language: "Please Select a supported language."
         },
         lnurl_auth: {
             title: "LNURL Auth",
             auth: "Auth",
-            expected: "Esperando algo como LNURL..."
+            expected: "Expecting something like LNURL..."
         },
         plus: {
             title: "Mutiny+",
-            join: "Unirse",
-            sats_per_month: "por {{amount}} sats por mes.",
+            join: "Join",
+            sats_per_month: "for {{amount}} sats a month.",
             lightning_balance:
-                "Necesitará por lo menos {{amount}} sats en su saldo lightning para empezar ¡Intente antes de comprar!",
-            restore: "Restaurar Suscripción",
-            ready_to_join: "Listo para unirse",
-            click_confirm: "Haga clic en confirmar para pagar su primer mes.",
-            open_source: "Mutiny es código abierto y auto-hospedable.",
-            optional_pay: "Pero también puede pagar por él.",
-            paying_for: "Pagando por",
+                "You'll need at least {{amount}} sats in your lightning balance to get started. Try before you buy!",
+            restore: "Restore Subscription",
+            ready_to_join: "Ready to join",
+            click_confirm: "Click confirm to pay for your first month.",
+            open_source: "Mutiny is open source and self-hostable.",
+            optional_pay: "But also you can pay for it.",
+            paying_for: "Paying for",
             supports_dev:
-                "ayuda a soportar el desarrollo continuo y desbloquea el acceso temprano a nuevas características y funcionalidad premium:",
-            thanks: "¡Usted hace parte del motín! Disfrute de las siguientes ventajas:",
-            renewal_time: "Recibirá una solicitud de renovación de pago hacia",
-            cancel: "Para cancelar su suscripción simplemente no pague. También puede deshabilitar el Mutiny+",
-            wallet_connection: "Conexión Billetera.",
-            subscribe: "Suscribirse",
-            error_no_plan: "No se encontraron planes",
-            error_failure: "No se pudo suscribir",
-            error_no_subscription: "No se encontró ninguna suscripción",
+                "helps support ongoing development and unlocks early access to new features and premium functionality:",
+            thanks: "You're part of the mutiny! Enjoy the following perks:",
+            renewal_time: "You'll get a renewal payment request around",
+            cancel: "To cancel your subscription just don't pay. You can also disable the Mutiny+",
+            wallet_connection: "Wallet Connection.",
+            subscribe: "Subscribe",
+            error_no_plan: "No plans found",
+            error_failure: "Couldn't subscribe",
+            error_no_subscription: "No existing subscription found",
             error_expired_subscription:
-                "Su suscripción ha expirado, haga clic en unirse para renovar",
-            satisfaction: "Satisfacción engreída",
-            gifting: "Regalos",
-            multi_device: "Acceso multi-dispositivo",
-            ios_testflight: "Acceso a iOS TestFlight",
-            more: "... y más por venir",
+                "Your subscription has expired, click join to renew",
+            satisfaction: "Smug satisfaction",
+            gifting: "Gifting",
+            multi_device: "Multi-device access",
+            ios_testflight: "iOS TestFlight access",
+            more: "... and more to come",
             cta_description:
-                "Disfrute acceso temprano a nuevas características y funcionalidad premium.",
-            cta_but_already_plus: "¡Gracias por su apoyo!"
+                "Enjoy early access to new features and premium functionality.",
+            cta_but_already_plus: "Thank you for your support!"
         },
         restore: {
-            title: "Restaurar",
-            all_twelve: "Necesita ingresar todas las 12 palabras",
-            wrong_word: "Palabra equivocada",
-            paste: "Peligrosamente Pegar del Portapapeles",
+            title: "Restore",
+            all_twelve: "You need to enter all 12 words",
+            wrong_word: "Wrong word",
+            paste: "Dangerously Paste from Clipboard",
             confirm_text:
-                "¿Está seguro de querer restaurar a esta billetera? ¡Su billetera existente será eliminada!",
+                "Are you sure you want to restore to this wallet? Your existing wallet will be deleted!",
             restore_tip:
-                "Podrá restaurar una Billetera Mutiny existente desde su frase de 12 palabras semilla. Esto reemplazará su billetera existente, ¡por lo tanto esté seguro de saber lo que está haciendo!",
+                "You can restore an existing Mutiny Wallet from your 12 word seed phrase. This will replace your existing wallet, so make sure you know what you're doing!",
             multi_browser_warning:
-                "No use múltiples navegadores al mismo tiempo.",
-            error_clipboard: "Portapapeles no soportado",
-            error_word_number: "Número equivocado de palabras",
-            error_invalid_seed: "Frase semilla inválida"
+                "Do not use on multiple browsers at the same time.",
+            error_clipboard: "Clipboard not supported",
+            error_word_number: "Wrong number of words",
+            error_invalid_seed: "Invalid seed phrase"
         },
         servers: {
-            title: "Servidores",
-            caption:
-                "¡No confíe en nosotros! Use sus propios servidores para respaldar Mutiny.",
-            link: "Aprenda más acerca de auto-hospedaje",
-            proxy_label: "Proxy de Websockets",
+            title: "Servers",
+            caption: "Don't trust us! Use your own servers to back Mutiny.",
+            link: "Learn more about self-hosting",
+            proxy_label: "Websockets Proxy",
             proxy_caption:
-                "Cómo su nodo de lightning se comunica con el resto de la red.",
-            error_proxy: "Debe ser una url comenzando con wss://",
+                "How your lightning node communicates with the rest of the network.",
+            error_proxy: "Should be a url starting with wss://",
             esplora_label: "Esplora",
-            esplora_caption: "Datos de bloques para información en-cadena.",
-            error_esplora: "Eso no parece una URL",
+            esplora_caption: "Block data for on-chain information.",
+            error_esplora: "That doesn't look like a URL",
             rgs_label: "RGS",
             rgs_caption:
-                "Rapid Gossip Sync. Datos de red sobre la red de lightning usados para enrutamiento.",
-            error_rgs: "Eso no parece una URL",
+                "Rapid Gossip Sync. Network data about the lightning network used for routing.",
+            error_rgs: "That doesn't look like a URL",
             lsp_label: "LSP",
             lsp_caption:
-                "Lightning Service Provider. Automáticamente abre canales hacia usted para liquidez entrante. También envuelve facturas para privacidad.",
-            lsps_connection_string_label:
-                "Cadena de Caracteres de Conexión LSPS",
+                "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy.",
+            lsps_connection_string_label: "LSPS Connection String",
             lsps_connection_string_caption:
-                "Lightning Service Provider. Automáticamente abre canales hacia usted para liquidez entrante. Usando la especificación LSP.",
+                "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Using LSP specification.",
             error_lsps_connection_string:
-                "Eso no parece una cadena de caracteres de conexión",
-            lsps_token_label: "Token LSPS",
+                "That doesn't look like node connection string",
+            lsps_token_label: "LSPS Token",
             lsps_token_caption:
-                "Token LSPS.  Usado para identificar qué billetera está conectando al LSP",
+                "LSPS Token.  Used to identify what wallet is connecting to the LSP",
             lsps_valid_error:
-                "Puede tener tan solo un LSP establecido o una Cadena de Caracteres de Conexión LSPS y Token LSPS establecidos, no ambos.",
-            error_lsps_token: "Eso no parece un token válido",
-            storage_label: "Almacenamiento",
-            storage_caption: "Servicio de respaldo VSS cifrado.",
-            error_lsp: "Eso no parece un URL",
-            save: "Guardar"
+                "You can either have just an LSP set or LSPS Connection String and LSPS Token set, not both.",
+            error_lsps_token: "That doesn't look like a valid token",
+            storage_label: "Storage",
+            storage_caption: "Encrypted VSS backup service.",
+            error_lsp: "That doesn't look like a URL",
+            save: "Save"
         },
         nostr_contacts: {
-            title: "Sincronizar Contactos Nostr",
-            npub_label: "npub nostr",
-            npub_required: "Npub no puede estar vacío",
-            sync: "Sincronizar",
-            resync: "Resincronizar",
-            remove: "Eliminar"
+            title: "Sync Nostr Contacts",
+            npub_label: "Nostr npub",
+            npub_required: "Npub can't be blank",
+            sync: "Sync",
+            resync: "Resync",
+            remove: "Remove"
         },
         manage_federations: {
-            title: "Manejar Federaciones",
-            federation_code_label: "Código federación",
-            federation_code_required: "Código federación no puede estar vacío",
-            federation_added_success: "Federación agregada exitosamente",
+            title: "Manage Federations",
+            federation_code_label: "Federation code",
+            federation_code_required: "Federation code can't be blank",
+            federation_added_success: "Federation added successfully",
             federation_remove_confirm:
-                "¿Esta seguro de querer eliminar esta federación? Asegúrese primero de que sus fondos sean transferidos a su balance lightning u otra billetera.",
-            add: "Agregar",
-            remove: "Eliminar",
-            expires: "Expira",
-            federation_id: "ID federación",
+                "Are you sure you want to remove this federation? Make sure any funds you have are transferred to your lightning balance or another wallet first.",
+            add: "Add",
+            remove: "Remove",
+            expires: "Expires",
+            federation_id: "Federation ID",
             description:
-                "Mutiny tiene soporte experimental para el protocolo Fedimint. Necesitará un código de invitación a la federación para poder usar esta funcionalidad. Estos fondos no están actualmente respaldados remotamente ¡Almacene fondos en una federación bajo su propio riesgo!",
-            learn_more: "Aprenda más sobre Fedimint."
+                "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. These funds are currently not backed up remotely. Store funds in a federation at your own risk!",
+            learn_more: "Learn more about Fedimint."
         },
         gift: {
-            give_sats_link: "Dar sats de regalo",
-            title: "Regalo",
-            no_plus_caption: "Actualice a Mutiny+ para habilitar regalos",
+            give_sats_link: "Give sats as a gift",
+            title: "Gifting",
+            no_plus_caption: "Upgrade to Mutiny+ to enable gifting",
             receive_too_small:
-                "Su primera recepción debe ser de {{amount}} SATS o más.",
+                "Your first receive needs to be {{amount}} SATS or greater.",
             setup_fee_lightning:
-                "Una comisión de instalación de lightning será cargada para recibir este regalo.",
-            already_claimed: "Este regalo ya ha sido reclamado",
+                "A lightning setup fee will be charged to receive this gift.",
+            already_claimed: "This gift has already been claimed",
             sender_is_poor:
-                "El remitente no tiene suficiente saldo para pagar este regalo.",
+                "The sender doesn't have enough balance to pay this gift.",
             sender_timed_out:
-                "Se agotó el tiempo para el pago del regalo. El remitente puede estar desconectado, o este regalo ya ha sido reclamado.",
-            sender_generic_error: "Remitente envió error: {{error}}",
-            receive_header: "¡Le han regalado algunos sats!",
+                "Gift payment timed out. The sender may be offline, or this gift has already been claimed.",
+            sender_generic_error: "Sender sent error: {{error}}",
+            receive_header: "You've been gifted some sats!",
             receive_description:
-                "Usted debe ser bastante especial. Para reclamar su dinero simplemente presione el botón grande. Los fondos serán agregados a esta billetera la próxima vez que el remitente se conecte.",
+                "You must be pretty special. To claim your money just hit the big button. Funds will be added to this wallet the next time your gifter is online.",
             receive_claimed:
-                "¡Regalo reclamado! Deberá ver el regalo reflejado en el balance en breve.",
-            receive_cta: "Reclamar Regalo",
-            receive_try_again: "Intente de Nuevo",
-            send_header: "Crear Regalo",
+                "Gift claimed! You should see the gift hit your balance shortly.",
+            receive_cta: "Claim Gift",
+            receive_try_again: "Try Again",
+            send_header: "Create Gift",
             send_explainer:
-                "Regale sats. Cree una URL de regalo de Mutiny que pueda ser reclamado por cualquiera con un navegador.",
-            send_name_required: "Esto es para sus registros",
-            send_name_label: "Nombre del Recipiente",
-            send_header_claimed: "¡Regalo Recibido!",
-            send_claimed: "Su regalo ha sido reclamado. Gracias por compartir.",
-            send_sharable_header: "URL compartible",
+                "Give the gift of sats. Create a Mutiny gift URL that can be claimed by anyone with a web browser.",
+            send_name_required: "This is for your records",
+            send_name_label: "Recipient Name",
+            send_header_claimed: "Gift Received!",
+            send_claimed: "Your gift has been claimed. Thanks for sharing.",
+            send_sharable_header: "Sharable URL",
             send_instructions:
-                "Copie este URL de regalo a su recipiente, o pídale que escanee este código QR con su billetera.",
-            send_another: "Crear Otro",
+                "Copy this gift URL to your recipient, or ask them to scan this QR code with their wallet.",
+            send_another: "Create Another",
             send_small_warning:
-                "Un usuario nuevo de Mutiny no podrá redimir menos de 100k sats.",
-            send_cta: "Crear un regalo",
-            send_delete_button: "Eliminar Regalo",
+                "A brand new Mutiny user won't be able to redeem fewer than 100k sats.",
+            send_cta: "Create a gift",
+            send_delete_button: "Delete Gift",
             send_delete_confirm:
-                "¿Está seguro de querer eliminar este regalo? ¿Es este su momento de tirar de la alfombra?",
+                "Are you sure you want to delete this gift? Is this your rugpull moment?",
             send_tip:
-                "Su copia de la Billetera Mutiny necesita estar abierta para que el regalo sea reclamado.",
+                "Your copy of Mutiny Wallet needs to be open for the gift to be redeemed.",
             need_plus:
-                "Actualice a Mutiny+ para habilitar regalos. La funcionalidad de regalos le permite crear una URL de regalo de Mutiny que puede ser reclamado por cualquiera con un navegador."
+                "Upgrade to Mutiny+ to enable gifting. Gifting allows you to create a Mutiny gift URL that can be claimed by anyone with a web browser."
         }
     },
     swap: {
-        peer_not_found: "Par no encontrado",
+        peer_not_found: "Peer not found",
         channel_too_small:
-            "Es simplemente tonto crear un canal más pequeño que {{amount}} sats",
-        insufficient_funds: "No tiene suficientes fondos para crear este canal",
-        header: "Hacer un Swap a Lightning",
-        initiated: "Swap Iniciado",
-        sats_added: "+{{amount}} sats serán agregados a su balance lightning",
-        use_existing: "Usar par existente",
-        choose_peer: "Escoja un par",
-        peer_connect_label: "Conectar a un par nuevo",
-        peer_connect_placeholder: "Cadena de caracteres de conexión a par",
-        connect: "Conectar",
-        connecting: "Conectando...",
-        confirm_swap: "Confirmar Swap"
+            "It's just silly to make a channel smaller than {{amount}} sats",
+        insufficient_funds: "You don't have enough funds to make this channel",
+        header: "Swap to Lightning",
+        initiated: "Swap Initiated",
+        sats_added: "+{{amount}} sats will be added to your Lightning balance",
+        use_existing: "Use existing peer",
+        choose_peer: "Choose a peer",
+        peer_connect_label: "Connect to new peer",
+        peer_connect_placeholder: "Peer connect string",
+        connect: "Connect",
+        connecting: "Connecting...",
+        confirm_swap: "Confirm Swap"
     },
     swap_lightning: {
-        insufficient_funds:
-            "No tiene fondos suficientes para hacer swap a lightning",
-        header: "Hacer Swap a Lightning",
-        header_preview: "Previsualizar Swap",
-        completed: "Swap Completado",
+        insufficient_funds: "You don't have enough funds to swap to lightning",
+        header: "Swap to Lightning",
+        header_preview: "Preview Swap",
+        completed: "Swap Completed",
         too_small:
-            "Monto invalido ingresado. Tiene que hacer un swap de por lo menos 100k sats.",
+            "Invalid amount entered. You need to swap at least 100k sats.",
         sats_added:
-            "+{{amount}} sats han sido agregados a su balance de Lightning",
-        sats_fee: "+{{amount}} sats de comisión",
-        confirm_swap: "Confirmar Swap",
-        preview_swap: "Previsualizar Comisión de Swap"
+            "+{{amount}} sats have been added to your Lightning balance",
+        sats_fee: "+{{amount}} sats fee",
+        confirm_swap: "Confirm Swap",
+        preview_swap: "Preview Swap Fee"
     },
     reload: {
-        mutiny_update: "Actualización de Mutiny",
+        mutiny_update: "Mutiny Update",
         new_version_description:
-            "Una nueva versión de Mutiny ha sido almacenada en el caché, recargue para empezar a usarla.",
-        reload: "Recargar"
+            "New version of Mutiny has been cached, reload to start using it.",
+        reload: "Reload"
     },
     error: {
         title: "Error",
-        emergency_link: "kit de emergencia.",
-        reload: "Recargar",
+        emergency_link: "emergency kit.",
+        reload: "Reload",
         restart: {
-            title: "¿Algo *extra* absurdo sucediendo? ¡Detenga los nodos!",
-            start: "Iniciar",
-            stop: "Parar"
+            title: "Something *extra* screwy going on? Stop the nodes!",
+            start: "Start",
+            stop: "Stop"
         },
         general: {
-            oh_no: "¡Oh no!",
-            never_should_happen: "Esto nunca debió suceder",
+            oh_no: "Oh no!",
+            never_should_happen: "This never should've happened",
             try_reloading:
-                'Intente recargar esta página o haga clic en el botón "Qué Pena". Si continua teniendo problemas,',
-            support_link: "contáctenos para recibir soporte.",
-            getting_desperate: "¿Desesperado? Intente"
+                'Try reloading this page or clicking the "Dangit" button. If you keep having problems,',
+            support_link: "reach out to us for support.",
+            getting_desperate: "Getting desperate? Try the"
         },
         load_time: {
-            stuck: "¿Atascado en esta pantalla? Intente recargar. Si eso no funciona, intente"
+            stuck: "Stuck on this screen? Try reloading. If that doesn't work, check out the"
         },
         not_found: {
-            title: "No Encontrado",
-            wtf_paul: "Esto es probablemente culpa de Paul."
+            title: "Not Found",
+            wtf_paul: "This is probably Paul's fault."
         },
         reset_router: {
             payments_failing:
-                "¿No puede hacer pagos? Intente reiniciar el enrutador de lightning.",
-            reset_router: "Reiniciar Enrutador"
+                "Failing to make payments? Try resetting the lightning router.",
+            reset_router: "Reset Router"
         },
         resync: {
             incorrect_balance:
-                "¿El balance en-cadena parece incorrecto? Intente resincronizar la billetera en-cadena.",
-            resync_wallet: "Resincronizar billetera"
+                "On-chain balance seems incorrect? Try re-syncing the on-chain wallet.",
+            resync_wallet: "Resync wallet"
         },
         on_boot: {
             existing_tab: {
-                title: "Múltiples pestañas detectadas",
+                title: "Multiple tabs detected",
                 description:
-                    "Mutiny solo puede ser usado en una pestaña a la vez. Parece que tiene otra pestaña abierta con Mutiny ejecutándose. Por favor cierre esa pestaña y refresque esta página, o cierre esta pestaña y refresque la otra."
+                    "Mutiny can only be used in one tab at a time. It looks like you have another tab open with Mutiny running. Please close that tab and refresh this page, or close this tab and refresh the other one."
             },
             already_running: {
-                title: "Mutiny puede estar ejecutándose en otro dispositivo",
+                title: "Mutiny may be running on another device",
                 description:
-                    "Mutiny solo puede ser usado en un lugar a la vez. Parece que tiene otro dispositivo o navegador usando esta billetera. Si ha cerrado Mutiny recientemente en otro dispositivo, por favor espere unos minutos e intente de nuevo.",
-                retry_again_in: "Intente de nuevo en",
-                seconds: "segundos"
+                    "Mutiny can only be used in one place at a time. It looks like you have another device or browser using this wallet. If you've recently closed Mutiny on another device, please wait a few minutes and try again.",
+                retry_again_in: "Retry again in",
+                seconds: "seconds"
             },
             incompatible_browser: {
-                title: "Navegador incompatible",
-                header: "Navegador incompatible detectado",
+                title: "Incompatible browser",
+                header: "Incompatible browser detected",
                 description:
-                    "Mutiny requiere un navegador moderno que soporte WebAssembly, LocalStorage, e IndexedDB. Algunos navegadores deshabilitan estas funcionalidades en modo privado.",
+                    "Mutiny requires a modern browser that supports WebAssembly, LocalStorage, and IndexedDB. Some browsers disable these features in private mode.",
                 try_different_browser:
-                    'Por favor asegúrese de que su navegador soporte todas estas funcionalidades, o considere intentar con otro navegador. También puede intentar deshabilitar ciertas extensiones o "escudos" que puedan bloquear estas funcionalidades.',
+                    'Please make sure your browser supports all these features, or consider trying another browser. You might also try disabling certain extensions or "shields" that block these features.',
                 browser_storage:
-                    "(Nos encantaría soportar más navegadores privados, pero tenemos que guardar los datos de su billetera en el almacenamiento del navegador o de lo contrario perdería esos fondos.)",
-                browsers_link: "Navegadores Soportados"
+                    "(We'd love to support more private browsers, but we have to save your wallet data to browser storage or else you will lose funds.)",
+                browsers_link: "Supported Browsers"
             },
             loading_failed: {
-                title: "Fallo al cargar",
-                header: "Fallo al cargar Mutiny",
-                description: "Algo no funcionó al iniciar la Billetera Mutiny.",
+                title: "Failed to load",
+                header: "Failed to load Mutiny",
+                description:
+                    "Something went wrong while booting up Mutiny Wallet.",
                 repair_options:
-                    "Si su billetera parece dañada, aquí hay algunas herramientas para tratar depurarla y repararla.",
+                    "If your wallet seems broken, here are some tools to try to debug and repair it.",
                 questions:
-                    "Si tiene alguna pregunta acerca de qué hacen estos botones, por favor",
-                support_link: "contáctenos para recibir soporte.",
+                    "If you have any questions on what these buttons do, please",
+                support_link: "reach out to us for support.",
                 services_down:
-                    "Parece que uno de los servicios de Mutiny está abajo. Por favor intente de nuevo más tarde.",
+                    "It looks like one of Mutiny's services is down. Please try again later.",
                 in_the_meantime:
-                    "Mientras tanto si desea acceder a sus fondos en-cadena puede cargar Mutiny en",
-                safe_mode: "Modo Seguro"
+                    "In the meantime if you want to access your on-chain funds you can load Mutiny in",
+                safe_mode: "Safe Mode"
             }
         }
     },
     modals: {
-        share: "Compartir",
-        details: "Detalles",
+        share: "Share",
+        details: "Details",
         loading: {
-            loading: "Cargando: {{stage}}",
-            default: "Apenas empezando",
-            double_checking: "Verificando de nuevo algo",
-            downloading: "Descargando",
-            setup: "Configuración",
-            done: "Hecho"
+            loading: "Loading: {{stage}}",
+            default: "Just getting started",
+            double_checking: "Double checking something",
+            downloading: "Downloading",
+            setup: "Setup",
+            done: "Done"
         },
         onboarding: {
-            welcome: "¡Bienvenido!",
+            welcome: "Welcome!",
             restore_from_backup:
-                "Si ha usado Mutiny antes puede restaurar desde un respaldo ¡De lo contrario puede saltarse esto y disfrutar su nueva billetera!",
-            not_available: "Todavía no hacemos eso",
-            secure_your_funds: "Asegure sus fondos"
+                "If you've used Mutiny before you can restore from a backup. Otherwise you can skip this and enjoy your new wallet!",
+            not_available: "We don't do that yet",
+            secure_your_funds: "Secure your funds"
         },
         more_info: {
-            whats_with_the_fees: "¿Cuál es el asunto con las comisiones?",
+            whats_with_the_fees: "What's with the fees?",
             self_custodial:
-                "Mutiny es una billetera auto-custodial. Para iniciar un pago lightning debemos abrir un canal lightning, lo que requiere un monto mínimo y una comisión de instalación.",
+                "Mutiny is a self-custodial wallet. To initiate a lightning payment we must open a lightning channel, which requires a minimum amount and a setup fee.",
             future_payments:
-                "Pagos futuros, tanto envíos como recepciones, solamente incurrirán en comisiones de red y una comisión nominal de servicio a menos de que su canal se quede sin capacidad entrante.",
-            liquidity: "Aprenda más sobre liquidez"
+                "Future payments, both send and receive, will only incur normal network fees and a nominal service fee unless your channel runs out of inbound capacity.",
+            liquidity: "Learn more about liquidity"
         },
         confirm_dialog: {
-            are_you_sure: "¿Está seguro?",
-            cancel: "Cancelar",
-            confirm: "Confirmar"
+            are_you_sure: "Are you sure?",
+            cancel: "Cancel",
+            confirm: "Confirm"
         },
         lnurl_auth: {
-            auth_request: "Solicitud de autenticación",
-            login: "Acceder",
-            decline: "Declinar",
-            error: "Eso no funcionó por alguna razón.",
-            authenticated: "¡Autenticado!"
+            auth_request: "Authentication Request",
+            login: "Login",
+            decline: "Decline",
+            error: "That didn't work for some reason.",
+            authenticated: "Authenticated!"
         }
     }
 };
