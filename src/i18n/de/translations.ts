@@ -143,28 +143,28 @@ export default {
             of: "von",
             sats_sent: "Sats gesendet"
         },
-        what_for: "What's this for?",
-        zap_note: "Zap note",
+        what_for: "Wozu?",
+        zap_note: "Zap Notiz",
         error_low_balance:
-            "We do not have enough balance to pay the given amount.",
+            "Der Kontostand ist zu niedrig, um den Betrag zu überweisen.",
         error_invoice_match:
-            "Amount requested, {{amount}} SATS, does not equal amount set.",
-        error_channel_reserves: "Not enough available funds.",
-        error_address: "Invalid Lightning Address",
+            "Angeforderter Betrag, {{amount}} SATS, ist nicht identisch mit dem gesetzten Betrag.",
+        error_channel_reserves: "Kontostand zu niedrig.",
+        error_address: "Ungültige Lightning Adresse",
         error_channel_reserves_explained:
-            "A portion of your channel balance is reserved for fees. Try sending a smaller amount or adding funds.",
-        error_clipboard: "Clipboard not supported",
-        error_keysend: "Keysend failed",
-        error_LNURL: "LNURL Pay failed",
-        error_expired: "Invoice is expired",
+            "Ein Teil deines Kontostands ist reserviert für Gebühren. Versuche kleinere Beträge zu senden oder den Kontostand zu erhöhen.",
+        error_clipboard: "Zwischenablage wird nicht unterstützt",
+        error_keysend: "Sendung fehlgeschlagen",
+        error_LNURL: "LNURL Bezahlung fehlgeschlagen",
+        error_expired: "Rechnung ist abgelaufen",
         payjoin_send:
-            "This is a payjoin! The Mutiny will continue until privacy improves",
-        payment_pending: "Payment pending",
+            "Das ist ein Payjoin! Die Meuterei wird so lange andauern, bis sich die Privatsphäre verbessert",
+        payment_pending: "Zahlung ausstehend",
         payment_pending_description:
-            "It's taking a while, but it's possible this payment may still go through. Please check 'Activity' for the current status.",
+            "Es dauert eine Weile, aber es ist immer noch möglich, dass die Zahlung durchgeht. Bitte bei 'Aktivitäten' den aktuellen Status prüfen.",
         hodl_invoice_warning:
-            "This is a hodl invoice. Payments to hodl invoices can cause channel force closes, which results in high on-chain fees. Pay at your own risk!",
-        private: "Private",
+            "Das ist eine Hodl Rechnung. Zahlungen zu Hodl Rechnungen kann zu Schliessungen von Kanälen mit hohen On-chain Gebühren führen. Bezahlung auf eigenes Risiko!",
+        private: "Privat",
         anonzap: "Anon Zap"
     },
     feedback: {
