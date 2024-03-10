@@ -54,14 +54,14 @@ export default {
         link_to_nostr_sync: "Nostr Kontakte importieren"
     },
     redeem: {
-        redeem_bitcoin: "Redeem Bitcoin",
+        redeem_bitcoin: "Bitcoin einlösen",
         lnurl_amount_message:
-            "Enter withdrawal amount between {{min}} and {{max}} sats",
-        lnurl_redeem_failed: "Withdrawal Failed",
-        lnurl_redeem_success: "Payment Received"
+            "Auszubezahlender Betrag zwischen {{min}} und {{max}} Sats eingeben",
+        lnurl_redeem_failed: "Auszahlung abgebrochen",
+        lnurl_redeem_success: "Zahlung erhalten"
     },
     receive: {
-        receive_bitcoin: "Bitcoin einfordern",
+        receive_bitcoin: "Bitcoin erhalten",
         edit: "Bearbeiten",
         checking: "Überprüfung",
         choose_format: "Format wählen",
@@ -70,78 +70,78 @@ export default {
         receive_add_the_sender: "Absenderinformationen hinzufügen",
         keep_mutiny_open: "Bitte Mutiny geöffnet lassen, um die Zahlung abzuschliessen.",
         choose_payment_format: "Zahlungsformat auswählen",
-        unified_label: "Unified",
+        unified_label: "Vereinheitlicht",
         unified_caption:
-            "Combines a bitcoin address and a lightning invoice. Sender chooses payment method.",
-        lightning_label: "Lightning invoice",
+            "Kombiniert eine Bitcoin Adresse mit einer Lightning Rechnung. Der Sender wählt die Zahlungsmethode.",
+        lightning_label: "Lightning Rechnung",
         lightning_caption:
-            "Ideal for small transactions. Usually lower fees than on-chain.",
-        onchain_label: "Bitcoin address",
+            "Ideal für kleine Beträge. In der Regel mit geringeren Gebühren als eine On-chain Transaktion.",
+        onchain_label: "Bitcoin Adresse",
         onchain_caption:
-            "On-chain, just like Satoshi did it. Ideal for very large transactions.",
+            "On-chain Transaktion, wie es Satoshi getan hat. Ideal für sehr grosse Beträge.",
         unified_setup_fee:
-            "A lightning setup fee of {{amount}} SATS will be charged if paid over lightning.",
+            "Bei einer Zahlung über Lightning wird eine Einrichtungsgebühr von {{amount}} SATS verrechnet.",
         lightning_setup_fee:
-            "A lightning setup fee of {{amount}} SATS will be charged for this receive.",
-        amount: "Amount",
-        fee: "+ Fee",
+            "Beim Erhalten einer Zahlung wird eine Lightning Einrichtungsgebühr von {{amount}} SATS verrechnet.",
+        amount: "Betrag",
+        fee: "+ Gebühr",
         total: "Total",
-        spendable: "Spendable",
-        channel_size: "Channel size",
-        channel_reserve: "- Channel reserve",
+        spendable: "Verfügbar",
+        channel_size: "Kanalgrösse",
+        channel_reserve: "- Kanalreserve",
         error_under_min_lightning:
-            "Defaulting to On-chain. Amount is too small for your initial Lightning receive.",
+            "Standardmässig über On-chain. Betrag ist zu klein für den Empfang deiner initiale Lightningzahlung.",
         error_creating_unified:
-            "Defaulting to On-chain. Something went wrong when creating the unified address",
+            "Standardmässig über On-chain. Etwas ist schief gelaufen bei der Erstellung einer einheitlichen Adresse",
         error_creating_address:
-            "Something went wrong when creating the on-chain address",
+            "Etwas ist schief gelaufen bei der Erstellung einer On-chain Adresse",
         amount_editable: {
             receive_too_small:
-                "A lightning setup fee might be deducted from the requested amount.",
+                "Eine Lightning Einrichtungsgebühr wird möglicherweise vom angeforderten Betrag abgezogen.",
             setup_fee_lightning:
-                "A lightning setup fee will be charged if paid over lightning.",
-            more_than_21m: "There are only 21 million bitcoin.",
-            set_amount: "Set amount",
+                "Beim Bezahlen über Lightning wird eine Einrichtungsgebühr fällig.",
+            more_than_21m: "Es gibt nur 21 Millionen Bitcoin.",
+            set_amount: "Bestimme den Betrag",
             max: "MAX",
             fix_amounts: {
                 ten_k: "10k",
                 one_hundred_k: "100k",
                 one_million: "1m"
             },
-            del: "DEL",
-            balance: "Balance"
+            del: "LÖSCHEN",
+            balance: "Kontostand"
         },
         integrated_qr: {
             onchain: "On-chain",
             lightning: "Lightning",
-            unified: "Unified",
-            gift: "Lightning Gift"
+            unified: "Vereinheitlicht",
+            gift: "Lightning Geschenk"
         },
-        remember_choice: "Remember my choice next time",
-        what_for: "What's this for?"
+        remember_choice: "Auswahl merken",
+        what_for: "Wozu?"
     },
     send: {
         search: {
-            placeholder: "Name, address, invoice",
-            paste: "Paste",
-            contacts: "Contacts",
-            global_search: "Global search",
-            no_results: "No results found for"
+            placeholder: "Name, Adresse, Rechnung",
+            paste: "Einfügen",
+            contacts: "Kontakte",
+            global_search: "Globale Suche",
+            no_results: "Keine Resultate für"
         },
-        sending: "Sending...",
-        confirm_send: "Confirm Send",
-        contact_placeholder: "Add the receiver for your records",
-        start_over: "Start Over",
-        send_bitcoin: "Send Bitcoin",
-        paste: "Paste",
-        scan_qr: "Scan QR",
-        payment_initiated: "Payment Initiated",
-        payment_sent: "Payment Sent",
-        destination: "Destination",
-        no_payment_info: "No payment info",
+        sending: "Senden...",
+        confirm_send: "Sendung bestätigt",
+        contact_placeholder: "Empfänger speichern",
+        start_over: "Start über",
+        send_bitcoin: "Bitcoin senden",
+        paste: "Einfügen",
+        scan_qr: "QR scannen",
+        payment_initiated: "Zahlung initiiert",
+        payment_sent: "Zahlung gesendet",
+        destination: "Ziel",
+        no_payment_info: "Keine Zahlungsinfo",
         progress_bar: {
-            of: "of",
-            sats_sent: "sats sent"
+            of: "von",
+            sats_sent: "Sats gesendet"
         },
         what_for: "What's this for?",
         zap_note: "Zap note",
