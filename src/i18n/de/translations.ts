@@ -243,21 +243,21 @@ export default {
         }
     },
     scanner: {
-        paste: "Paste Something",
-        cancel: "Cancel"
+        paste: "Füge etwas ein",
+        cancel: "Abbrechen"
     },
     settings: {
-        header: "Settings",
-        support: "Learn how to support Mutiny",
-        experimental_features: "Experiments",
+        header: "Einstellungen",
+        support: "Lerne wie du Mutiny unterstützen kannst",
+        experimental_features: "Experimente",
         debug_tools: "DEBUG TOOLS",
-        danger_zone: "Danger zone",
-        general: "General",
+        danger_zone: "Gefahrenzone",
+        general: "Allgemein",
         version: "Version:",
         admin: {
-            title: "Admin Page",
-            caption: "Our internal debug tools. Use wisely!",
-            header: "Secret Debug Tools",
+            title: "Admin Seite",
+            caption: "Unsere internen Debug-Tools. Verwende sie mit Bedacht!",
+            header: "Geheime Debug Tools",
             warning_one:
                 "If you know what you're doing you're in the right place.",
             warning_two:
