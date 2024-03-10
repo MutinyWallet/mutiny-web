@@ -236,7 +236,7 @@ export default {
             confirmed: "Bestätigt",
             unconfirmed: "Unbestätigt",
             sweep_delay:
-                "Es kann einige Tage dauern, bis die Funds wieder in die Wallet gelangen",
+                "Es kann einige Tage dauern, bis deine Einlagen wieder in der Wallet verfügbar sind",
             no_details:
                 "Keine Kanaldetails gefunden, was bedeutet, dass dieser Kanal wahrscheinlich geschlossen wurde.",
             back_home: "zurück zur Startseite"
@@ -259,44 +259,44 @@ export default {
             caption: "Unsere internen Debug-Tools. Verwende sie mit Bedacht!",
             header: "Geheime Debug Tools",
             warning_one:
-                "If you know what you're doing you're in the right place.",
+                "Wenn du weisst was du tust, bist du am richtigen Ort.",
             warning_two:
-                "These are internal tools we use to debug and test the app. Please be careful!",
+                "Das sind interne Tools, die wir fürs Debuggen und Testen der App verwenden. Bitte vorsichtig sein!",
             kitchen_sink: {
-                disconnect: "Disconnect",
+                disconnect: "Trennen",
                 peers: "Peers",
-                no_peers: "No peers",
-                refresh_peers: "Refresh Peers",
-                connect_peer: "Connect Peer",
-                expect_a_value: "Expecting a value...",
-                connect: "Connect",
-                close_channel: "Close Channel",
-                force_close: "Force close Channel",
-                abandon_channel: "Abandon Channel",
+                no_peers: "Keine Peers",
+                refresh_peers: "Peers aktualisieren",
+                connect_peer: "Peer verbinden",
+                expect_a_value: "Ein Wert wird erwartet...",
+                connect: "Verbinden",
+                close_channel: "Kanal schliessen",
+                force_close: "Kanal schliessen erzwingen",
+                abandon_channel: "Kanal verlassen",
                 confirm_close_channel:
-                    "Are you sure you want to close this channel?",
+                    "Bist du sicher, dass du den Kanal schliessen willst?",
                 confirm_force_close:
-                    "Are you sure you want to force close this channel? Your funds will take a few days to redeem on chain.",
+                    "Bist du sicher, dass du die Kanalschliessung erzwingen willst? Deine Einlagen benötigen ein paar Tage, bis sie On-chain verfügbar sind.",
                 confirm_abandon_channel:
-                    "Are you sure you want to abandon this channel? Typically only do this if the opening transaction will never confirm. Otherwise, you will lose funds.",
-                channels: "Channels",
-                no_channels: "No Channels",
-                refresh_channels: "Refresh Channels",
+                    "Bist du sicher, dass du diesen Kanal verlassen willst? Typischerweise wird diese Aktion nur ausgeführt, wenn die eröffnende Transaktion nicht bestätigt werden kann. Andernfalls wirst du deine Einlagen verlieren.",
+                channels: "Kanäle",
+                no_channels: "Keine Kanäle",
+                refresh_channels: "Kanäle aktualisieren",
                 pubkey: "Pubkey",
-                amount: "Amount",
-                open_channel: "Open Channel",
+                amount: "Betrag",
+                open_channel: "Kanal eröffnen",
                 nodes: "Nodes",
-                no_nodes: "No nodes",
-                enable_zaps_to_hodl: "Enable zaps to hodl invoices?",
+                no_nodes: "Keine Nodes",
+                enable_zaps_to_hodl: "Zaps nach hodl invoices erlauben?",
                 zaps_to_hodl_desc:
-                    "Zaps to hodl invoices can result in channel force closes, which results in high on-chain fees. Use at your own risk!",
-                zaps_to_hodl_enable: "Enable hodl zaps",
-                zaps_to_hodl_disable: "Disable hodl zaps"
+                    "Zaps nach hodl invoices kann zu erzwungenen Kanalschliessungen und hohen On-chain Gebühren führen. Benutzung auf eigene Gefahr!",
+                zaps_to_hodl_enable: "Hodl Zaps aktivieren",
+                zaps_to_hodl_disable: "Hodl Zaps deaktivieren"
             }
         },
         backup: {
             title: "Backup",
-            secure_funds: "Let's get these funds secured.",
+            secure_funds: "Sorgen wir dafür, dass diese Gelder gesichert werden.",
             twelve_words_tip:
                 "We'll show you 12 words. You write down the 12 words.",
             warning_one:
