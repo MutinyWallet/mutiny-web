@@ -410,93 +410,93 @@ export default {
             }
         },
         encrypt: {
-            title: "Change Password",
-            caption: "Backup first to unlock encryption",
-            header: "Encrypt your seed words",
+            title: "Passwort ändern",
+            caption: "Bitte zuerst ein Backup erstellen, um die Verschlüsselung zu entsperren",
+            header: "Deine Seed-Wörter entschlüsseln",
             hot_wallet_warning:
-                'Mutiny is a "hot wallet" so it needs your seed word to operate, but you can optionally encrypt those words with a password.',
+                'Mutiny ist eine "Hot Wallet". Um zu funktionieren, benötigt es deine Seed-Wörter. Du kannst aber optional deine Seed-Wörter mit einem Passwort verschlüsseln.',
             password_tip:
-                "That way, if someone gets access to your browser, they still won't have access to your funds.",
+                "Auf diese Weise hat jemand, der Zugriff auf deinen Browser erhält, immer noch keinen Zugriff auf dein Geld.",
             optional: "(optional)",
-            existing_password: "Existing password",
+            existing_password: "Bestehendes Passwort",
             existing_password_caption:
-                "Leave blank if you haven't set a password yet.",
-            new_password_label: "Password",
-            new_password_placeholder: "Enter a password",
+                "Leer lassen, wenn du noch kein Passwort gesetzt hast.",
+            new_password_label: "Passwort",
+            new_password_placeholder: "Ein Passwort eingeben",
             new_password_caption:
-                "This password will be used to encrypt your seed words. If you forget it, you will need to re-enter your seed words to access your funds. You did write down your seed words, right?",
-            confirm_password_label: "Confirm Password",
-            confirm_password_placeholder: "Enter the same password",
-            encrypt: "Encrypt",
-            skip: "Skip",
-            error_match: "Passwords do not match",
+                "Dieses Passwort wird genutzt, um deine Seed-Wörter zu verschlüsseln. Wenn du es vergisst, musst du deine Seed-Wörter wieder eingeben, um an deine Einlagen zu gelangen. Du hast deine Seed-Wörter aufgeschrieben, oder?",
+            confirm_password_label: "Passwort bestätigen",
+            confirm_password_placeholder: "Passwort wiederholen",
+            encrypt: "Verschlüsseln",
+            skip: "Überspringen",
+            error_match: "Passwort stimmt nicht überein",
             error_same_as_existingpassword:
-                "New password must not match existing password"
+                "Das neue Passwort darf nicht mit dem bestehenden Passwort übereinstimmen"
         },
         decrypt: {
-            title: "Enter your password",
-            decrypt_wallet: "Decrypt Wallet",
-            forgot_password_link: "Forgot Password?",
-            error_wrong_password: "Invalid Password"
+            title: "Passwort eingeben",
+            decrypt_wallet: "Wallet entschlüsseln",
+            forgot_password_link: "Passwort vergessen?",
+            error_wrong_password: "Passwort ungültig"
         },
         currency: {
-            title: "Currency",
-            caption: "Choose your preferred currency pair",
-            select_currency: "Select Currency",
-            select_currency_label: "Currency Pair",
+            title: "Währung",
+            caption: "Wähle dein bevorzugtes Währungspaar",
+            select_currency: "Währung auswählen",
+            select_currency_label: "Währungspaar",
             select_currency_caption:
-                "Choosing a new currency will resync the wallet to fetch a price update",
+                "Wenn du eine neue Währung auswählst, wird das Wallet neu synchronisiert und die Preise aktualisiert",
             request_currency_support_link:
-                "Request support for more currencies",
-            error_unsupported_currency: "Please Select a supported currency."
+                "Unterstützung anfordern für weitere Währungen",
+            error_unsupported_currency: "Bitte eine unterstützte Währung auswählen."
         },
         language: {
-            title: "Language",
-            caption: "Choose your preferred language",
-            select_language: "Select Language",
-            select_language_label: "Language",
+            title: "Sprache",
+            caption: "Wähle deine bevorzugte Sprache",
+            select_language: "Sprache auswählen",
+            select_language_label: "Sprache",
             select_language_caption:
-                "Choosing a new currency will change the wallet language, ignoring current browser language",
-            request_language_support_link: "Request support for more languages",
-            error_unsupported_language: "Please Select a supported language."
+                "Wenn du eine neue Sprache auswählst, wird die Sprache in der Wallet geändert, unabhängig davon welche Sprache dein Browser verwendet",
+            request_language_support_link: "Fordere Unterstützung für weitere Sprachen an",
+            error_unsupported_language: "Bitte eine unterstützte Sprache auswählen."
         },
         lnurl_auth: {
             title: "LNURL Auth",
             auth: "Auth",
-            expected: "Expecting something like LNURL..."
+            expected: "Erwarte etwas wie LNURL..."
         },
         plus: {
             title: "Mutiny+",
-            join: "Join",
-            sats_per_month: "for {{amount}} sats a month.",
+            join: "Mitmachen",
+            sats_per_month: "für {{amount}} Sats im Monat.",
             lightning_balance:
-                "You'll need at least {{amount}} sats in your lightning balance to get started. Try before you buy!",
-            restore: "Restore Subscription",
-            ready_to_join: "Ready to join",
-            click_confirm: "Click confirm to pay for your first month.",
-            open_source: "Mutiny is open source and self-hostable.",
-            optional_pay: "But also you can pay for it.",
-            paying_for: "Paying for",
+                "Du benötigst mindestens {{amount}} Sats in deiner Lightning Wallet, um zu starten. Probiere es aus bevor du kaufst!",
+            restore: "Abonnement wiederherstellen",
+            ready_to_join: "Bereit zum Mitmachen",
+            click_confirm: "Klicke auf bestätigen, um deinen ersten Monat zu bezahlen.",
+            open_source: "Mutiny ist Open Source und selbstverwahrend.",
+            optional_pay: "Aber du kannst auch dafür bezahlen.",
+            paying_for: "Dafür bezahlen",
             supports_dev:
-                "helps support ongoing development and unlocks early access to new features and premium functionality:",
-            thanks: "You're part of the mutiny! Enjoy the following perks:",
-            renewal_time: "You'll get a renewal payment request around",
-            cancel: "To cancel your subscription just don't pay. You can also disable the Mutiny+",
-            wallet_connection: "Wallet Connection.",
-            subscribe: "Subscribe",
-            error_no_plan: "No plans found",
-            error_failure: "Couldn't subscribe",
-            error_no_subscription: "No existing subscription found",
+                "unterstützt die laufende Entwicklung und ermöglicht den frühzeitigen Zugriff auf neue Features und Premium-Funktionalitäten:",
+            thanks: "Du bist Teil von Mutiny! Genieße die folgenden Vorteile:",
+            renewal_time: "Du erhältst eine Zahlungsaufforderung für die Verlängerung",
+            cancel: "Um dein Abonnement zu beenden, bezahle einfach nicht mehr. Du kannst Mutiny+ auch deaktivieren",
+            wallet_connection: "Wallet Verbindung.",
+            subscribe: "Einschreiben",
+            error_no_plan: "Kein Abonnement gefunden",
+            error_failure: "Konnte nicht abonniert werden",
+            error_no_subscription: "Kein bestehendes Abonnement gefunden",
             error_expired_subscription:
-                "Your subscription has expired, click join to renew",
-            satisfaction: "Smug satisfaction",
-            gifting: "Gifting",
-            multi_device: "Multi-device access",
-            ios_testflight: "iOS TestFlight access",
-            more: "... and more to come",
+                "Dein Abonnement ist abgelaufen, klicke auf Mitmachen, um es zu erneuern",
+            satisfaction: "Selbstgefällige Zufriedenheit",
+            gifting: "Schenken",
+            multi_device: "Zugriff mit mehreren Geräten",
+            ios_testflight: "Zugang zu iOS TestFlight",
+            more: "... und es wird noch mehr kommen",
             cta_description:
-                "Enjoy early access to new features and premium functionality.",
-            cta_but_already_plus: "Thank you for your support!"
+                "Genieße frühzeitigen Zugriff auf neue Features und Premium-Funktionalitäten.",
+            cta_but_already_plus: "Danke für deinen Support!"
         },
         restore: {
             title: "Restore",
