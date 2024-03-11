@@ -70,7 +70,7 @@ export default {
         receive_add_the_sender: "Absenderinformationen hinzufügen",
         keep_mutiny_open: "Bitte Mutiny geöffnet lassen, um die Zahlung abzuschliessen.",
         choose_payment_format: "Zahlungsformat auswählen",
-        unified_label: "Vereinheitlicht",
+        unified_label: "Kombiniert",
         unified_caption:
             "Kombiniert eine Bitcoin Adresse mit einer Lightning Rechnung. Der Sender wählt die Zahlungsmethode.",
         lightning_label: "Lightning Rechnung",
@@ -114,7 +114,7 @@ export default {
         integrated_qr: {
             onchain: "On-chain",
             lightning: "Lightning",
-            unified: "Vereinheitlicht",
+            unified: "Kombiniert",
             gift: "Lightning Geschenk"
         },
         remember_choice: "Auswahl merken",
@@ -296,117 +296,117 @@ export default {
         },
         backup: {
             title: "Backup",
-            secure_funds: "Sorgen wir dafür, dass diese Gelder gesichert werden.",
+            secure_funds: "Sorgen wir dafür, dass deine Einlagen gesichert werden.",
             twelve_words_tip:
-                "We'll show you 12 words. You write down the 12 words.",
+                "Wir werden dir 12 Wörter zeigen. Du schreibst die 12 Wörter auf.",
             warning_one:
-                "If you clear your browser history, or lose your device, these 12 words are the only way you can restore your wallet.",
-            warning_two: "Mutiny is self-custodial. It's all up to you...",
-            confirm: "I wrote down the words",
-            responsibility: "I understand that my funds are my responsibility",
-            liar: "I'm not lying just to get this over with",
+                "Wenn du deine Browser-Historie löschst oder dein Gerät verlierst sind diese 12 Wörter der einzige Weg, um dein Wallet wiederherzustellen.",
+            warning_two: "Mutiny ist eine selbst verwahrende Wallet. Du allein bist dafür verantwortlich...",
+            confirm: "Ich habe die Wörter aufgeschrieben",
+            responsibility: "Ich bin mir bewusst, dass meine Einlagen in meiner Verantwortung sind",
+            liar: "Ich lüge nicht, nur um das hinter mich zu bringen",
             seed_words: {
-                reveal: "TAP TO REVEAL SEED WORDS",
-                hide: "HIDE",
-                copy: "Dangerously Copy to Clipboard",
-                copied: "Copied!"
+                reveal: "TIPPE, UM DIE SEED-WÖRTER ZU ENTDECKEN",
+                hide: "VERSTECKEN",
+                copy: "Gefährliches Kopieren in die Zwischenablage",
+                copied: "Kopiert!"
             }
         },
         channels: {
-            title: "Lightning Channels",
+            title: "Lightning Kanäle",
             outbound: "Outbound",
             inbound: "Inbound",
             reserve: "Reserve",
-            have_channels: "You have",
-            have_channels_one: "lightning channel.",
-            have_channels_many: "lightning channels.",
+            have_channels: "Du hast",
+            have_channels_one: "Lightning Kanal.",
+            have_channels_many: "lightning Kanäle.",
             inbound_outbound_tip:
-                "Outbound is the amount of money you can spend on lightning. Inbound is the amount you can receive without incurring a lightning service fee.",
+                "Outbound ist der Betrag, den du über Lightning ausgeben kannst. Inbound ist der Betrag, den du über Lightning empfangen kannst ohne eine Lightning Servicegebühr zu bezahlen.",
             reserve_tip:
-                "About 1% of your channel balance is reserved on lightning for fees. Additional reserves are required for channels you opened via swap.",
+                "Um die 1% deines Kontostandes ist reserviert, um Lightning Gebühren zu bezahlen. Zusätzliche Reserven sind nötig, um Kanäle via Swap zu öffnen.",
             no_channels:
-                "It looks like you don't have any channels yet. To get started, receive some sats over lightning, or swap some on-chain funds into a channel. Get your hands dirty!",
-            close_channel: "Close",
-            online_channels: "Online Channels",
-            offline_channels: "Offline Channels",
+                "Anscheinend hast du noch keine Kanäle. Erhalte ein paar Sats über Lightning, um zu starten. Oder transferiere ein paar on-chain Bitcoin in einen Lightning Kanal. Mache ruhig deine Hände schmutzig!",
+            close_channel: "Schliessen",
+            online_channels: "Online Kanäle",
+            offline_channels: "Offline Kanäle",
             close_channel_confirm:
-                "Closing this channel will move the balance on-chain and incur an on-chain fee."
+                "Wenn der Kanal geschlossen wird, werden die Einlagen nach on-chain transferiert. Dies führt zu einer on-chain Gebühr."
         },
         connections: {
-            title: "Wallet Connections",
-            error_name: "Name cannot be empty",
-            error_connection: "Failed to create Wallet Connection",
-            error_budget_zero: "Budget must be greater than zero",
-            add_connection: "Add Connection",
-            manage_connections: "Manage Connections",
-            manage_gifts: "Manage Gifts",
-            delete_connection: "Delete",
-            new_connection: "New Connection",
-            edit_connection: "Edit Connection",
+            title: "Wallet Verbindungen",
+            error_name: "Name kann nicht leer sein",
+            error_connection: "Wallet Verbindung konnte nicht erstellt werden",
+            error_budget_zero: "Der Budgetrahmen muss grösser sein als 0",
+            add_connection: "Verbindung hinzufügen",
+            manage_connections: "Verbindungen verwalten",
+            manage_gifts: "Geschenke verwalten",
+            delete_connection: "Löschen",
+            new_connection: "Neue Verbindung",
+            edit_connection: "Verbindung bearbeiten",
             new_connection_label: "Name",
-            new_connection_placeholder: "My favorite nostr client...",
-            create_connection: "Create Connection",
-            save_connection: "Save Changes",
-            edit_budget: "Edit Budget",
-            open_app: "Open App",
-            open_in_nostr_client: "Open in Nostr Client",
-            open_in_primal: "Open in Primal",
-            nostr_client_not_found: "Nostr client not found",
+            new_connection_placeholder: "Mein Lieblings-Nostr-Client...",
+            create_connection: "Verbindung erstellen",
+            save_connection: "Änderungen speichern",
+            edit_budget: "Budgetrahmen bearbeiten",
+            open_app: "App öffnen",
+            open_in_nostr_client: "In Nostr-Client öffnen",
+            open_in_primal: "In Primal öffnen",
+            nostr_client_not_found: "Nostr-Client konnte nicht gefunden werden",
             client_not_found_description:
-                "Install a nostr client like Primal, Amethyst, or Damus to open this link.",
-            relay: "Relay",
+                "Installiere einen Nostr-Client wie Primal, Amethyst oder Damus, um den Link zu öffnen.",
+            relay: "Relais",
             authorize:
-                "Authorize external services to request payments from your wallet. Pairs great with Nostr clients.",
+                "Autorisiere externe Dienste, um Zahlungen von deinem Wallet anzufordern. Passt hervorragend zu Nostr-Clients.",
             pending_nwc: {
-                title: "Pending Requests",
-                approve_all: "Approve All",
-                deny_all: "Deny All"
+                title: "Offene Anfragen",
+                approve_all: "Alle genehmigen",
+                deny_all: "Alle ablehnen"
             },
             careful:
-                "Be careful where you share this connection! Requests within budget will paid automatically.",
-            spent: "Spent",
-            remaining: "Remaining",
-            confirm_delete: "Are you sure you want to delete this connection?",
-            budget: "Budget",
-            resets_every: "Resets every",
-            resubscribe_date: "Resubscribe on"
+                "Vorsicht beim Teilen dieser Verbindung! Anfragen innerhalb des Budgetrahmens werden automatisch bezahlt.",
+            spent: "Ausgegeben",
+            remaining: "Übrig",
+            confirm_delete: "Bist du sicher, dass du diese Verbindung löschen willst?",
+            budget: "Budgetrahmen",
+            resets_every: "Alles zurücksetzen",
+            resubscribe_date: "Erneut abonnieren"
         },
         emergency_kit: {
-            title: "Emergency Kit",
-            caption: "Diagnose and solve problems with your wallet.",
+            title: "Notfallbausatz",
+            caption: "Probleme im Wallet diagnostizieren und lösen.",
             emergency_tip:
-                "If your wallet seems broken, here are some tools to try to debug and repair it.",
+                "Wenn deine Wallet nicht mehr läuft, findest du hier ein paar Werkzeuge, um es zu debuggen und reparieren.",
             questions:
-                "If you have any questions on what these buttons do, please",
-            link: "reach out to us for support.",
+                "Bitte melde dich, wenn du Fragen dazu hast, was diese Buttons tun",
+            link: "melde dich bei uns für Unterstützung.",
             import_export: {
-                title: "Export wallet state",
-                error_password: "Password is required",
-                error_read_file: "File read error",
-                error_no_text: "No text found in file",
-                tip: "You can export your entire Mutiny Wallet state to a file and import it into a new browser. It usually works!",
-                caveat_header: "Important caveats:",
-                caveat: "after exporting don't do any operations in the original browser. If you do, you'll need to export again. After a successful import, a best practice is to clear the state of the original browser just to make sure you don't create conflicts.",
-                save_state: "Save State As File",
-                import_state: "Import State From File",
-                confirm_replace: "Do you want to replace your state with",
-                password: "Enter your password to decrypt",
-                decrypt_wallet: "Decrypt Wallet"
+                title: "Wallet-Status exportieren",
+                error_password: "Passwort wird benötigt",
+                error_read_file: "Fehler beim Lesen der Datei",
+                error_no_text: "Keinen Text in der Datei gefunden",
+                tip: "Du kannst deinen gesamten Status aus der Mutiniy-Wallet als Datei exportieren and sie in einem neuen Browser importieren. Normalerweise funktioniert es!",
+                caveat_header: "Wichtige Vorbehalte:",
+                caveat: " Nach dem Exportieren bitte keine Operationen mehr im originalen Browser vornehmen. Wenn doch, musst du den Export nochmals durchführen. Nach einem erfolgreichen Import wird empfohlen den Status im originalen Browser zu löschen. So wird sichergestellt, dass es keine Konflikte gibt.",
+                save_state: "Status als Datei speichern",
+                import_state: "Status aus einer Datei importieren",
+                confirm_replace: "Möchtest du deinen Status ersetzen mit",
+                password: "Passwort eingeben, um zu entschlüsseln",
+                decrypt_wallet: "Wallet entschlüsseln"
             },
             logs: {
-                title: "Download debug logs",
+                title: "Debug-Protokolle herunterladen",
                 something_screwy:
-                    "Something screwy going on? Check out the logs!",
-                download_logs: "Download Logs",
-                password: "Enter your password to decrypt",
-                confirm_password_label: "Confirm Password"
+                    "Irgendetwas Verrücktes ist im Gange? Bitte schaue das Protokoll an!",
+                download_logs: "Protokolle herunterladen",
+                password: "Passwort eingeben, um zu entschlüsseln",
+                confirm_password_label: "Passwort bestätigen"
             },
             delete_everything: {
-                delete: "Delete Everything",
+                delete: "Alles löschen",
                 confirm:
-                    "This will delete your node's state. This can't be undone!",
-                deleted: "Deleted",
-                deleted_description: "Deleted all data"
+                    "Damit löschst du den Status deiner Node. Das kann nicht rückgängig gemacht werden!",
+                deleted: "Gelöscht",
+                deleted_description: "Alle Daten gelöscht"
             }
         },
         encrypt: {
