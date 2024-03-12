@@ -225,7 +225,7 @@ export default {
             onchain_fee: "On-chain Gebühr",
             invoice: "Rechnung",
             payment_hash: "Zahlungs-Hash",
-            payment_preimage: "Urbild",
+            payment_preimage: "Vorbild",
             txid: "Txid",
             total: "Betrag angefordert",
             balance: "Kontostand",
@@ -236,7 +236,7 @@ export default {
             confirmed: "Bestätigt",
             unconfirmed: "Unbestätigt",
             sweep_delay:
-                "Es kann einige Tage dauern, bis deine Einlagen wieder in der Wallet verfügbar sind",
+                "Es kann einige Tage dauern, bis dein Geld wieder in der Wallet verfügbar sind",
             no_details:
                 "Keine Kanaldetails gefunden, was bedeutet, dass dieser Kanal wahrscheinlich geschlossen wurde.",
             back_home: "zurück zur Startseite"
@@ -287,9 +287,9 @@ export default {
                 open_channel: "Kanal eröffnen",
                 nodes: "Nodes",
                 no_nodes: "Keine Nodes",
-                enable_zaps_to_hodl: "Zaps nach hodl invoices erlauben?",
+                enable_zaps_to_hodl: "Zaps nach Hodl Invoices erlauben?",
                 zaps_to_hodl_desc:
-                    "Zaps nach hodl invoices kann zu erzwungenen Kanalschliessungen und hohen On-chain Gebühren führen. Benutzung auf eigene Gefahr!",
+                    "Zaps nach Hodl Invoices kann zu erzwungenen Kanalschliessungen und hohen On-chain Gebühren führen. Benutzung auf eigene Gefahr!",
                 zaps_to_hodl_enable: "Hodl Zaps aktivieren",
                 zaps_to_hodl_disable: "Hodl Zaps deaktivieren"
             }
@@ -386,7 +386,7 @@ export default {
                 error_no_text: "Keinen Text in der Datei gefunden",
                 tip: "Du kannst deinen gesamten Status aus der Mutiniy-Wallet als Datei exportieren and sie in einem neuen Browser importieren. Normalerweise funktioniert es!",
                 caveat_header: "Wichtige Vorbehalte:",
-                caveat: " Nach dem Exportieren bitte keine Operationen mehr im originalen Browser vornehmen. Wenn doch, musst du den Export nochmals durchführen. Nach einem erfolgreichen Import wird empfohlen den Status im originalen Browser zu löschen. So wird sichergestellt, dass es keine Konflikte gibt.",
+                caveat: "Nach dem Exportieren bitte keine Operationen mehr im originalen Browser vornehmen. Wenn doch, musst du den Export nochmals durchführen. Nach einem erfolgreichen Import wird empfohlen, den Status im originalen Browser zu löschen. So wird sichergestellt, dass es keine Konflikte gibt.",
                 save_state: "Status als Datei speichern",
                 import_state: "Status aus einer Datei importieren",
                 confirm_replace: "Möchtest du deinen Status ersetzen mit",
