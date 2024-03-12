@@ -134,6 +134,11 @@ async function fetchFollows(npub: string): Promise<string[]> {
         throw err;
     }
 
+    // make sure we got a pubkey
+    if (!pubkey) {
+        throw new Error("Failed to get hexpub from npub");
+    }
+
     const response = await fetch(PRIMAL_API, {
         method: "POST",
         headers: {

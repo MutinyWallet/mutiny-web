@@ -50,7 +50,9 @@ export async function hexpubFromNpub(
     if (!npub) {
         return undefined;
     }
-    if (!npub.toLowerCase().startsWith("npub")) {
+    // if npub is not a valid npub, return undefined
+    // if it has an @, it's a NIP-05 address that we need to resolve
+    if (!npub.toLowerCase().startsWith("npub") && !npub.includes("@")) {
         return undefined;
     }
 
