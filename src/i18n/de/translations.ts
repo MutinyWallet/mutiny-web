@@ -499,269 +499,269 @@ export default {
             cta_but_already_plus: "Danke für deinen Support!"
         },
         restore: {
-            title: "Restore",
-            all_twelve: "You need to enter all 12 words",
-            wrong_word: "Wrong word",
-            paste: "Dangerously Paste from Clipboard",
+            title: "Wiederherstellen",
+            all_twelve: "Du musst alle 12 Wörter eingeben",
+            wrong_word: "Falsches Wort",
+            paste: "Gefährliches Eingeben von der Zwischenablage",
             confirm_text:
-                "Are you sure you want to restore to this wallet? Your existing wallet will be deleted!",
+                "Bist du sicher, dass du diese Wallet wiederherstellen willst? Deine bestehende Wallet wird gelöscht!",
             restore_tip:
-                "You can restore an existing Mutiny Wallet from your 12 word seed phrase. This will replace your existing wallet, so make sure you know what you're doing!",
+                "Du kannst eine bestehende Mutiny Wallet mit deinen 12 Wörtern wiederherstellen. Das wird deine bestehende Wallet ersetzen, sei dir also sicher was du tust!",
             multi_browser_warning:
-                "Do not use on multiple browsers at the same time.",
-            error_clipboard: "Clipboard not supported",
-            error_word_number: "Wrong number of words",
-            error_invalid_seed: "Invalid seed phrase"
+                "Bitte nicht verschiedene Browser gleichzeitig nutzen.",
+            error_clipboard: "Zwischenablage wird nicht unterstützt",
+            error_word_number: "Falsche Anzahl Wörter",
+            error_invalid_seed: "Ungültige Seed Phrase"
         },
         servers: {
-            title: "Servers",
-            caption: "Don't trust us! Use your own servers to back Mutiny.",
-            link: "Learn more about self-hosting",
+            title: "Server",
+            caption: "Vertraue uns nicht! Nutze deine eigenen Server, um Mutiny zu verwenden.",
+            link: "Lerne mehr über die Selbstverwahrung",
             proxy_label: "Websockets Proxy",
             proxy_caption:
-                "How your lightning node communicates with the rest of the network.",
-            error_proxy: "Should be a url starting with wss://",
+                "Wie deine Lightning Node mit dem rest des Netzwerks kommuniziert.",
+            error_proxy: "Sollte eine URL sein, die mit wss:// beginnt",
             esplora_label: "Esplora",
-            esplora_caption: "Block data for on-chain information.",
-            error_esplora: "That doesn't look like a URL",
+            esplora_caption: "Block-Daten für On-chain Informationen.",
+            error_esplora: "Das sieht nicht nach einer gültigen URL aus",
             rgs_label: "RGS",
             rgs_caption:
-                "Rapid Gossip Sync. Network data about the lightning network used for routing.",
-            error_rgs: "That doesn't look like a URL",
+                "Rapid Gossip Sync. Netzwerkdaten über das Lightning Netzwerk benutzt für das Routing.",
+            error_rgs: "Das sieht nicht nach einer gültigen URL aus",
             lsp_label: "LSP",
             lsp_caption:
-                "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy.",
+                "Lightning Service Provider. Automatisches Eröffnen von Kanälen, um deine Inbound Liquidität sicherzustellen. Verpackt auch Rechnungen, um den Datenschutz zu gewähren.",
             lsps_connection_string_label: "LSPS Connection String",
             lsps_connection_string_caption:
-                "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Using LSP specification.",
+                "Lightning Service Provider. Automatisches Eröffnen von Kanälen, um deine Inbound Liquidität sicherzustellen. Genutzt werden LSP Spezifikationen.",
             error_lsps_connection_string:
-                "That doesn't look like node connection string",
+                "Das sieht nicht nach einem Node Connection String aus",
             lsps_token_label: "LSPS Token",
             lsps_token_caption:
-                "LSPS Token.  Used to identify what wallet is connecting to the LSP",
+                "LSPS Token.  Wird benutzt, um zu identifizieren welche Wallet sich mit dem LSP verbindet",
             lsps_valid_error:
-                "You can either have just an LSP set or LSPS Connection String and LSPS Token set, not both.",
-            error_lsps_token: "That doesn't look like a valid token",
-            storage_label: "Storage",
-            storage_caption: "Encrypted VSS backup service.",
-            error_lsp: "That doesn't look like a URL",
-            save: "Save"
+                "Du kannst entweder ein LSP-Set oder LSPS Connection String und LSPS Token-Set haben, nicht beides.",
+            error_lsps_token: "Das sieht nicht nach einem validen Token aus",
+            storage_label: "Lagerung",
+            storage_caption: "Encrypted VSS Backup Service.",
+            error_lsp: "Das sieht nicht nach einer gültigen URL aus",
+            save: "Speichern"
         },
         nostr_contacts: {
-            title: "Sync Nostr Contacts",
+            title: "Sync Nostr Kontakte",
             npub_label: "Nostr npub",
-            npub_required: "Npub can't be blank",
+            npub_required: "Npub darf nicht leer sein",
             sync: "Sync",
             resync: "Resync",
-            remove: "Remove"
+            remove: "Entfernen"
         },
         manage_federations: {
-            title: "Manage Federations",
-            federation_code_label: "Federation code",
-            federation_code_required: "Federation code can't be blank",
-            federation_added_success: "Federation added successfully",
+            title: "Federationen verwalten",
+            federation_code_label: "Federation Code",
+            federation_code_required: "Federation Code darf nicht leer sein",
+            federation_added_success: "Federation erfolgreich hinzugefügt",
             federation_remove_confirm:
-                "Are you sure you want to remove this federation? Make sure any funds you have are transferred to your lightning balance or another wallet first.",
-            add: "Add",
-            remove: "Remove",
-            expires: "Expires",
+                "Bist du sicher, dass du diese Federation enfernen willst? Stelle zuerst sicher, dass all deine Einlagen auf deine Lightning Wallet transferiert wurden.",
+            add: "Hinzufügen",
+            remove: "Entfernen",
+            expires: "Läuft ab",
             federation_id: "Federation ID",
             description:
-                "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. These funds are currently not backed up remotely. Store funds in a federation at your own risk!",
-            learn_more: "Learn more about Fedimint."
+                "Mutiny unterstützt experimentell das Fedimint Protocoll. Du benötigst einen Einladungscode einer Federation, damit du diese Funktion nutzen kannst. Diese Einlagen sind zur Zeit aus der Ferne nicht gesichert. Das Speichern von Geld in einer Federation geschieht auf eigene Gefahr!",
+            learn_more: "Lerne mehr über Fedimint."
         },
         gift: {
-            give_sats_link: "Give sats as a gift",
-            title: "Gifting",
-            no_plus_caption: "Upgrade to Mutiny+ to enable gifting",
+            give_sats_link: "Verschenke Sats als Geschenk",
+            title: "Verschenken",
+            no_plus_caption: "Upgrade auf Mutiny+ um Verschenken zu aktivieren",
             receive_too_small:
-                "Your first receive needs to be {{amount}} SATS or greater.",
+                "Deine erste Einzahlung muss mindestens {{amount}} SATS oder grösser sein.",
             setup_fee_lightning:
-                "A lightning setup fee will be charged to receive this gift.",
-            already_claimed: "This gift has already been claimed",
+                "Eine Lightning Einrichtungsgebühr wird beim Erhalten des Geschenks verrechnet.",
+            already_claimed: "Dieses Geschenk wurde bereits eingelöst",
             sender_is_poor:
-                "The sender doesn't have enough balance to pay this gift.",
+                "Der Kontostand des Senders ist nicht gross genug, um das Geschenk zu bezahlen.",
             sender_timed_out:
-                "Gift payment timed out. The sender may be offline, or this gift has already been claimed.",
-            sender_generic_error: "Sender sent error: {{error}}",
-            receive_header: "You've been gifted some sats!",
+                "Bezahlung des Geschenks ist abgelaufen. Der Sender ist vielleicht Offline, oder das Geschenk wurde bereits eingelöst.",
+            sender_generic_error: "Sender hat folgenden Fehler gesendet: {{error}}",
+            receive_header: "Dir hat jemand ein paar Sats geschenkt!",
             receive_description:
-                "You must be pretty special. To claim your money just hit the big button. Funds will be added to this wallet the next time your gifter is online.",
+                "Du musst etwas Spezielles sein. Um das Geld einzulösen, musst du nur den grossen Knopf drücken. Das Geld wird deiner Wallet hinzugefügt, sobald der Schenkende das nächste Mal online ist.",
             receive_claimed:
-                "Gift claimed! You should see the gift hit your balance shortly.",
-            receive_cta: "Claim Gift",
-            receive_try_again: "Try Again",
-            send_header: "Create Gift",
+                "Geschenk eingelöst! Du solltest das Geschenk demnächst in deinem Kontostand sehen.",
+            receive_cta: "Geschenk einlösen",
+            receive_try_again: "Nochmals versuchen",
+            send_header: "Geschenk erstellen",
             send_explainer:
-                "Give the gift of sats. Create a Mutiny gift URL that can be claimed by anyone with a web browser.",
-            send_name_required: "This is for your records",
-            send_name_label: "Recipient Name",
-            send_header_claimed: "Gift Received!",
-            send_claimed: "Your gift has been claimed. Thanks for sharing.",
-            send_sharable_header: "Sharable URL",
+                "Übergebe das Geschenk gefüllt mit Sats. Erstelle eine Mutiny Geschenk-URL, die von jedem über einen Web-Browser eingelöst werden kann.",
+            send_name_required: "Das ist für deine Historie",
+            send_name_label: "Name des Empfängers",
+            send_header_claimed: "Geschenk erhalten!",
+            send_claimed: "Dein Geschenk wurde eingelöst. Danke fürs Teilen.",
+            send_sharable_header: "URL zum Teilen",
             send_instructions:
-                "Copy this gift URL to your recipient, or ask them to scan this QR code with their wallet.",
-            send_another: "Create Another",
+                "Bitte diese Geschenk-URL deinem Empfänger senden, oder frage ihn, ob er diesen QR-Code mit seiner Wallet scannen kann.",
+            send_another: "Einen Weiteren erstellen",
             send_small_warning:
-                "A brand new Mutiny user won't be able to redeem fewer than 100k sats.",
-            send_cta: "Create a gift",
-            send_delete_button: "Delete Gift",
+                "Ein brandneuer Mutiny-Benutzer wird nicht fähig sein weniger als 100k Sats einzulösen.",
+            send_cta: "Ein Geschenk erstellen",
+            send_delete_button: "Geschenk löschen",
             send_delete_confirm:
-                "Are you sure you want to delete this gift? Is this your rugpull moment?",
+                "Bist du sicher, dass du dieses Geschenk löschen willst? Ist das dein Rugpull-Moment?",
             send_tip:
-                "Your copy of Mutiny Wallet needs to be open for the gift to be redeemed.",
+                "Damit das Geschenk eingelöst werden kann, muss deine Mutiny Wallet geöffnet sein.",
             need_plus:
-                "Upgrade to Mutiny+ to enable gifting. Gifting allows you to create a Mutiny gift URL that can be claimed by anyone with a web browser."
+                "Upgrade auf Mutiny+, um Schenken zu aktivieren. Durch Schenken kannst du eine Mutiny Geschenk-URL erstellen, die von jedem mit einem Webbrowser eingelöst werden kann."
         }
     },
     swap: {
-        peer_not_found: "Peer not found",
+        peer_not_found: "Peer nicht gefunden",
         channel_too_small:
-            "It's just silly to make a channel smaller than {{amount}} sats",
-        insufficient_funds: "You don't have enough funds to make this channel",
-        header: "Swap to Lightning",
-        initiated: "Swap Initiated",
-        sats_added: "+{{amount}} sats will be added to your Lightning balance",
-        use_existing: "Use existing peer",
-        choose_peer: "Choose a peer",
-        peer_connect_label: "Connect to new peer",
-        peer_connect_placeholder: "Peer connect string",
-        connect: "Connect",
-        connecting: "Connecting...",
-        confirm_swap: "Confirm Swap"
+            "Es ist nicht klug einen Kanal zu eröffnen, der kleiner als {{amount}} Sats ist",
+        insufficient_funds: "Du hast nicht genügend Geld, um den Kanal zu eröffnen",
+        header: "Tausche in Lightning",
+        initiated: "Wechsel initialisiert",
+        sats_added: "+{{amount}} Sats werden deiner Lightning Wallet hinzugefügt",
+        use_existing: "Bitte den bestehenden Peer nutzen",
+        choose_peer: "Einen Peer wählen",
+        peer_connect_label: "Zu einem neuen Peer verbinden",
+        peer_connect_placeholder: "Peer Verbindgungs-String",
+        connect: "Verbinden",
+        connecting: "wird verbunden...",
+        confirm_swap: "Tausch bestätigen"
     },
     swap_lightning: {
-        insufficient_funds: "You don't have enough funds to swap to lightning",
-        header: "Swap to Lightning",
-        header_preview: "Preview Swap",
-        completed: "Swap Completed",
+        insufficient_funds: "Du hast nicht genug Geld, um nach Lightning zu wechseln",
+        header: "Tausche nach Lightning",
+        header_preview: "Vorschau des Tausches",
+        completed: "Tausch ausgeführt",
         too_small:
-            "Invalid amount entered. You need to swap at least 100k sats.",
+            "Ungültiger Betrag eingegeben. Zum Tauschen benötigst du mindestens 100k Sats.",
         sats_added:
-            "+{{amount}} sats have been added to your Lightning balance",
-        sats_fee: "+{{amount}} sats fee",
-        confirm_swap: "Confirm Swap",
-        preview_swap: "Preview Swap Fee"
+            "+{{amount}} Sats wurden deiner Lightning Wallet hinzugefügt",
+        sats_fee: "+{{amount}} Sats Gebühren",
+        confirm_swap: "Tausch bestätigen",
+        preview_swap: "Vorschau der Tauschgebühr"
     },
     reload: {
         mutiny_update: "Mutiny Update",
         new_version_description:
-            "New version of Mutiny has been cached, reload to start using it.",
-        reload: "Reload"
+            "Neue Version von Mutiny wurde zwischengespeichert, Lade die App neu, um sie zu verwenden.",
+        reload: "Neu laden"
     },
     error: {
-        title: "Error",
-        emergency_link: "emergency kit.",
-        reload: "Reload",
+        title: "Fehler",
+        emergency_link: "Notfall-Kit.",
+        reload: "Neu laden",
         restart: {
-            title: "Something *extra* screwy going on? Stop the nodes!",
+            title: "Es ist etwas *besonders* Verrücktes im Gange? Stoppe die Nodes!",
             start: "Start",
             stop: "Stop"
         },
         general: {
-            oh_no: "Oh no!",
-            never_should_happen: "This never should've happened",
+            oh_no: "Oh nein!",
+            never_should_happen: "Das hätte nicht passieren dürfen",
             try_reloading:
-                'Try reloading this page or clicking the "Dangit" button. If you keep having problems,',
-            support_link: "reach out to us for support.",
-            getting_desperate: "Getting desperate? Try the"
+                'Versuche diese Seite neu zu laden oder klicke den "Dangit"-Knopf. Wenn du weiterhin Probleme hast,',
+            support_link: "kontaktiere uns für Unterstützung.",
+            getting_desperate: "Bist du verzweifelt? Versuche den"
         },
         load_time: {
-            stuck: "Stuck on this screen? Try reloading. If that doesn't work, check out the"
+            stuck: "Steckst du auf diesem Bildschirm fest? Versuche die Seite neu zu laden. Wann das nicht hilft, versuche den"
         },
         not_found: {
-            title: "Not Found",
-            wtf_paul: "This is probably Paul's fault."
+            title: "Nicht gefunden",
+            wtf_paul: "Das ist vielleicht Paul's Fehler."
         },
         reset_router: {
             payments_failing:
-                "Failing to make payments? Try resetting the lightning router.",
+                "Werden Zahlungen nicht durchgeführt? Versuche den Lightning-Router zu resetten.",
             reset_router: "Reset Router"
         },
         resync: {
             incorrect_balance:
-                "On-chain balance seems incorrect? Try re-syncing the on-chain wallet.",
-            resync_wallet: "Resync wallet"
+                "On-chain Kontostand scheint inkorrekt? Versuche die On-chain Wallet neu zu synchen.",
+            resync_wallet: "Resync Wallet"
         },
         on_boot: {
             existing_tab: {
-                title: "Multiple tabs detected",
+                title: "Mehrere Tabs erkannt",
                 description:
-                    "Mutiny can only be used in one tab at a time. It looks like you have another tab open with Mutiny running. Please close that tab and refresh this page, or close this tab and refresh the other one."
+                    "Mutiny kann nur in einem Tab genutzt werden. Es sieht so aus, als ob du weitere Tabs offen hast, in denen Mutiny läuft. Bitte schliesse den Tab und lade diese Seite neu, oder schliesse diesen Tab und lade den anderen neu."
             },
             already_running: {
-                title: "Mutiny may be running on another device",
+                title: "Vielleicht läuft Mutiny auf einem anderen Gerät",
                 description:
-                    "Mutiny can only be used in one place at a time. It looks like you have another device or browser using this wallet. If you've recently closed Mutiny on another device, please wait a few minutes and try again.",
-                retry_again_in: "Retry again in",
-                seconds: "seconds"
+                    "Mutiny kann nur mit einem Gerät genutzt werden. Es sieht so aus, als ob du ein anderes Gerät oder Browser für diese Wallet nutzst. Wenn du Mutiny kürzlich auf einem anderen Gerät geschlossen hast, warte bitte ein paar Minuten und versuche es nochmals.",
+                retry_again_in: "Versuche es nochmals in",
+                seconds: "Sekunden"
             },
             incompatible_browser: {
-                title: "Incompatible browser",
-                header: "Incompatible browser detected",
+                title: "Nicht kompatibler Browser",
+                header: "Nicht kompatibler Browser erkannt",
                 description:
-                    "Mutiny requires a modern browser that supports WebAssembly, LocalStorage, and IndexedDB. Some browsers disable these features in private mode.",
+                    "Mutiny benötigt einen modernen Browser, der WebAssembly, LocalStorage und IndexedDB unterstützt. Einige Browser deaktivieren diese Features im privaten Modus.",
                 try_different_browser:
-                    'Please make sure your browser supports all these features, or consider trying another browser. You might also try disabling certain extensions or "shields" that block these features.',
+                    'Bitte stelle sicher, dass dein Browser alle diese Features unterstützt oder versuche es mit einem anderen Browser. Vielleicht möchtest du auch ausgewählte Erweiterungen oder "Schields" deaktivieren, die diese Features blockieren.',
                 browser_storage:
-                    "(We'd love to support more private browsers, but we have to save your wallet data to browser storage or else you will lose funds.)",
-                browsers_link: "Supported Browsers"
+                    "(Wir würden gerne mehr Browser unterstützen, aber wir müssen deine Wallet-Daten im Browserspeicher sichern, sonst verlierst du dein Geld.)",
+                browsers_link: "Unterstützte Browser"
             },
             loading_failed: {
-                title: "Failed to load",
-                header: "Failed to load Mutiny",
+                title: "Konnte nicht geladen werden",
+                header: "Mutiny konnte nicht geladen werden",
                 description:
-                    "Something went wrong while booting up Mutiny Wallet.",
+                    "Etwas ist schief gelaufen, während Mutiny Wallet hochgefahren wurde.",
                 repair_options:
-                    "If your wallet seems broken, here are some tools to try to debug and repair it.",
+                    "Wenn deine Wallet kaputt zu sein scheint, findest du hier ein paar Werkzeuge. Damit kannst du versuchen deine Wallet zu debuggen und zu reparieren.",
                 questions:
-                    "If you have any questions on what these buttons do, please",
-                support_link: "reach out to us for support.",
+                    "Wenn du Fragen zur Funktionsweise dieser Schaltflächen hast, wende dich bitte an uns",
+                support_link: "kontaktiere uns für Unterstützung.",
                 services_down:
-                    "It looks like one of Mutiny's services is down. Please try again later.",
+                    "Es sieht so aus, als ob einer der Dienste von Mutiny ausgefallen ist. Bitte versuche es später noch einmal.",
                 in_the_meantime:
-                    "In the meantime if you want to access your on-chain funds you can load Mutiny in",
-                safe_mode: "Safe Mode"
+                    "Wenn du in der Zwischenzeit auf deine On-Chain-Gelder zugreifen möchtest, kannst du Mutiny laden",
+                safe_mode: "Sicherheitsmodus"
             }
         }
     },
     modals: {
-        share: "Share",
+        share: "Teilen",
         details: "Details",
         loading: {
-            loading: "Loading: {{stage}}",
-            default: "Just getting started",
-            double_checking: "Double checking something",
-            downloading: "Downloading",
-            setup: "Setup",
-            done: "Done"
+            loading: "Laden: {{stage}}",
+            default: "Ich fange jetzt an",
+            double_checking: "etwas noch einmal überprüfen",
+            downloading: "Herunterladen",
+            setup: "Einrichten",
+            done: "Erledigt"
         },
         onboarding: {
-            welcome: "Welcome!",
+            welcome: "Willkommen!",
             restore_from_backup:
-                "If you've used Mutiny before you can restore from a backup. Otherwise you can skip this and enjoy your new wallet!",
-            not_available: "We don't do that yet",
-            secure_your_funds: "Secure your funds"
+                "Wenn du Mutiny bereits verwendet hast, kannst du dein Backup wiederherstellen. Andernfalls kannst du dies überspringen und dich über dein neues Wallet freuen!",
+            not_available: "Das machen wir noch nicht",
+            secure_your_funds: "Sichere deine Einlagen"
         },
         more_info: {
-            whats_with_the_fees: "What's with the fees?",
+            whats_with_the_fees: "Was ist mit den Gebühren?",
             self_custodial:
-                "Mutiny is a self-custodial wallet. To initiate a lightning payment we must open a lightning channel, which requires a minimum amount and a setup fee.",
+                "Mutiny ist ein selbst-verwahrendes Wallet. Um eine Lightning-Zahlung zu initiieren, musst du einen Lightning-Kanal öffnen. Dazu ist ein Minimalbetrag und eine Einrichtungsgebühr erforderlich.",
             future_payments:
-                "Future payments, both send and receive, will only incur normal network fees and a nominal service fee unless your channel runs out of inbound capacity.",
-            liquidity: "Learn more about liquidity"
+                "Für zukünftige Zahlungen, egal ob senden oder empfangen, fallen nur noch die normalen Netzwerkgebühren und eine geringe Servicegebühr an. Es sei denn, dein Kanal hat keine eingehende Liquidität mehr.",
+            liquidity: "Lerne mehr über Liquidität"
         },
         confirm_dialog: {
-            are_you_sure: "Are you sure?",
-            cancel: "Cancel",
-            confirm: "Confirm"
+            are_you_sure: "Bist du sicher?",
+            cancel: "Abbrechen",
+            confirm: "Bestätigen"
         },
         lnurl_auth: {
-            auth_request: "Authentication Request",
+            auth_request: "Authentifizierungsanfrage",
             login: "Login",
-            decline: "Decline",
-            error: "That didn't work for some reason.",
-            authenticated: "Authenticated!"
+            decline: "Rückgang",
+            error: "Das hat irgendwie nicht funktioniert.",
+            authenticated: "Authentifiziert!"
         }
     }
 };
