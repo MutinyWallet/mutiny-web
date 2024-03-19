@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+android/app/play/*
 
 # Editor directories and files
 .vscode/*
