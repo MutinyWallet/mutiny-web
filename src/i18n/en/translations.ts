@@ -567,7 +567,7 @@ export default {
             expires: "Expires",
             federation_id: "Federation ID",
             description:
-                "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. These funds are currently not backed up remotely. Store funds in a federation at your own risk!",
+                "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. Store funds in a federation at your own risk!",
             learn_more: "Learn more about Fedimint."
         },
         gift: {
