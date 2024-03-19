@@ -80,3 +80,19 @@ select {
 strong {
     @apply font-semibold text-m-red;
 }
+
+/* different default spacing required some broswer specific styles for a link underline */
+.truncate-bridge {
+    margin-top: -5px;
+}
+
+@supports (not (-webkit-hyphens: none)) and (not (-moz-appearance: none)) and
+    (list-style-type: "*") {
+    .truncate-bridge {
+        margin-top: -7px;
+    }
+}
+
+a:hover .truncate-bridge {
+    border-color: white;
+}
