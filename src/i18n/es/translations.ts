@@ -566,7 +566,7 @@ export default {
             expires: "Expira",
             federation_id: "ID federación",
             description:
-                "Mutiny tiene soporte experimental para el protocolo Fedimint. Necesitará un código de invitación a la federación para poder usar esta funcionalidad. Estos fondos no están actualmente respaldados remotamente ¡Almacene fondos en una federación bajo su propio riesgo!",
+                "Mutiny tiene soporte experimental para el protocolo Fedimint. Necesitará un código de invitación a la federación para poder usar esta funcionalidad ¡Almacene fondos en una federación bajo su propio riesgo!",
             learn_more: "Aprenda más sobre Fedimint."
         },
         gift: {
