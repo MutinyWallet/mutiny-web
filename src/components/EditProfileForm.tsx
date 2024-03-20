@@ -1,12 +1,16 @@
+import { createForm, email } from "@modular-forms/solid";
 import { createFileUploader } from "@solid-primitives/upload";
+import { Pencil } from "lucide-solid";
 import { createSignal, Match, Switch } from "solid-js";
 
-import { Button, SimpleInput } from "~/components";
+import { Button, TextField, VStack } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { blobToBase64 } from "~/utils";
 
 export type EditableProfile = {
     nym?: string;
+    lightningAddress?: string;
     imageUrl?: string;
 };
 
@@ -17,7 +21,6 @@ export function EditProfileForm(props: {
     cta: string;
 }) {
     const [state] = useMegaStore();
-    const [nym, setNym] = createSignal(props.initialProfile?.nym || "");
     const [uploading, setUploading] = createSignal(false);
 
     const { files, selectFiles } = createFileUploader({
@@ -26,14 +29,20 @@ export function EditProfileForm(props: {
     });
 
     async function uploadFile() {
-        selectFiles(async (files) => {
+        console.log("uploadFile");
+        await selectFiles(async (files) => {
             if (files.length) {
                 return;
             }
         });
     }
 
-    async function onSave() {
+    const i18n = useI18n();
+    const [profileForm, { Form, Field }] = createForm<EditableProfile>({
+        initialValues: { ...props.initialProfile }
+    });
+
+    async function handleSubmit(profile: EditableProfile) {
         try {
             let imageUrl;
             if (files() && files().length) {
@@ -46,7 +55,8 @@ export function EditProfileForm(props: {
                 setUploading(false);
             }
             await props.onSave({
-                nym: nym(),
+                nym: profile.nym,
+                lightningAddress: profile.lightningAddress,
                 imageUrl: imageUrl ? imageUrl : props.initialProfile?.imageUrl
             });
         } catch (e) {
@@ -56,33 +66,67 @@ export function EditProfileForm(props: {
 
     return (
         <>
-            <button
-                class="shiny-button flex h-[8rem] w-[8rem] flex-none items-center justify-center self-center overflow-clip rounded-full bg-m-grey-800 text-5xl uppercase"
-                onClick={uploadFile}
-            >
-                <Switch>
-                    <Match when={files() && files().length}>
-                        <img src={files()[0].source} />
-                    </Match>
-                    <Match when={props.initialProfile?.imageUrl}>
-                        <img src={props.initialProfile?.imageUrl} />
-                    </Match>
-                    <Match when={true}>+</Match>
-                </Switch>
-            </button>
-            <SimpleInput
-                value={nym()}
-                onInput={(e) => setNym(e.currentTarget.value)}
-                placeholder="Your name or nym"
-            />
+            <VStack>
+                <button class="relative self-center" onClick={uploadFile}>
+                    <div class="shiny-button flex h-[8rem] w-[8rem] flex-none items-center justify-center self-center overflow-clip rounded-full bg-m-grey-800 text-5xl uppercase">
+                        <Switch>
+                            <Match when={files() && files().length}>
+                                <img src={files()[0].source} />
+                            </Match>
+                            <Match when={props.initialProfile?.imageUrl}>
+                                <img src={props.initialProfile?.imageUrl} />
+                            </Match>
+                        </Switch>
+                    </div>
+                    <div class="absolute top-0 flex h-[8rem] w-[8rem] items-center justify-center bg-m-grey-975/25">
+                        <Pencil />
+                    </div>
+                </button>
+                <VStack>
+                    <Form
+                        onSubmit={handleSubmit}
+                        class="mx-auto flex w-full flex-1 flex-col justify-around gap-4"
+                    >
+                        <Field name="nym">
+                            {(field, props) => (
+                                <TextField
+                                    {...props}
+                                    placeholder={i18n.t("contacts.placeholder")}
+                                    value={field.value}
+                                    error={field.error}
+                                    label={i18n.t("profile.edit.nym")}
+                                />
+                            )}
+                        </Field>
+                        <Field
+                            name="lightningAddress"
+                            validate={[email(i18n.t("contacts.email_error"))]}
+                        >
+                            {(field, props) => (
+                                <TextField
+                                    {...props}
+                                    placeholder="example@example.com"
+                                    value={field.value}
+                                    error={field.error}
+                                    label={i18n.t("contacts.ln_address")}
+                                />
+                            )}
+                        </Field>
+                        <Button
+                            layout="full"
+                            type="submit"
+                            loading={
+                                props.saving ||
+                                uploading() ||
+                                profileForm.submitting
+                            }
+                        >
+                            {props.cta}
+                        </Button>
+                    </Form>
+                </VStack>
+            </VStack>
             <div class="flex-1" />
-            <Button
-                layout="full"
-                onClick={onSave}
-                loading={props.saving || uploading()}
-            >
-                {props.cta}
-            </Button>
         </>
     );
 }

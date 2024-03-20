@@ -149,10 +149,12 @@ function OnchainHeader(props: { info: OnChainTx; kind?: HackActivityType }) {
                 {props.kind === "ChannelOpen"
                     ? i18n.t("activity.transaction_details.channel_open")
                     : props.kind === "ChannelClose"
-                    ? i18n.t("activity.transaction_details.channel_close")
-                    : isSend()
-                    ? i18n.t("activity.transaction_details.onchain_send")
-                    : i18n.t("activity.transaction_details.onchain_receive")}
+                      ? i18n.t("activity.transaction_details.channel_close")
+                      : isSend()
+                        ? i18n.t("activity.transaction_details.onchain_send")
+                        : i18n.t(
+                              "activity.transaction_details.onchain_receive"
+                          )}
                 <Switch>
                     <Match
                         when={
@@ -191,15 +193,29 @@ function OnchainHeader(props: { info: OnChainTx; kind?: HackActivityType }) {
     );
 }
 
-export function MiniStringShower(props: { text: string }) {
+export function MiniStringShower(props: { text: string; hide?: boolean }) {
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     return (
         <div class="grid w-full grid-cols-[minmax(0,_1fr)_auto] gap-1">
-            <TruncateMiddle text={props.text} />
+            <Switch>
+                <Match when={props.hide}>
+                    <input
+                        type="password"
+                        value={props.text}
+                        class="flex bg-transparent font-mono"
+                        readonly
+                        disabled
+                    />
+                </Match>
+                <Match when={true}>
+                    <TruncateMiddle text={props.text} />
+                </Match>
+            </Switch>
+
             <button
                 class="w-[1.5rem] p-1"
-                classList={{ "bg-m-green rounded": copied() }}
+                classList={{ "bg-m-red rounded": copied() }}
                 onClick={() => copy(props.text)}
             >
                 <Copy class="h-4 w-4" />
@@ -302,8 +318,8 @@ function OnchainDetails(props: {
                     await (state.mutiny_wallet?.list_channels() as Promise<
                         MutinyChannel[]
                     >);
-                const channel = channels.find(
-                    (channel) => channel.outpoint?.startsWith(props.info.txid)
+                const channel = channels.find((channel) =>
+                    channel.outpoint?.startsWith(props.info.txid)
                 );
                 return channel;
             } catch (e) {
@@ -492,9 +508,8 @@ export function ActivityDetailsModal(props: {
         try {
             if (kind() === "Lightning") {
                 console.debug("reading invoice: ", id());
-                const invoice = await state.mutiny_wallet?.get_invoice_by_hash(
-                    id()
-                );
+                const invoice =
+                    await state.mutiny_wallet?.get_invoice_by_hash(id());
                 return invoice;
             } else if (kind() === "ChannelClose") {
                 console.debug("reading channel close: ", id());

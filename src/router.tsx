@@ -49,11 +49,11 @@ import {
     Gift,
     Language,
     ManageFederations,
+    NostrKeys,
     Plus,
     Restore,
     Servers,
-    Settings,
-    SyncNostrContacts
+    Settings
 } from "~/routes/settings";
 import { Provider as MegaStoreProvider, useMegaStore } from "~/state/megaStore";
 
@@ -187,10 +187,7 @@ export function Router() {
                 <Route path="/plus" component={Plus} />
                 <Route path="/restore" component={Restore} />
                 <Route path="/servers" component={Servers} />
-                <Route
-                    path="/syncnostrcontacts"
-                    component={SyncNostrContacts}
-                />
+                <Route path="/nostrkeys" component={NostrKeys} />
                 <Route path="/federations" component={ManageFederations} />
             </Route>
             <Route path="/*all" component={NotFound} />

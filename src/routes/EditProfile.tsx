@@ -3,16 +3,13 @@ import { createMemo, createSignal, Show } from "solid-js";
 
 import {
     BackLink,
-    ButtonLink,
     DefaultMain,
     EditableProfile,
     EditProfileForm,
     LargeHeader,
     MutinyWalletGuard,
-    NavBar,
-    NiceP
+    NavBar
 } from "~/components";
-// import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
 export function EditProfile() {
@@ -40,7 +37,7 @@ export function EditProfile() {
             const newProfile = await state.mutiny_wallet?.edit_nostr_profile(
                 profile.nym,
                 profile.imageUrl,
-                originalProfile().lud16,
+                profile.lightningAddress,
                 originalProfile().nip05
             );
 
@@ -58,16 +55,12 @@ export function EditProfile() {
             <DefaultMain>
                 <BackLink href="/profile" title="Profile" />
                 <LargeHeader>Edit Profile</LargeHeader>
-                <NiceP>
-                    Update your profile.
-                    <br />
-                    Your activity is private by default.
-                </NiceP>
                 <div class="flex-1" />
                 <Show when={originalProfile()}>
                     <EditProfileForm
                         initialProfile={{
                             nym: originalProfile().name,
+                            lightningAddress: originalProfile().lud16,
                             imageUrl: originalProfile().picture
                         }}
                         onSave={saveProfile}
@@ -75,10 +68,6 @@ export function EditProfile() {
                         cta="Save"
                     />
                 </Show>
-                <ButtonLink href="/importprofile" intent="text">
-                    Import different nostr profile
-                </ButtonLink>
-
                 <NavBar activeTab="profile" />
             </DefaultMain>
         </MutinyWalletGuard>

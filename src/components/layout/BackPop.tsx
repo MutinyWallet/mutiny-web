@@ -33,8 +33,8 @@ export function BackPop(props: { default: string; title?: string }) {
                 props.title !== undefined
                     ? props.title
                     : backPath() === "/"
-                    ? i18n.t("common.home")
-                    : i18n.t("common.back")
+                      ? i18n.t("common.home")
+                      : i18n.t("common.back")
             }
             onClick={() => navigate(backPath())}
             showOnDesktop

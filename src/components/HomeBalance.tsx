@@ -6,8 +6,11 @@ import { useMegaStore } from "~/state/megaStore";
 export function HomeBalance() {
     const [state, actions] = useMegaStore();
 
-    const lightningPlusFedi = () =>
-        (state.balance?.federation || 0n) + (state.balance?.lightning || 0n);
+    const combinedBalance = () =>
+        (state.balance?.federation || 0n) +
+        (state.balance?.lightning || 0n) +
+        (state.balance?.confirmed || 0n) +
+        (state.balance?.unconfirmed || 0n);
 
     // TODO: do some sort of status indicator
     // const fullyReady = () => state.load_stage === "done" && state.price !== 0;
@@ -31,14 +34,14 @@ export function HomeBalance() {
                 <Switch>
                     <Match when={state.balanceView === "sats"}>
                         <AmountSats
-                            amountSats={lightningPlusFedi()}
+                            amountSats={combinedBalance()}
                             icon="lightning"
                             denominationSize="lg"
                         />
                     </Match>
                     <Match when={state.balanceView === "fiat"}>
                         <AmountFiat
-                            amountSats={lightningPlusFedi()}
+                            amountSats={combinedBalance()}
                             denominationSize="lg"
                         />
                     </Match>

@@ -137,8 +137,8 @@ export function NostrActivity() {
                                 zap.kind === "anonymous"
                                     ? i18n.t("activity.anonymous")
                                     : zap.kind === "private"
-                                    ? i18n.t("activity.private")
-                                    : nameFromHexpub(zap.from_hexpub)
+                                      ? i18n.t("activity.private")
+                                      : nameFromHexpub(zap.from_hexpub)
                             }
                             primaryOnClick={() => {
                                 newContactFromHexpub(zap.from_hexpub);

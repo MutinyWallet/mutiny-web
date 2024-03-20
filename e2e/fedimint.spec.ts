@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { loadHome, visitSettings } from "./utils";
+import { loadHome } from "./utils";
 
 const SIGNET_INVITE_CODE =
     "fed11qgqzc2nhwden5te0vejkg6tdd9h8gepwvejkg6tdd9h8garhduhx6at5d9h8jmn9wshxxmmd9uqqzgxg6s3evnr6m9zdxr6hxkdkukexpcs3mn7mj3g5pc5dfh63l4tj6g9zk4er";
@@ -11,10 +11,9 @@ test.beforeEach(async ({ page }) => {
 
 test("fedmint join, receive, send", async ({ page }) => {
     await loadHome(page);
-    await visitSettings(page);
 
-    // Click "Manage Federations" link
-    await page.click("text=Manage Federations");
+    // Click "Join a federation" cta
+    await page.click("text=Join a federation");
 
     // Fill the input with the federation code
     await page.fill("input[name='federation_code']", SIGNET_INVITE_CODE);
@@ -28,7 +27,6 @@ test("fedmint join, receive, send", async ({ page }) => {
     await page.waitForSelector("text=MutinySignetFederation");
 
     // Navigate back home
-    await page.goBack();
     await page.goBack();
 
     // Click the top left button (it's the profile button), a child of header

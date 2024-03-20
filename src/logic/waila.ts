@@ -36,8 +36,8 @@ export function toParsedParams(
     const network = !params.network
         ? ourNetwork
         : params.network === "testnet" && ourNetwork === "signet"
-        ? "signet"
-        : params.network;
+          ? "signet"
+          : params.network;
 
     if (network !== ourNetwork) {
         return {

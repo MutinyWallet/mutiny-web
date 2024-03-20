@@ -49,8 +49,7 @@
     "email_error": "Eso no parece una dirección lightning",
     "npub_error": "Eso no parece un npub de nostr",
     "error_ln_address_missing": "Los contactos nuevos necesitan una dirección lightning",
-    "npub": "Npub Nostr",
-    "link_to_nostr_sync": "Importar Contactos de Nostr"
+    "npub": "Npub Nostr"
   },
   "receive": {
     "receive_bitcoin": "Recibir Bitcoin",
@@ -660,5 +659,8 @@
       "error": "Eso no funcionó por alguna razón.",
       "authenticated": "¡Autenticado!"
     }
+  },
+  "profile": {
+    "manage_federation": "Manejar Federaciones"
   }
 }

@@ -113,8 +113,8 @@ export function NWCEditor(props: {
         const mode: "createnwa" | "createnwc" | "editnwc" = nwa()
             ? "createnwa"
             : props.initialProfileIndex
-            ? "editnwc"
-            : "createnwc";
+              ? "editnwc"
+              : "createnwc";
         return mode;
     });
 

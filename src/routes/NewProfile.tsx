@@ -1,9 +1,8 @@
-import { useNavigate } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 
 import {
     Button,
-    ButtonLink,
     DefaultMain,
     EditableProfile,
     EditProfileForm
@@ -28,7 +27,7 @@ export function NewProfile() {
             const profile = await state.mutiny_wallet?.edit_nostr_profile(
                 p.nym ? p.nym : undefined,
                 p.imageUrl ? p.imageUrl : undefined,
-                undefined,
+                p.lightningAddress ? p.lightningAddress : undefined,
                 undefined
             );
             console.log("profile", profile);
@@ -47,8 +46,6 @@ export function NewProfile() {
                 <h1 class="text-3xl font-semibold">Create your profile</h1>
                 <p class="text-center text-xl font-light text-neutral-200">
                     Mutiny makes payments social.
-                    <br />
-                    Your activity is private by default.
                 </p>
                 <div class="flex-1" />
                 <EditProfileForm
@@ -56,14 +53,15 @@ export function NewProfile() {
                     saving={creating()}
                     cta="Create"
                 />
-                <div class="flex flex-col items-center">
-                    <ButtonLink href="/importprofile" intent="text">
-                        Import existing nostr profile
-                    </ButtonLink>
-                    <Button onClick={handleSkip} intent="text">
-                        Skip for now
-                    </Button>
-                </div>
+                <Button onClick={handleSkip} intent="text">
+                    Skip for now
+                </Button>
+                <A
+                    class="text-base font-normal text-m-grey-400"
+                    href="/importprofile"
+                >
+                    Import existing nostr profile
+                </A>
                 <div class="flex-1" />
             </div>
         </DefaultMain>

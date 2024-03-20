@@ -34,7 +34,11 @@ function ShareButton(props: { receiveString: string; whiteBg?: boolean }) {
     );
 }
 
-export function TruncateMiddle(props: { text: string; whiteBg?: boolean }) {
+export function TruncateMiddle(props: {
+    text: string;
+    whiteBg?: boolean;
+    hidden?: boolean;
+}) {
     return (
         <div
             class="flex font-mono"

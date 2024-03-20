@@ -110,6 +110,17 @@ export function Settings() {
                                 ? i18n.t("settings.encrypt.caption")
                                 : undefined
                         },
+
+                        {
+                            href: "/settings/servers",
+                            text: i18n.t("settings.servers.title"),
+                            caption: i18n.t("settings.servers.caption")
+                        }
+                    ]}
+                />
+                <SettingsLinkList
+                    header={i18n.t("settings.appearance")}
+                    links={[
                         {
                             href: "/settings/currency",
                             text: i18n.t("settings.currency.title"),
@@ -119,24 +130,16 @@ export function Settings() {
                             href: "/settings/language",
                             text: i18n.t("settings.language.title"),
                             caption: i18n.t("settings.language.caption")
-                        },
-                        {
-                            href: "/settings/servers",
-                            text: i18n.t("settings.servers.title"),
-                            caption: i18n.t("settings.servers.caption")
                         }
                     ]}
                 />
                 <SettingsLinkList
-                    header={i18n.t("settings.experimental_features")}
+                    header={i18n.t("settings.social")}
                     links={[
                         {
-                            href: "/settings/syncnostrcontacts",
-                            text: i18n.t("settings.nostr_contacts.title")
-                        },
-                        {
-                            href: "/settings/federations",
-                            text: i18n.t("settings.manage_federations.title")
+                            href: "/settings/nostrkeys",
+                            text: i18n.t("settings.nostr_keys.title"),
+                            caption: i18n.t("settings.nostr_keys.caption")
                         }
                     ]}
                 />

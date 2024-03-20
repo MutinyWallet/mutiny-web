@@ -26,8 +26,7 @@ const settingsRoutes = [
     "/plus",
     "/restore",
     "/servers",
-    "/syncnostrcontacts",
-    "/federations"
+    "/nostrkeys"
 ];
 
 const settingsRoutesPrefixed = settingsRoutes.map((route) => {
@@ -96,31 +95,8 @@ test("visit each route", async ({ page }) => {
     await checkRoute(page, "/settings/servers", "Servers", checklist);
     await page.goBack();
 
-    // Connections
-    await checkRoute(
-        page,
-        "/settings/connections",
-        "Wallet Connections",
-        checklist
-    );
-    await page.goBack();
-
     // Sync Nostr Contacts
-    await checkRoute(
-        page,
-        "/settings/syncnostrcontacts",
-        "Sync Nostr Contacts",
-        checklist
-    );
-    await page.goBack();
-
-    // Manage Federations
-    await checkRoute(
-        page,
-        "/settings/federations",
-        "Manage Federations",
-        checklist
-    );
+    await checkRoute(page, "/settings/nostrkeys", "Nostr Keys", checklist);
     await page.goBack();
 
     // Emergency Kit
