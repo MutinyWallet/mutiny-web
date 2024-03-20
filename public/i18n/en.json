@@ -45,7 +45,15 @@
     "profile": "Profile",
     "nostr_identity": "Nostr Identity",
     "add_lightning_address": "Add Lightning Address",
-    "edit_profile": "Edit Profile"
+    "edit_profile": "Edit Profile",
+    "join_federation": "Join a federation",
+    "manage_federation": "Manage Federations",
+    "federated_custody": "Federated Custody",
+    "self_custody": "Self Custody",
+    "social": "Social",
+    "edit": {
+      "nym": "Nym"
+    }
   },
   "chat": {
     "prompt": "This is a new conversation. Try asking for money!",
@@ -74,8 +82,7 @@
     "email_error": "That doesn't look like a lightning address",
     "npub_error": "That doesn't look like a nostr npub",
     "error_ln_address_missing": "New contacts need a lightning address",
-    "npub": "Nostr Npub",
-    "link_to_nostr_sync": "Import Nostr Contacts"
+    "npub": "Nostr Npub"
   },
   "redeem": {
     "redeem_bitcoin": "Redeem Bitcoin",
@@ -533,7 +540,7 @@
       "remove": "Remove",
       "expires": "Expires",
       "federation_id": "Federation ID",
-      "description": "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. These funds are currently not backed up remotely. Store funds in a federation at your own risk!",
+      "description": "Mutiny has experimental support for the Fedimint protocol. You'll need a federation invite code to use this feature. Store funds in a federation at your own risk!",
       "learn_more": "Learn more about Fedimint."
     },
     "gift": {
@@ -567,6 +574,15 @@
       "send_delete_confirm": "Are you sure you want to delete this gift? Is this your rugpull moment?",
       "send_tip": "Your copy of Mutiny Wallet needs to be open for the gift to be redeemed.",
       "need_plus": "Upgrade to Mutiny+ to enable gifting. Gifting allows you to create a Mutiny gift URL that can be claimed by anyone with a web browser."
+    },
+    "appearance": "Appearance",
+    "social": "Social",
+    "nostr_keys": {
+      "title": "Nostr Keys",
+      "caption": "Not your keys not your notes",
+      "description": "You can use the same nostr profile across multiple apps.",
+      "warning": "Be careful where you share your private nostr key!",
+      "learn_more": "Learn more about nostr"
     }
   },
   "swap": {

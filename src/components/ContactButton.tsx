@@ -8,7 +8,10 @@ export function ContactButton(props: {
     onClick: () => void;
 }) {
     return (
-        <button class="flex items-center gap-2" onClick={() => props.onClick()}>
+        <button
+            class="flex items-center gap-2 overflow-clip"
+            onClick={() => props.onClick()}
+        >
             <LabelCircle
                 name={props.contact.name}
                 image_url={props.contact.primal_image_url}

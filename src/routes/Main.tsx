@@ -20,7 +20,6 @@ import { useMegaStore } from "~/state/megaStore";
 export function WalletHeader(props: { loading: boolean }) {
     const navigate = useNavigate();
     const [state, _actions] = useMegaStore();
-    const npub = () => state.mutiny_wallet?.get_npub();
 
     async function getProfile() {
         const profile = state.mutiny_wallet?.get_nostr_profile();
@@ -44,7 +43,7 @@ export function WalletHeader(props: { loading: boolean }) {
             return profile()!.picture;
         }
 
-        return `https://bitcoinfaces.xyz/api/get-image?name=${npub()}&onchain=false`;
+        return undefined;
     });
 
     return (

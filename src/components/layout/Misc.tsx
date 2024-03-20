@@ -228,6 +228,16 @@ export const LargeHeader: ParentComponent<{
     );
 };
 
+export const MediumHeader: ParentComponent = (props) => {
+    return (
+        <header class="mt-2">
+            <h2 class="text-xl font-semibold text-m-grey-350">
+                {props.children}
+            </h2>
+        </header>
+    );
+};
+
 export const VStack: ParentComponent<{
     biggap?: boolean;
     smallgap?: boolean;

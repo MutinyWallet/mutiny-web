@@ -1,6 +1,13 @@
 import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { createAsync, useNavigate, useParams } from "@solidjs/router";
-import { ArrowDownLeft, ArrowUpRight, MessagesSquare, Zap } from "lucide-solid";
+import {
+    ArrowDownLeft,
+    ArrowUpRight,
+    Check,
+    MessagesSquare,
+    X,
+    Zap
+} from "lucide-solid";
 import {
     createEffect,
     createResource,
@@ -310,6 +317,36 @@ function FixedChatHeader(props: {
         navigate("/search");
     }
 
+    const [updatingFollowStatus, setUpdatingFollowStatus] = createSignal(false);
+
+    async function followContact() {
+        setUpdatingFollowStatus(true);
+
+        try {
+            if (!props.contact.npub) throw new Error("No npub");
+            await state.mutiny_wallet?.follow_npub(props.contact.npub);
+            props.refetch();
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
+        }
+        setUpdatingFollowStatus(false);
+    }
+
+    async function unfollowContact() {
+        setUpdatingFollowStatus(true);
+
+        try {
+            if (!props.contact.npub) throw new Error("No npub");
+            await state.mutiny_wallet?.unfollow_npub(props.contact.npub);
+            props.refetch();
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
+        }
+        setUpdatingFollowStatus(false);
+    }
+
     return (
         <div class="fixed top-0 z-50 flex w-full max-w-[600px] flex-col gap-2 bg-m-grey-975/70 px-4 py-4 backdrop-blur-lg">
             <div class="backgrop-blur-lg z-50 bg-m-grey-975/70 safe-top" />
@@ -341,13 +378,39 @@ function FixedChatHeader(props: {
                         <ArrowUpRight class="inline-block" />
                         <span>Send</span>
                     </button>
-                    <button
-                        class="flex gap-2 font-semibold text-m-blue"
-                        onClick={() => props.requestFromContact(props.contact)}
-                    >
-                        <ArrowDownLeft class="inline-block text-m-blue" />
-                        <span>Request</span>
-                    </button>
+                    <Show when={props.contact?.npub}>
+                        <button
+                            class="flex gap-2 font-semibold text-m-blue"
+                            onClick={() =>
+                                props.requestFromContact(props.contact)
+                            }
+                        >
+                            <ArrowDownLeft class="inline-block text-m-blue" />
+                            <span>Request</span>
+                        </button>
+                        <Switch>
+                            <Match when={props.contact?.is_followed}>
+                                <button
+                                    class="flex gap-2 font-semibold text-m-red disabled:text-m-grey-350 disabled:opacity-50"
+                                    onClick={unfollowContact}
+                                    disabled={updatingFollowStatus()}
+                                >
+                                    <X class="inline-block text-m-red" />
+                                    <span>Unfollow</span>
+                                </button>
+                            </Match>
+                            <Match when={!props.contact?.is_followed}>
+                                <button
+                                    class="flex gap-2 font-semibold text-white disabled:text-m-grey-350 disabled:opacity-50"
+                                    onClick={followContact}
+                                    disabled={updatingFollowStatus()}
+                                >
+                                    <Check class="inline-block text-white" />
+                                    <span>Follow</span>
+                                </button>
+                            </Match>
+                        </Switch>
+                    </Show>
                 </div>
             </div>
         </div>
@@ -363,7 +426,17 @@ export function Chat() {
 
     const i18n = useI18n();
 
-    const contact = createAsync(async () => {
+    // const contact = createAsync(async () => {
+    //     try {
+    //         return state.mutiny_wallet?.get_tag_item(params.id);
+    //     } catch (e) {
+    //         console.error("couldn't find contact");
+    //         console.error(e);
+    //         return undefined;
+    //     }
+    // });
+
+    const [contact, { refetch: refetchContact }] = createResource(async () => {
         try {
             return state.mutiny_wallet?.get_tag_item(params.id);
         } catch (e) {
@@ -417,13 +490,13 @@ export function Chat() {
                     const a_time = isDirectMessage(a.content)
                         ? a.content.date
                         : isActivityItem(a.content)
-                        ? a.content.last_updated
-                        : 0;
+                          ? a.content.last_updated
+                          : 0;
                     const b_time = isDirectMessage(b.content)
                         ? b.content.date
                         : isActivityItem(b.content)
-                        ? b.content.last_updated
-                        : 0;
+                          ? b.content.last_updated
+                          : 0;
 
                     return b_time - a_time; // Descending order
                 });
@@ -512,7 +585,7 @@ export function Chat() {
             <Show when={contact()}>
                 <FixedChatHeader
                     contact={contact()!}
-                    refetch={refetch}
+                    refetch={refetchContact}
                     requestFromContact={requestFromContact}
                     sendToContact={sendToContact}
                 />
@@ -540,7 +613,7 @@ export function Chat() {
                                         contact={contact()!}
                                     />
                                 </Match>
-                                <Match when={true}>
+                                <Match when={contact() && contact()?.npub}>
                                     <ButtonCard
                                         onClick={() =>
                                             requestFromContact(contact())
@@ -561,45 +634,49 @@ export function Chat() {
                     </Show>
                 </Suspense>
             </div>
-            <div class="fixed bottom-0 grid w-full max-w-[600px] grid-cols-[auto_1fr_auto] grid-rows-1 items-center gap-2 bg-m-grey-975/70 px-4 py-2 backdrop-blur-lg">
-                <MiniFab
-                    onScan={() => navigate("/scanner")}
-                    onSend={() => {
-                        sendToContact(contact());
-                    }}
-                    sendDisabled={
-                        !contact() ||
-                        !(contact()?.ln_address || contact()?.lnurl)
-                    }
-                    onRequest={() => requestFromContact(contact())}
-                />
-                <form
-                    onSubmit={async (e) => {
-                        e.preventDefault();
-                        await sendMessage();
-                    }}
-                >
-                    <SimpleInput
-                        disabled={sending()}
-                        value={messageValue()}
-                        onInput={(e) => setMessageValue(e.currentTarget.value)}
-                        placeholder={i18n.t("chat.placeholder")}
+            <Show when={contact() && contact()?.npub}>
+                <div class="fixed bottom-0 grid w-full max-w-[600px] grid-cols-[auto_1fr_auto] grid-rows-1 items-center gap-2 bg-m-grey-975/70 px-4 py-2 backdrop-blur-lg">
+                    <MiniFab
+                        onScan={() => navigate("/scanner")}
+                        onSend={() => {
+                            sendToContact(contact());
+                        }}
+                        sendDisabled={
+                            !contact() ||
+                            !(contact()?.ln_address || contact()?.lnurl)
+                        }
+                        onRequest={() => requestFromContact(contact())}
                     />
-                </form>
-                <div>
-                    <Show when={messageValue() || sending()}>
-                        <Button
-                            layout="xs"
-                            intent="blue"
-                            loading={sending()}
-                            onClick={sendMessage}
-                        >
-                            Send
-                        </Button>
-                    </Show>
+                    <form
+                        onSubmit={async (e) => {
+                            e.preventDefault();
+                            await sendMessage();
+                        }}
+                    >
+                        <SimpleInput
+                            disabled={sending()}
+                            value={messageValue()}
+                            onInput={(e) =>
+                                setMessageValue(e.currentTarget.value)
+                            }
+                            placeholder={i18n.t("chat.placeholder")}
+                        />
+                    </form>
+                    <div>
+                        <Show when={messageValue() || sending()}>
+                            <Button
+                                layout="xs"
+                                intent="blue"
+                                loading={sending()}
+                                onClick={sendMessage}
+                            >
+                                Send
+                            </Button>
+                        </Show>
+                    </div>
+                    <div class="backgrop-blur-lg z-50 bg-m-grey-975/70 safe-bottom" />
                 </div>
-                <div class="backgrop-blur-lg z-50 bg-m-grey-975/70 safe-bottom" />
-            </div>
+            </Show>
         </MutinyWalletGuard>
     );
 }

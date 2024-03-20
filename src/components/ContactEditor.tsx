@@ -1,5 +1,4 @@
 import { SubmitHandler } from "@modular-forms/solid";
-import { A } from "@solidjs/router";
 import { createSignal, Match, Switch } from "solid-js";
 
 import {
@@ -61,15 +60,6 @@ export function ContactEditor(props: {
                     cta={i18n.t("contacts.create_contact")}
                     handleSubmit={handleSubmit}
                 />
-                <A
-                    href="/settings/syncnostrcontacts"
-                    class="self-center font-semibold text-m-red no-underline active:text-m-red/80"
-                    state={{
-                        previous: location.pathname
-                    }}
-                >
-                    {i18n.t("contacts.link_to_nostr_sync")}
-                </A>
             </SimpleDialog>
         </>
     );
