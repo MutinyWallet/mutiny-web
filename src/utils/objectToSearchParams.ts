@@ -5,11 +5,17 @@ export function objectToSearchParams<
         Object.entries(obj)
             .filter(([_, value]) => value !== undefined)
             // Value shouldn't be null we just filtered it out but typescript is dumb
-            .map(([key, value]) =>
-                value
-                    ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-                    : ""
-            )
+            .map(([key, value]) => {
+                if (value) {
+                    if (key === "pj") {
+                        return `${key}=${value}`
+                    } else {
+                        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+                    }
+                } else {
+                    return ""
+                }
+            })
             .join("&")
     );
 }
