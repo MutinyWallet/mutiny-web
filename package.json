@@ -9,6 +9,7 @@
         "check-types": "tsc --noemit",
         "eslint": "eslint src",
         "eslint-path": "eslint",
+        "check-i18n-keys": "eslint public/i18n",
         "pre-commit": "pnpm eslint && pnpm run check-types && pnpm run format",
         "format": "prettier --write \"{.,src/**,e2e/**}/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
         "check-format": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
@@ -26,6 +27,7 @@
         "esbuild": "^0.14.54",
         "eslint": "^8.52.0",
         "eslint-import-resolver-typescript": "2.7.1",
+        "eslint-plugin-i18n-json": "^4.0.0",
         "eslint-plugin-import": "2.27.5",
         "eslint-plugin-prettier": "4.2.1",
         "eslint-plugin-solid": "0.13.0",
@@ -41,7 +43,6 @@
         "workbox-window": "^7.0.0"
     },
     "dependencies": {
-        "i18next-http-backend": "^2.5.0",
         "@capacitor-mlkit/barcode-scanning": "^5.3.0",
         "@capacitor/android": "^5.5.1",
         "@capacitor/app": "^5.0.6",
@@ -64,6 +65,7 @@
         "@solidjs/router": "^0.9.0",
         "i18next": "^23.10.1",
         "i18next-browser-languagedetector": "^7.1.0",
+        "i18next-http-backend": "^2.5.0",
         "qr-scanner": "^1.4.2",
         "solid-js": "^1.8.5",
         "solid-qr-code": "^0.0.8"
