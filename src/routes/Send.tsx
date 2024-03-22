@@ -509,13 +509,12 @@ export function Send() {
                         ? contact()?.npub
                         : undefined;
                 console.log("zapnpub", zapNpub);
-                const comment = zapNpub ? whatForInput() : undefined;
                 const payment = await state.mutiny_wallet?.lnurl_pay(
                     lnurlp()!,
                     amountSats(),
                     zapNpub, // zap_npub
                     tags,
-                    comment, // comment
+                    whatForInput(), // comment
                     zapNpub ? "Anonymous" : undefined
                 );
                 sentDetails.payment_hash = payment?.payment_hash;
