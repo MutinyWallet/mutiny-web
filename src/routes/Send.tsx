@@ -509,13 +509,12 @@ export function Send() {
                     visibility() !== "Not Available" && contact()?.npub
                         ? contact()?.npub
                         : undefined;
-                const comment = zapNpub ? whatForInput() : undefined;
                 const payment = await state.mutiny_wallet?.lnurl_pay(
                     lnurlp()!,
                     amountSats(),
                     zapNpub, // zap_npub
                     tags,
-                    comment, // comment
+                    whatForInput(), // comment
                     visibility()
                 );
                 sentDetails.payment_hash = payment?.payment_hash;
