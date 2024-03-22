@@ -260,7 +260,7 @@ export function Send() {
             },
             (result) => {
                 actions.setScanResult(result);
-                navigate("/send", { state: { previous: "/search" } });
+                handleDestination(state.scan_result);
             }
         );
     }
