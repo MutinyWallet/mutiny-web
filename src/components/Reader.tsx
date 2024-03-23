@@ -73,6 +73,9 @@ export function Reader(props: { onResult: (result: string) => void }) {
                 scanner = new QrScanner(container, handleResult, {
                     returnDetailedScanResult: true
                 });
+                // Set the inversion mode to scan both dark on light and light on dark
+                // This should make us more flexible in scanning QR codes
+                scanner.setInversionMode("both");
                 await scanner.start();
             }
         }
