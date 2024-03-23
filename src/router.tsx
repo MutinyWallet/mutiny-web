@@ -94,7 +94,7 @@ export function Router() {
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-
+   
     if (searchParams.lsps) {
         const values = {
             lsp: "",
@@ -111,7 +111,9 @@ export function Router() {
                     values.lsps_token ? values.lsps_token : undefined
                 );
                 await setSettings(values);
-                navigate(location.pathname, { replace: true });
+
+                const destination = `${location.pathname}${searchParams.nwa ? `?nwa=${searchParams.nwa}` : ``}`;
+                navigate(destination, { replace: true,  });
             } catch (e) {
                 console.error("Error changing lsp:", e);
                 showToast(eify(e));
