@@ -112,7 +112,7 @@ export function Router() {
                 );
                 await setSettings(values);
 
-                const destination = `${location.pathname}${searchParams.nwa ? `?nwa=${searchParams.nwa}` : ``}`;
+                const destination = `${location.pathname}${searchParams.nwa ? `?nwa=${encodeURIComponent(searchParams.nwa)}` : ``}`;
                 navigate(destination, { replace: true,  });
             } catch (e) {
                 console.error("Error changing lsp:", e);
