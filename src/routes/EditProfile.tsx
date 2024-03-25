@@ -34,11 +34,13 @@ export function EditProfile() {
         try {
             setSaving(true);
 
+            console.log("new profile", profile);
+
             const newProfile = await state.mutiny_wallet?.edit_nostr_profile(
-                profile.nym,
-                profile.imageUrl,
-                profile.lightningAddress,
-                originalProfile().nip05
+                profile.nym ? profile.nym : undefined,
+                profile.imageUrl ? profile.imageUrl : undefined,
+                profile.lightningAddress ? profile.lightningAddress : undefined,
+                originalProfile().nip05 ? originalProfile().nip05 : undefined
             );
 
             console.log("newProfile", newProfile);

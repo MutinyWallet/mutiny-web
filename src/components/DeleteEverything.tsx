@@ -1,4 +1,5 @@
 import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { createSignal } from "solid-js";
 
 import { Button, ConfirmDialog, showToast } from "~/components";
@@ -22,6 +23,9 @@ export function DeleteEverything(props: { emergency?: boolean }) {
             setConfirmLoading(true);
 
             localStorage.removeItem("profile_setup_stage");
+
+            // Remove the nsec if it exists
+            await SecureStoragePlugin.clear();
 
             // If we're in a context where the wallet is loaded we want to use the regular action to delete it
             // Otherwise we just call the import_json method directly
