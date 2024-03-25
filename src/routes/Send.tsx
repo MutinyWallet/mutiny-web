@@ -515,7 +515,8 @@ export function Send() {
                     amountSats(),
                     zapNpub, // zap_npub
                     tags,
-                    comment // comment
+                    comment, // comment
+                    zapNpub ? "Anonymous" : undefined
                 );
                 sentDetails.payment_hash = payment?.payment_hash;
 
