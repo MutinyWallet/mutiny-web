@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.mutinywallet.mutinywallet"
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.mutinywallet.mutinywallet"
         minSdkVersion rootProject.ext.minSdkVersion
