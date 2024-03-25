@@ -1,4 +1,4 @@
-require_relative '../../node_modules/.pnpm/@capacitor+ios@5.7.4_@capacitor+core@5.7.4/node_modules/@capacitor/ios/scripts/pods_helpers'
+require_relative '../../node_modules/.pnpm/@capacitor+ios@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/ios/scripts/pods_helpers'
 
 platform :ios, '13.0'
 use_frameworks!
@@ -9,18 +9,19 @@ use_frameworks!
 install! 'cocoapods', :disable_input_output_paths => true
 
 def capacitor_pods
-  pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@5.7.4_@capacitor+core@5.7.4/node_modules/@capacitor/ios'
-  pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@5.7.4_@capacitor+core@5.7.4/node_modules/@capacitor/ios'
-  pod 'CapacitorMlkitBarcodeScanning', :path => '../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@5.4.0_@capacitor+core@5.7.4/node_modules/@capacitor-mlkit/barcode-scanning'
-  pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/app'
-  pod 'CapacitorAppLauncher', :path => '../../node_modules/.pnpm/@capacitor+app-launcher@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/app-launcher'
-  pod 'CapacitorClipboard', :path => '../../node_modules/.pnpm/@capacitor+clipboard@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/clipboard'
-  pod 'CapacitorFilesystem', :path => '../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.4/node_modules/@capacitor/filesystem'
-  pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/@capacitor+haptics@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/haptics'
-  pod 'CapacitorShare', :path => '../../node_modules/.pnpm/@capacitor+share@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/share'
-  pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/status-bar'
-  pod 'CapacitorToast', :path => '../../node_modules/.pnpm/@capacitor+toast@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/toast'
-  pod 'CapacitorSecureStoragePlugin', :path => '../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@5.7.4/node_modules/capacitor-secure-storage-plugin'
+  pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/ios'
+  pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/ios'
+  pod 'CapacitorMlkitBarcodeScanning', :path => '../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor-mlkit/barcode-scanning'
+  pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/app'
+  pod 'CapacitorAppLauncher', :path => '../../node_modules/.pnpm/@capacitor+app-launcher@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/app-launcher'
+  pod 'CapacitorClipboard', :path => '../../node_modules/.pnpm/@capacitor+clipboard@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/clipboard'
+  pod 'CapacitorFilesystem', :path => '../../node_modules/.pnpm/@capacitor+filesystem@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/filesystem'
+  pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/@capacitor+haptics@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/haptics'
+  pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/network'
+  pod 'CapacitorShare', :path => '../../node_modules/.pnpm/@capacitor+share@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/share'
+  pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/status-bar'
+  pod 'CapacitorToast', :path => '../../node_modules/.pnpm/@capacitor+toast@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/toast'
+  pod 'CapacitorSecureStoragePlugin', :path => '../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@6.0.0/node_modules/capacitor-secure-storage-plugin'
 end
 
 target 'App' do

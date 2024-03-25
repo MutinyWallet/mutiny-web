@@ -1,28 +1,30 @@
 PODS:
-  - Capacitor (5.7.4):
+  - Capacitor (6.0.0):
     - CapacitorCordova
-  - CapacitorApp (5.0.7):
+  - CapacitorApp (6.0.0):
     - Capacitor
-  - CapacitorAppLauncher (5.0.7):
+  - CapacitorAppLauncher (6.0.0):
     - Capacitor
-  - CapacitorClipboard (5.0.7):
+  - CapacitorClipboard (6.0.0):
     - Capacitor
-  - CapacitorCordova (5.7.4)
-  - CapacitorFilesystem (5.2.1):
+  - CapacitorCordova (6.0.0)
+  - CapacitorFilesystem (6.0.0):
     - Capacitor
-  - CapacitorHaptics (5.0.7):
+  - CapacitorHaptics (6.0.0):
     - Capacitor
-  - CapacitorMlkitBarcodeScanning (5.4.0):
+  - CapacitorMlkitBarcodeScanning (6.0.0):
     - Capacitor
     - GoogleMLKit/BarcodeScanning (= 4.0.0)
+  - CapacitorNetwork (6.0.0):
+    - Capacitor
   - CapacitorSecureStoragePlugin (0.9.0):
     - Capacitor
     - SwiftKeychainWrapper
-  - CapacitorShare (5.0.7):
+  - CapacitorShare (6.0.0):
     - Capacitor
-  - CapacitorStatusBar (5.0.7):
+  - CapacitorStatusBar (6.0.0):
     - Capacitor
-  - CapacitorToast (5.0.7):
+  - CapacitorToast (6.0.0):
     - Capacitor
   - GoogleDataTransport (9.2.5):
     - GoogleUtilities/Environment (~> 7.7)
@@ -81,18 +83,19 @@ PODS:
   - SwiftKeychainWrapper (4.0.1)
 
 DEPENDENCIES:
-  - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@5.7.4_@capacitor+core@5.7.4/node_modules/@capacitor/ios`)"
-  - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/app`)"
-  - "CapacitorAppLauncher (from `../../node_modules/.pnpm/@capacitor+app-launcher@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/app-launcher`)"
-  - "CapacitorClipboard (from `../../node_modules/.pnpm/@capacitor+clipboard@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/clipboard`)"
-  - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.7.4_@capacitor+core@5.7.4/node_modules/@capacitor/ios`)"
-  - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.4/node_modules/@capacitor/filesystem`)"
-  - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/haptics`)"
-  - "CapacitorMlkitBarcodeScanning (from `../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@5.4.0_@capacitor+core@5.7.4/node_modules/@capacitor-mlkit/barcode-scanning`)"
-  - "CapacitorSecureStoragePlugin (from `../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@5.7.4/node_modules/capacitor-secure-storage-plugin`)"
-  - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/share`)"
-  - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/status-bar`)"
-  - "CapacitorToast (from `../../node_modules/.pnpm/@capacitor+toast@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/toast`)"
+  - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/ios`)"
+  - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/app`)"
+  - "CapacitorAppLauncher (from `../../node_modules/.pnpm/@capacitor+app-launcher@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/app-launcher`)"
+  - "CapacitorClipboard (from `../../node_modules/.pnpm/@capacitor+clipboard@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/clipboard`)"
+  - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/ios`)"
+  - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/filesystem`)"
+  - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/haptics`)"
+  - "CapacitorMlkitBarcodeScanning (from `../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor-mlkit/barcode-scanning`)"
+  - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/network`)"
+  - "CapacitorSecureStoragePlugin (from `../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@6.0.0/node_modules/capacitor-secure-storage-plugin`)"
+  - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/share`)"
+  - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/status-bar`)"
+  - "CapacitorToast (from `../../node_modules/.pnpm/@capacitor+toast@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/toast`)"
 
 SPEC REPOS:
   trunk:
@@ -112,43 +115,46 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Capacitor:
-    :path: "../../node_modules/.pnpm/@capacitor+ios@5.7.4_@capacitor+core@5.7.4/node_modules/@capacitor/ios"
+    :path: "../../node_modules/.pnpm/@capacitor+ios@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/ios"
   CapacitorApp:
-    :path: "../../node_modules/.pnpm/@capacitor+app@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/app"
+    :path: "../../node_modules/.pnpm/@capacitor+app@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/app"
   CapacitorAppLauncher:
-    :path: "../../node_modules/.pnpm/@capacitor+app-launcher@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/app-launcher"
+    :path: "../../node_modules/.pnpm/@capacitor+app-launcher@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/app-launcher"
   CapacitorClipboard:
-    :path: "../../node_modules/.pnpm/@capacitor+clipboard@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/clipboard"
+    :path: "../../node_modules/.pnpm/@capacitor+clipboard@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/clipboard"
   CapacitorCordova:
-    :path: "../../node_modules/.pnpm/@capacitor+ios@5.7.4_@capacitor+core@5.7.4/node_modules/@capacitor/ios"
+    :path: "../../node_modules/.pnpm/@capacitor+ios@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/ios"
   CapacitorFilesystem:
-    :path: "../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.4/node_modules/@capacitor/filesystem"
+    :path: "../../node_modules/.pnpm/@capacitor+filesystem@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/filesystem"
   CapacitorHaptics:
-    :path: "../../node_modules/.pnpm/@capacitor+haptics@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/haptics"
+    :path: "../../node_modules/.pnpm/@capacitor+haptics@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/haptics"
   CapacitorMlkitBarcodeScanning:
-    :path: "../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@5.4.0_@capacitor+core@5.7.4/node_modules/@capacitor-mlkit/barcode-scanning"
+    :path: "../../node_modules/.pnpm/@capacitor-mlkit+barcode-scanning@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor-mlkit/barcode-scanning"
+  CapacitorNetwork:
+    :path: "../../node_modules/.pnpm/@capacitor+network@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/network"
   CapacitorSecureStoragePlugin:
-    :path: "../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@5.7.4/node_modules/capacitor-secure-storage-plugin"
+    :path: "../../node_modules/.pnpm/capacitor-secure-storage-plugin@0.9.0_@capacitor+core@6.0.0/node_modules/capacitor-secure-storage-plugin"
   CapacitorShare:
-    :path: "../../node_modules/.pnpm/@capacitor+share@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/share"
+    :path: "../../node_modules/.pnpm/@capacitor+share@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/share"
   CapacitorStatusBar:
-    :path: "../../node_modules/.pnpm/@capacitor+status-bar@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/status-bar"
+    :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/status-bar"
   CapacitorToast:
-    :path: "../../node_modules/.pnpm/@capacitor+toast@5.0.7_@capacitor+core@5.7.4/node_modules/@capacitor/toast"
+    :path: "../../node_modules/.pnpm/@capacitor+toast@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/toast"
 
 SPEC CHECKSUMS:
-  Capacitor: 4fe9adf012caceb4c71ffea2f1f4d005cdcbeea7
-  CapacitorApp: 17fecd0e6cb23feafac7eb0939417389038b0979
-  CapacitorAppLauncher: 7b2705481a74cbe322441bd374f56194de59ab1a
-  CapacitorClipboard: 45e5e25f2271f98712985d422776cdc5a779cca1
-  CapacitorCordova: a6e87fccc0307dee7aec1560ec9398485f2b0ce7
-  CapacitorFilesystem: 9f3e3c7fea2fff12f46dd5b07a2914f2103e4cfc
-  CapacitorHaptics: 7c7c206f0c96a628fed073830c96d28c4b2e772e
-  CapacitorMlkitBarcodeScanning: 8fb81cbef3c6ffe0c0e2dbd15ed6dca889a5a062
+  Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
+  CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
+  CapacitorAppLauncher: 24ce4be152a84883378d22114ffe6c492056ced2
+  CapacitorClipboard: 80282f684154124b9019ebf401235b70b0cf4994
+  CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
+  CapacitorFilesystem: 60e59ba274c234a979e7a3be2552feaadcee4263
+  CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
+  CapacitorMlkitBarcodeScanning: 1cc47dc2163628b44be5400864de32696362045b
+  CapacitorNetwork: f15a94c16a33cba7c47a17814cb6bcfe3ea34ded
   CapacitorSecureStoragePlugin: e91d7df060f2495a1acff9583641a6953e3aacba
-  CapacitorShare: c6a1ebbf0114ff9e863b966cd6052678fa25d480
-  CapacitorStatusBar: f390fbb49b82ffb754ea4b3cf71dc8b048baf3e7
-  CapacitorToast: c8bb89eeb59a23c1fc298f138cc06c8ff4d90ac1
+  CapacitorShare: a771200d3b924a5d7ad9d9fecbac517e4c0aa74f
+  CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
+  CapacitorToast: ba573a7bc5dfd622e78d5be126a84ee221da4180
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
   GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
@@ -163,6 +169,6 @@ SPEC CHECKSUMS:
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 3864776b838da083701f08e4d80ef59ac02798db
+PODFILE CHECKSUM: 7d4dccfabb68790e47370312014de5fc49a89668
 
 COCOAPODS: 1.14.3
