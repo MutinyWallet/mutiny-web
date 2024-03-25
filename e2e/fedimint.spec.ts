@@ -18,13 +18,15 @@ test("fedmint join, receive, send", async ({ page }) => {
     // Fill the input with the federation code
     await page.fill("input[name='federation_code']", SIGNET_INVITE_CODE);
 
-    const addButton = await page.getByRole("button", { name: "Add" });
+    await page.getByText("Mutinynet Signet Federation").waitFor();
+
+    const addButton = await page.getByRole("button", { name: "Add" }).first();
 
     // Click the "Add" button
     await addButton.click();
 
     // Wait for a header to appear with the text "MutinySignetFederation"
-    await page.waitForSelector("text=MutinySignetFederation");
+    await page.getByText("MutinySignetFederation").waitFor();
 
     // Navigate back home
     await page.goBack();
