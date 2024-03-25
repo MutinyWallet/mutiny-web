@@ -7,7 +7,7 @@ import {
 } from "@modular-forms/solid";
 import { FederationBalance, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useSearchParams } from "@solidjs/router";
-import { Scan } from "lucide-solid";
+import { BadgeCheck, Scan } from "lucide-solid";
 import {
     createResource,
     createSignal,
@@ -26,7 +26,6 @@ import {
     Button,
     ConfirmDialog,
     DefaultMain,
-    ExternalLink,
     FancyCard,
     InfoBox,
     KeyValue,
@@ -257,7 +256,7 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
                                         >
                                             <KeyValue key={"recommended by"}>
                                                 {/* todo i18n */}
-                                                <div class="flex items-center gap-2 md:gap-4">
+                                                <div class="flex items-center gap-2 overflow-scroll md:gap-4">
                                                     <For
                                                         each={
                                                             fed.recommendations
@@ -304,6 +303,62 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
     );
 }
 
+function RecommendButton(props: { fed: MutinyFederationIdentity }) {
+    const [state] = useMegaStore();
+    const [recommendLoading, setRecommendLoading] = createSignal(false);
+    // This is just some local state that makes it feel like they've recommended it
+    // even if they aren't a "real person"
+    const [recommended, setRecommended] = createSignal(false);
+
+    const [recommendedByMe, { refetch }] = createResource(async () => {
+        try {
+            const hasRecommended =
+                await state.mutiny_wallet?.has_recommended_federation(
+                    props.fed.federation_id
+                );
+            return hasRecommended;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    });
+
+    async function recommendFederation() {
+        setRecommendLoading(true);
+        try {
+            const event_id = await state.mutiny_wallet?.recommend_federation(
+                props.fed.invite_code
+            );
+            console.log("Recommended federation: ", event_id);
+            setRecommended(true);
+            refetch();
+        } catch (e) {
+            console.error("Error recommending federation: ", e);
+        }
+        setRecommendLoading(false);
+    }
+
+    return (
+        <Switch>
+            <Match when={recommendedByMe() || recommended()}>
+                <p class="flex items-center gap-2">
+                    <BadgeCheck />
+                    Recommended by you
+                </p>
+            </Match>
+            <Match when={true}>
+                <Button
+                    intent="blue"
+                    onClick={recommendFederation}
+                    loading={recommendLoading()}
+                >
+                    Recommend
+                </Button>
+            </Match>
+        </Switch>
+    );
+}
+
 function FederationListItem(props: {
     fed: MutinyFederationIdentity;
     balance?: bigint;
@@ -324,26 +379,12 @@ function FederationListItem(props: {
         setConfirmLoading(false);
     }
 
-    async function recommendFederation() {
-        setRecommendLoading(true);
-        try {
-            const event_id = await state.mutiny_wallet?.recommend_federation(
-                props.fed.invite_code
-            );
-            console.log("Recommended federation: ", event_id);
-        } catch (e) {
-            console.error("Error recommending federation: ", e);
-        }
-        setRecommendLoading(false);
-    }
-
     async function confirmRemove() {
         setConfirmOpen(true);
     }
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
     const [confirmLoading, setConfirmLoading] = createSignal(false);
-    const [recommendLoading, setRecommendLoading] = createSignal(false);
 
     return (
         <>
@@ -384,13 +425,9 @@ function FederationListItem(props: {
                     >
                         <MiniStringShower text={props.fed.federation_id} />
                     </KeyValue>
-                    <Button
-                        intent="blue"
-                        onClick={recommendFederation}
-                        loading={recommendLoading()}
-                    >
-                        Recommend
-                    </Button>
+                    <Suspense>
+                        <RecommendButton fed={props.fed} />
+                    </Suspense>
                     <div class="w-full rounded-xl bg-white">
                         <QRCodeSVG
                             value={props.fed.invite_code}
