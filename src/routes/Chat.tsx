@@ -351,7 +351,7 @@ function FixedChatHeader(props: {
         <div class="fixed top-0 z-50 flex w-full max-w-[600px] flex-col gap-2 bg-m-grey-975/70 px-4 py-4 backdrop-blur-lg">
             <div class="backgrop-blur-lg z-50 bg-m-grey-975/70 safe-top" />
             <div class="flex w-full flex-col gap-2">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-4">
                     <BackPop default="/" title="" />
                     <ContactViewer
                         contact={props.contact}
