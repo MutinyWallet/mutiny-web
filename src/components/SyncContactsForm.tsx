@@ -14,7 +14,7 @@ type NostrContactsForm = {
 
 export function SyncContactsForm() {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [state, _actions] = useMegaStore();
     const [error, setError] = createSignal<Error>();
 
     const [feedbackForm, { Form, Field }] = createForm<NostrContactsForm>({
@@ -29,7 +29,6 @@ export function SyncContactsForm() {
         try {
             const npub = f.npub.trim();
             await state.mutiny_wallet?.sync_nostr_contacts(npub);
-            actions.saveNpub(npub);
         } catch (e) {
             console.error(e);
             setError(eify(e));

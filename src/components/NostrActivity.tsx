@@ -40,7 +40,10 @@ export function NostrActivity() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
-    const [data, { refetch }] = createResource(state.npub, fetchZaps);
+    const [data, { refetch }] = createResource(
+        state.mutiny_wallet?.get_npub(),
+        fetchZaps
+    );
 
     function nameFromHexpub(hexpub: string): string {
         const profile = data.latest?.profiles[hexpub];

@@ -68,7 +68,6 @@ type MegaStore = [
         load_stage: LoadStage;
         settings?: MutinyWalletSettingStrings;
         safe_mode?: boolean;
-        npub?: string;
         preferredInvoiceType: "unified" | "lightning" | "onchain";
         testflightPromptDismissed: boolean;
         should_zap_hodl: boolean;
@@ -86,7 +85,6 @@ type MegaStore = [
         fetchPrice(fiat: Currency): Promise<number>;
         saveFiat(fiat: Currency): void;
         saveLanguage(lang: string): void;
-        saveNpub(npub: string): void;
         setPreferredInvoiceType(
             type: "unified" | "lightning" | "onchain"
         ): void;
@@ -136,7 +134,6 @@ export const Provider: ParentComponent = (props) => {
         settings: undefined as MutinyWalletSettingStrings | undefined,
         safe_mode: searchParams.safe_mode === "true",
         lang: localStorage.getItem("i18nexLng") || undefined,
-        npub: localStorage.getItem("npub") || undefined,
         preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
         should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
         testflightPromptDismissed:
@@ -379,10 +376,6 @@ export const Provider: ParentComponent = (props) => {
         saveLanguage(lang: string) {
             localStorage.setItem("i18nextLng", lang);
             setState({ lang });
-        },
-        saveNpub(npub: string) {
-            localStorage.setItem("npub", npub);
-            setState({ npub });
         },
         setPreferredInvoiceType(type: "unified" | "lightning" | "onchain") {
             setState({ preferredInvoiceType: type });
