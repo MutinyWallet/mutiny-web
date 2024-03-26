@@ -5,7 +5,6 @@ import { loadHome, visitSettings } from "./utils";
 const routes = [
     "/",
     "/feedback",
-    "/gift",
     "/receive",
     "/scanner",
     "/search",
@@ -21,8 +20,6 @@ const settingsRoutes = [
     "/connections",
     "/currency",
     "/emergencykit",
-    "/encrypt",
-    "/gift",
     "/plus",
     "/restore",
     "/servers",
@@ -95,7 +92,7 @@ test("visit each route", async ({ page }) => {
     await checkRoute(page, "/settings/servers", "Servers", checklist);
     await page.goBack();
 
-    // Sync Nostr Contacts
+    // Nostr Keys
     await checkRoute(page, "/settings/nostrkeys", "Nostr Keys", checklist);
     await page.goBack();
 
@@ -151,15 +148,6 @@ test("visit each route", async ({ page }) => {
     ).toBeVisible();
     checklist.set("/scanner", true);
 
-    // Now we have to check routes that aren't linked to directly for whatever reason
-    await page.goto(
-        "http://localhost:3420/gift?amount=50000&nwc_uri=nostr%2Bwalletconnect%3A%2F%2Ff6d55dff6da0f23e0d609121905aaa8da5d2bad7759459402e2bee1162912556%3Frelay%3Dwss%253A%252F%252Frelay.mutinywallet.com%252F%26secret%3D8a2d579a182e9091d36d5668eb1c3b301d98bc792d94e866526123df79568355"
-    );
-    await expect(page.locator("h2").nth(1)).toHaveText(
-        "You've been gifted some sats!"
-    );
-    checklist.set("/gift", true);
-
     // Visit connections nwa params
     const nwaParams =
         "/settings/connections?nwa=nostr%2Bwalletauth%3A%2F%2Fe552dec5821ef94dc1b9138a347b4b1d8dcb595e31f5c89352e50dc11255e0f4%3Frelay%3Dwss%253A%252F%252Frelay.damus.io%252F%26secret%3D0bfe616c5e126a7c%26required_commands%3Dpay_invoice%26budget%3D21%252Fday%26identity%3D32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245";
@@ -174,18 +162,6 @@ test("visit each route", async ({ page }) => {
         page.getByRole("heading", { name: "Swap to Lightning" })
     ).toBeVisible();
     checklist.set("/swap", true);
-
-    // Gift
-    await page.goto("http://localhost:3420/settings/gift");
-    await expect(page.locator("h1")).toHaveText("Create Gift");
-    checklist.set("/settings/gift", true);
-
-    // Encrypt
-    await page.goto("http://localhost:3420/settings/encrypt");
-    await expect(page.locator("h1")).toHaveText(
-        "Encrypt your seed words (optional)"
-    );
-    checklist.set("/settings/encrypt", true);
 
     // print how many routes we've visited
     checklist.forEach((value, key) => {
