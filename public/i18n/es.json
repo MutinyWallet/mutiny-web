@@ -362,7 +362,7 @@
       }
     },
     "encrypt": {
-      "title": "Cambiar Contraseña",
+      "title": "Seguridad",
       "caption": "Haga un respaldo primero para desbloquear el cifrado",
       "header": "Cifre sus palabras semilla",
       "hot_wallet_warning": "Mutiny es una \"billetera caliente\" por lo que necesita sus palabras semilla para operar, pero usted puede opcionalmente cifrar esas palabras con una contraseña.",
