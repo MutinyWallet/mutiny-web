@@ -39,7 +39,7 @@ test("test local encrypt", async ({ page }) => {
 
     // Go back to settings / change password
     await visitSettings(page);
-    await page.click("text=Change Password");
+    await page.click("text=Security");
 
     // The header should now say "Encrypt your seed words"
     await expect(page.locator("h1")).toContainText(["Encrypt your seed words"]);

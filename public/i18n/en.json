@@ -405,7 +405,7 @@
       }
     },
     "encrypt": {
-      "title": "Change Password",
+      "title": "Security",
       "caption": "Backup first to unlock encryption",
       "header": "Encrypt your seed words",
       "hot_wallet_warning": "Mutiny is a \"hot wallet\" so it needs your seed word to operate, but you can optionally encrypt those words with a password.",

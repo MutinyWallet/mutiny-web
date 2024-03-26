@@ -284,7 +284,7 @@
       }
     },
     "encrypt": {
-      "header": "시드 단어 암호화",
+      "header": "보안",
       "hot_wallet_warning": "Mutiny는 &rdquo;핫 월렛&rdquo;이므로 시드 단어를 사용하여 작동하지만 선택적으로 비밀번호로 암호화할 수 있습니다.",
       "password_tip": "이렇게 하면 다른 사람이 브라우저에 접근하더라도 자금에 접근할 수 없습니다.",
       "optional": "(선택 사항)",
