@@ -122,7 +122,7 @@
     "error_creating_unified": "Defaulting to On-chain. Something went wrong when creating the unified address",
     "error_creating_address": "Something went wrong when creating the on-chain address",
     "amount_editable": {
-      "receive_too_small": "A lightning setup fee might be deducted from the requested amount.",
+      "receive_too_small": "Your first receive needs to be {{amount}} SATS or greater.",
       "setup_fee_lightning": "A lightning setup fee will be charged if paid over lightning.",
       "more_than_21m": "There are only 21 million bitcoin.",
       "set_amount": "Set amount",
@@ -701,7 +701,8 @@
       "whats_with_the_fees": "What's with the fees?",
       "self_custodial": "Mutiny is a self-custodial wallet. To initiate a lightning payment we must open a lightning channel, which requires a minimum amount and a setup fee.",
       "future_payments": "Future payments, both send and receive, will only incur normal network fees and a nominal service fee unless your channel runs out of inbound capacity.",
-      "liquidity": "Learn more about liquidity"
+      "liquidity": "Learn more about liquidity",
+      "fedimint": "If you join a federation, no setup fee or minimum is required."
     },
     "confirm_dialog": {
       "are_you_sure": "Are you sure?",

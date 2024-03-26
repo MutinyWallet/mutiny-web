@@ -12,6 +12,7 @@ export function FeesModal() {
         >
             <p>{i18n.t("modals.more_info.self_custodial")}</p>
             <p>{i18n.t("modals.more_info.future_payments")}</p>
+            <p>{i18n.t("modals.more_info.fedimint")}</p>
             <p>
                 <ExternalLink href="https://github.com/MutinyWallet/mutiny-web/wiki/Understanding-liquidity">
                     {i18n.t("modals.more_info.liquidity")}
