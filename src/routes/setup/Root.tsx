@@ -68,11 +68,6 @@ export function Setup() {
                     </Button>
                 </div>
                 <div class="flex-1" />
-                <p class="max-w-[15rem] text-center text-xs font-light text-m-grey-400">
-                    By creating or restoring a wallet you agree to our{" "}
-                    <a href="#">Terms of Service</a>.
-                </p>
-                <div class="flex-1" />
             </div>
         </DefaultMain>
     );
