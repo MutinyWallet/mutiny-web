@@ -1,4 +1,4 @@
-import { A } from "@solidjs/router";
+import { A, createAsync } from "@solidjs/router";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { Import, Trash, Unlink } from "lucide-solid";
 import { createResource, createSignal, Match, Show, Switch } from "solid-js";
@@ -115,8 +115,8 @@ export function NostrKeys() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
-    const npub = () => state.mutiny_wallet?.get_npub();
-    const nsec = () => state.mutiny_wallet?.export_nsec();
+    const npub = createAsync(async () => state.mutiny_wallet?.get_npub());
+    const nsec = createAsync(async () => state.mutiny_wallet?.export_nsec());
     const profile = () => state.mutiny_wallet?.get_nostr_profile();
 
     // @ts-expect-error we're checking for an extension

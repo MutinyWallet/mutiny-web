@@ -46,6 +46,7 @@ import {
     Gift,
     ImportProfileSettings,
     Language,
+    LightningAddress,
     ManageFederations,
     NostrKeys,
     Plus,
@@ -193,6 +194,7 @@ export function Router() {
                     component={ImportProfileSettings}
                 />
                 <Route path="/federations" component={ManageFederations} />
+                <Route path="/lightningaddress" component={LightningAddress} />
             </Route>
             <Route path="/*all" component={NotFound} />
         </SolidRouter>
