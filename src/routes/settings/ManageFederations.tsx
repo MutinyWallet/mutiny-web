@@ -46,6 +46,10 @@ type FederationForm = {
     federation_code: string;
 };
 
+type HermesForm = {
+    name: string;
+};
+
 export type MutinyFederationIdentity = {
     federation_id: string;
     federation_name: string;
@@ -154,6 +158,69 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
     );
 }
 
+// todo(paul) put this somewhere else
+function HermesForm(props: { onSubmit: (name: string) => void }) {
+    const [state, _] = useMegaStore();
+    const [error, setError] = createSignal<Error>();
+    const [success, setSuccess] = createSignal("");
+
+    const [nameForm, { Form, Field }] = createForm<HermesForm>({
+        initialValues: {
+            name: ""
+        }
+    });
+
+    const handleSubmit: SubmitHandler<HermesForm> = async (f: HermesForm) => {
+        setSuccess("");
+        setError(undefined);
+        try {
+            const name = f.name;
+            console.log("Reserving lnurl name:", name);
+            await state.mutiny_wallet?.reserve_lnurl_name(name);
+            console.log("lnurl name reserved:", name);
+            reset(nameForm);
+            // todo this should be on mutiny node side
+            localStorage.setItem("lnurl_name", name);
+            props.onSubmit(name);
+        } catch (e) {
+            console.error("Error reserving name:", e);
+            setError(eify(e));
+        }
+    };
+
+    return (
+        <Form onSubmit={handleSubmit}>
+            <VStack>
+                <Field name="name" validate={[required("must not be empty")]}>
+                    {(field, props) => (
+                        <TextField
+                            {...props}
+                            {...field}
+                            error={field.error}
+                            label={"name"}
+                            required
+                        />
+                    )}
+                </Field>
+                <Button
+                    loading={nameForm.submitting}
+                    disabled={nameForm.invalid}
+                    intent="blue"
+                    type="submit"
+                >
+                    Submit
+                </Button>
+                <Show when={error()}>
+                    <InfoBox accent="red">{error()?.message}</InfoBox>
+                </Show>
+                <Show when={success()}>
+                    <InfoBox accent="green">{success()}</InfoBox>
+                </Show>
+            </VStack>
+        </Form>
+    );
+}
+
 function FederationListItem(props: {
     fed: MutinyFederationIdentity;
     balance?: bigint;
@@ -247,6 +314,10 @@ export function ManageFederations() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
+    const [lnurlName, setLnurlName] = createSignal(
+        localStorage.getItem("lnurl_name")
+    );
+
     const [balances, { refetch }] = createResource(async () => {
         try {
             const balances =
@@ -315,6 +386,21 @@ export function ManageFederations() {
                         </Switch>
                     </Suspense>
                 </VStack>
+                <Suspense>
+                    <Switch>
+                        <Match when={!lnurlName() && state.federations?.length}>
+                            <HermesForm onSubmit={setLnurlName} />
+                        </Match>
+                        <Match when={lnurlName() && state.federations?.length}>
+                            <KeyValue key="lnurl_name">
+                                <pre>{lnurlName()}</pre>
+                            </KeyValue>
+                        </Match>
+                        <Match when={true}>
+                            <pre>Add a federation to reserve an lnurl name</pre>
+                        </Match>
+                    </Switch>
+                </Suspense>
             </DefaultMain>
             <NavBar activeTab="settings" />
         </MutinyWalletGuard>

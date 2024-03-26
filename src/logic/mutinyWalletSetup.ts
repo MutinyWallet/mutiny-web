@@ -326,7 +326,11 @@ export async function setupMutinyWallet(
         // Nip7
         extension_key ? extension_key : undefined,
         // primal URL
-        primal_api || "https://primal-cache.mutinywallet.com/api"
+        primal_api || "https://primal-cache.mutinywallet.com/api",
+        /// blind auth url
+        "https://blind-auth-staging.mutinywallet.com",
+        /// hermes url
+        "https://signet.mutiny.plus"
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
