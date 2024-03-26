@@ -55,8 +55,7 @@ export const ButtonCard: ParentComponent<{
     return (
         <button
             onClick={() => props.onClick()}
-            // class="flex flex-none items-center justify-center overflow-clip rounded-full border-b border-t border-b-white/10 border-t-white/50  text-3xl uppercase"
-            class="flex w-full flex-col gap-2 rounded-xl border-b border-t border-b-white/10 border-t-white/50 bg-neutral-900 p-4 active:-mb-[1px] active:mt-[1px]"
+            class="flex w-full rounded-xl border border-white/10 bg-neutral-900 p-4 active:-mb-[1px] active:mt-[1px] active:opacity-70"
         >
             {props.children}
         </button>

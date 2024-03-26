@@ -20,22 +20,11 @@ export function HomeBalance() {
             onClick={actions.cycleBalanceView}
             class="flex h-12 items-center justify-center rounded-lg border-b border-t border-b-white/10 border-t-white/40 bg-black px-4 py-2"
         >
-            {/* <div class="w-2">
-                <div
-                    title={fullyReady() ? "READY" : "ALMOST"}
-                    class="h-2 w-2 animate-throb rounded-full border-2"
-                    classList={{
-                        "border-m-green bg-m-green": fullyReady(),
-                        "border-m-yellow bg-m-yellow": !fullyReady()
-                    }}
-                />
-            </div> */}
             <h1 class="flex w-full justify-center whitespace-nowrap text-2xl font-light text-white">
                 <Switch>
                     <Match when={state.balanceView === "sats"}>
                         <AmountSats
                             amountSats={combinedBalance()}
-                            icon="lightning"
                             denominationSize="lg"
                         />
                     </Match>
