@@ -20,6 +20,9 @@
             pkgs.python3
             pkgs.just
           ];
+          shellHook = ''
+            corepack prepare pnpm@8.15.5 --activate
+          '';
         };
       });
 }
