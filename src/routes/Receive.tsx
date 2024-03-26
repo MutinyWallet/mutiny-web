@@ -235,6 +235,7 @@ export function Receive() {
                 amount: raw?.btc_amount,
                 lightning: raw?.invoice,
                 pj: raw?.pj,
+                ohttp: raw?.ohttp,
             });
 
             setLoading(false);
