@@ -11,8 +11,5 @@ export * from "./Search";
 export * from "./Redeem";
 export * from "./Profile";
 export * from "./Chat";
-export * from "./Setup";
-export * from "./NewProfile";
 export * from "./Request";
-export * from "./ImportProfile";
 export * from "./EditProfile";

@@ -693,6 +693,7 @@
     },
     "onboarding": {
       "welcome": "Welcome!",
+      "setup": "Setup",
       "restore_from_backup": "If you've used Mutiny before you can restore from a backup. Otherwise you can skip this and enjoy your new wallet!",
       "not_available": "We don't do that yet",
       "secure_your_funds": "Secure your funds"

@@ -62,7 +62,7 @@ export function Setup() {
                         intent="text"
                         layout="full"
                         disabled={isCreatingNewWallet()}
-                        onClick={() => navigate("/settings/restore")}
+                        onClick={() => navigate("/setup/restore")}
                     >
                         Import Existing
                     </Button>

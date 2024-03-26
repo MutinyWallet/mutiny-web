@@ -77,7 +77,7 @@ function SeedTextField(props: TextFieldProps) {
     );
 }
 
-function TwelveWordsEntry() {
+export function TwelveWordsEntry() {
     const i18n = useI18n();
     const [state, actions] = useMegaStore();
 
