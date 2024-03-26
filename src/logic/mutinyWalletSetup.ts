@@ -17,6 +17,8 @@ export type MutinyWalletSettingStrings = {
     scorer?: string;
     selfhosted?: string;
     primal_api?: string;
+    blind_auth?: string;
+    hermes?: string;
 };
 
 const SETTINGS_KEYS = [
@@ -84,6 +86,16 @@ const SETTINGS_KEYS = [
         name: "primal_api",
         storageKey: "USER_SETTINGS_primal_api",
         default: import.meta.env.VITE_PRIMAL
+    },
+    {
+        name: "blind_auth",
+        storageKey: "USER_SETTINGS_blind_auth",
+        default: import.meta.env.VITE_BLIND_AUTH
+    },
+    {
+        name: "hermes",
+        storageKey: "USER_SETTINGS_hermes",
+        default: import.meta.env.VITE_HERMES
     }
 ];
 
@@ -252,7 +264,9 @@ export async function setupMutinyWallet(
         subscriptions,
         storage,
         scorer,
-        primal_api
+        primal_api,
+        blind_auth,
+        hermes
     } = settings;
 
     let nsec;
@@ -290,6 +304,8 @@ export async function setupMutinyWallet(
     console.log("Using storage address", storage);
     console.log("Using scorer address", scorer);
     console.log("Using primal api", primal_api);
+    console.log("Using blind auth", blind_auth);
+    console.log("Using hermes", hermes);
     console.log(safeMode ? "Safe mode enabled" : "Safe mode disabled");
     console.log(shouldZapHodl ? "Hodl zaps enabled" : "Hodl zaps disabled");
 
@@ -325,7 +341,11 @@ export async function setupMutinyWallet(
         // Nip7
         extension_key ? extension_key : undefined,
         // primal URL
-        primal_api || "https://primal-cache.mutinywallet.com/api"
+        primal_api || "https://primal-cache.mutinywallet.com/api",
+        /// blind auth url
+        blind_auth,
+        /// hermes url
+        hermes
     );
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());

@@ -1,5 +1,5 @@
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
-import { useNavigate } from "@solidjs/router";
+import { createAsync, useNavigate } from "@solidjs/router";
 import { Search } from "lucide-solid";
 import {
     createEffect,
@@ -40,10 +40,9 @@ export function NostrActivity() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
-    const [data, { refetch }] = createResource(
-        state.mutiny_wallet?.get_npub(),
-        fetchZaps
-    );
+    const npub = createAsync(async () => state.mutiny_wallet?.get_npub());
+
+    const [data, { refetch }] = createResource(npub, fetchZaps);
 
     function nameFromHexpub(hexpub: string): string {
         const profile = data.latest?.profiles[hexpub];

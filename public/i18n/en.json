@@ -55,7 +55,8 @@
     "edit": {
       "nym": "Nym"
     },
-    "deleted": "Your nostr profile has been deleted."
+    "deleted": "Your nostr profile has been deleted.",
+    "no_lightning_address": "No lightning address set"
   },
   "chat": {
     "prompt": "This is a new conversation. Try asking for money!",
@@ -189,7 +190,8 @@
     "payment_pending_description": "It's taking a while, but it's possible this payment may still go through. Please check 'Activity' for the current status.",
     "hodl_invoice_warning": "This is a hodl invoice. Payments to hodl invoices can cause channel force closes, which results in high on-chain fees. Pay at your own risk!",
     "private": "Private",
-    "anonzap": "Anon Zap"
+    "publiczap": "Public Zap",
+    "privatezap": "Private Zap"
   },
   "feedback": {
     "header": "Give us feedback!",
@@ -600,6 +602,11 @@
       "unlink_account": "Unlink nostr profile",
       "unlink_account_confirm": "Unlinking your nostr profile will reset your wallet to its default nostr profile.",
       "delete_account_confirm_scary": "THIS PROFILE WILL BE DELETED ACROSS ALL NOSTR APPS."
+    },
+    "lightning_address": {
+      "title": "Mutiny Address",
+      "description": "Get zaps and payments to your wallet with your own lightning address.",
+      "create": "Create Mutiny Address"
     }
   },
   "swap": {

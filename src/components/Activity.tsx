@@ -5,8 +5,14 @@ import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 
 import { ActivityDetailsModal, ButtonCard, NiceP } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { PrivacyLevel } from "~/routes";
 import { useMegaStore } from "~/state/megaStore";
-import { timeAgo } from "~/utils";
+import {
+    actuallyFetchNostrProfile,
+    hexpubFromNpub,
+    profileToPseudoContact,
+    timeAgo
+} from "~/utils";
 
 import { GenericItem } from "./GenericItem";
 
@@ -24,6 +30,7 @@ export interface IActivityItem {
     labels: string[];
     contacts: TagItem[];
     last_updated: number;
+    privacy_level: PrivacyLevel;
 }
 
 export function UnifiedActivityItem(props: {
@@ -46,10 +53,40 @@ export function UnifiedActivityItem(props: {
         return props.item.contacts[0];
     };
 
+    const profileFromNostr = createAsync(async () => {
+        if (props.item.contacts.length === 0) {
+            if (props.item.labels) {
+                const npub = props.item.labels.find((l) =>
+                    l.startsWith("npub")
+                );
+                if (npub) {
+                    try {
+                        const hexpub = await hexpubFromNpub(npub);
+                        if (!hexpub) {
+                            return undefined;
+                        }
+                        const profile = await actuallyFetchNostrProfile(hexpub);
+                        if (!profile) {
+                            return undefined;
+                        }
+                        const pseudoContact = profileToPseudoContact(profile);
+                        return pseudoContact;
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+            }
+        }
+        return undefined;
+    });
+
     // TODO: figure out what other shit we should filter out
     const message = () => {
         const filtered = props.item.labels.filter(
-            (l) => l !== "SWAP" && !l.startsWith("LN Channel:")
+            (l) =>
+                l !== "SWAP" &&
+                !l.startsWith("LN Channel:") &&
+                !l.startsWith("npub")
         );
         if (filtered.length === 0) {
             return undefined;
@@ -119,17 +156,23 @@ export function UnifiedActivityItem(props: {
     return (
         <div class="pt-3 first-of-type:pt-0">
             <GenericItem
-                primaryAvatarUrl={primaryContact()?.image_url || ""}
+                primaryAvatarUrl={
+                    primaryContact()?.image_url
+                        ? primaryContact()?.image_url
+                        : profileFromNostr()?.primal_image_url || ""
+                }
                 icon={shouldShowShuffle() ? <Shuffle /> : undefined}
                 primaryOnClick={() =>
-                    primaryName() !== "You" && primaryContact()?.id
+                    primaryContact()?.id
                         ? navigate(`/chat/${primaryContact()?.id}`)
                         : undefined
                 }
                 amountOnClick={click}
                 primaryName={
                     props.item.inbound
-                        ? primaryContact()?.name || "Unknown"
+                        ? primaryContact()?.name
+                            ? primaryContact()!.name
+                            : profileFromNostr()?.name || "Unknown"
                         : "You"
                 }
                 genericAvatar={shouldShowGeneric()}
@@ -144,7 +187,7 @@ export function UnifiedActivityItem(props: {
                 date={timeAgo(props.item.last_updated)}
                 accent={props.item.inbound ? "green" : undefined}
                 visibility={
-                    props.item.kind === "Lightning" ? "private" : undefined
+                    props.item.privacy_level === "Public" ? "public" : "private"
                 }
             />
         </div>

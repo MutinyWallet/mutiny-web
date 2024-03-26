@@ -56,3 +56,4 @@ export * from "./GenericItem";
 export * from "./HomeBalance";
 export * from "./EditProfileForm";
 export * from "./ImportNsecForm";
+export * from "./LightningAddressShower";

@@ -1,6 +1,6 @@
 import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
 import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
-import { EyeOff, Link, X, Zap } from "lucide-solid";
+import { Eye, EyeOff, Link, X, Zap } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -48,6 +48,7 @@ import { useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
 export type SendSource = "lightning" | "onchain";
+export type PrivacyLevel = "Public" | "Private" | "Anonymous" | "Not Available";
 
 // const TEST_DEST = "bitcoin:tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe?amount=0.00001&label=heyo&lightning=lntbs10u1pjrwrdedq8dpjhjmcnp4qd60w268ve0jencwzhz048ruprkxefhj0va2uspgj4q42azdg89uupp5gngy2pqte5q5uvnwcxwl2t8fsdlla5s6xl8aar4xcsvxeus2w2pqsp5n5jp3pz3vpu92p3uswttxmw79a5lc566herwh3f2amwz2sp6f9tq9qyysgqcqpcxqrpwugv5m534ww5ukcf6sdw2m75f2ntjfh3gzeqay649256yvtecgnhjyugf74zakaf56sdh66ec9fqep2kvu6xv09gcwkv36rrkm38ylqsgpw3yfjl"
 // const TEST_DEST_ADDRESS = "tb1pdh43en28jmhnsrhxkusja46aufdlae5qnfrhucw5jvefw9flce3sdxfcwe"
@@ -505,10 +506,9 @@ export function Send() {
                 }
             } else if (source() === "lightning" && lnurlp()) {
                 const zapNpub =
-                    visibility() === "anonzap" && contact()?.npub
+                    visibility() !== "Not Available" && contact()?.npub
                         ? contact()?.npub
                         : undefined;
-                console.log("zapnpub", zapNpub);
                 const comment = zapNpub ? whatForInput() : undefined;
                 const payment = await state.mutiny_wallet?.lnurl_pay(
                     lnurlp()!,
@@ -516,7 +516,7 @@ export function Send() {
                     zapNpub, // zap_npub
                     tags,
                     comment, // comment
-                    zapNpub ? "Anonymous" : undefined
+                    visibility()
                 );
                 sentDetails.payment_hash = payment?.payment_hash;
 
@@ -645,15 +645,16 @@ export function Send() {
         }
     });
 
-    const [visibility, setVisibility] = createSignal<"private" | "anonzap">(
-        "private"
-    );
+    const [visibility, setVisibility] =
+        createSignal<PrivacyLevel>("Not Available");
 
     function toggleVisibility() {
-        if (visibility() === "private") {
-            setVisibility("anonzap");
+        if (visibility() === "Not Available") {
+            setVisibility("Private");
+        } else if (visibility() === "Private") {
+            setVisibility("Public");
         } else {
-            setVisibility("private");
+            setVisibility("Not Available");
         }
     }
 
@@ -827,7 +828,8 @@ export function Send() {
                                         <Switch>
                                             <Match
                                                 when={
-                                                    visibility() === "private"
+                                                    visibility() ===
+                                                    "Not Available"
                                                 }
                                             >
                                                 <EyeOff class="h-4 w-4" />
@@ -837,12 +839,22 @@ export function Send() {
                                             </Match>
                                             <Match
                                                 when={
-                                                    visibility() === "anonzap"
+                                                    visibility() === "Private"
                                                 }
                                             >
                                                 <Zap class="h-4 w-4" />
+                                                <EyeOff class="h-4 w-4" />
                                                 <span>
-                                                    {i18n.t("send.anonzap")}
+                                                    {i18n.t("send.privatezap")}
+                                                </span>
+                                            </Match>
+                                            <Match
+                                                when={visibility() === "Public"}
+                                            >
+                                                <Zap class="h-4 w-4" />
+                                                <Eye class="h-4 w-4" />
+                                                <span>
+                                                    {i18n.t("send.publiczap")}
                                                 </span>
                                             </Match>
                                         </Switch>
@@ -861,7 +873,7 @@ export function Send() {
                             <SimpleInput
                                 type="text"
                                 placeholder={
-                                    visibility() === "private"
+                                    visibility() === "Not Available"
                                         ? i18n.t("send.what_for")
                                         : i18n.t("send.zap_note")
                                 }
