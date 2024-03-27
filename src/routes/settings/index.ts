@@ -13,3 +13,4 @@ export * from "./Restore";
 export * from "./Servers";
 export * from "./ManageFederations";
 export * from "./NostrKeys";
+export * from "./ImportProfile";
