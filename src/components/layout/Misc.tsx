@@ -160,7 +160,7 @@ const FullscreenLoader = () => {
         <div class="flex w-full flex-col items-center justify-center gap-4 h-device">
             <LoadingSpinner wide />
             <Show when={waitedTooLong()}>
-                <p class="max-w-[20rem] text-neutral-400">
+                <p class="max-w-[20rem] text-m-grey-350">
                     {i18n.t("error.load_time.stuck")}{" "}
                     <A class="text-white" href="/settings/emergencykit">
                         {i18n.t("error.emergency_link")}
@@ -266,7 +266,7 @@ export const NiceP: ParentComponent = (props) => {
 };
 
 export const TinyText: ParentComponent = (props) => {
-    return <p class="text-sm text-neutral-400">{props.children}</p>;
+    return <p class="text-sm text-m-grey-350">{props.children}</p>;
 };
 
 export const TinyButton: ParentComponent<{

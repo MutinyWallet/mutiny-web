@@ -51,7 +51,7 @@ function SmallSubtleAmount(props: {
 
     return (
         <h2
-            class="flex flex-row items-center whitespace-nowrap text-xl font-light text-neutral-400"
+            class="flex flex-row items-center whitespace-nowrap text-xl font-light text-m-grey-350"
             tabIndex={0}
         >
             <Show when={!props.loading || props.mode === "fiat"} fallback="…">
