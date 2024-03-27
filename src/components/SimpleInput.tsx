@@ -15,7 +15,7 @@ export function SimpleInput(props: SimpleInputProps) {
     return (
         <input
             class="w-full rounded-lg bg-m-grey-800 p-2 placeholder-m-grey-400 disabled:text-m-grey-400"
-            type="text"
+            type={props.type || "text"}
             value={props.value}
             onInput={(e) => props.onInput(e)}
             placeholder={props.placeholder}
