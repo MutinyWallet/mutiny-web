@@ -496,7 +496,9 @@
       "expires": "Expira",
       "federation_id": "ID federación",
       "description": "Mutiny tiene soporte experimental para el protocolo Fedimint. ¡Almacene fondos en una federación bajo su propio riesgo!",
-      "learn_more": "Aprenda más sobre Fedimint."
+      "learn_more": "Aprenda más sobre Fedimint.",
+      "created_at": "Creado En",
+      "recommended_by": "Recomendado por"
     },
     "gift": {
       "give_sats_link": "Dar sats de regalo",
