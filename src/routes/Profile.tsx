@@ -88,7 +88,10 @@ export function Profile() {
                                     >
                                         <div class="w-[10rem] self-center rounded bg-white p-[1rem]">
                                             <QRCodeSVG
-                                                value={profile().lud16 || ""}
+                                                value={
+                                                    "lightning:" +
+                                                        profile().lud16 || ""
+                                                }
                                                 class="h-full max-h-[256px] w-full"
                                             />
                                         </div>
