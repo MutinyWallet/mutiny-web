@@ -224,7 +224,7 @@ function MessageList(props: {
 
     return (
         <>
-            <div class="flex flex-col-reverse justify-end gap-4">
+            <div class="flex flex-col-reverse justify-end gap-4 safe-bottom">
                 <For each={props.convo}>
                     {(combined, _index) => (
                         <>
