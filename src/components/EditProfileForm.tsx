@@ -1,12 +1,12 @@
 import { createForm, email } from "@modular-forms/solid";
 import { createFileUploader } from "@solid-primitives/upload";
 import { Pencil } from "lucide-solid";
-import { createSignal, Match, Switch } from "solid-js";
+import { createSignal, Match, Show, Switch } from "solid-js";
 
-import { Button, TextField, VStack } from "~/components";
+import { Button, InfoBox, TextField, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { blobToBase64 } from "~/utils";
+import { blobToBase64, eify } from "~/utils";
 
 export type EditableProfile = {
     nym?: string;
@@ -22,6 +22,7 @@ export function EditProfileForm(props: {
 }) {
     const [state] = useMegaStore();
     const [uploading, setUploading] = createSignal(false);
+    const [uploadError, setUploadError] = createSignal<Error>();
 
     const { files, selectFiles } = createFileUploader({
         multiple: false,
@@ -43,16 +44,16 @@ export function EditProfileForm(props: {
     });
 
     async function handleSubmit(profile: EditableProfile) {
+        setUploading(true);
+        setUploadError(undefined);
         try {
             let imageUrl;
             if (files() && files().length) {
-                setUploading(true);
                 const base64 = await blobToBase64(files()[0].file);
                 if (base64) {
                     imageUrl =
                         await state.mutiny_wallet?.upload_profile_pic(base64);
                 }
-                setUploading(false);
             }
             await props.onSave({
                 nym: profile.nym,
@@ -60,8 +61,10 @@ export function EditProfileForm(props: {
                 imageUrl: imageUrl ? imageUrl : props.initialProfile?.imageUrl
             });
         } catch (e) {
+            setUploadError(eify(e));
             console.error(e);
         }
+        setUploading(false);
     }
 
     return (
@@ -124,6 +127,9 @@ export function EditProfileForm(props: {
                             {props.cta}
                         </Button>
                     </Form>
+                    <Show when={uploadError()}>
+                        <InfoBox accent="red">{uploadError()?.message}</InfoBox>
+                    </Show>
                 </VStack>
             </VStack>
             <div class="flex-1" />
