@@ -15,8 +15,16 @@ export function SocialActionRow(props: {
 
     const getContacts = cache(async () => {
         try {
-            const contacts = await state.mutiny_wallet?.get_contacts_sorted();
-            return contacts || [];
+            const contacts: TagItem[] =
+                (await state.mutiny_wallet?.get_contacts_sorted()) || [];
+
+            // contact must have a npub, ln_address, or lnurl
+            return contacts.filter(
+                (contact) =>
+                    contact.npub !== undefined ||
+                    contact.ln_address !== undefined ||
+                    contact.lnurl !== undefined
+            );
         } catch (e) {
             console.error(e);
             return [];
@@ -69,7 +77,7 @@ export function SocialActionRow(props: {
                             name={contact.name}
                             image_url={contact.primal_image_url}
                             onClick={() => {
-                                if (profileDeleted()) {
+                                if (profileDeleted() || !contact.npub) {
                                     sendToContact(contact);
                                 } else {
                                     navigate(`/chat/${contact.id}`);

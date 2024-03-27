@@ -246,7 +246,31 @@ function ActualSearch(props: { initialValue?: string }) {
                 throw new Error("no contact returned");
             }
 
-            sendToContact(tagItem);
+            // if the new contact has an npub, send to chat
+            // otherwise, send to send page
+            if (tagItem.npub) {
+                sendToContact(tagItem);
+            } else if (tagItem.ln_address) {
+                actions.handleIncomingString(
+                    tagItem.ln_address,
+                    () => {},
+                    () => {
+                        navigate("/send");
+                    }
+                );
+            } else if (tagItem.lnurl) {
+                actions.handleIncomingString(
+                    tagItem.lnurl,
+                    () => {},
+                    () => {
+                        navigate("/send");
+                    }
+                );
+            } else {
+                console.error(
+                    "No npub, ln_address, or lnurl found, this should never happen"
+                );
+            }
         } catch (e) {
             console.error(e);
         }
