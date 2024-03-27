@@ -109,7 +109,7 @@ function ReceiveMethodHelp(props: { amountSats: bigint }) {
         <>
             <button class="flex gap-2 self-end" onClick={() => setOpen(true)}>
                 <Switch>
-                    <Match when={props.amountSats < 200000n}>
+                    <Match when={props.amountSats <= 200000n}>
                         <Users class="w-[18px]" />
                     </Match>
                     <Match when={true}>
