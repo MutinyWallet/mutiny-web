@@ -32,6 +32,7 @@ export function ImportNsecForm() {
         <>
             <SimpleInput
                 value={nsec()}
+                type="password"
                 onInput={(e) => setNsec(e.currentTarget.value)}
                 placeholder={`Nostr private key (starts with "nsec")`}
             />
