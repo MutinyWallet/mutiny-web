@@ -239,16 +239,6 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
                                                 </time>
                                             </KeyValue>
                                         </Show>
-                                        <KeyValue key={"invite code"}>
-                                            {/* todo i18n, handle singular vs plural */}
-                                            <For each={fed.invite_codes}>
-                                                {(invite) => (
-                                                    <MiniStringShower
-                                                        text={invite}
-                                                    />
-                                                )}
-                                            </For>
-                                        </KeyValue>
                                         <Show
                                             when={
                                                 fed.recommendations.length > 0
