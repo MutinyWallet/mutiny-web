@@ -44,6 +44,7 @@ import {
     EmergencyKit,
     Encrypt,
     Gift,
+    ImportProfileSettings,
     Language,
     ManageFederations,
     NostrKeys,
@@ -187,6 +188,10 @@ export function Router() {
                 <Route path="/restore" component={Restore} />
                 <Route path="/servers" component={Servers} />
                 <Route path="/nostrkeys" component={NostrKeys} />
+                <Route
+                    path="/importprofile"
+                    component={ImportProfileSettings}
+                />
                 <Route path="/federations" component={ManageFederations} />
             </Route>
             <Route path="/*all" component={NotFound} />

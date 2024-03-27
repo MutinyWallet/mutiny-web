@@ -58,7 +58,7 @@ export function NostrKeys() {
                     </VStack>
                 </FancyCard>
                 <A
-                    href="/importprofile"
+                    href="/settings/importprofile"
                     class="self-center text-base font-normal text-m-grey-400"
                 >
                     Import different nostr profile
