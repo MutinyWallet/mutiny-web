@@ -1,3 +1,4 @@
+import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { cache, createAsync, useNavigate } from "@solidjs/router";
 import { Scan, Search } from "lucide-solid";
 import { For, Suspense } from "solid-js";
@@ -9,13 +10,21 @@ export function SocialActionRow(props: {
     onSearch: () => void;
     onScan: () => void;
 }) {
-    const [state, _actions] = useMegaStore();
+    const [state, actions] = useMegaStore();
     const navigate = useNavigate();
 
     const getContacts = cache(async () => {
         try {
-            const contacts = await state.mutiny_wallet?.get_contacts_sorted();
-            return contacts || [];
+            const contacts: TagItem[] =
+                (await state.mutiny_wallet?.get_contacts_sorted()) || [];
+
+            // contact must have a npub, ln_address, or lnurl
+            return contacts.filter(
+                (contact) =>
+                    contact.npub !== undefined ||
+                    contact.ln_address !== undefined ||
+                    contact.lnurl !== undefined
+            );
         } catch (e) {
             console.error(e);
             return [];
@@ -41,7 +50,28 @@ export function SocialActionRow(props: {
                             name={contact.name}
                             image_url={contact.primal_image_url}
                             onClick={() => {
-                                navigate(`/chat/${contact.id}`);
+                                if (contact.npub) {
+                                    navigate(`/chat/${contact.id}`);
+                                } else if (contact.ln_address) {
+                                    // send to ln address
+                                    actions.handleIncomingString(
+                                        contact.ln_address,
+                                        () => {},
+                                        () => {
+                                            navigate(`/send`);
+                                        }
+                                    );
+                                    navigate(`/send`);
+                                } else if (contact.lnurl) {
+                                    // send to lnurl
+                                    actions.handleIncomingString(
+                                        contact.lnurl,
+                                        () => {},
+                                        () => {
+                                            navigate(`/send`);
+                                        }
+                                    );
+                                }
                             }}
                         />
                     )}
