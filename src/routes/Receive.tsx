@@ -3,7 +3,7 @@ import {
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
-import { ArrowLeftRight } from "lucide-solid";
+import { ArrowLeftRight, CircleHelp, Users, Zap } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -99,6 +99,33 @@ function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
                 </Match>
             </Switch>
         </Show>
+    );
+}
+
+function ReceiveMethodHelp(props: { amountSats: bigint }) {
+    const i18n = useI18n();
+    const [open, setOpen] = createSignal(false);
+    return (
+        <>
+            <button class="flex gap-2 self-end" onClick={() => setOpen(true)}>
+                <Switch>
+                    <Match when={props.amountSats < 200000n}>
+                        <Users class="w-[18px]" />
+                    </Match>
+                    <Match when={true}>
+                        <Zap class="w-[18px]" />
+                    </Match>
+                </Switch>
+                <CircleHelp class="w-[18px] text-m-grey-350" />
+            </button>
+            <SimpleDialog
+                open={open()}
+                setOpen={setOpen}
+                title={i18n.t("receive.method_help.title")}
+            >
+                <p>{i18n.t("receive.method_help.body")}</p>
+            </SimpleDialog>
+        </>
     );
 }
 
@@ -382,6 +409,16 @@ export function Receive() {
                         </VStack>
                         <div class="flex-1" />
                         <VStack>
+                            <Show
+                                when={
+                                    state.federations &&
+                                    state.federations.length
+                                }
+                            >
+                                <ReceiveMethodHelp
+                                    amountSats={amount() || 0n}
+                                />
+                            </Show>
                             <form onSubmit={onSubmit}>
                                 <SimpleInput
                                     type="text"
@@ -414,7 +451,7 @@ export function Receive() {
                             amountSats={amount() ? amount().toString() : "0"}
                             kind={flavor()}
                         />
-                        <p class="text-center text-neutral-400">
+                        <p class="text-center text-m-grey-350">
                             {i18n.t("receive.keep_mutiny_open")}
                         </p>
                         {/* Only show method chooser when we have an invoice */}

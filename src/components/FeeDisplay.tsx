@@ -11,7 +11,7 @@ const AmountKeyValue: ParentComponent<{ key: string; gray?: boolean }> = (
     return (
         <div
             class="flex items-center justify-between"
-            classList={{ "text-neutral-400": props.gray }}
+            classList={{ "text-m-grey-350": props.gray }}
         >
             <div class="font-semibold uppercase">{props.key}</div>
             <div class="font-light">{props.children}</div>

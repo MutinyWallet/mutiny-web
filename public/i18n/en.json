@@ -142,7 +142,11 @@
       "gift": "Lightning Gift"
     },
     "remember_choice": "Remember my choice next time",
-    "what_for": "What's this for?"
+    "what_for": "What's this for?",
+    "method_help": {
+      "title": "Receive Method",
+      "body": "Lightning receives under 200,000 sats go into your federation by default. Anything higher than that goes into a lightning channel."
+    }
   },
   "send": {
     "search": {
