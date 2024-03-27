@@ -232,8 +232,11 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
                                             <MiniStringShower text={fed.id} />
                                         </KeyValue>
                                         <Show when={fed.created_at}>
-                                            <KeyValue key="created at">
-                                                {/* todo i18n */}
+                                            <KeyValue
+                                                key={i18n.t(
+                                                    "settings.manage_federations.created_at"
+                                                )}
+                                            >
                                                 <time>
                                                     {timeAgo(fed.created_at)}
                                                 </time>
@@ -244,8 +247,11 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
                                                 fed.recommendations.length > 0
                                             }
                                         >
-                                            <KeyValue key={"recommended by"}>
-                                                {/* todo i18n */}
+                                            <KeyValue
+                                                key={i18n.t(
+                                                    "settings.manage_federations.recommended_by"
+                                                )}
+                                            >
                                                 <div class="flex items-center gap-2 overflow-scroll md:gap-4">
                                                     <For
                                                         each={

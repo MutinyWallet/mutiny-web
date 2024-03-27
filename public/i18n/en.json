@@ -543,7 +543,9 @@
       "description": "Mutiny has experimental support for the Fedimint protocol. Store funds in a federation at your own risk!",
       "learn_more": "Learn more about Fedimint.",
       "discover": "Discover Federations",
-      "manual": "Invite Code"
+      "manual": "Invite Code",
+      "created_at": "Created At",
+      "recommended_by": "Recommended By"
     },
     "gift": {
       "give_sats_link": "Give sats as a gift",
