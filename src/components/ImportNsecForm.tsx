@@ -1,10 +1,14 @@
 import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { useNavigate } from "@solidjs/router";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { createSignal, Show } from "solid-js";
 
 import { Button, InfoBox, SimpleInput } from "~/components";
+import { useMegaStore } from "~/state/megaStore";
 
 export function ImportNsecForm() {
+    const [state, _actions] = useMegaStore();
+    const navigate = useNavigate();
     const [nsec, setNsec] = createSignal("");
     const [saving, setSaving] = createSignal(false);
     const [error, setError] = createSignal<string | undefined>();
@@ -19,8 +23,13 @@ export function ImportNsecForm() {
                 throw new Error("Invalid nsec");
             }
             await SecureStoragePlugin.set({ key: "nsec", value: trimmedNsec });
-            // TODO: right now we need a reload to set the nsec
-            window.location.href = "/";
+
+            const new_npub = await state.mutiny_wallet?.change_nostr_keys(
+                trimmedNsec,
+                undefined
+            );
+            console.log("Changed to new npub: ", new_npub);
+            navigate("/");
         } catch (e) {
             console.error(e);
             setError("Invalid nsec");
