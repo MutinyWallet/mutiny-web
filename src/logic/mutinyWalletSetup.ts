@@ -257,7 +257,6 @@ export async function setupMutinyWallet(
 
     let nsec;
     // get nsec from secure storage
-    // TODO: might have to check Capacitor.isNativePlatform but I think it's fine
     try {
         const value = await SecureStoragePlugin.get({ key: "nsec" });
         nsec = value.value;

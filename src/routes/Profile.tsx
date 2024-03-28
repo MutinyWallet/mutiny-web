@@ -42,11 +42,15 @@ export function Profile() {
 
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
+    const profileDeleted = createMemo(() => {
+        return profile().deleted === true || profile().deleted === "true";
+    });
+
     return (
         <MutinyWalletGuard>
             <DefaultMain>
                 <BackLink />
-                <Show when={profile() && !profile().deleted}>
+                <Show when={profile() && !profileDeleted()}>
                     <div class="flex flex-col items-center gap-4">
                         <LabelCircle
                             contact
