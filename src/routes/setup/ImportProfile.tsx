@@ -2,11 +2,20 @@ import { useNavigate } from "@solidjs/router";
 import { Show } from "solid-js";
 
 import { Button, ButtonLink, DefaultMain, ImportNsecForm } from "~/components";
+import { useMegaStore } from "~/state/megaStore";
 
 export function ImportProfile() {
+    const [state, _actions] = useMegaStore();
     const navigate = useNavigate();
 
-    function handleSkip() {
+    async function handleSkip() {
+        // set up an empty profile so we at least have some kind0 event
+        await state.mutiny_wallet?.edit_nostr_profile(
+            "Anon",
+            undefined,
+            undefined,
+            undefined
+        );
         localStorage.setItem("profile_setup_stage", "skipped");
         navigate("/");
     }

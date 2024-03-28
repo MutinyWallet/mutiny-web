@@ -16,7 +16,15 @@ export function NewProfile() {
 
     const navigate = useNavigate();
 
-    function handleSkip() {
+    async function handleSkip() {
+        // set up an empty profile so we at least have some kind0 event
+        const profile = await state.mutiny_wallet?.edit_nostr_profile(
+            "Anon",
+            undefined,
+            undefined,
+            undefined
+        );
+        console.log("profile", profile);
         localStorage.setItem("profile_setup_stage", "skipped");
         navigate("/");
     }
