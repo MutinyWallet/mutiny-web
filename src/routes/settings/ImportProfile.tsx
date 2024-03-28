@@ -3,7 +3,7 @@ import { BackLink, DefaultMain, ImportNsecForm } from "~/components";
 export function ImportProfileSettings() {
     return (
         <DefaultMain>
-            <BackLink href="/settings/nostrkeys" />
+            <BackLink title="Back" href="/settings/nostrkeys" />
             <div class="mx-auto flex max-w-[20rem] flex-1 flex-col items-center gap-4">
                 <div class="flex-1" />
                 <h1 class="text-3xl font-semibold">Import nostr profile</h1>

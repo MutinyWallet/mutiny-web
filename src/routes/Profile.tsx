@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import { Copy, Edit, QrCode } from "lucide-solid";
+import { Copy, Edit, Import, QrCode } from "lucide-solid";
 import { createMemo, createSignal, Match, Show, Switch } from "solid-js";
 import { QRCodeSVG } from "solid-qr-code";
 
@@ -33,7 +33,8 @@ export function Profile() {
         return {
             name: profile?.display_name || profile?.name || "Anon",
             picture: profile?.picture || undefined,
-            lud16: profile?.lud16 || undefined
+            lud16: profile?.lud16 || undefined,
+            deleted: profile?.deleted || false
         };
     });
 
@@ -45,8 +46,8 @@ export function Profile() {
         <MutinyWalletGuard>
             <DefaultMain>
                 <BackLink />
-                <div class="flex flex-col items-center gap-4">
-                    <Show when={profile()}>
+                <Show when={profile() && !profile().deleted}>
+                    <div class="flex flex-col items-center gap-4">
                         <LabelCircle
                             contact
                             label={false}
@@ -104,15 +105,27 @@ export function Profile() {
                                 </Match>
                             </Switch>
                         </FancyCard>
-                    </Show>
-                </div>
-                <ButtonCard onClick={() => navigate("/editprofile")}>
-                    <div class="flex items-center gap-2">
-                        {/* <Users class="inline-block text-m-red" /> */}
-                        <Edit class="inline-block text-m-red" />
-                        <NiceP>{i18n.t("profile.edit_profile")}</NiceP>
                     </div>
-                </ButtonCard>
+                    <ButtonCard onClick={() => navigate("/editprofile")}>
+                        <div class="flex items-center gap-2">
+                            {/* <Users class="inline-block text-m-red" /> */}
+                            <Edit class="inline-block text-m-red" />
+                            <NiceP>{i18n.t("profile.edit_profile")}</NiceP>
+                        </div>
+                    </ButtonCard>
+                </Show>
+                <Show when={profile() && profile().deleted}>
+                    <ButtonCard
+                        onClick={() => navigate("/settings/importprofile")}
+                    >
+                        <div class="flex items-center gap-2">
+                            <Import class="inline-block text-m-red" />
+                            <NiceP>
+                                {i18n.t("settings.nostr_keys.import_profile")}
+                            </NiceP>
+                        </div>
+                    </ButtonCard>
+                </Show>
                 <BalanceBox loading={state.wallet_loading} />
                 <NavBar activeTab="profile" />
             </DefaultMain>

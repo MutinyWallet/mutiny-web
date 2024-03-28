@@ -181,8 +181,39 @@ function ActualSearch(props: { initialValue?: string }) {
         );
     }
 
+    const profileDeleted = createMemo(
+        () => state.mutiny_wallet?.get_nostr_profile().deleted
+    );
+
+    // TODO this is mostly copy pasted from chat, could be a shared util maybe
+    function navToSend(contact?: TagItem) {
+        if (!contact) return;
+        const address = contact.ln_address || contact.lnurl;
+        if (address) {
+            actions.handleIncomingString(
+                (address || "").trim(),
+                (error) => {
+                    showToast(error);
+                },
+                (result) => {
+                    actions.setScanResult({
+                        ...result,
+                        contact_id: contact.id
+                    });
+                    navigate("/send");
+                }
+            );
+        } else {
+            console.error("no ln_address or lnurl");
+        }
+    }
+
     function sendToContact(contact: TagItem) {
-        navWithSearchValue(`/chat/${contact.id}`);
+        if (profileDeleted()) {
+            navToSend(contact);
+        } else {
+            navWithSearchValue(`/chat/${contact.id}`);
+        }
     }
 
     async function createContact(contact: ContactFormValues) {

@@ -53,7 +53,8 @@
     "social": "Social",
     "edit": {
       "nym": "Nym"
-    }
+    },
+    "deleted": "Your nostr profile has been deleted."
   },
   "chat": {
     "prompt": "This is a new conversation. Try asking for money!",
@@ -590,7 +591,10 @@
       "caption": "Not your keys not your notes",
       "description": "You can use the same nostr profile across multiple apps.",
       "warning": "Be careful where you share your private nostr key!",
-      "learn_more": "Learn more about nostr"
+      "learn_more": "Learn more about nostr",
+      "import_profile": "Import a nostr profile",
+      "delete_account": "Delete account",
+      "delete_account_confirm": "Deleting your nostr profile cannot be undone and will disable some social features of the wallet."
     }
   },
   "swap": {
