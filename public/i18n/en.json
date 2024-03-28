@@ -594,7 +594,10 @@
       "learn_more": "Learn more about nostr",
       "import_profile": "Import a nostr profile",
       "delete_account": "Delete account",
-      "delete_account_confirm": "Deleting your nostr profile cannot be undone and will disable some social features of the wallet."
+      "delete_account_confirm": "Deleting a nostr profile cannot be undone and will disable some social features of the wallet.",
+      "unlink_account": "Unlink nostr profile",
+      "unlink_account_confirm": "Unlinking your nostr profile will reset your wallet to its default nostr profile.",
+      "delete_account_confirm_scary": "THIS PROFILE WILL BE DELETED ACROSS ALL NOSTR APPS."
     }
   },
   "swap": {
