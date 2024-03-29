@@ -76,8 +76,8 @@
     "channel_size": "Tamaño canal",
     "channel_reserve": "- Reserva canal",
     "error_under_min_lightning": "En-cadena por defecto. El monto es demasiado pequeño para su recepción en Lightning.",
-    "error_creating_unified": "En-cadena por defecto. Also salió mal al crear la dirección unificada",
-    "error_creating_address": "Also salió mal al crear la dirección en-cadena",
+    "error_creating_unified": "En-cadena por defecto. Algo salió mal al crear la dirección unificada",
+    "error_creating_address": "Algo salió mal al crear la dirección en-cadena",
     "amount_editable": {
       "receive_too_small": "Una comisión de instalación de lightning puede ser deducida del monto solicitado.",
       "setup_fee_lightning": "Se cargará una comisión de instalación de lightning si se paga por lightning.",
@@ -664,5 +664,25 @@
   },
   "profile": {
     "manage_federation": "Manejar Federaciones"
+  },
+  "utils": {
+    "hours_future_one": "en una hora",
+    "hours_future_other": "en {{count}} horas",
+    "hours_past_one": "hace una hora",
+    "hours_past_other": "hace {{count}} horas",
+    "hours_short": "{{count}}h",
+    "days_future_one": "en un día",
+    "days_future_other": "en {{count}} días",
+    "days_past_one": "hace un día",
+    "days_past_other": "hace {{count}} días",
+    "days_short": "{{count}}d",
+    "minutes_future_one": "en un minuto",
+    "minutes_future_other": "en {{count}} minutos",
+    "minutes_past_one": "hace un minuto",
+    "minutes_past_other": "hace {{count}} minutos",
+    "minutes_short": "{{count}}m",
+    "nowish": "Casi ahora",
+    "seconds_future": "en algunos segundos",
+    "seconds_past": "Justo ahora"
   }
 }
