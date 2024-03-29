@@ -1,3 +1,5 @@
+import { useI18n } from "~/i18n/context";
+
 export function prettyPrintTime(ts: number) {
     const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
@@ -15,11 +17,12 @@ export function timeAgo(
     ts?: number | bigint,
     _rerenderSignal?: number
 ): string {
-    if (!ts || ts === 0) return "Pending";
+    const i18n = useI18n();
+
+    if (!ts || ts === 0) return i18n.t("common.pending");
     const timestamp = Number(ts) * 1000;
     const now = Date.now();
-    const negative = now - timestamp < 0;
-    const nowOrAgo = negative ? "from now" : "ago";
+    const tense = now - timestamp < 0 ? "future" : "past";
     const elapsedMilliseconds = Math.abs(now - timestamp);
     const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
     const elapsedMinutes = Math.floor(elapsedSeconds / 60);
@@ -27,15 +30,13 @@ export function timeAgo(
     const elapsedDays = Math.floor(elapsedHours / 24);
 
     if (elapsedSeconds < 60) {
-        return negative ? "seconds from now" : "Just now";
+        return i18n.t(`utils.seconds_${tense}`);
     } else if (elapsedMinutes < 60) {
-        return `${elapsedMinutes} minute${
-            elapsedMinutes > 1 ? "s" : ""
-        } ${nowOrAgo}`;
+        return i18n.t(`utils.minutes_${tense}`, { count: elapsedMinutes });
     } else if (elapsedHours < 24) {
-        return `${elapsedHours} hour${elapsedHours > 1 ? "s" : ""} ${nowOrAgo}`;
+        return i18n.t(`utils.hours_${tense}`, { count: elapsedHours });
     } else if (elapsedDays < 7) {
-        return `${elapsedDays} day${elapsedDays > 1 ? "s" : ""} ${nowOrAgo}`;
+        return i18n.t(`utils.days_${tense}`, { count: elapsedDays });
     } else {
         const date = new Date(timestamp);
         const day = String(date.getDate()).padStart(2, "0");
@@ -46,7 +47,9 @@ export function timeAgo(
 }
 
 export function veryShortTimeStamp(ts?: number | bigint) {
-    if (!ts || ts === 0) return "Pending";
+    const i18n = useI18n();
+
+    if (!ts || ts === 0) return i18n.t("common.pending");
     const timestamp = Number(ts) * 1000;
     const now = Date.now();
     const elapsedMilliseconds = Math.abs(now - timestamp);
@@ -56,13 +59,13 @@ export function veryShortTimeStamp(ts?: number | bigint) {
     const elapsedDays = Math.floor(elapsedHours / 24);
 
     if (elapsedSeconds < 60) {
-        return "Nowish";
+        return i18n.t("utils.nowish");
     } else if (elapsedMinutes < 60) {
-        return `${elapsedMinutes}m`;
+        return i18n.t("utils.minutes_short", { count: elapsedMinutes });
     } else if (elapsedHours < 24) {
-        return `${elapsedHours}h`;
+        return i18n.t("utils.hours_short", { count: elapsedHours });
     } else if (elapsedDays < 7) {
-        return `${elapsedDays}d`;
+        return i18n.t("utils.days_short", { count: elapsedDays });
     } else {
         const date = new Date(timestamp);
         const day = String(date.getDate()).padStart(2, "0");
@@ -70,16 +73,4 @@ export function veryShortTimeStamp(ts?: number | bigint) {
         const year = date.getFullYear();
         return `${month}/${day}/${year}`;
     }
-}
-
-export function formatExpiration(expiration?: bigint) {
-    if (!expiration) {
-        return "Unknown expiration";
-    }
-
-    if (expiration <= Date.now() / 1000) {
-        return "Expired";
-    }
-
-    return `Expires ${timeAgo(expiration)}`;
 }
