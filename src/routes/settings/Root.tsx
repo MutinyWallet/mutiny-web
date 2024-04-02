@@ -82,7 +82,7 @@ export function Settings() {
             <BackLink />
             <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
             <VStack biggap>
-                <Show when={!selfHosted && !ios}>
+                <Show when={state.mutiny_plus || (!selfHosted && !ios)}>
                     <MutinyPlusCta />
                 </Show>
                 <SettingsLinkList
