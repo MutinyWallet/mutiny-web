@@ -2,6 +2,7 @@ import { Check, Clock4, EyeOff, Globe, X, Zap } from "lucide-solid";
 import { JSX, Match, Show, Switch } from "solid-js";
 
 import { LabelCircle, LoadingSpinner } from "~/components";
+import { useI18n } from "~/i18n/context";
 
 export function GenericItem(props: {
     primaryAvatarUrl?: string;
@@ -27,6 +28,8 @@ export function GenericItem(props: {
     rejectAction?: () => void;
     shouldSpinny?: boolean;
 }) {
+    const i18n = useI18n();
+
     return (
         <div
             class="grid w-full py-3 first-of-type:pt-0"
@@ -109,7 +112,7 @@ export function GenericItem(props: {
                         <div class="flex w-full items-center gap-1 text-m-grey-400">
                             <Clock4 class="w-3" />
                             <span class="text-xs text-m-grey-400">
-                                {props.due}
+                                {i18n.t("common.expires", { time: props.due })}
                             </span>
                         </div>
                     </Show>

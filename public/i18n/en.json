@@ -26,7 +26,8 @@
     "view_payment_details": "View payment details",
     "pending": "Pending",
     "error_safe_mode": "Mutiny is running in safe mode. Lightning is disabled.",
-    "self_hosted": "Self-hosted"
+    "self_hosted": "Self-hosted",
+    "expires": "Expires in {{time}}"
   },
   "home": {
     "receive": "Receive your first sats",
