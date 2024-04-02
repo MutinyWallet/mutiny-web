@@ -100,9 +100,9 @@ export function Fab(props: { onSearch: () => void; onScan: () => void }) {
                     </ul>
                 </FabMenu>
             </Show>
-            <div class="fixed bottom-8 right-8 text-m-red">
+            <div class="fixed bottom-8 right-8">
                 <button id="fab" onClick={() => setOpen(!open())}>
-                    <Circle size="large">
+                    <Circle size="large" color="red">
                         <Plus class="h-8 w-8" />
                     </Circle>
                 </button>
