@@ -57,7 +57,11 @@ export function WalletHeader(props: { loading: boolean }) {
             <HomeBalance />
             <Circle onClick={() => navigate("/settings")}>
                 <img
-                    src="/mutiny-pixel-m.png"
+                    src={
+                        state.mutiny_plus
+                            ? "/m-plus.png"
+                            : "/mutiny-pixel-m.png"
+                    }
                     alt="mutiny"
                     width={"32px"}
                     height={"32px"}
