@@ -26,6 +26,7 @@ type PendingItem = {
     name_of_connection: string;
     date?: bigint;
     amount_sats?: bigint;
+    image?: string;
 };
 
 export function PendingNwc() {
@@ -65,6 +66,7 @@ export function PendingNwc() {
                     pendingItems.push({
                         id: p.id,
                         name_of_connection: contact.name,
+                        image: contact.image_url,
                         date: p.expiry,
                         amount_sats: p.amount_sats
                     });
@@ -198,7 +200,7 @@ export function PendingNwc() {
                     <For each={pendingRequests()}>
                         {(pendingItem) => (
                             <GenericItem
-                                primaryAvatarUrl=""
+                                primaryAvatarUrl={pendingItem.image || ""}
                                 verb="requested"
                                 amount={pendingItem.amount_sats || 0n}
                                 due={veryShortTimeStamp(pendingItem.date)}
