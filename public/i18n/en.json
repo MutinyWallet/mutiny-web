@@ -655,10 +655,6 @@
       "title": "Not Found",
       "wtf_paul": "This is probably Paul's fault."
     },
-    "reset_router": {
-      "payments_failing": "Failing to make payments? Try resetting the lightning router.",
-      "reset_router": "Reset Router"
-    },
     "resync": {
       "incorrect_balance": "On-chain balance seems incorrect? Try re-syncing the on-chain wallet.",
       "resync_wallet": "Resync wallet"

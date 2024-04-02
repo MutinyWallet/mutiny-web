@@ -19,7 +19,6 @@ import {
     Hr,
     InnerCard,
     MiniStringShower,
-    ResetRouter,
     Restart,
     ResyncOnchain,
     showToast,
@@ -574,8 +573,6 @@ export function KitchenSink() {
             <ToggleHodl />
             <Hr />
             <ResyncOnchain />
-            <Hr />
-            <ResetRouter />
             <Hr />
             <Restart />
             <Hr />

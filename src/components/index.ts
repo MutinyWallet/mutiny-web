@@ -29,7 +29,6 @@ export * from "./NavBar";
 export * from "./PendingNwc";
 export * from "./Reader";
 export * from "./Reload";
-export * from "./ResetRouter";
 export * from "./Restart";
 export * from "./ResyncOnchain";
 export * from "./SeedWords";
