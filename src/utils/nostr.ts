@@ -71,3 +71,5 @@ export function getPrimalImageUrl(image_url?: string): string | undefined {
         image_url
     )}`;
 }
+
+export const DEFAULT_NOSTR_NAME = "Anon";

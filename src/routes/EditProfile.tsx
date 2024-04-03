@@ -11,6 +11,7 @@ import {
     NavBar
 } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
+import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function EditProfile() {
     const [state, _actions] = useMegaStore();
@@ -23,7 +24,7 @@ export function EditProfile() {
         const profile = state.mutiny_wallet?.get_nostr_profile();
 
         return {
-            name: profile?.display_name || profile?.name || "Anon",
+            name: profile?.display_name || profile?.name || DEFAULT_NOSTR_NAME,
             picture: profile?.picture || undefined,
             lud16: profile?.lud16 || undefined,
             nip05: profile?.nip05 || undefined

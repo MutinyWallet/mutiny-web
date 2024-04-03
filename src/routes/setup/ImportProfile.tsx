@@ -3,6 +3,7 @@ import { Show } from "solid-js";
 
 import { Button, ButtonLink, DefaultMain, ImportNsecForm } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
+import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function ImportProfile() {
     const [state, _actions] = useMegaStore();
@@ -11,7 +12,7 @@ export function ImportProfile() {
     async function handleSkip() {
         // set up an empty profile so we at least have some kind0 event
         await state.mutiny_wallet?.edit_nostr_profile(
-            "Anon",
+            DEFAULT_NOSTR_NAME,
             undefined,
             undefined,
             undefined
