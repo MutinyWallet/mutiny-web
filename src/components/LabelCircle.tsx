@@ -2,7 +2,7 @@ import { createResource, createSignal, JSX, Match, Switch } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
 import avatar from "~/assets/generic-avatar.jpg";
-import { generateGradient } from "~/utils";
+import { DEFAULT_NOSTR_NAME, generateGradient } from "~/utils";
 
 export function Circle(props: {
     children: JSX.Element;
@@ -44,7 +44,7 @@ export function LabelCircle(props: {
     onClick?: () => void;
 }) {
     const [gradient] = createResource(async () => {
-        if (props.name && props.contact) {
+        if (props.name && props.name !== DEFAULT_NOSTR_NAME && props.contact) {
             return generateGradient(props.name || "?");
         } else {
             return undefined;
@@ -52,7 +52,10 @@ export function LabelCircle(props: {
     });
 
     const text = () =>
-        props.contact && props.name && props.name.length
+        props.contact &&
+        props.name &&
+        props.name.length &&
+        props.name !== DEFAULT_NOSTR_NAME
             ? props.name[0]
             : props.label
               ? "≡"
