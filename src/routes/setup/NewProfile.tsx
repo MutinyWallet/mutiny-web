@@ -8,6 +8,7 @@ import {
     EditProfileForm
 } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
+import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function NewProfile() {
     const [state, _actions] = useMegaStore();
@@ -19,7 +20,7 @@ export function NewProfile() {
     async function handleSkip() {
         // set up an empty profile so we at least have some kind0 event
         const profile = await state.mutiny_wallet?.edit_nostr_profile(
-            "Anon",
+            DEFAULT_NOSTR_NAME,
             undefined,
             undefined,
             undefined

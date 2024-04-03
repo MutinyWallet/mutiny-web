@@ -17,7 +17,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { useCopy } from "~/utils";
+import { DEFAULT_NOSTR_NAME, useCopy } from "~/utils";
 
 export function Profile() {
     const [state, _actions] = useMegaStore();
@@ -31,7 +31,7 @@ export function Profile() {
         console.log("profile", profile);
 
         return {
-            name: profile?.display_name || profile?.name || "Anon",
+            name: profile?.display_name || profile?.name || DEFAULT_NOSTR_NAME,
             picture: profile?.picture || undefined,
             lud16: profile?.lud16 || undefined,
             deleted: profile?.deleted || false

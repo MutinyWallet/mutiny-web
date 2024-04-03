@@ -16,6 +16,7 @@ import {
 } from "~/components";
 import { Fab } from "~/components/Fab";
 import { useMegaStore } from "~/state/megaStore";
+import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function WalletHeader(props: { loading: boolean }) {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ export function WalletHeader(props: { loading: boolean }) {
         const profile = state.mutiny_wallet?.get_nostr_profile();
 
         return {
-            name: profile?.display_name || profile?.name || "Anon",
+            name: profile?.display_name || profile?.name || DEFAULT_NOSTR_NAME,
             picture: profile?.picture || undefined,
             // TODO: this but for real
             lud16: profile?.lud16 || undefined
