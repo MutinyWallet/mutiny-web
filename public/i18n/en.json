@@ -551,7 +551,8 @@
       "discover": "Discover Federations",
       "manual": "Invite Code",
       "created_at": "Created At",
-      "recommended_by": "Recommended By"
+      "recommended_by": "Recommended By",
+      "already_in_fed": "You're already in a federation!"
     },
     "gift": {
       "give_sats_link": "Give sats as a gift",

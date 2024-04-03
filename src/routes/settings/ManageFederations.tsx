@@ -37,6 +37,7 @@ import {
     MutinyWalletGuard,
     NavBar,
     NiceP,
+    showToast,
     TextField,
     VStack
 } from "~/components";
@@ -464,6 +465,19 @@ export function ManageFederations() {
         }
     });
 
+    const [params, setParams] = useSearchParams();
+
+    onMount(() => {
+        if (params.fedimint_invite && state.federations?.length) {
+            showToast(
+                new Error(i18n.t("settings.manage_federations.already_in_fed"))
+            );
+
+            // Clear the search params
+            setParams({ fedimint_invite: undefined });
+        }
+    });
+
     return (
         <MutinyWalletGuard>
             <DefaultMain>
@@ -471,13 +485,16 @@ export function ManageFederations() {
                     <BackLink
                         href="/profile"
                         title={i18n.t("profile.profile")}
+                        showOnDesktop
                     />
-                    <A
-                        class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue md:hidden"
-                        href="/scanner"
-                    >
-                        <Scan />
-                    </A>{" "}
+                    <Show when={!state.federations?.length}>
+                        <A
+                            class="rounded-lg p-2 hover:bg-white/5 active:bg-m-blue"
+                            href="/scanner"
+                        >
+                            <Scan />
+                        </A>{" "}
+                    </Show>
                 </div>
                 {/* <BackLink href="/settings" title={i18n.t("settings.header")} /> */}
                 <LargeHeader>
