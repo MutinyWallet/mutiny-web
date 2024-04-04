@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 android/app/play/*
+android/app/fdroid/*
 
 # Editor directories and files
 .vscode/*
