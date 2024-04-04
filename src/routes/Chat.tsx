@@ -243,6 +243,8 @@ function MessageList(props: {
                                     <UnifiedActivityItem
                                         item={combined.content as IActivityItem}
                                         onClick={openDetailsModal}
+                                        // This isn't applicable here
+                                        onNewContactClick={() => {}}
                                     />
                                 </div>
                             </Show>

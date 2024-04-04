@@ -3,7 +3,14 @@ import { cache, createAsync, revalidate, useNavigate } from "@solidjs/router";
 import { Plus, Save, Search, Shuffle, Users } from "lucide-solid";
 import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 
-import { ActivityDetailsModal, ButtonCard, NiceP } from "~/components";
+import {
+    ActivityDetailsModal,
+    Button,
+    ButtonCard,
+    ContactButton,
+    NiceP,
+    SimpleDialog
+} from "~/components";
 import { useI18n } from "~/i18n/context";
 import { PrivacyLevel } from "~/routes";
 import { useMegaStore } from "~/state/megaStore";
@@ -11,6 +18,7 @@ import {
     actuallyFetchNostrProfile,
     hexpubFromNpub,
     profileToPseudoContact,
+    PseudoContact,
     timeAgo
 } from "~/utils";
 
@@ -36,6 +44,7 @@ export interface IActivityItem {
 export function UnifiedActivityItem(props: {
     item: IActivityItem;
     onClick: (id: string, kind: HackActivityType) => void;
+    onNewContactClick: (profile: PseudoContact) => void;
 }) {
     const navigate = useNavigate();
 
@@ -165,7 +174,9 @@ export function UnifiedActivityItem(props: {
                 primaryOnClick={() =>
                     primaryContact()?.id
                         ? navigate(`/chat/${primaryContact()?.id}`)
-                        : undefined
+                        : profileFromNostr()
+                          ? props.onNewContactClick(profileFromNostr()!)
+                          : undefined
                 }
                 amountOnClick={click}
                 primaryName={
@@ -191,6 +202,74 @@ export function UnifiedActivityItem(props: {
                 }
             />
         </div>
+    );
+}
+
+function NewContactModal(props: { profile: PseudoContact; close: () => void }) {
+    const i18n = useI18n();
+    const navigate = useNavigate();
+
+    const [state, _actions] = useMegaStore();
+
+    async function createContact() {
+        try {
+            const existingContact =
+                await state.mutiny_wallet?.get_contact_for_npub(
+                    props.profile.hexpub
+                );
+
+            if (existingContact) {
+                navigate(`/chat/${existingContact.id}`);
+                return;
+            }
+
+            const contactId = await state.mutiny_wallet?.create_new_contact(
+                props.profile.name,
+                props.profile.hexpub,
+                props.profile.ln_address,
+                props.profile.lnurl,
+                props.profile.image_url
+            );
+
+            if (!contactId) {
+                throw new Error("no contact id returned");
+            }
+
+            const tagItem = await state.mutiny_wallet?.get_tag_item(contactId);
+
+            if (!tagItem) {
+                throw new Error("no contact returned");
+            }
+
+            navigate(`/chat/${contactId}`);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    return (
+        <SimpleDialog
+            title={i18n.t("activity.start_a_chat")}
+            open
+            setOpen={() => {
+                props.close();
+            }}
+        >
+            <NiceP>{i18n.t("activity.start_a_chat_are_you_sure")}</NiceP>
+            <ContactButton contact={props.profile} onClick={() => {}} />
+            <div class="flex-end flex w-full justify-end gap-2">
+                <Button
+                    layout="small"
+                    intent="red"
+                    onClick={() => props.close()}
+                >
+                    {i18n.t("modals.confirm_dialog.cancel")}
+                </Button>
+                <Button layout="small" intent="blue" onClick={createContact}>
+                    {i18n.t("common.continue")}
+                </Button>
+            </div>
+        </SimpleDialog>
     );
 }
 
@@ -239,6 +318,8 @@ export function CombinedActivity() {
         }
     });
 
+    const [newContact, setNewContact] = createSignal<PseudoContact>();
+
     return (
         <>
             <Show when={detailsId() && detailsKind()}>
@@ -247,6 +328,12 @@ export function CombinedActivity() {
                     kind={detailsKind()}
                     id={detailsId()}
                     setOpen={setDetailsOpen}
+                />
+            </Show>
+            <Show when={newContact()}>
+                <NewContactModal
+                    profile={newContact()!}
+                    close={() => setNewContact(undefined)}
                 />
             </Show>
             <Switch>
@@ -301,6 +388,7 @@ export function CombinedActivity() {
                                 <UnifiedActivityItem
                                     item={activityItem}
                                     onClick={openDetailsModal}
+                                    onNewContactClick={setNewContact}
                                 />
                             )}
                         </For>

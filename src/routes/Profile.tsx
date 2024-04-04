@@ -17,6 +17,13 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { DEFAULT_NOSTR_NAME } from "~/utils";
 
+export type UserProfile = {
+    name: string;
+    picture?: string;
+    lud16?: string;
+    deleted: boolean | string;
+};
+
 export function Profile() {
     const [state, _actions] = useMegaStore();
     const i18n = useI18n();
@@ -26,12 +33,13 @@ export function Profile() {
     const profile = createMemo(() => {
         const profile = state.mutiny_wallet?.get_nostr_profile();
 
-        return {
+        const userProfile: UserProfile = {
             name: profile?.display_name || profile?.name || DEFAULT_NOSTR_NAME,
             picture: profile?.picture || undefined,
             lud16: profile?.lud16 || undefined,
             deleted: profile?.deleted || false
         };
+        return userProfile;
     });
 
     const profileDeleted = createMemo(() => {
@@ -44,9 +52,9 @@ export function Profile() {
             if (!hermes) {
                 return false;
             }
-            const hermesDoman = new URL(hermes).hostname;
-            const afterAt = profile().lud16.split("@")[1];
-            if (afterAt && afterAt.includes(hermesDoman)) {
+            const hermesDomain = new URL(hermes).hostname;
+            const afterAt = profile().lud16!.split("@")[1];
+            if (afterAt && afterAt.includes(hermesDomain)) {
                 return true;
             }
         }
@@ -69,7 +77,7 @@ export function Profile() {
                             <Show when={profile().name}>{profile().name}</Show>
                         </h1>
 
-                        <LightningAddressShower lud16={profile().lud16} />
+                        <LightningAddressShower profile={profile()} />
                     </div>
                     <ButtonCard onClick={() => navigate("/editprofile")}>
                         <div class="flex items-center gap-2">
@@ -79,7 +87,11 @@ export function Profile() {
                         </div>
                     </ButtonCard>
                     <Show
-                        when={state.federations?.length && !hasMutinyAddress()}
+                        when={
+                            state.federations?.length &&
+                            !hasMutinyAddress() &&
+                            import.meta.env.VITE_HERMES
+                        }
                     >
                         <ButtonCard
                             onClick={() =>
