@@ -52,7 +52,11 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
         }
     });
 
-    const network = state.mutiny_wallet?.get_network() || "signet";
+    const hermes = import.meta.env.VITE_HERMES;
+    if (!hermes) {
+        throw new Error("Hermes not configured");
+    }
+    const hermesDomain = new URL(hermes).hostname;
 
     const handleSubmit: SubmitHandler<HermesForm> = async (f: HermesForm) => {
         setSuccess("");
@@ -67,13 +71,7 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
             await state.mutiny_wallet?.reserve_lnurl_name(name);
             console.log("lnurl name reserved:", name);
 
-            const hermes = import.meta.env.VITE_HERMES;
-            if (!hermes) {
-                throw new Error("Hermes not configured");
-            }
-            const hermesDoman = new URL(hermes).hostname;
-
-            const formattedName = `${name}${hermesDoman}`;
+            const formattedName = `${name}@${hermesDomain}`;
 
             const existingProfile = state.mutiny_wallet?.get_nostr_profile();
 
@@ -109,12 +107,7 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
                                 />
                             </div>
                             <div class="flex-0 self-end pb-2 text-2xl text-m-grey-350">
-                                <Show
-                                    when={network === "signet"}
-                                    fallback={"@mutiny.plus"}
-                                >
-                                    @signet.mutiny.plus
-                                </Show>
+                                @{hermesDomain}
                             </div>
                         </div>
                     )}
@@ -145,7 +138,6 @@ export function LightningAddress() {
     const [error, setError] = createSignal<Error>();
     const [settingLnAddress, setSettingLnAddress] = createSignal(false);
 
-    // TODO: should be able to ask mutiny-node for this
     const [lnurlName, { refetch }] = createResource(async () => {
         try {
             const name = await state.mutiny_wallet?.check_lnurl_name();
@@ -155,16 +147,17 @@ export function LightningAddress() {
         }
     });
     const ios = Capacitor.getPlatform() === "ios";
-    // const ios = true;
 
-    const network = state.mutiny_wallet?.get_network() || "signet";
+    const hermes = import.meta.env.VITE_HERMES;
+    if (!hermes) {
+        throw new Error("Hermes not configured");
+    }
+    const hermesDomain = new URL(hermes).hostname;
 
     const formattedLnAddress = createMemo(() => {
         const name = lnurlName();
         if (name) {
-            const suffix =
-                network === "signet" ? "@signet.mutiny.plus" : "@mutiny.plus";
-            return `${lnurlName()}${suffix}`;
+            return `${lnurlName()}@${hermesDomain}`;
         }
     });
 

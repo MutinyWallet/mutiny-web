@@ -185,10 +185,9 @@ export function Plus() {
                 <Switch>
                     <Match when={state.mutiny_plus}>
                         <img src={party} class="mx-auto w-1/2" />
-                        {/* <NiceP>{i18n.t("settings.plus.thanks")}</NiceP> */}
-                        <NiceP>You're part of the Mutiny!</NiceP>
+                        <NiceP>{i18n.t("settings.plus.thanks")}</NiceP>
 
-                        {/* <Perks alreadySubbed /> */}
+                        <Perks alreadySubbed />
                         <NiceP>
                             {i18n.t("settings.plus.renewal_time")}{" "}
                             <strong class="text-white">
@@ -204,7 +203,12 @@ export function Plus() {
                                 {i18n.t("settings.plus.wallet_connection")}
                             </A>
                         </NiceP>
-                        <Show when={state.federations?.length}>
+                        <Show
+                            when={
+                                state.federations?.length &&
+                                import.meta.env.VITE_HERMES
+                            }
+                        >
                             <ButtonCard
                                 onClick={() =>
                                     navigate("/settings/lightningaddress")

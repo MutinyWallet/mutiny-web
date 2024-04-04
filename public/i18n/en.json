@@ -56,7 +56,8 @@
       "nym": "Nym"
     },
     "deleted": "Your nostr profile has been deleted.",
-    "no_lightning_address": "No lightning address set"
+    "no_lightning_address": "No lightning address set",
+    "pay_me": "Send me sats"
   },
   "chat": {
     "prompt": "This is a new conversation. Try asking for money!",
@@ -262,7 +263,9 @@
       "sweep_delay": "Funds may take a few days to be swept back into the wallet",
       "no_details": "No channel details found, which means this channel has likely been closed.",
       "back_home": "back home"
-    }
+    },
+    "start_a_chat": "Start a chat?",
+    "start_a_chat_are_you_sure": "This user isn't in your contact list."
   },
   "scanner": {
     "paste": "Paste Something",
