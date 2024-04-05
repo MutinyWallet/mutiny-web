@@ -241,13 +241,6 @@ export const Provider: ParentComponent = (props) => {
                 return;
             }
 
-            // Sync our nostr profile info
-            try {
-                await state.mutiny_wallet.sync_nostr();
-            } catch (e) {
-                console.error("error syncing nostr profile", e);
-            }
-
             // Check if we're subscribed and update the timestamp
             try {
                 const timestamp = await state.mutiny_wallet.check_subscribed();
