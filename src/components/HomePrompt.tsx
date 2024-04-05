@@ -1,8 +1,16 @@
 import { useSearchParams } from "@solidjs/router";
-import { createEffect, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, onMount, Show } from "solid-js";
 
-import { Button, InfoBox, NiceP, SimpleDialog, VStack } from "~/components";
+import {
+    Button,
+    InfoBox,
+    NiceP,
+    showToast,
+    SimpleDialog,
+    VStack
+} from "~/components";
 import { useI18n } from "~/i18n/context";
+import { setSettings } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { bech32, bech32WordsToUrl, eify } from "~/utils";
 
@@ -48,6 +56,35 @@ export function HomePrompt() {
                 console.error(e);
             }
             return;
+        }
+    });
+
+    // LSPS stuff
+    onMount(async () => {
+        if (params.lsps) {
+            const values = {
+                lsp: "",
+                lsps_connection_string: params.lsps,
+                lsps_token: params.token
+            };
+            try {
+                await state.mutiny_wallet?.change_lsp(
+                    values.lsp ? values.lsp : undefined,
+                    values.lsps_connection_string
+                        ? values.lsps_connection_string
+                        : undefined,
+                    values.lsps_token ? values.lsps_token : undefined
+                );
+                await setSettings(values);
+                setParams({ lsps: undefined, token: undefined });
+                showToast({
+                    title: "Success",
+                    description: "LSPS settings changed"
+                });
+            } catch (e) {
+                console.error("Error changing lsp:", e);
+                showToast(eify(e));
+            }
         }
     });
 
