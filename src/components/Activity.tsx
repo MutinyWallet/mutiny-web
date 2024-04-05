@@ -176,7 +176,10 @@ export function CombinedActivity() {
     const getActivity = cache(async () => {
         try {
             console.log("refetching activity");
-            const activity = await state.mutiny_wallet?.get_activity();
+            const activity = await state.mutiny_wallet?.get_activity(
+                50,
+                undefined
+            );
             return (activity || []) as IActivityItem[];
         } catch (e) {
             console.error(e);
