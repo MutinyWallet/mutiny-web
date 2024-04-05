@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { loadHome } from "./utils";
+import { loadHome, visitSettings } from "./utils";
 
 test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:3420/");
@@ -106,4 +106,31 @@ test("rountrip receive and send", async ({ page }) => {
 
     // Wait for an h1 to appear in the dom that says "Payment Sent"
     await page.waitForSelector("text=Payment Sent", { timeout: 30000 });
+
+    // Click the "Nice" button
+    await page.click("text=Nice");
+
+    // Go home
+    await page.click("text=Home");
+
+    // Click settings
+    await visitSettings(page);
+
+    // Click "lightning channels"
+    await page.click("text=Lightning Channels");
+
+    // Close the channel
+    await page.getByText("You have 1 lightning channel.").waitFor();
+
+    await page.click("text=Online Channels");
+
+    await page.click("text=Close");
+
+    await page.click("text=Confirm");
+
+    await page
+        .getByText(
+            "It looks like you don't have any channels yet. To get started, receive some sats over lightning, or swap some on-chain funds into a channel. Get your hands dirty!"
+        )
+        .waitFor();
 });
