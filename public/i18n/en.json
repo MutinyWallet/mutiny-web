@@ -15,18 +15,14 @@
     "request": "Request",
     "dangit": "Dangit",
     "back": "Back",
-    "coming_soon": "(coming soon)",
     "copy": "Copy",
     "copied": "Copied",
     "continue": "Continue",
-    "error_unimplemented": "Unimplemented",
     "why": "Why?",
-    "private_tags": "Private tags",
     "view_transaction": "View transaction",
     "view_payment_details": "View payment details",
     "pending": "Pending",
     "error_safe_mode": "Mutiny is running in safe mode. Lightning is disabled.",
-    "self_hosted": "Self-hosted",
     "expires": "Expires in {{time}}"
   },
   "home": {
@@ -44,18 +40,13 @@
   },
   "profile": {
     "profile": "Profile",
-    "nostr_identity": "Nostr Identity",
-    "add_lightning_address": "Add Lightning Address",
     "edit_profile": "Edit Profile",
     "join_federation": "Join a federation",
     "manage_federation": "Manage Federations",
-    "federated_custody": "Federated Custody",
     "self_custody": "Self Custody",
-    "social": "Social",
     "edit": {
       "nym": "Nym"
-    },
-    "deleted": "Your nostr profile has been deleted."
+    }
   },
   "chat": {
     "prompt": "This is a new conversation. Try asking for money!",
@@ -70,16 +61,12 @@
     "save_contact": "Save contact",
     "delete": "Delete",
     "confirm_delete": "Are you sure you want to delete this contact?",
-    "payment_history": "Payment history",
-    "no_payments": "No payments yet with",
     "edit": "Edit",
     "pay": "Pay",
     "name": "Name",
     "ln_address": "Lightning Address",
     "placeholder": "Satoshi",
     "lightning_address": "Lightning Address",
-    "unimplemented": "Unimplemented",
-    "not_available": "We don't do that yet",
     "error_name": "We at least need a name",
     "email_error": "That doesn't look like a lightning address",
     "npub_error": "That doesn't look like a nostr npub",
@@ -103,7 +90,6 @@
     "choose_format": "Choose format",
     "payment_received": "Payment Received",
     "payment_initiated": "Payment Initiated",
-    "receive_add_the_sender": "Add the sender for your records",
     "keep_mutiny_open": "Keep Mutiny open to complete the payment.",
     "choose_payment_format": "Choose payment format",
     "unified_label": "Unified",
@@ -114,28 +100,15 @@
     "onchain_caption": "On-chain, just like Satoshi did it. Ideal for very large transactions.",
     "unified_setup_fee": "A lightning setup fee of {{amount}} SATS will be charged if paid over lightning.",
     "lightning_setup_fee": "A lightning setup fee of {{amount}} SATS will be charged for this receive.",
-    "amount": "Amount",
     "fee": "+ Fee",
     "total": "Total",
-    "spendable": "Spendable",
-    "channel_size": "Channel size",
-    "channel_reserve": "- Channel reserve",
     "error_under_min_lightning": "Defaulting to On-chain. Amount is too small for your initial Lightning receive.",
     "error_creating_unified": "Defaulting to On-chain. Something went wrong when creating the unified address",
     "error_creating_address": "Something went wrong when creating the on-chain address",
     "amount_editable": {
       "receive_too_small": "Your first receive needs to be {{amount}} SATS or greater.",
       "setup_fee_lightning": "A lightning setup fee will be charged if paid over lightning.",
-      "more_than_21m": "There are only 21 million bitcoin.",
-      "set_amount": "Set amount",
-      "max": "MAX",
-      "fix_amounts": {
-        "ten_k": "10k",
-        "one_hundred_k": "100k",
-        "one_million": "1m"
-      },
-      "del": "DEL",
-      "balance": "Balance"
+      "more_than_21m": "There are only 21 million bitcoin."
     },
     "integrated_qr": {
       "onchain": "On-chain",
@@ -151,28 +124,10 @@
     }
   },
   "send": {
-    "search": {
-      "placeholder": "Name, address, invoice",
-      "paste": "Paste",
-      "contacts": "Contacts",
-      "global_search": "Global search",
-      "no_results": "No results found for"
-    },
     "sending": "Sending...",
     "confirm_send": "Confirm Send",
-    "contact_placeholder": "Add the receiver for your records",
-    "start_over": "Start Over",
-    "send_bitcoin": "Send Bitcoin",
-    "paste": "Paste",
-    "scan_qr": "Scan QR",
     "payment_initiated": "Payment Initiated",
     "payment_sent": "Payment Sent",
-    "destination": "Destination",
-    "no_payment_info": "No payment info",
-    "progress_bar": {
-      "of": "of",
-      "sats_sent": "sats sent"
-    },
     "what_for": "What's this for?",
     "zap_note": "Zap note",
     "error_low_balance": "We do not have enough balance to pay the given amount.",
@@ -190,6 +145,7 @@
     "hodl_invoice_warning": "This is a hodl invoice. Payments to hodl invoices can cause channel force closes, which results in high on-chain fees. Pay at your own risk!",
     "private": "Private",
     "anonzap": "Anon Zap"
+    
   },
   "feedback": {
     "header": "Give us feedback!",
@@ -201,35 +157,14 @@
     "create_issue": "create a GitHub issue.",
     "link": "Feedback?",
     "feedback_placeholder": "Bugs, feature requests, feedback, etc.",
-    "info_label": "Include contact info",
-    "info_caption": "If you need us to follow-up on this issue",
-    "email": "Email",
-    "email_caption": "Burners welcome",
-    "nostr": "Nostr",
-    "nostr_caption": "Your freshest npub",
-    "nostr_label": "Nostr npub or NIP-05",
     "send_feedback": "Send Feedback",
     "invalid_feedback": "Please say something!",
-    "need_contact": "We need some way to contact you",
-    "invalid_email": "That doesn't look like an email address to me",
     "error": "Error submitting feedback {{error}}",
     "try_again": "Please try again later."
   },
   "activity": {
-    "title": "Activity",
-    "mutiny": "Mutiny",
-    "wallet": "Wallet",
-    "nostr": "Nostr",
-    "view_all": "View all",
-    "receive_some_sats_to_get_started": "Receive some sats to get started",
-    "channel_open": "Channel Open",
-    "channel_close": "Channel Close",
-    "unknown": "Unknown",
-    "import_contacts": "Import your contacts from nostr to see who they're zapping.",
-    "coming_soon": "Coming soon",
     "private": "Private",
     "anonymous": "Anonymous",
-    "from": "From:",
     "transaction_details": {
       "lightning_receive": "Received via Lightning",
       "lightning_send": "Sent via Lightning",
@@ -237,7 +172,6 @@
       "channel_close": "Channel close",
       "onchain_receive": "On-chain receive",
       "onchain_send": "On-chain send",
-      "paid": "Paid",
       "unpaid": "Unpaid",
       "status": "Status",
       "date": "Date",
@@ -246,20 +180,16 @@
       "fee": "Fee",
       "onchain_fee": "On-chain Fee",
       "invoice": "Invoice",
-      "payment_hash": "Payment Hash",
       "payment_preimage": "Preimage",
       "txid": "Txid",
       "total": "Amount Requested",
       "balance": "Balance",
-      "reserve": "Reserve",
-      "peer": "Peer",
       "channel_id": "Channel ID",
       "reason": "Reason",
       "confirmed": "Confirmed",
       "unconfirmed": "Unconfirmed",
       "sweep_delay": "Funds may take a few days to be swept back into the wallet",
-      "no_details": "No channel details found, which means this channel has likely been closed.",
-      "back_home": "back home"
+      "no_details": "No channel details found, which means this channel has likely been closed."
     }
   },
   "scanner": {
@@ -268,8 +198,6 @@
   },
   "settings": {
     "header": "Settings",
-    "support": "Learn how to support Mutiny",
-    "experimental_features": "Experiments",
     "debug_tools": "DEBUG TOOLS",
     "danger_zone": "Danger zone",
     "general": "General",
@@ -347,24 +275,18 @@
       "error_budget_zero": "Budget must be greater than zero",
       "add_connection": "Add Connection",
       "manage_connections": "Manage Connections",
-      "manage_gifts": "Manage Gifts",
       "delete_connection": "Delete",
-      "new_connection": "New Connection",
       "edit_connection": "Edit Connection",
-      "new_connection_label": "Name",
       "new_connection_placeholder": "My favorite nostr client...",
       "create_connection": "Create Connection",
       "save_connection": "Save Changes",
       "edit_budget": "Edit Budget",
       "open_app": "Open App",
       "open_in_nostr_client": "Open in Nostr Client",
-      "open_in_primal": "Open in Primal",
       "nostr_client_not_found": "Nostr client not found",
       "client_not_found_description": "Install a nostr client like Primal, Amethyst, or Damus to open this link.",
-      "relay": "Relay",
       "authorize": "Authorize external services to request payments from your wallet. Pairs great with Nostr clients.",
       "pending_nwc": {
-        "title": "Pending Requests",
         "approve_all": "Approve All",
         "deny_all": "Deny All"
       },
@@ -393,15 +315,12 @@
         "save_state": "Save State As File",
         "import_state": "Import State From File",
         "confirm_replace": "Do you want to replace your state with",
-        "password": "Enter your password to decrypt",
         "decrypt_wallet": "Decrypt Wallet"
       },
       "logs": {
         "title": "Download debug logs",
         "something_screwy": "Something screwy going on? Check out the logs!",
-        "download_logs": "Download Logs",
-        "password": "Enter your password to decrypt",
-        "confirm_password_label": "Confirm Password"
+        "download_logs": "Download Logs"
       },
       "delete_everything": {
         "delete": "Delete Everything",
@@ -439,8 +358,6 @@
       "title": "Currency",
       "caption": "Choose your preferred currency pair",
       "select_currency": "Select Currency",
-      "select_currency_label": "Currency Pair",
-      "select_currency_caption": "Choosing a new currency will resync the wallet to fetch a price update",
       "request_currency_support_link": "Request support for more currencies",
       "error_unsupported_currency": "Please Select a supported currency."
     },
@@ -448,22 +365,14 @@
       "title": "Language",
       "caption": "Choose your preferred language",
       "select_language": "Select Language",
-      "select_language_label": "Language",
-      "select_language_caption": "Choosing a new currency will change the wallet language, ignoring current browser language",
       "request_language_support_link": "Request support for more languages",
       "error_unsupported_language": "Please Select a supported language."
-    },
-    "lnurl_auth": {
-      "title": "LNURL Auth",
-      "auth": "Auth",
-      "expected": "Expecting something like LNURL..."
     },
     "plus": {
       "title": "Mutiny+",
       "join": "Join",
       "sats_per_month": "for {{amount}} sats a month.",
       "lightning_balance": "You'll need at least {{amount}} sats in your lightning balance to get started. Try before you buy!",
-      "restore": "Restore Subscription",
       "ready_to_join": "Ready to join",
       "click_confirm": "Click confirm to pay for your first month.",
       "open_source": "Mutiny is open source and self-hostable.",
@@ -477,11 +386,7 @@
       "subscribe": "Subscribe",
       "error_no_plan": "No plans found",
       "error_failure": "Couldn't subscribe",
-      "error_no_subscription": "No existing subscription found",
-      "error_expired_subscription": "Your subscription has expired, click join to renew",
       "satisfaction": "Smug satisfaction",
-      "gifting": "Gifting",
-      "multi_device": "Multi-device access",
       "ios_testflight": "iOS TestFlight access",
       "more": "... and more to come",
       "cta_description": "Enjoy early access to new features and premium functionality.",
@@ -517,11 +422,9 @@
       "lsp_caption": "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Also wraps invoices for privacy.",
       "lsps_connection_string_label": "LSPS Connection String",
       "lsps_connection_string_caption": "Lightning Service Provider. Automatically opens channels to you for inbound liquidity. Using LSP specification.",
-      "error_lsps_connection_string": "That doesn't look like node connection string",
       "lsps_token_label": "LSPS Token",
       "lsps_token_caption": "LSPS Token.  Used to identify what wallet is connecting to the LSP",
       "lsps_valid_error": "You can either have just an LSP set or LSPS Connection String and LSPS Token set, not both.",
-      "error_lsps_token": "That doesn't look like a valid token",
       "storage_label": "Storage",
       "storage_caption": "Encrypted VSS backup service.",
       "error_lsp": "That doesn't look like a URL",
@@ -529,16 +432,12 @@
       "save": "Save"
     },
     "nostr_contacts": {
-      "title": "Sync Nostr Contacts",
       "npub_label": "Nostr npub",
       "npub_required": "Npub can't be blank",
-      "sync": "Sync",
-      "resync": "Resync",
-      "remove": "Remove"
+      "sync": "Sync"
     },
     "manage_federations": {
       "title": "Manage Federations",
-      "federation_code_label": "Federation code",
       "federation_code_required": "Federation code can't be blank",
       "federation_added_success": "Federation added successfully",
       "federation_remove_confirm": "Are you sure you want to remove this federation? Make sure any funds you have are transferred to your lightning balance or another wallet first.",
@@ -547,7 +446,6 @@
       "expires": "Expires",
       "federation_id": "Federation ID",
       "description": "Mutiny has experimental support for the Fedimint protocol. Store funds in a federation at your own risk!",
-      "learn_more": "Learn more about Fedimint.",
       "discover": "Discover Federations",
       "manual": "Invite Code",
       "created_at": "Created At",
@@ -557,8 +455,6 @@
     "gift": {
       "give_sats_link": "Give sats as a gift",
       "something_went_wrong": "Something went wrong",
-      "title": "Gifting",
-      "no_plus_caption": "Upgrade to Mutiny+ to enable gifting",
       "receive_too_small": "Your first receive needs to be {{amount}} SATS or greater.",
       "setup_fee_lightning": "A lightning setup fee will be charged to receive this gift.",
       "already_claimed": "This gift has already been claimed",
@@ -624,7 +520,6 @@
     "completed": "Swap Completed",
     "too_small": "Invalid amount entered. You need to swap at least 100k sats.",
     "sats_added": "+{{amount}} sats have been added to your Lightning balance",
-    "sats_fee": "+{{amount}} sats fee",
     "confirm_swap": "Confirm Swap",
     "preview_swap": "Preview Swap Fee"
   },
@@ -705,11 +600,7 @@
       "done": "Done"
     },
     "onboarding": {
-      "welcome": "Welcome!",
-      "setup": "Setup",
-      "restore_from_backup": "If you've used Mutiny before you can restore from a backup. Otherwise you can skip this and enjoy your new wallet!",
-      "not_available": "We don't do that yet",
-      "secure_your_funds": "Secure your funds"
+      "setup": "Setup"
     },
     "more_info": {
       "whats_with_the_fees": "What's with the fees?",
