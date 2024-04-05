@@ -7,17 +7,21 @@ import {
     EditableProfile,
     EditProfileForm
 } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function NewProfile() {
     const [state, _actions] = useMegaStore();
+    const i18n = useI18n();
 
     const [creating, setCreating] = createSignal(false);
+    const [skipping, setSkipping] = createSignal(false);
 
     const navigate = useNavigate();
 
     async function handleSkip() {
+        setSkipping(true);
         // set up an empty profile so we at least have some kind0 event
         const profile = await state.mutiny_wallet?.edit_nostr_profile(
             DEFAULT_NOSTR_NAME,
@@ -28,6 +32,7 @@ export function NewProfile() {
         console.log("profile", profile);
         localStorage.setItem("profile_setup_stage", "skipped");
         navigate("/");
+        setSkipping(false);
     }
 
     async function createProfile(p: EditableProfile) {
@@ -54,7 +59,7 @@ export function NewProfile() {
                 <div class="flex-1" />
                 <h1 class="text-3xl font-semibold">Create your profile</h1>
                 <p class="text-center text-xl font-light text-neutral-200">
-                    Mutiny makes payments social.
+                    {i18n.t("setup.new_profile.description")}
                 </p>
                 <div class="flex-1" />
                 <EditProfileForm
@@ -62,14 +67,14 @@ export function NewProfile() {
                     saving={creating()}
                     cta="Create"
                 />
-                <Button onClick={handleSkip} intent="text">
-                    Skip for now
+                <Button onClick={handleSkip} intent="text" loading={skipping()}>
+                    {i18n.t("setup.skip")}
                 </Button>
                 <A
                     class="text-base font-normal text-m-grey-400"
                     href="/importprofile"
                 >
-                    Import existing nostr profile
+                    {i18n.t("setup.import_profile")}
                 </A>
                 <div class="flex-1" />
             </div>

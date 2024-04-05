@@ -740,5 +740,16 @@
       "error": "That didn't work for some reason.",
       "authenticated": "Authenticated!"
     }
+  },
+  "setup": {
+    "new_profile": {
+      "description": "Mutiny makes payments social."
+    },
+    "skip": "Skip for now",
+    "import_profile": "Import existing nostr profile",
+    "import": {
+      "title": "Import nostr profile",
+      "description": "Login with an existing nostr account."
+    }
   }
 }
