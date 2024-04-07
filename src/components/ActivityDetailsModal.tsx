@@ -265,7 +265,7 @@ function LightningDetails(props: { info: MutinyInvoice; tags?: TagItem }) {
                     <KeyValue
                         key={i18n.t("activity.transaction_details.status")}
                     >
-                        i18n.t("activity.transaction_details.unpaid")
+                        {i18n.t("activity.transaction_details.unpaid")}
                     </KeyValue>
                 </Show>
                 <KeyValue key={i18n.t("activity.transaction_details.date")}>
