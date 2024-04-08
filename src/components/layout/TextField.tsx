@@ -14,6 +14,7 @@ export type TextFieldProps = {
     required?: boolean;
     multiline?: boolean;
     disabled?: boolean;
+    autoCapitalize?: string;
     ref: (element: HTMLInputElement | HTMLTextAreaElement) => void;
     onInput: JSX.EventHandler<
         HTMLInputElement | HTMLTextAreaElement,
@@ -32,7 +33,8 @@ export function TextField(props: TextFieldProps) {
         "ref",
         "onInput",
         "onChange",
-        "onBlur"
+        "onBlur",
+        "autoCapitalize"
     ]);
     return (
         <KTextField.Root
@@ -51,6 +53,7 @@ export function TextField(props: TextFieldProps) {
             <Show
                 when={props.multiline}
                 fallback={
+                    // @ts-expect-error autocapitalize isn't in the props for some reason
                     <KTextField.Input
                         {...fieldProps}
                         type={props.type}
@@ -58,11 +61,14 @@ export function TextField(props: TextFieldProps) {
                     />
                 }
             >
-                <KTextField.TextArea
-                    {...fieldProps}
-                    autoResize
-                    class="w-full rounded-lg bg-white/10 p-2 placeholder-neutral-400"
-                />
+                {
+                    // @ts-expect-error autocapitalize isn't in the props for some reason
+                    <KTextField.TextArea
+                        {...fieldProps}
+                        autoResize
+                        class="w-full rounded-lg bg-white/10 p-2 placeholder-neutral-400"
+                    />
+                }
             </Show>
             <KTextField.ErrorMessage class="text-sm text-m-red">
                 {props.error}

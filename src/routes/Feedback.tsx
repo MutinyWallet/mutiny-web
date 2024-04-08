@@ -8,6 +8,7 @@ import {
     BackPop,
     Button,
     ButtonLink,
+    DefaultMain,
     LargeHeader,
     NiceP,
     TextField,
@@ -172,7 +173,7 @@ export function Feedback() {
     const setupError = state?.setupError || undefined;
 
     return (
-        <VStack>
+        <DefaultMain>
             <BackPop default="/" />
             <Switch>
                 <Match when={submitted()}>
@@ -209,6 +210,6 @@ export function Feedback() {
             <Show when={!setupError}>
                 <NavBar activeTab="send" />
             </Show>
-        </VStack>
+        </DefaultMain>
     );
 }

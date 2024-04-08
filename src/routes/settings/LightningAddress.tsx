@@ -1,6 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import {
     createForm,
+    custom,
     required,
     reset,
     SubmitHandler
@@ -40,6 +41,12 @@ type HermesForm = {
     name: string;
 };
 
+const validateLowerCase = (value?: string) => {
+    if (!value) return false;
+    const valid = /^[a-z0-9-_.]+$/;
+    return valid.test(value);
+};
+
 // todo(paul) put this somewhere else
 function HermesForm(props: { onSubmit: (name: string) => void }) {
     const [state, _] = useMegaStore();
@@ -62,7 +69,7 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
         setSuccess("");
         setError(undefined);
         try {
-            const name = f.name.trim();
+            const name = f.name.trim().toLowerCase();
             const available =
                 await state.mutiny_wallet?.check_available_lnurl_name(name);
             if (!available) {
@@ -94,19 +101,26 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
     return (
         <Form onSubmit={handleSubmit}>
             <VStack>
-                <Field name="name" validate={[required("Must not be empty")]}>
+                <Field
+                    name="name"
+                    validate={[
+                        required("Must not be empty"),
+                        custom(validateLowerCase, "Address must be lowercase")
+                    ]}
+                >
                     {(field, props) => (
                         <div class="flex w-full flex-1 gap-2">
                             <div class="flex-1">
                                 <TextField
                                     {...props}
                                     {...field}
+                                    autoCapitalize="none"
                                     error={field.error}
                                     label={"Nym"}
                                     required
                                 />
                             </div>
-                            <div class="flex-0 self-end pb-2 text-2xl text-m-grey-350">
+                            <div class="flex-0 self-start pt-8 text-2xl text-m-grey-350">
                                 @{hermesDomain}
                             </div>
                         </div>
