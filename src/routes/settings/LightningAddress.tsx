@@ -73,15 +73,12 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
 
             const formattedName = `${name}@${hermesDomain}`;
 
-            const existingProfile = state.mutiny_wallet?.get_nostr_profile();
-
             const _ = await state.mutiny_wallet?.edit_nostr_profile(
                 undefined,
                 undefined,
                 // lnurl
                 formattedName,
-                // nip05 if they don't have one
-                existingProfile?.nip05 ? undefined : formattedName
+                undefined
             );
             reset(nameForm);
             props.onSubmit(name);
