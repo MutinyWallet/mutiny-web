@@ -1,7 +1,16 @@
 import { TagItem } from "@mutinywallet/mutiny-wasm";
-import { cache, createAsync, revalidate, useNavigate } from "@solidjs/router";
+import { cache, createAsync, useNavigate } from "@solidjs/router";
 import { Plus, Save, Search, Shuffle, Users } from "lucide-solid";
-import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
+import {
+    createEffect,
+    createMemo,
+    createResource,
+    createSignal,
+    For,
+    Match,
+    Show,
+    Switch
+} from "solid-js";
 
 import {
     ActivityDetailsModal,
@@ -16,6 +25,7 @@ import { PrivacyLevel } from "~/routes";
 import { useMegaStore } from "~/state/megaStore";
 import {
     actuallyFetchNostrProfile,
+    createDeepSignal,
     hexpubFromNpub,
     profileToPseudoContact,
     PseudoContact,
@@ -41,6 +51,21 @@ export interface IActivityItem {
     privacy_level: PrivacyLevel;
 }
 
+async function fetchContactForNpub(
+    npub: string
+): Promise<PseudoContact | undefined> {
+    const hexpub = await hexpubFromNpub(npub);
+    if (!hexpub) {
+        return undefined;
+    }
+    const profile = await actuallyFetchNostrProfile(hexpub);
+    if (!profile) {
+        return undefined;
+    }
+    const pseudoContact = profileToPseudoContact(profile);
+    return pseudoContact;
+}
+
 export function UnifiedActivityItem(props: {
     item: IActivityItem;
     onClick: (id: string, kind: HackActivityType) => void;
@@ -55,12 +80,16 @@ export function UnifiedActivityItem(props: {
         );
     };
 
-    const primaryContact = () => {
+    const primaryContact = createMemo(() => {
         if (props.item.contacts.length === 0) {
             return undefined;
         }
         return props.item.contacts[0];
-    };
+    });
+
+    const getContact = cache(async (npub) => {
+        return await fetchContactForNpub(npub);
+    }, "profile");
 
     const profileFromNostr = createAsync(async () => {
         if (props.item.contacts.length === 0) {
@@ -70,16 +99,8 @@ export function UnifiedActivityItem(props: {
                 );
                 if (npub) {
                     try {
-                        const hexpub = await hexpubFromNpub(npub);
-                        if (!hexpub) {
-                            return undefined;
-                        }
-                        const profile = await actuallyFetchNostrProfile(hexpub);
-                        if (!profile) {
-                            return undefined;
-                        }
-                        const pseudoContact = profileToPseudoContact(profile);
-                        return pseudoContact;
+                        const newContact = await getContact(npub);
+                        return newContact;
                     } catch (e) {
                         console.error(e);
                     }
@@ -295,26 +316,32 @@ export function CombinedActivity() {
         setDetailsOpen(true);
     }
 
-    const getActivity = cache(async () => {
+    async function getActivity() {
         try {
             console.log("refetching activity");
             const activity = await state.mutiny_wallet?.get_activity(
                 50,
                 undefined
             );
-            return (activity || []) as IActivityItem[];
+
+            if (!activity) return [];
+
+            return activity as IActivityItem[];
         } catch (e) {
             console.error(e);
             return [] as IActivityItem[];
         }
-    }, "activity");
+    }
 
-    const activity = createAsync(() => getActivity(), { initialValue: [] });
+    const [activity, { refetch }] = createResource(getActivity, {
+        initialValue: [],
+        storage: createDeepSignal
+    });
 
     createEffect(() => {
         // Should re-run after every sync
         if (!state.is_syncing) {
-            revalidate("activity");
+            refetch();
         }
     });
 
