@@ -44,6 +44,7 @@ type MutinyError =
     | "Failed to read or write json from the front end"
     | "The given node pubkey is invalid."
     | "Failed to get nostr data."
+    | "Error with NIP-07 extension"
     | "Failed to get the bitcoin price."
     | "Satoshi amount is invalid"
     | "Failed to execute a dlc function"
@@ -54,6 +55,11 @@ type MutinyError =
     | "Failed to create payjoin request."
     | "Payjoin response error: {0}"
     | "Payjoin configuration failed."
+    | "Error calling Cashu Mint"
+    | "Mint URL in token is empty"
+    | "Token has been already spent."
+    | "A federation is required"
+    | "Failed to connect to a federation."
     | "Unknown Error";
 
 export function matchError(e: unknown): Error {
