@@ -110,7 +110,7 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
         f: FederationForm
     ) => {
         const federation_code = f.federation_code.trim();
-        await onSelect(federation_code);
+        await onSelect([federation_code]);
     };
 
     const [federations] = createResource(async () => {
@@ -124,14 +124,36 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
         }
     });
 
-    const onSelect = async (inviteCode: string) => {
+    const onSelect = async (inviteCodes: string[]) => {
         setSuccess("");
         setError(undefined);
-        setLoadingFederation(inviteCode);
         try {
-            const newFederation =
-                await state.mutiny_wallet?.new_federation(inviteCode);
-            console.log("New federation added:", newFederation);
+            for (const inviteCode of inviteCodes) {
+                try {
+                    console.log("Adding federation:", inviteCode);
+                    setLoadingFederation(inviteCode);
+                    const newFederation =
+                        await state.mutiny_wallet?.new_federation(inviteCode);
+                    console.log("New federation added:", newFederation);
+                    break;
+                } catch (e) {
+                    const error = eify(e);
+                    console.log("Error adding federation:", error.message);
+                    // if we can't connect to the guardian, try to others,
+                    // otherwise throw the error
+                    if (
+                        error.message ===
+                            "Failed to connect to a federation." ||
+                        error.message === "Invalid Arguments were given"
+                    ) {
+                        console.error(
+                            "Failed to connect to guardian, trying another one"
+                        );
+                    } else {
+                        throw e;
+                    }
+                }
+            }
             setSuccess(
                 i18n.t("settings.manage_federations.federation_added_success")
             );
@@ -275,11 +297,10 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
                                                 </div>
                                             </KeyValue>
                                         </Show>
-                                        {/* FIXME: do something smarter than just taking first code */}
                                         <Button
                                             intent="blue"
                                             onClick={() =>
-                                                onSelect(fed.invite_codes[0])
+                                                onSelect(fed.invite_codes)
                                             }
                                             loading={fed.invite_codes.includes(
                                                 loadingFederation()
