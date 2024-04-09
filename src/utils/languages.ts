@@ -28,5 +28,9 @@ export const LANGUAGE_OPTIONS: Language[] = [
     {
         value: "繁體中文",
         shortName: "hant"
+    },
+    {
+        value: "Italian",
+        shortName: "it"
     }
 ];
