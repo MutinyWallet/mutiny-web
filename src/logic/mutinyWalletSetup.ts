@@ -321,7 +321,7 @@ export async function setupMutinyWallet(
         network,
         esplora,
         rgs,
-        lsp,
+        shouldUseLSPS ? undefined : lsp,
         shouldUseLSPS ? lsps_connection_string : undefined,
         shouldUseLSPS ? lsps_token : undefined,
         auth,

@@ -22,6 +22,7 @@ import {
     getSettings,
     initializeWasm,
     MutinyWalletSettingStrings,
+    setSettings,
     setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
@@ -193,6 +194,15 @@ export const Provider: ParentComponent = (props) => {
             try {
                 const settings = await getSettings();
                 setState({ load_stage: "setup" });
+
+                // handle lsp settings
+                if (searchParams.lsps) {
+                    settings.lsp = "";
+                    settings.lsps_connection_string = searchParams.lsps;
+                    settings.lsps_token = searchParams.token;
+
+                    await setSettings(settings);
+                }
 
                 const mutinyWallet = await setupMutinyWallet(
                     settings,
@@ -509,6 +519,8 @@ export const Provider: ParentComponent = (props) => {
         };
     }
 
+    const [params, _] = useSearchParams();
+
     onMount(async () => {
         await checkForExistingTab();
         if (state.existing_tab_detected) {
@@ -528,7 +540,7 @@ export const Provider: ParentComponent = (props) => {
         setState({ load_stage: "checking_for_existing_wallet" });
         const existing = await MutinyWallet.has_node_manager();
 
-        if (!existing) {
+        if (!existing && !params.skip_setup) {
             navigate("/setup");
             return;
         }
