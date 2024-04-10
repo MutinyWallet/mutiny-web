@@ -9,6 +9,7 @@ import {
     For,
     Match,
     Show,
+    Suspense,
     Switch
 } from "solid-js";
 
@@ -98,6 +99,7 @@ export function UnifiedActivityItem(props: {
                     l.startsWith("npub")
                 );
                 if (npub) {
+                    await new Promise((r) => setTimeout(r, 1000));
                     try {
                         const newContact = await getContact(npub);
                         return newContact;
@@ -185,43 +187,70 @@ export function UnifiedActivityItem(props: {
 
     return (
         <div class="pt-3 first-of-type:pt-0">
-            <GenericItem
-                primaryAvatarUrl={
-                    primaryContact()?.image_url
-                        ? primaryContact()?.image_url
-                        : profileFromNostr()?.primal_image_url || ""
+            <Suspense
+                fallback={
+                    <GenericItem
+                        amountOnClick={click}
+                        primaryName="Unknown"
+                        genericAvatar={true}
+                        verb={verb()}
+                        message={message()}
+                        secondaryName={secondaryName()}
+                        amount={
+                            props.item.amount_sats
+                                ? BigInt(props.item.amount_sats || 0)
+                                : undefined
+                        }
+                        date={timeAgo(props.item.last_updated)}
+                        accent={props.item.inbound ? "green" : undefined}
+                        visibility={
+                            props.item.privacy_level === "Public"
+                                ? "public"
+                                : "private"
+                        }
+                    />
                 }
-                icon={shouldShowShuffle() ? <Shuffle /> : undefined}
-                primaryOnClick={() =>
-                    primaryContact()?.id
-                        ? navigate(`/chat/${primaryContact()?.id}`)
-                        : profileFromNostr()
-                          ? props.onNewContactClick(profileFromNostr()!)
-                          : undefined
-                }
-                amountOnClick={click}
-                primaryName={
-                    props.item.inbound
-                        ? primaryContact()?.name
-                            ? primaryContact()!.name
-                            : profileFromNostr()?.name || "Unknown"
-                        : "You"
-                }
-                genericAvatar={shouldShowGeneric()}
-                verb={verb()}
-                message={message()}
-                secondaryName={secondaryName()}
-                amount={
-                    props.item.amount_sats
-                        ? BigInt(props.item.amount_sats || 0)
-                        : undefined
-                }
-                date={timeAgo(props.item.last_updated)}
-                accent={props.item.inbound ? "green" : undefined}
-                visibility={
-                    props.item.privacy_level === "Public" ? "public" : "private"
-                }
-            />
+            >
+                <GenericItem
+                    primaryAvatarUrl={
+                        primaryContact()?.image_url
+                            ? primaryContact()?.image_url
+                            : profileFromNostr()?.primal_image_url || ""
+                    }
+                    icon={shouldShowShuffle() ? <Shuffle /> : undefined}
+                    primaryOnClick={() =>
+                        primaryContact()?.id
+                            ? navigate(`/chat/${primaryContact()?.id}`)
+                            : profileFromNostr()
+                              ? props.onNewContactClick(profileFromNostr()!)
+                              : undefined
+                    }
+                    amountOnClick={click}
+                    primaryName={
+                        props.item.inbound
+                            ? primaryContact()?.name
+                                ? primaryContact()!.name
+                                : profileFromNostr()?.name || "Unknown"
+                            : "You"
+                    }
+                    genericAvatar={shouldShowGeneric()}
+                    verb={verb()}
+                    message={message()}
+                    secondaryName={secondaryName()}
+                    amount={
+                        props.item.amount_sats
+                            ? BigInt(props.item.amount_sats || 0)
+                            : undefined
+                    }
+                    date={timeAgo(props.item.last_updated)}
+                    accent={props.item.inbound ? "green" : undefined}
+                    visibility={
+                        props.item.privacy_level === "Public"
+                            ? "public"
+                            : "private"
+                    }
+                />
+            </Suspense>
         </div>
     );
 }
@@ -364,7 +393,7 @@ export function CombinedActivity() {
                 />
             </Show>
             <Switch>
-                <Match when={activity().length === 0}>
+                <Match when={activity.latest.length === 0}>
                     <Show when={state.federations?.length === 0}>
                         <ButtonCard
                             onClick={() => navigate("/settings/federations")}
@@ -398,7 +427,7 @@ export function CombinedActivity() {
                         </ButtonCard>
                     </Show>
                 </Match>
-                <Match when={activity().length >= 0}>
+                <Match when={activity.latest.length >= 0}>
                     <Show when={!state.has_backed_up}>
                         <ButtonCard
                             onClick={() => navigate("/settings/backup")}
@@ -410,7 +439,7 @@ export function CombinedActivity() {
                         </ButtonCard>
                     </Show>
                     <div class="flex w-full flex-col divide-y divide-m-grey-800 overflow-x-clip">
-                        <For each={activity()}>
+                        <For each={activity.latest}>
                             {(activityItem) => (
                                 <UnifiedActivityItem
                                     item={activityItem}
