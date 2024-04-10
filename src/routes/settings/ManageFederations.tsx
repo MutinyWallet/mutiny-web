@@ -378,6 +378,20 @@ function RecommendButton(props: { fed: MutinyFederationIdentity }) {
         setRecommendLoading(false);
     }
 
+    async function deleteRecommendation() {
+        setRecommendLoading(true);
+        try {
+            await state.mutiny_wallet?.delete_federation_recommendation(
+                props.fed.federation_id
+            );
+            setRecommended(false);
+            refetch();
+        } catch (e) {
+            console.error("Error deleting federation recommendation: ", e);
+        }
+        setRecommendLoading(false);
+    }
+
     return (
         <Switch>
             <Match when={recommendedByMe() || recommended()}>
@@ -385,6 +399,13 @@ function RecommendButton(props: { fed: MutinyFederationIdentity }) {
                     <BadgeCheck />
                     Recommended by you
                 </p>
+                <Button
+                    intent="red"
+                    onClick={deleteRecommendation}
+                    loading={recommendLoading()}
+                >
+                    Unrecommend
+                </Button>
             </Match>
             <Match when={true}>
                 <Button
