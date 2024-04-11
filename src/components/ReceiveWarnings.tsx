@@ -32,7 +32,10 @@ export function ReceiveWarnings(props: {
         if (state.federations?.length !== 0 && props.from_fedi_to_ln !== true) {
             return undefined;
         }
-        if ((state.balance?.lightning || 0n) === 0n) {
+        if (
+            (state.balance?.lightning || 0n) === 0n &&
+            !state.settings?.lsps_connection_string
+        ) {
             return i18n.t("receive.amount_editable.receive_too_small", {
                 amount: "100,000"
             });
