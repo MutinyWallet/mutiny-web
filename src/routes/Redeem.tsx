@@ -18,6 +18,7 @@ import {
     BackLink,
     Button,
     DefaultMain,
+    Failure,
     InfoBox,
     LargeHeader,
     LoadingShimmer,
@@ -33,7 +34,7 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
-type RedeemState = "edit" | "paid";
+type RedeemState = "edit" | "paid" | "already_paid";
 
 export function Redeem() {
     const [state, _actions, sw] = useMegaStore();
@@ -67,12 +68,13 @@ export function Redeem() {
         setError("");
     }
 
+    //
+    // Lnurl stuff
+    //
     const [decodedLnurl] = createResource(async () => {
-        if (state.scan_result) {
-            if (state.scan_result.lnurl) {
-                const decoded = await sw.decode_lnurl(state.scan_result.lnurl);
-                return decoded;
-            }
+        if (state.scan_result && state.scan_result.lnurl) {
+            const decoded = await sw.decode_lnurl(state.scan_result.lnurl);
+            return decoded;
         }
     });
 
@@ -107,7 +109,7 @@ export function Redeem() {
         }
     });
 
-    const canSend = createMemo(() => {
+    const lnUrlCanSend = createMemo(() => {
         const lnurlParams = lnurlData();
         if (!lnurlParams) return false;
         const min = mSatsToSats(lnurlParams.min);
@@ -140,6 +142,52 @@ export function Redeem() {
         }
     }
 
+    //
+    // Cashu stuff
+    //
+    const [decodedCashuToken] = createResource(async () => {
+        if (state.scan_result && state.scan_result.cashu_token) {
+            // If it's a cashu token we already have what we need
+            const token = state.scan_result?.cashu_token;
+            const amount = state.scan_result?.amount_sats;
+            if (amount) {
+                setAmount(amount);
+                setFixedAmount(true);
+            }
+
+            return token;
+        }
+    });
+
+    const cashuCanSend = createMemo(() => {
+        if (!decodedCashuToken()) return false;
+        if (amount() === 0n) return false;
+        return true;
+    });
+
+    async function meltCashuToken() {
+        try {
+            setError("");
+            setLoading(true);
+            if (!state.scan_result?.cashu_token) return;
+            await state.mutiny_wallet?.melt_cashu_token(
+                state.scan_result?.cashu_token
+            );
+            setRedeemState("paid");
+            await vibrateSuccess();
+        } catch (e) {
+            console.error("melt_cashu_token failed", e);
+            const err = eify(e);
+            if (err.message === "Token has been already spent.") {
+                setRedeemState("already_paid");
+            } else {
+                showToast(err);
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <MutinyWalletGuard>
             <DefaultMain>
@@ -156,14 +204,24 @@ export function Redeem() {
                                     </div>
                                 }
                             >
-                                <Show when={decodedLnurl() && lnurlData()}>
-                                    <AmountEditable
-                                        initialAmountSats={amount() || "0"}
-                                        setAmountSats={setAmount}
-                                        onSubmit={handleLnUrlWithdrawal}
-                                        frozenAmount={fixedAmount()}
-                                    />
-                                </Show>
+                                <Switch>
+                                    <Match when={decodedLnurl() && lnurlData()}>
+                                        <AmountEditable
+                                            initialAmountSats={amount() || "0"}
+                                            setAmountSats={setAmount}
+                                            onSubmit={handleLnUrlWithdrawal}
+                                            frozenAmount={fixedAmount()}
+                                        />
+                                    </Match>
+                                    <Match when={decodedCashuToken()}>
+                                        <AmountEditable
+                                            initialAmountSats={amount() || "0"}
+                                            setAmountSats={() => {}}
+                                            onSubmit={() => {}}
+                                            frozenAmount={fixedAmount()}
+                                        />
+                                    </Match>
+                                </Switch>
                             </Suspense>
                             <ReceiveWarnings
                                 amountSats={amount() || 0n}
@@ -193,14 +251,28 @@ export function Redeem() {
                                     }
                                 />
                             </form> */}
-                            <Button
-                                disabled={!amount() || !canSend()}
-                                intent="green"
-                                onClick={handleLnUrlWithdrawal}
-                                loading={loading()}
-                            >
-                                {i18n.t("common.continue")}
-                            </Button>
+                            <Switch>
+                                <Match when={lnurlData()}>
+                                    <Button
+                                        disabled={!amount() || !lnUrlCanSend()}
+                                        intent="green"
+                                        onClick={handleLnUrlWithdrawal}
+                                        loading={loading()}
+                                    >
+                                        {i18n.t("common.continue")}
+                                    </Button>
+                                </Match>
+                                <Match when={decodedCashuToken()}>
+                                    <Button
+                                        disabled={!amount() || !cashuCanSend()}
+                                        intent="green"
+                                        onClick={meltCashuToken}
+                                        loading={loading()}
+                                    >
+                                        {i18n.t("common.continue")}
+                                    </Button>
+                                </Match>
+                            </Switch>
                         </VStack>
                     </Match>
                     <Match when={redeemState() === "paid"}>
@@ -234,7 +306,23 @@ export function Redeem() {
                             </div>
                             {/* TODO: add payment details */}
                         </SuccessModal>
-                        <pre>NICE</pre>
+                    </Match>
+                    <Match when={redeemState() === "already_paid"}>
+                        <SuccessModal
+                            open={true}
+                            setOpen={(open: boolean) => {
+                                if (!open) clearAll();
+                            }}
+                            onConfirm={() => {
+                                clearAll();
+                                navigate("/");
+                            }}
+                            confirmText={i18n.t("common.dangit")}
+                        >
+                            <Failure
+                                reason={i18n.t("redeem.cashu_already_spent")}
+                            />
+                        </SuccessModal>
                     </Match>
                 </Switch>
             </DefaultMain>

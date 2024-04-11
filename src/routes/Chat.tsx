@@ -126,6 +126,15 @@ function SingleMessage(props: {
                     amount: result.value.amount_sats
                 };
             }
+
+            if (result.value?.cashu_token) {
+                return {
+                    type: "cashu",
+                    from: props.dm.from,
+                    value: result.value.cashu_token,
+                    amount: result.value.amount_sats
+                };
+            }
         },
         {
             initialValue: undefined
@@ -152,6 +161,16 @@ function SingleMessage(props: {
         if (!parsed()) return;
         await actions.handleIncomingString(
             parsed()!.value,
+            (error) => {
+                showToast(error);
+            },
+            payContact
+        );
+    }
+
+    function handleRedeem() {
+        actions.handleIncomingString(
+            props.dm.message,
             (error) => {
                 showToast(error);
             },
@@ -196,6 +215,34 @@ function SingleMessage(props: {
                                 Pay
                             </Button>
                         </Show>
+                        <Show when={parsed()?.status === "paid"}>
+                            <p class="!mb-0 italic">Paid</p>
+                        </Show>
+                        <div />
+                    </div>
+                </Match>
+                <Match when={parsed()?.type === "cashu"}>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-2">
+                            <Zap class="h-4 w-4" />
+                            <span>Cashu Token</span>
+                        </div>
+                        <AmountSats amountSats={parsed()?.amount} />
+                        <Show
+                            when={
+                                parsed()?.status !== "paid" &&
+                                parsed()?.from === props.counterPartyNpub
+                            }
+                        >
+                            <Button
+                                intent="blue"
+                                layout="xs"
+                                onClick={handleRedeem}
+                            >
+                                Redeem
+                            </Button>
+                        </Show>
+
                         <Show when={parsed()?.status === "paid"}>
                             <p class="!mb-0 italic">Paid</p>
                         </Show>

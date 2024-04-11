@@ -453,6 +453,11 @@ export const makeMegaStoreContext = () => {
                             encodeURIComponent(result.value?.nostr_wallet_auth)
                     );
                 }
+                if (result.value?.cashu_token) {
+                    console.log("cashu_token", result.value?.cashu_token);
+                    actions.setScanResult(result.value);
+                    navigate("/redeem");
+                }
             }
         },
         setTestFlightPromptDismissed() {
