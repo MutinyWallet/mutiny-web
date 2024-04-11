@@ -54,7 +54,13 @@ import {
     Servers,
     Settings
 } from "~/routes/settings";
-import { ImportProfile, NewProfile, Setup, SetupRestore } from "~/routes/setup";
+import {
+    AddFederation,
+    ImportProfile,
+    NewProfile,
+    Setup,
+    SetupRestore
+} from "~/routes/setup";
 import { Provider as MegaStoreProvider, useMegaStore } from "~/state/megaStore";
 
 function GlobalListeners() {
@@ -159,6 +165,7 @@ export function Router() {
             <Route path="/" component={Main} />
             <Route path="/setup" component={Setup} />
             <Route path="/setup/restore" component={SetupRestore} />
+            <Route path="/addfederation" component={AddFederation} />
             <Route path="/newprofile" component={NewProfile} />
             <Route path="/editprofile" component={EditProfile} />
             <Route path="/importprofile" component={ImportProfile} />

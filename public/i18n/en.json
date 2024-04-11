@@ -551,13 +551,14 @@
       "remove": "Remove",
       "expires": "Expires",
       "federation_id": "Federation ID",
-      "description": "Mutiny has experimental support for the Fedimint protocol. Store funds in a federation at your own risk!",
-      "learn_more": "Learn more about Fedimint.",
+      "description": "Federations are bitcoin-based networks that make it cheaper, quicker, and easier to use bitcoin.",
+      "learn_more": "Learn more",
       "discover": "Discover Federations",
       "manual": "Invite Code",
       "created_at": "Created At",
       "recommended_by": "Recommended By",
-      "already_in_fed": "You're already in a federation!"
+      "already_in_fed": "You're already in a federation!",
+      "descriptionpart2": "Each one is ran by a group of different inviduals or companies. Discover one that you or your friends might trust below."
     },
     "gift": {
       "give_sats_link": "Give sats as a gift",
@@ -743,13 +744,18 @@
   },
   "setup": {
     "new_profile": {
-      "description": "Mutiny makes payments social."
+      "description": "Mutiny makes payments social.",
+      "title": "Create your profile"
     },
     "skip": "Skip for now",
     "import_profile": "Import existing nostr profile",
     "import": {
       "title": "Import nostr profile",
       "description": "Login with an existing nostr account."
+    },
+    "federation": {
+      "pick": "Pick a federation",
+      "skip_confirm": "You'll need to pay chain and channel fees to use Mutiny, and miss out on advanced features such as lightning address. You can change your mind later in the settings."
     }
   }
 }
