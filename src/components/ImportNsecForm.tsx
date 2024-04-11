@@ -6,7 +6,7 @@ import { createSignal, Show } from "solid-js";
 import { Button, InfoBox, SimpleInput } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 
-export function ImportNsecForm() {
+export function ImportNsecForm(props: { setup?: boolean }) {
     const [state, _actions] = useMegaStore();
     const navigate = useNavigate();
     const [nsec, setNsec] = createSignal("");
@@ -29,7 +29,11 @@ export function ImportNsecForm() {
                 undefined
             );
             console.log("Changed to new npub: ", new_npub);
-            navigate("/");
+            if (props.setup) {
+                navigate("/addfederation");
+            } else {
+                navigate("/");
+            }
         } catch (e) {
             console.error(e);
             setError("Invalid nsec");

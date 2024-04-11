@@ -31,7 +31,7 @@ export function NewProfile() {
         );
         console.log("profile", profile);
         localStorage.setItem("profile_setup_stage", "skipped");
-        navigate("/");
+        navigate("/addfederation");
         setSkipping(false);
     }
 
@@ -46,7 +46,7 @@ export function NewProfile() {
             );
             console.log("profile", profile);
             localStorage.setItem("profile_setup_stage", "saved");
-            navigate("/");
+            navigate("/addfederation");
         } catch (e) {
             console.error(e);
         }
@@ -57,7 +57,9 @@ export function NewProfile() {
         <DefaultMain>
             <div class="mx-auto flex max-w-[20rem] flex-1 flex-col items-center gap-4">
                 <div class="flex-1" />
-                <h1 class="text-3xl font-semibold">Create your profile</h1>
+                <h1 class="text-3xl font-semibold">
+                    {i18n.t("setup.new_profile.title")}
+                </h1>
                 <p class="text-center text-xl font-light text-neutral-200">
                     {i18n.t("setup.new_profile.description")}
                 </p>

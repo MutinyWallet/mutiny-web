@@ -32,8 +32,10 @@ export const Button: ParentComponent<ButtonProps> = (props) => {
         <button
             {...attrs}
             disabled={props.disabled || props.loading}
-            class="rounded-xl p-3 font-semibold transition active:-mb-[2px] active:mt-[2px] disabled:bg-neutral-400/10 disabled:text-white/20 disabled:shadow-inner-button-disabled"
+            class="rounded-xl p-3 font-semibold transition active:-mb-[2px] active:mt-[2px] "
             classList={{
+                "disabled:bg-neutral-400/10 disabled:text-white/20 disabled:shadow-inner-button-disabled":
+                    local.intent !== "text",
                 "bg-white text-black": local.intent === "active",
                 "bg-m-grey-800 text-white shadow-inner-button text-shadow-button":
                     !local.intent || local.intent === "inactive",

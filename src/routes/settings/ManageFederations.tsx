@@ -6,7 +6,7 @@ import {
     SubmitHandler
 } from "@modular-forms/solid";
 import { FederationBalance, TagItem } from "@mutinywallet/mutiny-wasm";
-import { A, useSearchParams } from "@solidjs/router";
+import { A, useNavigate, useSearchParams } from "@solidjs/router";
 import { BadgeCheck, Scan } from "lucide-solid";
 import {
     createResource,
@@ -26,12 +26,13 @@ import {
     Button,
     ConfirmDialog,
     DefaultMain,
+    ExternalLink,
     FancyCard,
     InfoBox,
     KeyValue,
     LabelCircle,
     LargeHeader,
-    LoadingSpinner,
+    LoadingShimmer,
     MediumHeader,
     MiniStringShower,
     MutinyWalletGuard,
@@ -81,9 +82,13 @@ type RefetchType = (
     | null
     | undefined;
 
-function AddFederationForm(props: { refetch?: RefetchType }) {
+export function AddFederationForm(props: {
+    refetch?: RefetchType;
+    setup?: boolean;
+}) {
     const i18n = useI18n();
     const [state, actions] = useMegaStore();
+    const navigate = useNavigate();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
 
@@ -162,6 +167,9 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
                 await props.refetch();
             }
             reset(feedbackForm);
+            if (props.setup) {
+                navigate("/");
+            }
         } catch (e) {
             console.error("Error submitting federation:", e);
             setError(eify(e));
@@ -171,56 +179,61 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
 
     return (
         <>
-            <MediumHeader>
-                {i18n.t("settings.manage_federations.manual")}
-            </MediumHeader>
-            <Form onSubmit={handleSubmit}>
-                <VStack>
-                    <Field
-                        name="federation_code"
-                        validate={[
-                            required(
-                                i18n.t(
-                                    "settings.manage_federations.federation_code_required"
+            <Show when={!props.setup}>
+                <MediumHeader>
+                    {i18n.t("settings.manage_federations.manual")}
+                </MediumHeader>
+                <Form onSubmit={handleSubmit}>
+                    <VStack>
+                        <Field
+                            name="federation_code"
+                            validate={[
+                                required(
+                                    i18n.t(
+                                        "settings.manage_federations.federation_code_required"
+                                    )
                                 )
-                            )
-                        ]}
-                    >
-                        {(field, props) => (
-                            <TextField
-                                {...props}
-                                {...field}
-                                error={field.error}
-                                placeholder="fed11..."
-                                required
-                            />
-                        )}
-                    </Field>
-                    <Button
-                        loading={feedbackForm.submitting}
-                        disabled={feedbackForm.invalid || !feedbackForm.dirty}
-                        intent="blue"
-                        type="submit"
-                    >
-                        {i18n.t("settings.manage_federations.add")}
-                    </Button>
-                    <Show when={error()}>
-                        <InfoBox accent="red">{error()?.message}</InfoBox>
-                    </Show>
-                    <Show when={success()}>
-                        <InfoBox accent="green">{success()}</InfoBox>
-                    </Show>
-                </VStack>
-            </Form>
-            <MediumHeader>
-                {i18n.t("settings.manage_federations.discover")}
-            </MediumHeader>
+                            ]}
+                        >
+                            {(field, props) => (
+                                <TextField
+                                    {...props}
+                                    {...field}
+                                    error={field.error}
+                                    placeholder="fed11..."
+                                    required
+                                />
+                            )}
+                        </Field>
+                        <Button
+                            loading={feedbackForm.submitting}
+                            disabled={
+                                feedbackForm.invalid || !feedbackForm.dirty
+                            }
+                            intent="blue"
+                            type="submit"
+                        >
+                            {i18n.t("settings.manage_federations.add")}
+                        </Button>
+                        <Show when={error()}>
+                            <InfoBox accent="red">{error()?.message}</InfoBox>
+                        </Show>
+                        <Show when={success()}>
+                            <InfoBox accent="green">{success()}</InfoBox>
+                        </Show>
+                    </VStack>
+                </Form>
+                <MediumHeader>
+                    {i18n.t("settings.manage_federations.discover")}
+                </MediumHeader>
+            </Show>
+
             <Suspense>
                 <Switch>
                     <Match when={federations.loading}>
-                        <div class="flex flex-col items-center justify-center">
-                            <LoadingSpinner wide />
-                        </div>
+                        <FancyCard>
+                            <LoadingShimmer />
+                        </FancyCard>
                     </Match>
                     <Match when={federations.latest}>
                         <For each={federations()}>
@@ -247,13 +260,17 @@ function AddFederationForm(props: { refetch?: RefetchType }) {
                                                 </Show>
                                             </div>
                                         </div>
-                                        <KeyValue
-                                            key={i18n.t(
-                                                "settings.manage_federations.federation_id"
-                                            )}
-                                        >
-                                            <MiniStringShower text={fed.id} />
-                                        </KeyValue>
+                                        <Show when={!props.setup}>
+                                            <KeyValue
+                                                key={i18n.t(
+                                                    "settings.manage_federations.federation_id"
+                                                )}
+                                            >
+                                                <MiniStringShower
+                                                    text={fed.id}
+                                                />
+                                            </KeyValue>
+                                        </Show>
                                         <Show when={fed.created_at}>
                                             <KeyValue
                                                 key={i18n.t(
@@ -517,12 +534,19 @@ export function ManageFederations() {
                         </A>{" "}
                     </Show>
                 </div>
-                {/* <BackLink href="/settings" title={i18n.t("settings.header")} /> */}
                 <LargeHeader>
                     {i18n.t("settings.manage_federations.title")}
                 </LargeHeader>
                 <NiceP>
                     {i18n.t("settings.manage_federations.description")}{" "}
+                </NiceP>
+                <NiceP>
+                    {i18n.t("settings.manage_federations.descriptionpart2")}{" "}
+                </NiceP>
+                <NiceP>
+                    <ExternalLink href="https://fedimint.org/docs/intro">
+                        {i18n.t("settings.manage_federations.learn_more")}
+                    </ExternalLink>
                 </NiceP>
                 <Suspense>
                     <Show when={!state.federations?.length}>
