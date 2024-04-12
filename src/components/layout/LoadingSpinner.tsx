@@ -2,13 +2,15 @@ export const LoadingSpinner = (props: {
     big?: boolean;
     wide?: boolean;
     small?: boolean;
+    smallest?: boolean;
 }) => {
     return (
         <div
             role="status"
             classList={{
-                "w-24": !props.small,
+                "w-24": !props.small && !props.smallest,
                 "w-16": props.small,
+                "w-8 h-8": props.smallest,
                 "flex justify-center": props.wide,
                 "h-full grid": props.big
             }}

@@ -548,7 +548,7 @@
       "federation_added_success": "Federation added successfully",
       "federation_remove_confirm": "Are you sure you want to remove this federation? Make sure any funds you have are transferred to your lightning balance or another wallet first.",
       "add": "Add",
-      "remove": "Remove",
+      "remove": "Leave federation",
       "expires": "Expires",
       "federation_id": "Federation ID",
       "description": "Federations are bitcoin-based networks that make it cheaper, quicker, and easier to use bitcoin.",
@@ -559,7 +559,9 @@
       "recommended_by": "Recommended By",
       "already_in_fed": "You're already in a federation!",
       "descriptionpart2": "Each one is ran by a group of different inviduals or companies. Discover one that you or your friends might trust below.",
-      "join_me": "Join me"
+      "join_me": "Join me",
+      "recommend": "Recommend federation",
+      "recommended_by_you": "Recommended by you"
     },
     "gift": {
       "give_sats_link": "Give sats as a gift",

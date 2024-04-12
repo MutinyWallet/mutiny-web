@@ -7,7 +7,7 @@ import {
 } from "@modular-forms/solid";
 import { FederationBalance, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate, useSearchParams } from "@solidjs/router";
-import { BadgeCheck, Scan } from "lucide-solid";
+import { BadgeCheck, LogOut, Scan, Trash } from "lucide-solid";
 import {
     createResource,
     createSignal,
@@ -39,6 +39,7 @@ import {
     NavBar,
     NiceP,
     showToast,
+    SubtleButton,
     TextField,
     VStack
 } from "~/components";
@@ -345,6 +346,7 @@ export function AddFederationForm(props: {
 
 function RecommendButton(props: { fed: MutinyFederationIdentity }) {
     const [state] = useMegaStore();
+    const i18n = useI18n();
     const [recommendLoading, setRecommendLoading] = createSignal(false);
     // This is just some local state that makes it feel like they've recommended it
     // even if they aren't a "real person"
@@ -395,26 +397,29 @@ function RecommendButton(props: { fed: MutinyFederationIdentity }) {
     return (
         <Switch>
             <Match when={recommendedByMe() || recommended()}>
-                <p class="flex items-center gap-2">
-                    <BadgeCheck />
-                    Recommended by you
-                </p>
-                <Button
-                    intent="red"
-                    onClick={deleteRecommendation}
-                    loading={recommendLoading()}
-                >
-                    Unrecommend
-                </Button>
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <BadgeCheck class="h-4 w-4" />
+                        {i18n.t(
+                            "settings.manage_federations.recommended_by_you"
+                        )}
+                    </div>
+                    <SubtleButton
+                        onClick={deleteRecommendation}
+                        loading={recommendLoading()}
+                    >
+                        <Trash class="h-4 w-4" />
+                    </SubtleButton>
+                </div>
             </Match>
             <Match when={true}>
-                <Button
-                    intent="blue"
+                <SubtleButton
                     onClick={recommendFederation}
                     loading={recommendLoading()}
                 >
-                    Recommend
-                </Button>
+                    <BadgeCheck class="h-4 w-4" />
+                    {i18n.t("settings.manage_federations.recommend")}
+                </SubtleButton>
             </Match>
         </Switch>
     );
@@ -495,9 +500,10 @@ function FederationListItem(props: {
                     <Suspense>
                         <RecommendButton fed={props.fed} />
                     </Suspense>
-                    <Button intent="red" onClick={confirmRemove}>
+                    <SubtleButton intent="red" onClick={confirmRemove}>
+                        <LogOut class="h-4 w-4" />
                         {i18n.t("settings.manage_federations.remove")}
-                    </Button>
+                    </SubtleButton>
                 </VStack>
             </FancyCard>
             <ConfirmDialog
