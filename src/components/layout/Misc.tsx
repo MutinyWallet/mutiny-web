@@ -138,7 +138,7 @@ export const DefaultMain = (props: { children?: JSX.Element }) => {
         <>
             {/* blur content that goes under the notification bar */}
             <div class="relative">
-                <div class="backgrop-blur-lg fixed left-0 right-0 top-0 z-50 bg-m-grey-975/70 safe-top" />
+                <div class="fixed left-0 right-0 top-0 z-50 bg-m-grey-975/70 backdrop-blur-lg safe-top" />
             </div>
             <main class="flex h-full flex-1 flex-col gap-4 px-4 pb-8 pt-4">
                 {props.children}
