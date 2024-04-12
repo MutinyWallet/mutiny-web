@@ -782,6 +782,7 @@
     "minutes_short": "{{count}}m",
     "nowish": "Nowish",
     "seconds_future": "Seconds from now",
-    "seconds_past": "Just now"
+    "seconds_past": "Just now",
+    "weeks_short": "{{count}}w"
   }
 }

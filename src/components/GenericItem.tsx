@@ -114,6 +114,7 @@ export function GenericItem(props: {
                         <div class="flex w-full items-center gap-1 text-m-grey-400">
                             <Clock4 class="w-3" />
                             <span class="text-xs text-m-grey-400">
+                                {/* the date might include slashes so we don't want to escape those */}
                                 {i18n.t("common.expires", {
                                     time: props.due,
                                     interpolation: { escapeValue: false }
