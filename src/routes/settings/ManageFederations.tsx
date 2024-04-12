@@ -180,7 +180,7 @@ export function AddFederationForm(props: {
     };
 
     return (
-        <>
+        <div class="flex w-full flex-col gap-4">
             <Show when={!props.setup && !props.browseOnly}>
                 <MediumHeader>
                     {i18n.t("settings.manage_federations.manual")}
@@ -340,7 +340,7 @@ export function AddFederationForm(props: {
                     </Match>
                 </Switch>
             </Suspense>
-        </>
+        </div>
     );
 }
 

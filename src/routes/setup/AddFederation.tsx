@@ -48,11 +48,9 @@ export function AddFederation() {
                     >
                         {i18n.t("setup.federation.skip_confirm")}
                     </ConfirmDialog>
-                    <VStack>
-                        <Suspense>
-                            <AddFederationForm setup />
-                        </Suspense>
-                    </VStack>
+                    <Suspense>
+                        <AddFederationForm setup />
+                    </Suspense>
                     <p class="text-pretty text-center text-xl font-light text-neutral-200">
                         <ExternalLink href="https://fedimint.org/docs/intro">
                             {i18n.t("settings.manage_federations.learn_more")}
