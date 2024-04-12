@@ -179,7 +179,9 @@ function SingleMessage(props: {
                     </div>
                 </Match>
                 <Match when={true}>
-                    <p class="!mb-0 break-words">{props.dm.message}</p>
+                    <p class="!mb-0 !select-text break-words">
+                        {props.dm.message}
+                    </p>
                 </Match>
             </Switch>
             <time
