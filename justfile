@@ -20,3 +20,9 @@ test:
     
 test-ui:
     pnpm exec playwright test --ui
+
+mainnet:
+    cp .env.mainnet .env.local
+
+signet:
+    cp .env.signet .env.local
