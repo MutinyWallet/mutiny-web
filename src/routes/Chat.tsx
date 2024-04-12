@@ -130,6 +130,10 @@ function SingleMessage(props: {
             if (result.value?.cashu_token) {
                 return {
                     type: "cashu",
+                    message_without_invoice: props.dm.message.replace(
+                        result.value.original,
+                        ""
+                    ),
                     from: props.dm.from,
                     value: result.value.cashu_token,
                     amount: result.value.amount_sats
@@ -168,9 +172,9 @@ function SingleMessage(props: {
         );
     }
 
-    function handleRedeem() {
+    function handleRedeem(token: string) {
         actions.handleIncomingString(
-            props.dm.message,
+            token,
             (error) => {
                 showToast(error);
             },
@@ -223,6 +227,11 @@ function SingleMessage(props: {
                 </Match>
                 <Match when={parsed()?.type === "cashu"}>
                     <div class="flex flex-col gap-2">
+                        <Show when={parsed()?.message_without_invoice}>
+                            <p class="!mb-0 break-words">
+                                {parsed()?.message_without_invoice}
+                            </p>
+                        </Show>
                         <div class="flex items-center gap-2">
                             <Zap class="h-4 w-4" />
                             <span>Cashu Token</span>
@@ -237,7 +246,9 @@ function SingleMessage(props: {
                             <Button
                                 intent="blue"
                                 layout="xs"
-                                onClick={handleRedeem}
+                                onClick={() =>
+                                    handleRedeem(parsed()?.value || "")
+                                }
                             >
                                 Redeem
                             </Button>
