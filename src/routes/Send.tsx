@@ -647,6 +647,11 @@ export function Send() {
     const [visibility, setVisibility] =
         createSignal<PrivacyLevel>("Not Available");
 
+    // If the contact has an npub set the default visibility to private zap
+    createEffect(() => {
+        contact()?.npub && setVisibility("Private");
+    });
+
     function toggleVisibility() {
         if (visibility() === "Not Available") {
             setVisibility("Private");
