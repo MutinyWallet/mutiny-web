@@ -647,9 +647,9 @@ export function Send() {
     const [visibility, setVisibility] =
         createSignal<PrivacyLevel>("Not Available");
 
-    // If the contact has an npub set the default visibility to private zap
+    // If the contact has an npub and it's an lnurlp send set the default visibility to private zap
     createEffect(() => {
-        contact()?.npub && setVisibility("Private");
+        contact()?.npub && lnurlp() && setVisibility("Private");
     });
 
     function toggleVisibility() {
