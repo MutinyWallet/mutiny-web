@@ -18,7 +18,6 @@ import {
     Suspense,
     Switch
 } from "solid-js";
-import { QRCodeSVG } from "solid-qr-code";
 
 import {
     AmountSats,
@@ -28,6 +27,7 @@ import {
     DefaultMain,
     ExternalLink,
     FancyCard,
+    FederationInviteShower,
     InfoBox,
     KeyValue,
     LabelCircle,
@@ -85,6 +85,7 @@ type RefetchType = (
 export function AddFederationForm(props: {
     refetch?: RefetchType;
     setup?: boolean;
+    browseOnly?: boolean;
 }) {
     const i18n = useI18n();
     const [state, actions] = useMegaStore();
@@ -179,7 +180,7 @@ export function AddFederationForm(props: {
 
     return (
         <>
-            <Show when={!props.setup}>
+            <Show when={!props.setup && !props.browseOnly}>
                 <MediumHeader>
                     {i18n.t("settings.manage_federations.manual")}
                 </MediumHeader>
@@ -223,6 +224,8 @@ export function AddFederationForm(props: {
                         </Show>
                     </VStack>
                 </Form>
+            </Show>
+            <Show when={!props.setup}>
                 <MediumHeader>
                     {i18n.t("settings.manage_federations.discover")}
                 </MediumHeader>
@@ -314,19 +317,21 @@ export function AddFederationForm(props: {
                                                 </div>
                                             </KeyValue>
                                         </Show>
-                                        <Button
-                                            intent="blue"
-                                            onClick={() =>
-                                                onSelect(fed.invite_codes)
-                                            }
-                                            loading={fed.invite_codes.includes(
-                                                loadingFederation()
-                                            )}
-                                        >
-                                            {i18n.t(
-                                                "settings.manage_federations.add"
-                                            )}
-                                        </Button>
+                                        <Show when={!props.browseOnly}>
+                                            <Button
+                                                intent="blue"
+                                                onClick={() =>
+                                                    onSelect(fed.invite_codes)
+                                                }
+                                                loading={fed.invite_codes.includes(
+                                                    loadingFederation()
+                                                )}
+                                            >
+                                                {i18n.t(
+                                                    "settings.manage_federations.add"
+                                                )}
+                                            </Button>
+                                        </Show>
                                     </VStack>
                                 </FancyCard>
                             )}
@@ -460,15 +465,15 @@ function FederationListItem(props: {
                     >
                         <MiniStringShower text={props.fed.federation_id} />
                     </KeyValue>
+                    <KeyValue key={"Invite code"}>
+                        <FederationInviteShower
+                            name={props.fed.federation_name}
+                            inviteCode={props.fed.invite_code}
+                        />
+                    </KeyValue>
                     <Suspense>
                         <RecommendButton fed={props.fed} />
                     </Suspense>
-                    <div class="w-full rounded-xl bg-white">
-                        <QRCodeSVG
-                            value={props.fed.invite_code}
-                            class="h-full max-h-[256px] w-full p-8"
-                        />
-                    </div>
                     <Button intent="red" onClick={confirmRemove}>
                         {i18n.t("settings.manage_federations.remove")}
                     </Button>
@@ -580,6 +585,11 @@ export function ManageFederations() {
                         </Switch>
                     </Suspense>
                 </VStack>
+                <Suspense>
+                    <Show when={state.federations?.length}>
+                        <AddFederationForm refetch={refetch} browseOnly />
+                    </Show>
+                </Suspense>
             </DefaultMain>
             <NavBar activeTab="settings" />
         </MutinyWalletGuard>

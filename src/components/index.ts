@@ -57,3 +57,4 @@ export * from "./HomeBalance";
 export * from "./EditProfileForm";
 export * from "./ImportNsecForm";
 export * from "./LightningAddressShower";
+export * from "./FederationInviteShower";
