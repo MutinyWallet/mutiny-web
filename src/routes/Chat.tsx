@@ -76,9 +76,20 @@ function SingleMessage(props: {
 
     const parsed = createAsync(
         async () => {
-            const result = toParsedParams(props.dm.message, network);
+            let result = undefined;
 
-            if (!result.ok) {
+            // Look for a long word that might be an invoice
+            const split_message_by_whitespace = props.dm.message.split(/\s+/g);
+            for (const word of split_message_by_whitespace) {
+                if (word.length > 15) {
+                    result = toParsedParams(word, network);
+                    if (result.ok) {
+                        break;
+                    }
+                }
+            }
+
+            if (!result || !result.ok) {
                 return undefined;
             }
 
@@ -92,6 +103,10 @@ function SingleMessage(props: {
                         return {
                             type: "invoice",
                             status: "paid",
+                            message_without_invoice: props.dm.message.replace(
+                                result.value.original,
+                                ""
+                            ),
                             value: result.value.invoice,
                             amount: result.value.amount_sats
                         };
@@ -103,6 +118,10 @@ function SingleMessage(props: {
                 return {
                     type: "invoice",
                     status: "unpaid",
+                    message_without_invoice: props.dm.message.replace(
+                        result.value.original,
+                        ""
+                    ),
                     from: props.dm.from,
                     value: result.value.invoice,
                     amount: result.value.amount_sats
@@ -130,9 +149,9 @@ function SingleMessage(props: {
         navWithContactId();
     }
 
-    function handlePay() {
+    function handlePay(invoice: string) {
         actions.handleIncomingString(
-            props.dm.message,
+            invoice,
             (error) => {
                 showToast(error);
             },
@@ -153,6 +172,11 @@ function SingleMessage(props: {
             <Switch>
                 <Match when={parsed()?.type === "invoice"}>
                     <div class="flex flex-col gap-2">
+                        <Show when={parsed()?.message_without_invoice}>
+                            <p class="!mb-0 break-words">
+                                {parsed()?.message_without_invoice}
+                            </p>
+                        </Show>
                         <div class="flex items-center gap-2">
                             <Zap class="h-4 w-4" />
                             <span>Lightning Invoice</span>
@@ -167,7 +191,7 @@ function SingleMessage(props: {
                             <Button
                                 intent="blue"
                                 layout="xs"
-                                onClick={handlePay}
+                                onClick={() => handlePay(parsed()?.value || "")}
                             >
                                 Pay
                             </Button>
