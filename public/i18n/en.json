@@ -762,23 +762,23 @@
     }
   },
   "utils": {
-    "hours_future_one": "one hour from now",
+    "hours_future_one": "One hour from now",
     "hours_future_other": "{{count}} hours from now",
-    "hours_past_one": "one hour ago",
+    "hours_past_one": "One hour ago",
     "hours_past_other": "{{count}} hours ago",
     "hours_short": "{{count}}h",
-    "days_future_one": "one day from now",
+    "days_future_one": "One day from now",
     "days_future_other": "{{count}} days from now",
-    "days_past_one": "one day ago",
+    "days_past_one": "One day ago",
     "days_past_other": "{{count}} days ago",
     "days_short": "{{count}}d",
-    "minutes_future_one": "one minute from now",
+    "minutes_future_one": "One minute from now",
     "minutes_future_other": "{{count}} minutes from now",
-    "minutes_past_one": "one minute ago",
+    "minutes_past_one": "One minute ago",
     "minutes_past_other": "{{count}} minutes ago",
     "minutes_short": "{{count}}m",
     "nowish": "Nowish",
-    "seconds_future": "seconds from now",
+    "seconds_future": "Seconds from now",
     "seconds_past": "Just now"
   }
 }
