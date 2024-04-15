@@ -6,8 +6,7 @@ import {
     ConfirmDialog,
     DefaultMain,
     ExternalLink,
-    MutinyWalletGuard,
-    VStack
+    MutinyWalletGuard
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 

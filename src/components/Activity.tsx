@@ -185,6 +185,25 @@ export function UnifiedActivityItem(props: {
         }
     };
 
+    function handlePrimaryOnClick() {
+        if (primaryContact()?.id) {
+            navigate(`/chat/${primaryContact()?.id}`);
+            return;
+        }
+
+        if (profileFromNostr()) {
+            props.onNewContactClick(profileFromNostr()!);
+            return;
+        }
+
+        if (
+            props.item.kind === "ChannelOpen" ||
+            props.item.kind === "ChannelClose"
+        ) {
+            click();
+        }
+    }
+
     return (
         <div class="pt-3 first-of-type:pt-0">
             <Suspense
@@ -218,13 +237,7 @@ export function UnifiedActivityItem(props: {
                             : profileFromNostr()?.primal_image_url || ""
                     }
                     icon={shouldShowShuffle() ? <Shuffle /> : undefined}
-                    primaryOnClick={() =>
-                        primaryContact()?.id
-                            ? navigate(`/chat/${primaryContact()?.id}`)
-                            : profileFromNostr()
-                              ? props.onNewContactClick(profileFromNostr()!)
-                              : undefined
-                    }
+                    primaryOnClick={handlePrimaryOnClick}
                     amountOnClick={click}
                     primaryName={
                         props.item.inbound
