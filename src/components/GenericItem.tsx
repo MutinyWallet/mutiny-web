@@ -43,7 +43,9 @@ export function GenericItem(props: {
                     <Match when={props.icon}>
                         <button
                             class="flex h-[3rem] w-[3rem] items-center justify-center"
-                            onClick={() => props.primaryOnClick}
+                            onClick={() =>
+                                props.primaryOnClick && props.primaryOnClick()
+                            }
                         >
                             {props.icon}
                         </button>
