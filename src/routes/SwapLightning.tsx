@@ -126,6 +126,8 @@ export function SwapLightning() {
             setLoading(true);
             setFeeEstimateWarning(undefined);
 
+            await sw.create_node_manager_if_needed();
+
             const mutinyInvoice = await sw.create_sweep_federation_invoice(
                 isMax() ? undefined : amountSats()
             );
