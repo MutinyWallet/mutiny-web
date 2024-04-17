@@ -6,9 +6,7 @@ import {
     createResource,
     createSignal,
     For,
-    Match,
-    Show,
-    Switch
+    Show
 } from "solid-js";
 
 import { ButtonCard, GenericItem, InfoBox, NiceP } from "~/components";
@@ -37,8 +35,11 @@ export function PendingNwc() {
 
     const navigate = useNavigate();
 
+    const [hasPreConfiguredNWC, setHasPreConfiguredNWC] = createSignal(false);
+
     async function fetchPendingRequests() {
         const profiles = await sw.get_nwc_profiles();
+        setHasPreConfiguredNWC(!!profiles && profiles.length > 0);
         if (!profiles) return [];
 
         const contacts: TagItem[] | undefined = await sw.get_contacts_sorted();
@@ -159,18 +160,22 @@ export function PendingNwc() {
     });
 
     return (
-        <Switch>
-            <Match
+        <>
+            <ButtonCard onClick={() => navigate("/settings/connections")}>
+                <div class="flex items-center gap-2">
+                    <PlugZap class="inline-block text-m-red" />
+                    <NiceP>
+                        {hasPreConfiguredNWC()
+                            ? i18n.t("home.connection_edit")
+                            : i18n.t("home.connection")}
+                    </NiceP>
+                </div>
+            </ButtonCard>
+            <Show
                 when={
                     pendingRequests.latest && pendingRequests.latest!.length > 0
                 }
             >
-                <ButtonCard onClick={() => navigate("/settings/connections")}>
-                    <div class="flex items-center gap-2">
-                        <PlugZap class="inline-block text-m-red" />
-                        <NiceP>{i18n.t("home.connection_edit")}</NiceP>
-                    </div>
-                </ButtonCard>
                 <div class="flex w-full justify-around">
                     <button
                         class="flex items-center gap-1 font-semibold text-m-green active:-mb-[1px] active:mt-[1px] active:text-m-green/80"
@@ -199,7 +204,6 @@ export function PendingNwc() {
                     <Show when={error()}>
                         <InfoBox accent="red">{error()?.message}</InfoBox>
                     </Show>
-
                     <For each={pendingRequests.latest}>
                         {(pendingItem) => (
                             <GenericItem
@@ -218,15 +222,7 @@ export function PendingNwc() {
                         )}
                     </For>
                 </div>
-            </Match>
-            <Match when={true}>
-                <ButtonCard onClick={() => navigate("/settings/connections")}>
-                    <div class="flex items-center gap-2">
-                        <PlugZap class="inline-block text-m-red" />
-                        <NiceP>{i18n.t("home.connection")}</NiceP>
-                    </div>
-                </ButtonCard>
-            </Match>
-        </Switch>
+            </Show>
+        </>
     );
 }
