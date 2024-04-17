@@ -39,6 +39,7 @@ export function PendingNwc() {
 
     async function fetchPendingRequests() {
         const profiles = await state.mutiny_wallet?.get_nwc_profiles();
+        setHasPreConfiguredNWC(profiles && profiles.length > 0);
         if (!profiles) return [];
 
         const contacts: TagItem[] | undefined =
@@ -165,7 +166,7 @@ export function PendingNwc() {
                 <ButtonCard onClick={() => navigate("/settings/connections")}>
                     <div class="flex items-center gap-2">
                         <PlugZap class="inline-block text-m-red" />
-                        <NiceP>{i18n.t("home.connection_edit")}</NiceP>
+                        <NiceP>{hasPreConfiguredNWC ? i18n.t("home.connection_edit") : i18n.t("home.connection")}</NiceP>
                     </div>
                 </ButtonCard>
                 <div class="flex w-full justify-around">
@@ -198,7 +199,7 @@ export function PendingNwc() {
                     </Show>
 
                     <For each={pendingRequests()}>
-                        {(pendingItem) => (
+                        {(pendingItem: { image: any; amount_sats: any; date: any; name_of_connection: any; id: any; }) => (
                             <GenericItem
                                 primaryAvatarUrl={pendingItem.image || ""}
                                 verb="requested"
