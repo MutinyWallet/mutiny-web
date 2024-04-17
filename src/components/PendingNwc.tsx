@@ -199,7 +199,7 @@ export function PendingNwc() {
                     </Show>
 
                     <For each={pendingRequests()}>
-                        {(pendingItem: { image: any; amount_sats: any; date: any; name_of_connection: any; id: any; }) => (
+                        {(pendingItem) => (
                             <GenericItem
                                 primaryAvatarUrl={pendingItem.image || ""}
                                 verb="requested"
