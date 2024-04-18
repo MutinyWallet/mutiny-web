@@ -1,5 +1,5 @@
-import { A, useNavigate } from "@solidjs/router";
-import { Shuffle, Users } from "lucide-solid";
+import { useNavigate } from "@solidjs/router";
+import { Users } from "lucide-solid";
 import { Match, Show, Switch } from "solid-js";
 
 import {
@@ -43,9 +43,6 @@ export function LoadingShimmer(props: { center?: boolean; small?: boolean }) {
     );
 }
 
-const STYLE =
-    "px-2 py-1 rounded-xl text-sm flex gap-2 items-center font-semibold";
-
 export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
     const [state, _actions] = useMegaStore();
     const navigate = useNavigate();
@@ -55,9 +52,6 @@ export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
         (state.balance?.confirmed || 0n) +
         (state.balance?.unconfirmed || 0n) +
         (state.balance?.force_close || 0n);
-
-    const usableOnchain = () =>
-        (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
 
     return (
         <VStack>
@@ -90,16 +84,6 @@ export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
                                         />
                                     </div>
                                 </div>
-
-                                <Show
-                                    when={state.balance?.federation || 0n > 0n}
-                                >
-                                    <div class="self-end justify-self-end">
-                                        <A href="/swaplightning" class={STYLE}>
-                                            <Shuffle class="h-6 w-6" />
-                                        </A>
-                                    </div>
-                                </Show>
                             </div>
                         </Show>
                     </FancyCard>
@@ -183,13 +167,6 @@ export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
                             </Show>
                             <Show when={state.balance?.unconfirmed === 0n}>
                                 <div />
-                            </Show>
-                            <Show when={usableOnchain() > 0n}>
-                                <div class="self-end justify-self-end">
-                                    <A href="/swap" class={STYLE}>
-                                        <Shuffle class="h-6 w-6" />
-                                    </A>
-                                </div>
                             </Show>
                         </div>
                     </div>
