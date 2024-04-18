@@ -35,6 +35,9 @@ import {
 
 import { GenericItem } from "./GenericItem";
 
+const ZAPPLE_PAY_NPUB =
+    "npub1wxl6njlcgygduct7jkgzrvyvd9fylj4pqvll6p32h59wyetm5fxqjchcan";
+
 export type HackActivityType =
     | "Lightning"
     | "OnChain"
@@ -85,7 +88,12 @@ export function UnifiedActivityItem(props: {
         if (props.item.contacts.length === 0) {
             return undefined;
         }
-        return props.item.contacts[0];
+        // if it's a zapple pay, don't show the contact, parse the label
+        const contact = props.item.contacts[0];
+        if (contact.npub && contact.npub === ZAPPLE_PAY_NPUB) {
+            return undefined;
+        }
+        return contact;
     });
 
     const getContact = cache(async (npub) => {
@@ -108,6 +116,25 @@ export function UnifiedActivityItem(props: {
                     }
                 }
             }
+        } else if (
+            // if zapple pay, handle it specially
+            props.item.contacts[0].npub === ZAPPLE_PAY_NPUB
+        ) {
+            if (props.item.labels) {
+                const label = props.item.labels.find((l) =>
+                    l.startsWith("From: nostr:npub")
+                );
+                if (label) {
+                    // get the npub from the label
+                    const npub = label.split("From: nostr:")[1];
+                    await new Promise((r) => setTimeout(r, 1000));
+                    try {
+                        return await getContact(npub.trim());
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+            }
         }
         return undefined;
     });
@@ -118,7 +145,8 @@ export function UnifiedActivityItem(props: {
             (l) =>
                 l !== "SWAP" &&
                 !l.startsWith("LN Channel:") &&
-                !l.startsWith("npub")
+                !l.startsWith("npub") &&
+                !l.startsWith("From: nostr:npub")
         );
         if (filtered.length === 0) {
             return undefined;
