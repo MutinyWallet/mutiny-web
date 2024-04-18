@@ -39,7 +39,6 @@ export function PendingNwc() {
 
     async function fetchPendingRequests() {
         const profiles = await state.mutiny_wallet?.get_nwc_profiles();
-        setHasPreConfiguredNWC(profiles && profiles.length > 0);
         if (!profiles) return [];
 
         const contacts: TagItem[] | undefined =
@@ -82,6 +81,19 @@ export function PendingNwc() {
         // Create deepsignal so we don't get flicker on refresh
         { storage: createDeepSignal }
     );
+
+    // Fetch the NWC profiles and store them in a signal
+    const [nwcProfiles, { refetch: refetchProfiles }] = createResource(
+        async () => await state.mutiny_wallet?.get_nwc_profiles(),
+        { storage: createDeepSignal }
+    );
+
+    createEffect(() => {
+        // Refetch the profiles on the sync interval
+        if (!state.is_syncing) {
+            refetchProfiles();
+        }
+    });
 
     const [payList, setPayList] = createSignal<string[]>([]);
 
@@ -166,7 +178,11 @@ export function PendingNwc() {
                 <ButtonCard onClick={() => navigate("/settings/connections")}>
                     <div class="flex items-center gap-2">
                         <PlugZap class="inline-block text-m-red" />
-                        <NiceP>{hasPreConfiguredNWC ? i18n.t("home.connection_edit") : i18n.t("home.connection")}</NiceP>
+                        <NiceP>
+                            {nwcProfiles() && nwcProfiles()!.length > 0
+                                ? i18n.t("home.connection_edit")
+                                : i18n.t("home.connection")}
+                        </NiceP>
                     </div>
                 </ButtonCard>
                 <div class="flex w-full justify-around">
@@ -221,7 +237,11 @@ export function PendingNwc() {
                 <ButtonCard onClick={() => navigate("/settings/connections")}>
                     <div class="flex items-center gap-2">
                         <PlugZap class="inline-block text-m-red" />
-                        <NiceP>{i18n.t("home.connection")}</NiceP>
+                        <NiceP>
+                            {nwcProfiles() && nwcProfiles()!.length > 0
+                                ? i18n.t("home.connection_edit")
+                                : i18n.t("home.connection")}
+                        </NiceP>
                     </div>
                 </ButtonCard>
             </Match>
