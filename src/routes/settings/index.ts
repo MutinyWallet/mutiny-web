@@ -7,7 +7,6 @@ export * from "./Currency";
 export * from "./Language";
 export * from "./EmergencyKit";
 export * from "./Encrypt";
-export * from "./Gift";
 export * from "./Plus";
 export * from "./Restore";
 export * from "./Servers";

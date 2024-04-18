@@ -22,7 +22,7 @@ import { eify } from "~/utils";
 import { DestinationItem } from "./Send";
 
 export function RequestRoute() {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -46,12 +46,12 @@ export function RequestRoute() {
                 tags.push(whatForInput().trim());
             }
 
-            const raw = await state.mutiny_wallet?.create_bip21(amount(), tags);
+            const raw = await sw.create_bip21(amount(), tags);
 
             if (!raw || !raw.invoice)
                 throw new Error("Invoice creation failed");
 
-            await state.mutiny_wallet?.send_dm(npub, raw.invoice);
+            await sw.send_dm(npub, raw.invoice);
 
             navigate("/chat/" + params.id);
         } catch (e) {
@@ -64,7 +64,7 @@ export function RequestRoute() {
     async function getContact(id: string) {
         console.log("fetching contact", id);
         try {
-            const contact = state.mutiny_wallet?.get_tag_item(id);
+            const contact = await sw.get_tag_item(id);
             console.log("fetching contact", contact);
             // This shouldn't happen
             if (!contact) throw new Error("Contact not found");
@@ -103,7 +103,7 @@ export function RequestRoute() {
                         setAmountSats={setAmount}
                         onSubmit={handleSubmit}
                     />
-                    <ReceiveWarnings amountSats={amount() || "0"} />
+                    <ReceiveWarnings amountSats={amount() || 0n} />
                 </VStack>
                 <div class="flex-1" />
                 <VStack>

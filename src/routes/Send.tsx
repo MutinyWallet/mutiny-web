@@ -1,5 +1,10 @@
 import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
-import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
+import {
+    createAsync,
+    useLocation,
+    useNavigate,
+    useSearchParams
+} from "@solidjs/router";
 import { Eye, EyeOff, Link, X, Zap } from "lucide-solid";
 import {
     createEffect,
@@ -158,7 +163,7 @@ export function DestinationItem(props: {
 }
 
 export function Send() {
-    const [state, actions] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const [params, setParams] = useSearchParams();
     const i18n = useI18n();
@@ -220,8 +225,8 @@ export function Send() {
     }
 
     // TODO: can I dedupe this from the search page?
-    function parsePaste(text: string) {
-        actions.handleIncomingString(
+    async function parsePaste(text: string) {
+        await actions.handleIncomingString(
             text,
             (error) => {
                 showToast(error);
@@ -233,9 +238,10 @@ export function Send() {
         );
     }
 
+    // TODO: do we actually use this anywhere?
     // send?invoice=... need to check for wallet because we can't parse until we have the wallet
     createEffect(() => {
-        if (params.invoice && state.mutiny_wallet) {
+        if (params.invoice && state.load_stage === "done") {
             parsePaste(params.invoice);
             setParams({ invoice: undefined });
         }
@@ -300,7 +306,7 @@ export function Send() {
     });
 
     // Rerun every time the amount changes if we're onchain
-    const feeEstimate = createMemo(() => {
+    const feeEstimate = createAsync(async () => {
         if (
             source() === "onchain" &&
             amountSats() &&
@@ -310,16 +316,16 @@ export function Send() {
             try {
                 // If max we want to use the sweep fee estimator
                 if (isMax()) {
-                    return state.mutiny_wallet?.estimate_sweep_tx_fee(
-                        address()!
-                    );
+                    return await sw.estimate_sweep_tx_fee(address()!);
                 }
 
-                return state.mutiny_wallet?.estimate_tx_fee(
+                const estimate = await sw.estimate_tx_fee(
                     address()!,
                     amountSats(),
                     undefined
                 );
+                console.log("estimate", estimate);
+                return estimate;
             } catch (e) {
                 setError(eify(e).message);
             }
@@ -367,15 +373,15 @@ export function Send() {
 
     // A ParsedParams with an invoice in it
     function processInvoice(source: ParsedParams & { invoice: string }) {
-        state.mutiny_wallet
-            ?.decode_invoice(source.invoice!)
+        sw.decode_invoice(source.invoice!)
             .then((invoice) => {
+                if (!invoice) return;
                 if (invoice.expire <= Date.now() / 1000) {
                     navigate("/search");
                     throw new Error(i18n.t("send.error_expired"));
                 }
 
-                if (invoice?.amount_sats) {
+                if (invoice.amount_sats) {
                     setAmountSats(invoice.amount_sats);
                     setIsAmtEditable(false);
                 }
@@ -396,8 +402,7 @@ export function Send() {
     // A ParsedParams with an lnurl in it
     function processLnurl(source: ParsedParams & { lnurl: string }) {
         setDecodingLnUrl(true);
-        state.mutiny_wallet
-            ?.decode_lnurl(source.lnurl)
+        sw.decode_lnurl(source.lnurl)
             .then((lnurlParams) => {
                 setDecodingLnUrl(false);
                 if (lnurlParams.tag === "payRequest") {
@@ -470,7 +475,7 @@ export function Send() {
                 sentDetails.destination = bolt11;
                 // If the invoice has sats use that, otherwise we pass the user-defined amount
                 if (invoice()?.amount_sats) {
-                    const payment = await state.mutiny_wallet?.pay_invoice(
+                    const payment = await sw.pay_invoice(
                         bolt11,
                         undefined,
                         tags
@@ -479,7 +484,7 @@ export function Send() {
                     sentDetails.payment_hash = payment?.payment_hash;
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 } else {
-                    const payment = await state.mutiny_wallet?.pay_invoice(
+                    const payment = await sw.pay_invoice(
                         bolt11,
                         amountSats(),
                         tags
@@ -489,7 +494,7 @@ export function Send() {
                     sentDetails.fee_estimate = payment?.fees_paid || 0;
                 }
             } else if (source() === "lightning" && nodePubkey()) {
-                const payment = await state.mutiny_wallet?.keysend(
+                const payment = await sw.keysend(
                     nodePubkey()!,
                     amountSats(),
                     undefined, // todo add optional keysend message
@@ -509,7 +514,7 @@ export function Send() {
                     visibility() !== "Not Available" && contact()?.npub
                         ? contact()?.npub
                         : undefined;
-                const payment = await state.mutiny_wallet?.lnurl_pay(
+                const payment = await sw.lnurl_pay(
                     lnurlp()!,
                     amountSats(),
                     zapNpub, // zap_npub
@@ -530,17 +535,14 @@ export function Send() {
                 if (isMax()) {
                     // If we're trying to send the max amount, use the sweep method instead of regular send
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    const txid = await state.mutiny_wallet?.sweep_wallet(
-                        address()!,
-                        tags
-                    );
+                    const txid = await sw.sweep_wallet(address()!, tags);
 
                     sentDetails.amount = amountSats();
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
                     sentDetails.fee_estimate = feeEstimate() ?? 0;
                 } else if (payjoinEnabled()) {
-                    const txid = await state.mutiny_wallet?.send_payjoin(
+                    const txid = await sw.send_payjoin(
                         originalScan()!,
                         amountSats(),
                         tags
@@ -551,7 +553,7 @@ export function Send() {
                     sentDetails.fee_estimate = feeEstimate() ?? 0;
                 } else {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    const txid = await state.mutiny_wallet?.send_to_address(
+                    const txid = await sw.send_to_address(
                         address()!,
                         amountSats(),
                         tags
@@ -665,7 +667,7 @@ export function Send() {
     async function getContact(id: string) {
         console.log("fetching contact", id);
         try {
-            const contact = state.mutiny_wallet?.get_tag_item(id);
+            const contact = await sw.get_tag_item(id);
             console.log("fetching contact", contact);
             // This shouldn't happen
             if (!contact) throw new Error("Contact not found");
@@ -773,7 +775,6 @@ export function Send() {
                         <AmountEditable
                             initialAmountSats={amountSats()}
                             setAmountSats={setAmountInput}
-                            fee={feeEstimate()?.toString()}
                             onSubmit={() =>
                                 sendButtonDisabled() ? undefined : handleSend()
                             }
@@ -791,7 +792,6 @@ export function Send() {
                         <AmountEditable
                             initialAmountSats={amountSats()}
                             setAmountSats={setAmountInput}
-                            fee={feeEstimate()?.toString()}
                             frozenAmount={true}
                             onSubmit={() =>
                                 sendButtonDisabled() ? undefined : handleSend()
@@ -801,13 +801,15 @@ export function Send() {
                             setChosenMethod={setSourceFromMethod}
                         />
                     </Show>
-                    <Show when={feeEstimate()}>
-                        <FeeDisplay
-                            amountSats={amountSats().toString()}
-                            fee={feeEstimate()!.toString()}
-                            maxAmountSats={maxAmountSats()}
-                        />
-                    </Show>
+                    <Suspense>
+                        <Show when={feeEstimate()}>
+                            <FeeDisplay
+                                amountSats={amountSats().toString()}
+                                fee={feeEstimate()!.toString()}
+                                maxAmountSats={maxAmountSats()}
+                            />
+                        </Show>
+                    </Suspense>
                     <Show when={isHodlInvoice()}>
                         <InfoBox accent="red">
                             <p>{i18n.t("send.hodl_invoice_warning")}</p>

@@ -1,4 +1,4 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { WalletWorker } from "~/state/megaStore";
 
 export type NostrTag = string[];
 export declare enum NostrKind {
@@ -45,6 +45,7 @@ export declare enum NostrKind {
 }
 
 export async function hexpubFromNpub(
+    sw: WalletWorker,
     npub?: string
 ): Promise<string | undefined> {
     if (!npub) {
@@ -55,7 +56,7 @@ export async function hexpubFromNpub(
     }
 
     try {
-        const hexpub = await MutinyWallet.npub_to_hexpub(npub);
+        const hexpub = await sw?.npub_to_hexpub(npub);
         return hexpub;
     } catch (err) {
         console.error(err);

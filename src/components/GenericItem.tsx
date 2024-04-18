@@ -114,7 +114,10 @@ export function GenericItem(props: {
                         <div class="flex w-full items-center gap-1 text-m-grey-400">
                             <Clock4 class="w-3" />
                             <span class="text-xs text-m-grey-400">
-                                {i18n.t("common.expires", { time: props.due })}
+                                {i18n.t("common.expires", {
+                                    time: props.due,
+                                    interpolation: { escapeValue: false }
+                                })}
                             </span>
                         </div>
                     </Show>

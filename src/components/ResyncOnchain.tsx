@@ -4,11 +4,11 @@ import { useMegaStore } from "~/state/megaStore";
 
 export function ResyncOnchain() {
     const i18n = useI18n();
-    const [state, _] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
 
     async function reset() {
         try {
-            await state.mutiny_wallet?.reset_onchain_tracker();
+            await sw.reset_onchain_tracker();
         } catch (e) {
             console.error(e);
         }

@@ -1,3 +1,4 @@
+import { createAsync } from "@solidjs/router";
 import { Link, Users, Zap } from "lucide-solid";
 import { Show } from "solid-js";
 
@@ -76,15 +77,18 @@ export function AmountFiat(props: {
     amountSats: bigint | number | undefined;
     denominationSize?: "sm" | "lg" | "xl";
 }) {
-    const [state, _] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
-    const amountInFiat = () =>
-        (state.fiat.value === "BTC" ? "" : "~") +
-        satsToFormattedFiat(
+    const amountInFiat = createAsync(async () => {
+        const formattedFiat = await satsToFormattedFiat(
             state.price,
             Number(props.amountSats) || 0,
-            state.fiat
+            state.fiat,
+            sw
         );
+
+        return (state.fiat.value === "BTC" ? "" : "~") + formattedFiat;
+    });
 
     return (
         <h2 class="whitespace-nowrap font-light">

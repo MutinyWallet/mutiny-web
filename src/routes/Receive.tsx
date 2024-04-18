@@ -47,7 +47,7 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, objectToSearchParams, vibrateSuccess } from "~/utils";
 
-type OnChainTx = {
+export type OnChainTx = {
     transaction: {
         version: number;
         lock_time: number;
@@ -123,7 +123,7 @@ function ReceiveMethodHelp() {
 }
 
 export function Receive() {
-    const [state, actions] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -242,10 +242,7 @@ export function Receive() {
         // First we try to get both an invoice and an address
         try {
             console.log("big amount", bigAmount);
-            const raw = await state.mutiny_wallet?.create_bip21(
-                bigAmount,
-                tags
-            );
+            const raw = await sw.create_bip21(bigAmount, tags);
             // Save the raw info so we can watch the address and invoice
             setBip21Raw(raw);
 
@@ -270,7 +267,7 @@ export function Receive() {
         // If we didn't return before this, that means create_bip21 failed
         // So now we'll just try and get an address without the invoice
         try {
-            const raw = await state.mutiny_wallet?.get_new_address(tags);
+            const raw = await sw.get_new_address(tags);
 
             // Save the raw info so we can watch the address
             setBip21Raw(raw);
@@ -314,8 +311,7 @@ export function Receive() {
             try {
                 // Lightning invoice might be blank
                 if (lightning) {
-                    const invoice =
-                        await state.mutiny_wallet?.get_invoice(lightning);
+                    const invoice = await sw.get_invoice(lightning);
 
                     // If the invoice has a fees amount that's probably the LSP fee
                     if (invoice?.fees_paid) {
@@ -330,9 +326,9 @@ export function Receive() {
                     }
                 }
 
-                const tx = (await state.mutiny_wallet?.check_address(
-                    address
-                )) as OnChainTx | undefined;
+                const tx = (await sw.check_address(address)) as
+                    | OnChainTx
+                    | undefined;
 
                 if (tx) {
                     setReceiveState("paid");
@@ -396,7 +392,7 @@ export function Receive() {
                                 onSubmit={getQr}
                             />
                             <ReceiveWarnings
-                                amountSats={amount() || "0"}
+                                amountSats={amount() || 0n}
                                 from_fedi_to_ln={false}
                             />
                         </VStack>

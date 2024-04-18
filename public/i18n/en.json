@@ -400,7 +400,8 @@
         "import_state": "Import State From File",
         "confirm_replace": "Do you want to replace your state with",
         "password": "Enter your password to decrypt",
-        "decrypt_wallet": "Decrypt Wallet"
+        "decrypt_wallet": "Decrypt Wallet",
+        "decrypt_export": "Enter your password to save"
       },
       "logs": {
         "title": "Download debug logs",

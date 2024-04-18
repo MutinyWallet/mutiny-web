@@ -35,25 +35,35 @@ function methodToIcon(method: MethodChoice["method"]) {
 export const AmountEditable: ParentComponent<{
     initialAmountSats: string | bigint;
     setAmountSats: (s: bigint) => void;
-    fee?: string;
     frozenAmount?: boolean;
     onSubmit?: () => void;
     activeMethod?: MethodChoice;
     methods?: MethodChoice[];
     setChosenMethod?: (method: MethodChoice) => void;
 }> = (props) => {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const [mode, setMode] = createSignal<"fiat" | "sats">("sats");
     const [localSats, setLocalSats] = createSignal(
         props.initialAmountSats.toString() || "0"
     );
-    const [localFiat, setLocalFiat] = createSignal(
-        satsToFiat(
-            state.price,
-            parseInt(props.initialAmountSats.toString() || "0") || 0,
-            state.fiat
-        )
+    const [rawFiatAmount, setRawFiatAmount] = createSignal(
+        props.initialAmountSats.toString() || "0"
     );
+    const [localFiat, setLocalFiat] = createSignal("0");
+
+    createEffect(() => {
+        if (rawFiatAmount()) {
+            satsToFiat(
+                state.price,
+                Number(rawFiatAmount()) || 0,
+                state.fiat,
+                sw
+            ).then((sats) => {
+                console.log("sats", sats);
+                setLocalFiat(sats);
+            });
+        }
+    });
 
     const displaySats = () => toDisplayHandleNaN(localSats());
     const displayFiat = () =>
@@ -72,7 +82,7 @@ export const AmountEditable: ParentComponent<{
         const { value } = e.target as HTMLInputElement;
         const sane = satsInputSanitizer(value);
         setLocalSats(sane);
-        setLocalFiat(satsToFiat(state.price, Number(sane) || 0, state.fiat));
+        setRawFiatAmount(Number(sane).toString() || "0");
     }
 
     /** This behaves the same as handleCharacterInput but allows for the keyboard to be used instead of the virtual keypad
@@ -88,7 +98,7 @@ export const AmountEditable: ParentComponent<{
      *  result - 123.45
      */
 
-    function handleFiatInput(e: InputEvent) {
+    async function handleFiatInput(e: InputEvent) {
         const { value } = e.currentTarget as HTMLInputElement;
         let sane;
 
@@ -101,7 +111,7 @@ export const AmountEditable: ParentComponent<{
             } else {
                 sane = fiatInputSanitizer(
                     // This allows us to handle the backspace key and fight float rounding
-                    btcFloatRounding(localFiat()),
+                    btcFloatRounding(localFiat() || "0"),
                     state.fiat.maxFractionalDigits
                 );
             }
@@ -112,9 +122,13 @@ export const AmountEditable: ParentComponent<{
             );
         }
         setLocalFiat(sane);
-        setLocalSats(
-            fiatToSats(state.price, parseFloat(sane || "0") || 0, false)
+        const sats = await fiatToSats(
+            state.price,
+            Number(sane) || 0,
+            false,
+            sw
         );
+        setLocalSats(sats);
     }
 
     function toggle(disabled: boolean) {

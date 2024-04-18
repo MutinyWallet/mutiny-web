@@ -1,6 +1,6 @@
-import { useNavigate } from "@solidjs/router";
+import { createAsync, useNavigate } from "@solidjs/router";
 import { AtSign, Edit, Import } from "lucide-solid";
-import { createMemo, Show } from "solid-js";
+import { createMemo, Show, Suspense } from "solid-js";
 
 import {
     BackLink,
@@ -9,6 +9,7 @@ import {
     DefaultMain,
     LabelCircle,
     LightningAddressShower,
+    LoadingShimmer,
     MutinyWalletGuard,
     NavBar,
     NiceP
@@ -25,13 +26,13 @@ export type UserProfile = {
 };
 
 export function Profile() {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
 
     const navigate = useNavigate();
 
-    const profile = createMemo(() => {
-        const profile = state.mutiny_wallet?.get_nostr_profile();
+    const profile = createAsync(async () => {
+        const profile = await sw.get_nostr_profile();
 
         const userProfile: UserProfile = {
             name: profile?.display_name || profile?.name || DEFAULT_NOSTR_NAME,
@@ -43,17 +44,17 @@ export function Profile() {
     });
 
     const profileDeleted = createMemo(() => {
-        return profile().deleted === true || profile().deleted === "true";
+        return profile()?.deleted === true || profile()?.deleted === "true";
     });
 
     const hasMutinyAddress = createMemo(() => {
-        if (profile().lud16) {
+        if (profile()?.lud16) {
             const hermes = import.meta.env.VITE_HERMES;
             if (!hermes) {
                 return false;
             }
             const hermesDomain = new URL(hermes).hostname;
-            const afterAt = profile().lud16!.split("@")[1];
+            const afterAt = profile()?.lud16!.split("@")[1];
             if (afterAt && afterAt.includes(hermesDomain)) {
                 return true;
             }
@@ -70,11 +71,13 @@ export function Profile() {
                         <LabelCircle
                             contact
                             label={false}
-                            image_url={profile().picture}
+                            image_url={profile()?.picture}
                             size="xl"
                         />
                         <h1 class="text-3xl font-semibold">
-                            <Show when={profile().name}>{profile().name}</Show>
+                            <Show when={profile()?.name}>
+                                {profile()?.name}
+                            </Show>
                         </h1>
 
                         <LightningAddressShower profile={profile()} />
@@ -107,7 +110,7 @@ export function Profile() {
                         </ButtonCard>
                     </Show>
                 </Show>
-                <Show when={profile() && profile().deleted}>
+                <Show when={profile() && profile()?.deleted}>
                     <ButtonCard
                         onClick={() => navigate("/settings/importprofile")}
                     >
@@ -119,7 +122,9 @@ export function Profile() {
                         </div>
                     </ButtonCard>
                 </Show>
-                <BalanceBox loading={state.wallet_loading} />
+                <Suspense fallback={<LoadingShimmer />}>
+                    <BalanceBox loading={state.wallet_loading} />
+                </Suspense>
                 <NavBar activeTab="profile" />
             </DefaultMain>
         </MutinyWalletGuard>

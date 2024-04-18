@@ -23,7 +23,7 @@ import { useMegaStore } from "~/state/megaStore";
 
 function DeleteAccount() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
 
     async function confirmDelete() {
         setConfirmOpen(true);
@@ -35,7 +35,7 @@ function DeleteAccount() {
     async function deleteNostrAccount() {
         setConfirmLoading(true);
         try {
-            await state.mutiny_wallet?.delete_profile();
+            await sw.delete_profile();
             // Remove the nsec from secure storage if it exists
             await SecureStoragePlugin.clear();
             window.location.href = "/";
@@ -113,14 +113,11 @@ function UnlinkAccount() {
 
 export function NostrKeys() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
 
-    const npub = createAsync(async () => state.mutiny_wallet?.get_npub());
-    const nsec = createAsync(async () => state.mutiny_wallet?.export_nsec());
-    const profile = () => state.mutiny_wallet?.get_nostr_profile();
-
-    // @ts-expect-error we're checking for an extension
-    const windowHasNostr = window.nostr && window.nostr.getPublicKey;
+    const npub = createAsync(async () => await sw.get_npub());
+    const nsec = createAsync(async () => await sw.export_nsec());
+    const profile = createAsync(async () => await sw.get_nostr_profile());
 
     const [nsecInSecureStorage] = createResource(async () => {
         try {
@@ -144,7 +141,7 @@ export function NostrKeys() {
                     </ExternalLink>
                 </NiceP>
                 <Switch>
-                    <Match when={profile() && !profile().deleted}>
+                    <Match when={profile() && !profile()?.deleted}>
                         <FancyCard>
                             <VStack>
                                 <div class="w-[10rem] self-center rounded bg-white p-[1rem]">
@@ -169,27 +166,23 @@ export function NostrKeys() {
                                 </Show>
                             </VStack>
                         </FancyCard>
-                        <Show when={!windowHasNostr}>
-                            <A
-                                href="/settings/importprofile"
-                                class="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-neutral-900 p-2 text-m-grey-350 no-underline active:-mb-[1px] active:mt-[1px] active:opacity-70"
-                            >
-                                <Import class="w-4" />
-                                {i18n.t("settings.nostr_keys.import_profile")}
-                            </A>
-                        </Show>
+                        <A
+                            href="/settings/importprofile"
+                            class="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-neutral-900 p-2 text-m-grey-350 no-underline active:-mb-[1px] active:mt-[1px] active:opacity-70"
+                        >
+                            <Import class="w-4" />
+                            {i18n.t("settings.nostr_keys.import_profile")}
+                        </A>
                         <Switch>
                             <Match when={nsecInSecureStorage()}>
                                 <UnlinkAccount />
                             </Match>
-                            <Match
-                                when={!nsecInSecureStorage() && !windowHasNostr}
-                            >
+                            <Match when={!nsecInSecureStorage()}>
                                 <DeleteAccount />
                             </Match>
                         </Switch>
                     </Match>
-                    <Match when={profile() && profile().deleted}>
+                    <Match when={profile() && profile()?.deleted}>
                         <A
                             href="/settings/importprofile"
                             class="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-neutral-900 p-2 text-m-grey-350 no-underline active:-mb-[1px] active:mt-[1px] active:opacity-70"

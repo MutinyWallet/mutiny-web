@@ -35,7 +35,7 @@ const ImageWithFallback = (props: { src: string; alt: string }) => {
 };
 
 export function HomePrompt() {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
 
     const [params, setParams] = useSearchParams();
@@ -68,7 +68,7 @@ export function HomePrompt() {
                 lsps_token: params.token
             };
             try {
-                await state.mutiny_wallet?.change_lsp(
+                await sw.change_lsp(
                     values.lsp ? values.lsp : undefined,
                     values.lsps_connection_string
                         ? values.lsps_connection_string
@@ -100,10 +100,9 @@ export function HomePrompt() {
     async function handleLnurlAuth() {
         setAuthLoading(true);
         try {
-            await state.mutiny_wallet?.lnurl_auth(lnurlauthResult()!);
+            await sw.lnurl_auth(lnurlauthResult()!);
             setIsAuthenticated(true);
         } catch (e) {
-            // lnurl1dp68gurn8ghj7um5v93kketj9ehx2amn9ashq6f0d3hxzat5dqlhgct884kx7emfdcnxkvfavvurwdtrvgmkyd3489skgcfexqckxd3svg6xgwr98q6nsd3c893kzcfkvc6nsdr9xpjxvc3jvejrxwpevyurqvfev3nxvvnxx5ergdc8g6gzl
             console.error(e);
             setAuthError(eify(e));
         } finally {

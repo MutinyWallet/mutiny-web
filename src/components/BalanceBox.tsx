@@ -1,6 +1,6 @@
 import { A, useNavigate } from "@solidjs/router";
 import { Shuffle, Users } from "lucide-solid";
-import { Match, Show, Switch } from "solid-js";
+import { createMemo, Match, Show, Suspense, Switch } from "solid-js";
 
 import {
     AmountFiat,
@@ -51,13 +51,18 @@ export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
     const navigate = useNavigate();
     const i18n = useI18n();
 
-    const totalOnchain = () =>
-        (state.balance?.confirmed || 0n) +
-        (state.balance?.unconfirmed || 0n) +
-        (state.balance?.force_close || 0n);
+    const totalOnchain = createMemo(
+        () =>
+            (state.balance?.confirmed || 0n) +
+            (state.balance?.unconfirmed || 0n) +
+            (state.balance?.force_close || 0n)
+    );
 
-    const usableOnchain = () =>
-        (state.balance?.confirmed || 0n) + (state.balance?.unconfirmed || 0n);
+    const usableOnchain = createMemo(
+        () =>
+            (state.balance?.confirmed || 0n) +
+            (state.balance?.unconfirmed || 0n)
+    );
 
     return (
         <VStack>
@@ -82,12 +87,15 @@ export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
                                         />
                                     </div>
                                     <div class="text-lg text-white/70">
-                                        <AmountFiat
-                                            amountSats={
-                                                state.balance?.federation || 0n
-                                            }
-                                            denominationSize="sm"
-                                        />
+                                        <Suspense>
+                                            <AmountFiat
+                                                amountSats={
+                                                    state.balance?.federation ||
+                                                    0n
+                                                }
+                                                denominationSize="sm"
+                                            />
+                                        </Suspense>
                                     </div>
                                 </div>
                                 <Show
@@ -145,12 +153,14 @@ export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
                                     />
                                 </div>
                                 <div class="text-lg text-white/70">
-                                    <AmountFiat
-                                        amountSats={
-                                            state.balance?.lightning || 0
-                                        }
-                                        denominationSize="sm"
-                                    />
+                                    <Suspense>
+                                        <AmountFiat
+                                            amountSats={
+                                                state.balance?.lightning || 0
+                                            }
+                                            denominationSize="sm"
+                                        />
+                                    </Suspense>
                                 </div>
                             </div>
                         </Match>
@@ -168,10 +178,12 @@ export function BalanceBox(props: { loading?: boolean; small?: boolean }) {
                                 />
                             </div>
                             <div class="text-lg text-white/70">
-                                <AmountFiat
-                                    amountSats={totalOnchain()}
-                                    denominationSize="sm"
-                                />
+                                <Suspense>
+                                    <AmountFiat
+                                        amountSats={totalOnchain()}
+                                        denominationSize="sm"
+                                    />
+                                </Suspense>
                             </div>
                         </div>
                         <div class="flex flex-col items-end justify-between gap-1">

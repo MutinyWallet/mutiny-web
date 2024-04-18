@@ -74,7 +74,7 @@ export function Search() {
 function ActualSearch(props: { initialValue?: string }) {
     const [searchValue, setSearchValue] = createSignal("");
     const [debouncedSearchValue, setDebouncedSearchValue] = createSignal("");
-    const [state, actions] = useMegaStore();
+    const [_state, actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -88,7 +88,7 @@ function ActualSearch(props: { initialValue?: string }) {
 
     const getContacts = cache(async () => {
         try {
-            const contacts = await state.mutiny_wallet?.get_contacts_sorted();
+            const contacts = await sw.get_contacts_sorted();
             return contacts || ([] as TagItem[]);
         } catch (e) {
             console.error(e);
@@ -124,7 +124,7 @@ function ActualSearch(props: { initialValue?: string }) {
 
     type SearchState = "notsendable" | "sendable" | "sendableWithContact";
 
-    const searchState = createMemo<SearchState>(() => {
+    const searchState = createAsync<SearchState>(async () => {
         if (debouncedSearchValue() === "") {
             return "notsendable";
         }
@@ -134,7 +134,7 @@ function ActualSearch(props: { initialValue?: string }) {
             return "notsendable";
         }
         let state: SearchState = "notsendable";
-        actions.handleIncomingString(
+        await actions.handleIncomingString(
             text,
             (_error) => {
                 // noop
@@ -147,6 +147,7 @@ function ActualSearch(props: { initialValue?: string }) {
                 }
             }
         );
+        console.log("params searchState", state);
         return state;
     });
 
@@ -160,8 +161,8 @@ function ActualSearch(props: { initialValue?: string }) {
         });
     }
 
-    function handleContinue() {
-        actions.handleIncomingString(
+    async function handleContinue() {
+        await actions.handleIncomingString(
             debouncedSearchValue().trim(),
             (error) => {
                 showToast(error);
@@ -181,16 +182,17 @@ function ActualSearch(props: { initialValue?: string }) {
         );
     }
 
-    const profileDeleted = createMemo(
-        () => state.mutiny_wallet?.get_nostr_profile().deleted
-    );
+    const profileDeleted = createAsync(async () => {
+        const profile = await sw.get_nostr_profile();
+        return profile?.deleted;
+    });
 
     // TODO this is mostly copy pasted from chat, could be a shared util maybe
-    function navToSend(contact?: TagItem) {
+    async function navToSend(contact?: TagItem) {
         if (!contact) return;
         const address = contact.ln_address || contact.lnurl;
         if (address) {
-            actions.handleIncomingString(
+            await actions.handleIncomingString(
                 (address || "").trim(),
                 (error) => {
                     showToast(error);
@@ -208,9 +210,9 @@ function ActualSearch(props: { initialValue?: string }) {
         }
     }
 
-    function sendToContact(contact: TagItem) {
+    async function sendToContact(contact: TagItem) {
         if (profileDeleted()) {
-            navToSend(contact);
+            await navToSend(contact);
         } else {
             navWithSearchValue(`/chat/${contact.id}`);
         }
@@ -224,11 +226,11 @@ function ActualSearch(props: { initialValue?: string }) {
             );
 
             if (existingContact) {
-                sendToContact(existingContact);
+                await sendToContact(existingContact);
                 return;
             }
 
-            const contactId = await state.mutiny_wallet?.create_new_contact(
+            const contactId = await sw.create_new_contact(
                 contact.name,
                 contact.npub ? contact.npub.trim() : undefined,
                 contact.ln_address ? contact.ln_address.trim() : undefined,
@@ -240,7 +242,7 @@ function ActualSearch(props: { initialValue?: string }) {
                 throw new Error("no contact id returned");
             }
 
-            const tagItem = await state.mutiny_wallet?.get_tag_item(contactId);
+            const tagItem = await sw.get_tag_item(contactId);
 
             if (!tagItem) {
                 throw new Error("no contact returned");
@@ -249,9 +251,9 @@ function ActualSearch(props: { initialValue?: string }) {
             // if the new contact has an npub, send to chat
             // otherwise, send to send page
             if (tagItem.npub) {
-                sendToContact(tagItem);
+                await sendToContact(tagItem);
             } else if (tagItem.ln_address) {
-                actions.handleIncomingString(
+                await actions.handleIncomingString(
                     tagItem.ln_address,
                     () => {},
                     () => {
@@ -259,7 +261,7 @@ function ActualSearch(props: { initialValue?: string }) {
                     }
                 );
             } else if (tagItem.lnurl) {
-                actions.handleIncomingString(
+                await actions.handleIncomingString(
                     tagItem.lnurl,
                     () => {},
                     () => {
@@ -293,14 +295,14 @@ function ActualSearch(props: { initialValue?: string }) {
 
             const trimText = text.trim();
             setSearchValue(trimText);
-            parsePaste(trimText);
+            await parsePaste(trimText);
         } catch (e) {
             console.error(e);
         }
     }
 
-    function parsePaste(text: string) {
-        actions.handleIncomingString(
+    async function parsePaste(text: string) {
+        await actions.handleIncomingString(
             text,
             (error) => {
                 showToast(error);
@@ -354,45 +356,49 @@ function ActualSearch(props: { initialValue?: string }) {
                     </button>
                 </Show>
             </div>
-            <div class="flex-0 flex w-full">
-                <Show when={searchState() !== "notsendable"}>
-                    <Button intent="green" onClick={handleContinue}>
-                        Continue
-                    </Button>
-                </Show>
-            </div>
-            <Show when={searchState() !== "sendable"}>
-                <VStack>
-                    <Suspense>
-                        <h2 class="text-xl font-semibold">Contacts</h2>
-                        <Show when={contacts() && contacts().length > 0}>
-                            <For each={filteredContacts()}>
-                                {(contact) => (
-                                    <ContactButton
-                                        contact={contact}
-                                        onClick={() => sendToContact(contact)}
-                                    />
-                                )}
-                            </For>
-                        </Show>
-                    </Suspense>
-                    <ContactEditor createContact={createContact} />
+            <Suspense>
+                <div class="flex-0 flex w-full">
+                    <Show when={searchState() !== "notsendable"}>
+                        <Button intent="green" onClick={handleContinue}>
+                            Continue
+                        </Button>
+                    </Show>
+                </div>
+                <Show when={searchState() !== "sendable"}>
+                    <VStack>
+                        <Suspense>
+                            <h2 class="text-xl font-semibold">Contacts</h2>
+                            <Show when={contacts() && contacts().length > 0}>
+                                <For each={filteredContacts()}>
+                                    {(contact) => (
+                                        <ContactButton
+                                            contact={contact}
+                                            onClick={() =>
+                                                sendToContact(contact)
+                                            }
+                                        />
+                                    )}
+                                </For>
+                            </Show>
+                        </Suspense>
+                        <ContactEditor createContact={createContact} />
 
-                    <Suspense fallback={<LoadingShimmer />}>
-                        <Show when={!!debouncedSearchValue()}>
-                            <h2 class="py-2 text-xl font-semibold">
-                                Global Search
-                            </h2>
-                            <GlobalSearch
-                                searchValue={debouncedSearchValue()}
-                                sendToContact={sendToContact}
-                                foundNpubs={foundNpubs()}
-                            />
-                        </Show>
-                    </Suspense>
-                    <div class="h-4" />
-                </VStack>
-            </Show>
+                        <Suspense fallback={<LoadingShimmer />}>
+                            <Show when={!!debouncedSearchValue()}>
+                                <h2 class="py-2 text-xl font-semibold">
+                                    Global Search
+                                </h2>
+                                <GlobalSearch
+                                    searchValue={debouncedSearchValue()}
+                                    sendToContact={sendToContact}
+                                    foundNpubs={foundNpubs()}
+                                />
+                            </Show>
+                        </Suspense>
+                        <div class="h-4" />
+                    </VStack>
+                </Show>
+            </Suspense>
         </>
     );
 }
@@ -402,10 +408,11 @@ function GlobalSearch(props: {
     sendToContact: (contact: TagItem) => void;
     foundNpubs: (string | undefined)[];
 }) {
+    const [_state, _actions, sw] = useMegaStore();
     const hexpubs = createMemo(() => {
         const hexpubs: Set<string> = new Set();
         for (const npub of props.foundNpubs) {
-            hexpubFromNpub(npub)
+            hexpubFromNpub(sw, npub)
                 .then((h) => {
                     if (h) {
                         hexpubs.add(h);
@@ -425,7 +432,7 @@ function GlobalSearch(props: {
         try {
             // Handling case when value starts with "npub"
             if (args.value?.toLowerCase().startsWith("npub")) {
-                const hexpub = await hexpubFromNpub(args.value);
+                const hexpub = await hexpubFromNpub(sw, args.value);
                 if (!hexpub) return [];
 
                 const profile = await actuallyFetchNostrProfile(hexpub);
@@ -491,23 +498,25 @@ function SingleContact(props: {
     contact: PseudoContact;
     sendToContact: (contact: TagItem) => void;
 }) {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
 
     async function createContactFromSearchResult(contact: PseudoContact) {
         try {
-            const contactId = await state.mutiny_wallet?.create_new_contact(
+            const contactId = await sw.create_new_contact(
                 contact.name,
-                contact.hexpub ? contact.hexpub : undefined,
+                contact.hexpub ? contact.hexpub : "",
                 contact.ln_address ? contact.ln_address : undefined,
                 undefined,
                 contact.image_url ? contact.image_url : undefined
             );
 
+            console.log("contactId", contactId);
+
             if (!contactId) {
                 throw new Error("no contact id returned");
             }
 
-            const tagItem = await state.mutiny_wallet?.get_tag_item(contactId);
+            const tagItem = await sw.get_tag_item(contactId);
 
             if (!tagItem) {
                 throw new Error("no contact returned");

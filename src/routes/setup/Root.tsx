@@ -39,9 +39,8 @@ export function Setup() {
 
     return (
         <DefaultMain>
-            {/* <LargeHeader>Setup</LargeHeader> */}
             <div class="flex flex-1 flex-col items-center justify-between gap-4">
-                <div class="flex-[2]" />
+                <div class="flex-1" />
                 <div class="flex flex-col items-center gap-4">
                     <img
                         id="mutiny-logo"

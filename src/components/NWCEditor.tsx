@@ -104,7 +104,7 @@ export function NWCEditor(props: {
     initialNWA?: string;
     onSave: (indexToOpen?: number, nwcUriForCallback?: string) => Promise<void>;
 }) {
-    const [state] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
 
     const nwa = createMemo(() => parseNWA(props.initialNWA));
@@ -152,7 +152,7 @@ export function NWCEditor(props: {
     async function createNwa(f: BudgetForm) {
         if (!f.nwaString) throw new Error("We lost the NWA string!");
         try {
-            await state.mutiny_wallet?.approve_nostr_wallet_auth(
+            await sw.approve_nostr_wallet_auth(
                 f.connection_name || "Nostr Wallet Auth",
                 // can we do better than ! here?
                 f.nwaString
@@ -177,7 +177,7 @@ export function NWCEditor(props: {
 
         try {
             const profile: NwcProfile | undefined =
-                await state.mutiny_wallet?.get_nwc_profile(index);
+                await sw.get_nwc_profile(index);
             console.log(profile);
             return profile;
         } catch (e) {
@@ -200,8 +200,7 @@ export function NWCEditor(props: {
         if (!label) return undefined;
 
         try {
-            const contact: TagItem | undefined =
-                await state.mutiny_wallet?.get_tag_item(label);
+            const contact: TagItem | undefined = await sw.get_tag_item(label);
             return contact;
         } catch (e) {
             console.error(e);
@@ -215,12 +214,11 @@ export function NWCEditor(props: {
         let newProfile: NwcProfile | undefined = undefined;
         if (!f.profileIndex) throw new Error("No profile index!");
         if (!f.auto_approve || f.budget_amount === "0") {
-            newProfile =
-                await state.mutiny_wallet?.set_nwc_profile_require_approval(
-                    f.profileIndex
-                );
+            newProfile = await sw.set_nwc_profile_require_approval(
+                f.profileIndex
+            );
         } else {
-            newProfile = await state.mutiny_wallet?.set_nwc_profile_budget(
+            newProfile = await sw.set_nwc_profile_budget(
                 f.profileIndex,
                 BigInt(f.budget_amount),
                 mapIntervalToBudgetPeriod(f.interval)
@@ -240,11 +238,9 @@ export function NWCEditor(props: {
         let newProfile: NwcProfile | undefined = undefined;
 
         if (!f.auto_approve || f.budget_amount === "0") {
-            newProfile = await state.mutiny_wallet?.create_nwc_profile(
-                f.connection_name
-            );
+            newProfile = await sw.create_nwc_profile(f.connection_name);
         } else {
-            newProfile = await state.mutiny_wallet?.create_budget_nwc_profile(
+            newProfile = await sw.create_budget_nwc_profile(
                 f.connection_name,
                 BigInt(f.budget_amount),
                 mapIntervalToBudgetPeriod(f.interval),

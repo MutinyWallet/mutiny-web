@@ -1,4 +1,5 @@
-import { createMemo, ParentComponent, Show } from "solid-js";
+import { createAsync } from "@solidjs/router";
+import { createMemo, ParentComponent, Show, Suspense } from "solid-js";
 
 import { VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -20,20 +21,22 @@ const AmountKeyValue: ParentComponent<{ key: string; gray?: boolean }> = (
 };
 
 function USDShower(props: { amountSats: string; fee?: string }) {
-    const [state, _] = useMegaStore();
-    const amountInFiat = () =>
-        (state.fiat.value === "BTC" ? "" : "~") +
-        satsToFormattedFiat(
+    const [state, _actions, sw] = useMegaStore();
+    const amountInFiat = createAsync(async () => {
+        const formattedFiat = await satsToFormattedFiat(
             state.price,
             add(props.amountSats, props.fee),
-            state.fiat
+            state.fiat,
+            sw
         );
+        return (state.fiat.value === "BTC" ? "" : "~") + formattedFiat;
+    });
 
     return (
         <Show when={!(props.amountSats === "0")}>
             <AmountKeyValue gray key="">
                 <div class="self-end whitespace-nowrap">
-                    {`${amountInFiat()} `}
+                    <Suspense>{`${amountInFiat()} `}</Suspense>
                     <span class="text-sm">{state.fiat.value}</span>
                 </div>
             </AmountKeyValue>

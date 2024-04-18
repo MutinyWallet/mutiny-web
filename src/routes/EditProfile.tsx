@@ -1,5 +1,5 @@
-import { useNavigate } from "@solidjs/router";
-import { createMemo, createSignal, Show } from "solid-js";
+import { createAsync, useNavigate } from "@solidjs/router";
+import { createSignal, Show } from "solid-js";
 
 import {
     BackLink,
@@ -14,14 +14,14 @@ import { useMegaStore } from "~/state/megaStore";
 import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function EditProfile() {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     // const i18n = useI18n();
     const navigate = useNavigate();
 
     const [saving, setSaving] = createSignal(false);
 
-    const originalProfile = createMemo(() => {
-        const profile = state.mutiny_wallet?.get_nostr_profile();
+    const originalProfile = createAsync(async () => {
+        const profile = await sw.get_nostr_profile();
 
         return {
             name: profile?.display_name || profile?.name || DEFAULT_NOSTR_NAME,
@@ -37,11 +37,11 @@ export function EditProfile() {
 
             console.log("new profile", profile);
 
-            const newProfile = await state.mutiny_wallet?.edit_nostr_profile(
+            const newProfile = await sw.edit_nostr_profile(
                 profile.nym ? profile.nym : undefined,
                 profile.imageUrl ? profile.imageUrl : undefined,
                 profile.lightningAddress ? profile.lightningAddress : undefined,
-                originalProfile().nip05 ? originalProfile().nip05 : undefined
+                originalProfile()?.nip05 ? originalProfile()?.nip05 : undefined
             );
 
             console.log("newProfile", newProfile);
@@ -62,9 +62,9 @@ export function EditProfile() {
                 <Show when={originalProfile()}>
                     <EditProfileForm
                         initialProfile={{
-                            nym: originalProfile().name,
-                            lightningAddress: originalProfile().lud16,
-                            imageUrl: originalProfile().picture
+                            nym: originalProfile()?.name,
+                            lightningAddress: originalProfile()?.lud16,
+                            imageUrl: originalProfile()?.picture
                         }}
                         onSave={saveProfile}
                         saving={saving()}

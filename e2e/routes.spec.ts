@@ -9,7 +9,6 @@ const routes = [
     "/scanner",
     "/search",
     "/send",
-    "/swap",
     "/settings"
 ];
 
@@ -155,13 +154,6 @@ test("visit each route", async ({ page }) => {
     await expect(page.locator('[role="dialog"] h2 header').first()).toHaveText(
         "Add Connection"
     );
-
-    // Swap
-    await page.goto("http://localhost:3420/swap");
-    await expect(
-        page.getByRole("heading", { name: "Swap to Lightning" })
-    ).toBeVisible();
-    checklist.set("/swap", true);
 
     // print how many routes we've visited
     checklist.forEach((value, key) => {

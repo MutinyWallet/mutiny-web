@@ -1,4 +1,3 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { createAsync, useNavigate } from "@solidjs/router";
 import { Search } from "lucide-solid";
 import {
@@ -38,9 +37,9 @@ export function Avatar(props: { image_url?: string; large?: boolean }) {
 
 export function NostrActivity() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
-    const npub = createAsync(async () => state.mutiny_wallet?.get_npub());
+    const npub = createAsync(async () => await sw.get_npub());
 
     const [data, { refetch }] = createResource(npub, fetchZaps);
 
@@ -72,14 +71,14 @@ export function NostrActivity() {
     // TODO: can this be part of mutiny wallet?
     async function newContactFromHexpub(hexpub: string) {
         try {
-            const npub = await MutinyWallet.hexpub_to_npub(hexpub);
+            const npub = await sw.hexpub_to_npub(hexpub);
+            console.log("newContactFromHexpub", npub);
 
             if (!npub) {
                 throw new Error("No npub for that hexpub");
             }
 
-            const existingContact =
-                await state.mutiny_wallet?.get_contact_for_npub(npub);
+            const existingContact = await sw.get_contact_for_npub(npub);
 
             if (existingContact) {
                 navigate(`/chat/${existingContact.id}`);
@@ -94,7 +93,7 @@ export function NostrActivity() {
             const ln_address = parsed.lud16 || undefined;
             const lnurl = parsed.lud06 || undefined;
 
-            const contactId = await state.mutiny_wallet?.create_new_contact(
+            const contactId = await sw.create_new_contact(
                 name,
                 npub,
                 ln_address,
@@ -106,7 +105,7 @@ export function NostrActivity() {
                 throw new Error("no contact id returned");
             }
 
-            const tagItem = await state.mutiny_wallet?.get_tag_item(contactId);
+            const tagItem = await sw.get_tag_item(contactId);
 
             if (!tagItem) {
                 throw new Error("no contact returned");

@@ -51,11 +51,16 @@ export const Card: ParentComponent<{
 
 export const ButtonCard: ParentComponent<{
     onClick: () => void;
+    red?: boolean;
 }> = (props) => {
     return (
         <button
             onClick={() => props.onClick()}
-            class="flex w-full rounded-xl border border-white/10 bg-neutral-900 p-4 active:-mb-[1px] active:mt-[1px] active:opacity-70"
+            class="flex w-full rounded-xl border border-white/10  p-4 active:-mb-[1px] active:mt-[1px] active:opacity-70"
+            classList={{
+                "bg-neutral-900": !props.red,
+                "bg-m-red": props.red
+            }}
         >
             {props.children}
         </button>
@@ -172,12 +177,14 @@ const FullscreenLoader = () => {
 };
 
 export const MutinyWalletGuard: ParentComponent = (props) => {
-    const [state, _] = useMegaStore();
+    const [state] = useMegaStore();
 
     return (
         <Suspense fallback={<FullscreenLoader />}>
             <Switch>
-                <Match when={state.mutiny_wallet && !state.wallet_loading}>
+                <Match
+                    when={!state.wallet_loading && state.load_stage === "done"}
+                >
                     {props.children}
                 </Match>
                 <Match when={true}>

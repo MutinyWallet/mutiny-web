@@ -1,4 +1,4 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
+import { WalletWorker } from "~/state/megaStore";
 
 import { Currency } from "./currencies";
 
@@ -9,18 +9,17 @@ import { Currency } from "./currencies";
  *  @param {Currency} fiat - Takes {@link Currency} object options to determine how to format the amount input
  */
 
-export function satsToFiat(
+export async function satsToFiat(
     amount: number | undefined,
     price: number,
-    fiat: Currency
-): string {
+    fiat: Currency,
+    sw: WalletWorker
+): Promise<string> {
     if (typeof amount !== "number" || isNaN(amount)) {
         return "";
     }
     try {
-        const btc = MutinyWallet.convert_sats_to_btc(
-            BigInt(Math.floor(amount))
-        );
+        const btc = await sw.convert_sats_to_btc(BigInt(Math.floor(amount)));
         const fiatPrice = btc * price;
         const roundedFiat = Math.round(fiatPrice);
         if (
@@ -45,18 +44,17 @@ export function satsToFiat(
  *  @param {Currency} fiat - Takes {@link Currency} object options to determine how to format the amount input
  */
 
-export function satsToFormattedFiat(
+export async function satsToFormattedFiat(
     amount: number | undefined,
     price: number,
-    fiat: Currency
-): string {
+    fiat: Currency,
+    sw: WalletWorker
+): Promise<string> {
     if (typeof amount !== "number" || isNaN(amount)) {
         return "";
     }
     try {
-        const btc = MutinyWallet.convert_sats_to_btc(
-            BigInt(Math.floor(amount))
-        );
+        const btc = await sw.convert_sats_to_btc(BigInt(Math.floor(amount)));
         const fiatPrice = btc * price;
         //Handles currencies not supported by .toLocaleString() like BTC
         //Returns a string with a currency symbol and a number with decimals equal to the maxFractionalDigits
@@ -82,17 +80,18 @@ export function satsToFormattedFiat(
     }
 }
 
-export function fiatToSats(
+export async function fiatToSats(
     amount: number | undefined,
     price: number,
-    formatted: boolean
-): string {
+    formatted: boolean,
+    sw: WalletWorker
+): Promise<string> {
     if (typeof amount !== "number" || isNaN(amount)) {
         return "";
     }
     try {
         const btc = price / amount;
-        const sats = MutinyWallet.convert_btc_to_sats(btc);
+        const sats = await sw.convert_btc_to_sats(btc);
         if (formatted) {
             return parseInt(sats.toString()).toLocaleString();
         } else {

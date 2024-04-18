@@ -8,14 +8,15 @@ import {
 
 import { Button, ContactFormValues, TextField, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore, WalletWorker } from "~/state/megaStore";
 import { hexpubFromNpub } from "~/utils";
 
-const validateNpub = async (value?: string) => {
+const validateNpub = async (sw: WalletWorker, value?: string) => {
     if (!value) {
         return false;
     }
     try {
-        const hexpub = await hexpubFromNpub(value);
+        const hexpub = await hexpubFromNpub(sw, value);
         if (!hexpub) {
             return false;
         }
@@ -30,6 +31,7 @@ export function ContactForm(props: {
     initialValues?: ContactFormValues;
     cta: string;
 }) {
+    const [_state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
     const [_contactForm, { Form, Field }] = createForm<ContactFormValues>({
         initialValues: props.initialValues
@@ -78,7 +80,10 @@ export function ContactForm(props: {
                     <Field
                         name="npub"
                         validate={[
-                            custom(validateNpub, i18n.t("contacts.npub_error"))
+                            custom(
+                                (v) => validateNpub(sw, v),
+                                i18n.t("contacts.npub_error")
+                            )
                         ]}
                     >
                         {(field, props) => (

@@ -32,7 +32,7 @@ export function ContactViewer(props: {
     const i18n = useI18n();
     const [isOpen, setIsOpen] = createSignal(false);
     const [isEditing, setIsEditing] = createSignal(false);
-    const [state, actions] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const [confirmOpen, setConfirmOpen] = createSignal(false);
 
@@ -52,13 +52,13 @@ export function ContactViewer(props: {
         setIsOpen(false);
     };
 
-    const handlePay = () => {
-        const network = state.mutiny_wallet?.get_network() || "signet";
+    const handlePay = async () => {
+        const network = state.network || "signet";
 
         const lnurl = props.contact.lnurl || props.contact.ln_address || "";
 
         if (lnurl) {
-            const result = toParsedParams(lnurl, network);
+            const result = await toParsedParams(lnurl, network, sw);
             if (!result.ok) {
                 showToast(result.error);
                 return;

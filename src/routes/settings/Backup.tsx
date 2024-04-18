@@ -1,4 +1,4 @@
-import { useNavigate } from "@solidjs/router";
+import { createAsync, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, Show } from "solid-js";
 
 import {
@@ -53,7 +53,7 @@ function Quiz(props: { setHasCheckedAll: (hasChecked: boolean) => void }) {
 
 export function Backup() {
     const i18n = useI18n();
-    const [store, actions] = useMegaStore();
+    const [_store, actions, sw] = useMegaStore();
     const navigate = useNavigate();
 
     const [hasSeenBackup, setHasSeenBackup] = createSignal(false);
@@ -67,6 +67,8 @@ export function Backup() {
         setLoading(false);
     }
 
+    const words = createAsync(async () => await sw.show_seed());
+
     return (
         <MutinyWalletGuard>
             <DefaultMain>
@@ -79,7 +81,7 @@ export function Backup() {
                     <NiceP>{i18n.t("settings.backup.warning_one")}</NiceP>
                     <NiceP>{i18n.t("settings.backup.warning_two")}</NiceP>
                     <SeedWords
-                        words={store.mutiny_wallet?.show_seed() || ""}
+                        words={words() || ""}
                         setHasSeen={setHasSeenBackup}
                     />
                     <Show when={hasSeenBackup()}>

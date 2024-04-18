@@ -20,7 +20,7 @@ export function EditProfileForm(props: {
     saving: boolean;
     cta: string;
 }) {
-    const [state] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const [uploading, setUploading] = createSignal(false);
     const [uploadError, setUploadError] = createSignal<Error>();
 
@@ -51,8 +51,7 @@ export function EditProfileForm(props: {
             if (files() && files().length) {
                 const base64 = await blobToBase64(files()[0].file);
                 if (base64) {
-                    imageUrl =
-                        await state.mutiny_wallet?.upload_profile_pic(base64);
+                    imageUrl = await sw.upload_profile_pic(base64);
                 }
             }
             await props.onSave({
