@@ -64,7 +64,7 @@ function PeerItem(props: { peer: MutinyPeer; refetchPeers: RefetchPeersType }) {
             </Collapsible.Trigger>
             <Collapsible.Content>
                 <VStack>
-                    <pre class="overflow-x-auto whitespace-pre-wrap break-all">
+                    <pre class="!select-text overflow-x-auto whitespace-pre-wrap break-all">
                         {JSON.stringify(props.peer, null, 2)}
                     </pre>
                     <Button
@@ -209,7 +209,7 @@ function ChannelItem(props: { channel: MutinyChannel; network?: Network }) {
             </Collapsible.Trigger>
             <Collapsible.Content>
                 <VStack>
-                    <pre class="overflow-x-auto whitespace-pre-wrap break-all">
+                    <pre class="!select-text overflow-x-auto whitespace-pre-wrap break-all">
                         {JSON.stringify(props.channel, null, 2)}
                     </pre>
                     <ExternalLink
@@ -399,7 +399,7 @@ function OpenChannel(props: { refetchChannels: RefetchChannelsListType }) {
                 </form>
             </InnerCard>
             <Show when={newChannel()}>
-                <pre class="overflow-x-auto whitespace-pre-wrap break-all">
+                <pre class="!select-text overflow-x-auto whitespace-pre-wrap break-all">
                     {JSON.stringify(newChannel()?.outpoint, null, 2)}
                 </pre>
                 <pre>{newChannel()?.outpoint}</pre>
