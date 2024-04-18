@@ -18,12 +18,13 @@ import {
     Button,
     ButtonCard,
     ContactButton,
+    LoadingShimmer,
     NiceP,
     SimpleDialog
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { PrivacyLevel } from "~/routes";
-import { useMegaStore } from "~/state/megaStore";
+import { useMegaStore, WalletWorker } from "~/state/megaStore";
 import {
     actuallyFetchNostrProfile,
     createDeepSignal,
@@ -56,9 +57,11 @@ export interface IActivityItem {
 }
 
 async function fetchContactForNpub(
+    sw: WalletWorker,
     npub: string
 ): Promise<PseudoContact | undefined> {
-    const hexpub = await hexpubFromNpub(npub);
+    const hexpub = await hexpubFromNpub(sw, npub);
+    console.log("fetchContactForNpub", hexpub);
     if (!hexpub) {
         return undefined;
     }
@@ -75,6 +78,7 @@ export function UnifiedActivityItem(props: {
     onClick: (id: string, kind: HackActivityType) => void;
     onNewContactClick: (profile: PseudoContact) => void;
 }) {
+    const [_state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
 
     const click = () => {
@@ -97,10 +101,12 @@ export function UnifiedActivityItem(props: {
     });
 
     const getContact = cache(async (npub) => {
-        return await fetchContactForNpub(npub);
+        return await fetchContactForNpub(sw, npub);
     }, "profile");
 
-    const profileFromNostr = createAsync(async () => {
+    // Complaining about a "tracked scope" but I think we're good
+    // eslint-disable-next-line solid/reactivity
+    const getProfileFromNostr = cache(async () => {
         if (props.item.contacts.length === 0) {
             if (props.item.labels) {
                 const npub = props.item.labels.find((l) =>
@@ -137,6 +143,10 @@ export function UnifiedActivityItem(props: {
             }
         }
         return undefined;
+    }, "profileFromNostr");
+
+    const profileFromNostr = createAsync(async () => {
+        return await getProfileFromNostr();
     });
 
     // TODO: figure out what other shit we should filter out
@@ -300,21 +310,20 @@ function NewContactModal(props: { profile: PseudoContact; close: () => void }) {
     const i18n = useI18n();
     const navigate = useNavigate();
 
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
 
     async function createContact() {
         try {
-            const existingContact =
-                await state.mutiny_wallet?.get_contact_for_npub(
-                    props.profile.hexpub
-                );
+            const existingContact = await sw.get_contact_for_npub(
+                props.profile.hexpub
+            );
 
             if (existingContact) {
                 navigate(`/chat/${existingContact.id}`);
                 return;
             }
 
-            const contactId = await state.mutiny_wallet?.create_new_contact(
+            const contactId = await sw.create_new_contact(
                 props.profile.name,
                 props.profile.hexpub,
                 props.profile.ln_address,
@@ -326,7 +335,7 @@ function NewContactModal(props: { profile: PseudoContact; close: () => void }) {
                 throw new Error("no contact id returned");
             }
 
-            const tagItem = await state.mutiny_wallet?.get_tag_item(contactId);
+            const tagItem = await sw.get_tag_item(contactId);
 
             if (!tagItem) {
                 throw new Error("no contact returned");
@@ -365,7 +374,7 @@ function NewContactModal(props: { profile: PseudoContact; close: () => void }) {
 }
 
 export function CombinedActivity() {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
 
     const [detailsOpen, setDetailsOpen] = createSignal(false);
@@ -386,25 +395,16 @@ export function CombinedActivity() {
         setDetailsOpen(true);
     }
 
-    async function getActivity() {
+    async function fetchActivity() {
         try {
-            console.log("refetching activity");
-            const activity = await state.mutiny_wallet?.get_activity(
-                50,
-                undefined
-            );
-
-            if (!activity) return [];
-
-            return activity as IActivityItem[];
+            return await sw.get_activity(50, undefined);
         } catch (e) {
             console.error(e);
             return [] as IActivityItem[];
         }
     }
 
-    const [activity, { refetch }] = createResource(getActivity, {
-        initialValue: [],
+    const [activity, { refetch }] = createResource(fetchActivity, {
         storage: createDeepSignal
     });
 
@@ -433,65 +433,62 @@ export function CombinedActivity() {
                     close={() => setNewContact(undefined)}
                 />
             </Show>
-            <Switch>
-                <Match when={activity.latest.length === 0}>
-                    <Show when={state.federations?.length === 0}>
-                        <ButtonCard
-                            onClick={() => navigate("/settings/federations")}
-                        >
+            <Suspense fallback={<LoadingShimmer />}>
+                <Switch>
+                    <Match when={activity.latest?.length === 0}>
+                        <Show when={state.federations?.length === 0}>
+                            <ButtonCard
+                                onClick={() =>
+                                    navigate("/settings/federations")
+                                }
+                            >
+                                <div class="flex items-center gap-2">
+                                    <Users class="inline-block text-m-red" />
+                                    <NiceP>{i18n.t("home.federation")}</NiceP>
+                                </div>
+                            </ButtonCard>
+                        </Show>
+                        <ButtonCard onClick={() => navigate("/receive")}>
                             <div class="flex items-center gap-2">
-                                <Users class="inline-block text-m-red" />
-                                <NiceP>{i18n.t("home.federation")}</NiceP>
+                                <Plus class="inline-block text-m-red" />
+                                <NiceP>{i18n.t("home.receive")}</NiceP>
                             </div>
                         </ButtonCard>
-                    </Show>
-                    <ButtonCard onClick={() => navigate("/receive")}>
+                        <ButtonCard onClick={() => navigate("/search")}>
+                            <div class="flex items-center gap-2">
+                                <Search class="inline-block text-m-red" />
+                                <NiceP>{i18n.t("home.find")}</NiceP>
+                            </div>
+                        </ButtonCard>
+                    </Match>
+                    <Match
+                        when={activity.latest && activity.latest!.length >= 0}
+                    >
+                        <div class="flex w-full flex-col divide-y divide-m-grey-800 overflow-x-clip">
+                            <For each={activity.latest}>
+                                {(activityItem) => (
+                                    <UnifiedActivityItem
+                                        item={activityItem}
+                                        onClick={openDetailsModal}
+                                        onNewContactClick={setNewContact}
+                                    />
+                                )}
+                            </For>
+                        </div>
+                    </Match>
+                </Switch>
+                <Show when={!state.has_backed_up}>
+                    <ButtonCard
+                        red
+                        onClick={() => navigate("/settings/backup")}
+                    >
                         <div class="flex items-center gap-2">
-                            <Plus class="inline-block text-m-red" />
-                            <NiceP>{i18n.t("home.receive")}</NiceP>
+                            <Save class="inline-block text-neutral-200" />
+                            <NiceP>{i18n.t("home.backup")}</NiceP>
                         </div>
                     </ButtonCard>
-                    <ButtonCard onClick={() => navigate("/search")}>
-                        <div class="flex items-center gap-2">
-                            <Search class="inline-block text-m-red" />
-                            <NiceP>{i18n.t("home.find")}</NiceP>
-                        </div>
-                    </ButtonCard>
-                    <Show when={!state.has_backed_up}>
-                        <ButtonCard
-                            onClick={() => navigate("/settings/backup")}
-                        >
-                            <div class="flex items-center gap-2">
-                                <Save class="inline-block text-m-red" />
-                                <NiceP>{i18n.t("home.backup")}</NiceP>
-                            </div>
-                        </ButtonCard>
-                    </Show>
-                </Match>
-                <Match when={activity.latest.length >= 0}>
-                    <Show when={!state.has_backed_up}>
-                        <ButtonCard
-                            onClick={() => navigate("/settings/backup")}
-                        >
-                            <div class="flex items-center gap-2">
-                                <Save class="inline-block text-m-red" />
-                                <NiceP>{i18n.t("home.backup")}</NiceP>
-                            </div>
-                        </ButtonCard>
-                    </Show>
-                    <div class="flex w-full flex-col divide-y divide-m-grey-800 overflow-x-clip">
-                        <For each={activity.latest}>
-                            {(activityItem) => (
-                                <UnifiedActivityItem
-                                    item={activityItem}
-                                    onClick={openDetailsModal}
-                                    onNewContactClick={setNewContact}
-                                />
-                            )}
-                        </For>
-                    </div>
-                </Match>
-            </Switch>
+                </Show>
+            </Suspense>
         </>
     );
 }

@@ -1,7 +1,6 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { ResourceFetcher } from "solid-js";
 
-import { useMegaStore } from "~/state/megaStore";
+import { useMegaStore, WalletWorker } from "~/state/megaStore";
 import {
     getPrimalImageUrl,
     hexpubFromNpub,
@@ -71,7 +70,7 @@ function getZapKind(event: NostrEvent): "public" | "private" | "anonymous" {
 
 async function simpleZapFromEvent(
     event: NostrEvent,
-    wallet: MutinyWallet
+    sw: WalletWorker
 ): Promise<SimpleZapItem | undefined> {
     if (event.kind === 9735 && event.tags?.length > 0) {
         const to = findByTag(event.tags, "p") || "";
@@ -94,8 +93,8 @@ async function simpleZapFromEvent(
         if (bolt11) {
             try {
                 // We hardcode the "bitcoin" network because we don't have a good source of mutinynet zaps
-                const decoded = await wallet.decode_invoice(bolt11, "bitcoin");
-                if (decoded.amount_sats) {
+                const decoded = await sw.decode_invoice(bolt11, "bitcoin");
+                if (decoded?.amount_sats) {
                     amount = decoded.amount_sats;
                 } else {
                     console.log("no amount in decoded invoice");
@@ -181,7 +180,7 @@ export const fetchZaps: ResourceFetcher<
         until?: number;
     }
 > = async (npub, info) => {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     try {
         console.log("fetching zaps for:", npub);
@@ -197,13 +196,15 @@ export const fetchZaps: ResourceFetcher<
 
         // Only have to ask the relays for follows one time
         if (follows.length === 0) {
-            const contacts = await state.mutiny_wallet?.get_contacts_sorted();
+            const contacts = await sw.get_contacts_sorted();
             const hexpubs = [];
-            for (const contact of contacts) {
-                if (contact.npub) {
-                    const hexpub = await hexpubFromNpub(contact.npub);
-                    if (hexpub) {
-                        hexpubs.push(hexpub);
+            if (contacts) {
+                for (const contact of contacts) {
+                    if (contact.npub) {
+                        const hexpub = await hexpubFromNpub(sw, contact.npub);
+                        if (hexpub) {
+                            hexpubs.push(hexpub);
+                        }
                     }
                 }
             }
@@ -239,10 +240,7 @@ export const fetchZaps: ResourceFetcher<
             if (object.kind === 9735) {
                 // console.log("got a 9735 object", object);
                 try {
-                    const event = await simpleZapFromEvent(
-                        object,
-                        state.mutiny_wallet!
-                    );
+                    const event = await simpleZapFromEvent(object, sw);
 
                     // Only add it if it's a valid zap (not undefined)
                     if (event) {

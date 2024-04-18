@@ -1,4 +1,3 @@
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { createSignal } from "solid-js";
 
@@ -9,7 +8,7 @@ import { eify } from "~/utils";
 
 export function DeleteEverything(props: { emergency?: boolean }) {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
 
     async function confirmReset() {
         setConfirmOpen(true);
@@ -29,7 +28,7 @@ export function DeleteEverything(props: { emergency?: boolean }) {
 
             // If we're in a context where the wallet is loaded we want to use the regular action to delete it
             // Otherwise we just call the import_json method directly
-            if (state.mutiny_wallet && !props.emergency) {
+            if (state.load_stage === "done" && !props.emergency) {
                 try {
                     await actions.deleteMutinyWallet();
                 } catch (e) {
@@ -37,9 +36,7 @@ export function DeleteEverything(props: { emergency?: boolean }) {
                     console.error(e);
                 }
             } else {
-                // If there's no mutiny_wallet loaded we might need to initialize WASM
-                await initMutinyWallet();
-                await MutinyWallet.import_json("{}");
+                await sw.import_json("{}");
             }
 
             showToast({

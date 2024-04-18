@@ -56,7 +56,7 @@ function Perks(props: { alreadySubbed?: boolean }) {
 
 function PlusCTA() {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
 
     const [subbing, setSubbing] = createSignal(false);
     const [confirmOpen, setConfirmOpen] = createSignal(false);
@@ -65,7 +65,7 @@ function PlusCTA() {
 
     const [planDetails] = createResource(async () => {
         try {
-            const plans = await state.mutiny_wallet?.get_subscription_plans();
+            const plans = await sw.get_subscription_plans();
             console.log("plans:", plans);
             if (!plans) return undefined;
             return plans[0];
@@ -82,17 +82,12 @@ function PlusCTA() {
             if (planDetails()?.id === undefined || planDetails()?.id === null)
                 throw new Error(i18n.t("settings.plus.error_no_plan"));
 
-            const invoice = await state.mutiny_wallet?.subscribe_to_plan(
-                planDetails().id
-            );
+            const invoice = await sw.subscribe_to_plan(planDetails()!.id);
 
             if (!invoice?.bolt11)
                 throw new Error(i18n.t("settings.plus.error_failure"));
 
-            await state.mutiny_wallet?.pay_subscription_invoice(
-                invoice?.bolt11,
-                true
-            );
+            await sw.pay_subscription_invoice(invoice?.bolt11, true);
 
             await vibrateSuccess();
 
@@ -112,7 +107,7 @@ function PlusCTA() {
         return (
             (state.balance?.lightning || 0n) +
                 (state.balance?.federation || 0n) >
-            planDetails().amount_sat
+            planDetails()!.amount_sat
         );
     };
 
@@ -126,7 +121,7 @@ function PlusCTA() {
                     </strong>{" "}
                     {i18n.t("settings.plus.sats_per_month", {
                         amount: Number(
-                            planDetails().amount_sat
+                            planDetails()!.amount_sat
                         ).toLocaleString()
                     })}
                 </NiceP>
@@ -137,7 +132,7 @@ function PlusCTA() {
                     <TinyText>
                         {i18n.t("settings.plus.lightning_balance", {
                             amount: Number(
-                                planDetails().amount_sat
+                                planDetails()!.amount_sat
                             ).toLocaleString()
                         })}
                     </TinyText>

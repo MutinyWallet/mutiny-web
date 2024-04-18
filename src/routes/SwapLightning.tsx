@@ -1,6 +1,13 @@
 import { FedimintSweepResult } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
-import { createMemo, createSignal, Match, Show, Switch } from "solid-js";
+import {
+    createMemo,
+    createSignal,
+    Match,
+    Show,
+    Suspense,
+    Switch
+} from "solid-js";
 
 import {
     AmountEditable,
@@ -31,7 +38,7 @@ type SweepResultDetails = {
 };
 
 export function SwapLightning() {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -63,17 +70,11 @@ export function SwapLightning() {
             setFeeEstimateWarning(undefined);
 
             if (isMax()) {
-                const result =
-                    await state.mutiny_wallet?.sweep_federation_balance(
-                        undefined
-                    );
+                const result = await sw.sweep_federation_balance(undefined);
 
                 setSweepResult({ result: result });
             } else {
-                const result =
-                    await state.mutiny_wallet?.sweep_federation_balance(
-                        amountSats()
-                    );
+                const result = await sw.sweep_federation_balance(amountSats());
 
                 setSweepResult({ result: result });
             }
@@ -128,10 +129,9 @@ export function SwapLightning() {
             setLoading(true);
             setFeeEstimateWarning(undefined);
 
-            const fee =
-                await state.mutiny_wallet?.estimate_sweep_federation_fee(
-                    isMax() ? undefined : amountSats()
-                );
+            const fee = await sw.estimate_sweep_federation_fee(
+                isMax() ? undefined : amountSats()
+            );
 
             if (fee) {
                 setFeeSats(fee);
@@ -201,11 +201,13 @@ export function SwapLightning() {
                                     })}
                                 </p>
                                 <div class="text-center text-sm text-white/70">
-                                    <AmountFiat
-                                        amountSats={Number(
-                                            sweepResult()?.result?.amount
-                                        )}
-                                    />
+                                    <Suspense>
+                                        <AmountFiat
+                                            amountSats={Number(
+                                                sweepResult()?.result?.amount
+                                            )}
+                                        />
+                                    </Suspense>
                                 </div>
                             </div>
                             <hr class="w-16 bg-m-grey-400" />
@@ -236,7 +238,7 @@ export function SwapLightning() {
                                     ]}
                                 />
                                 <ReceiveWarnings
-                                    amountSats={amountSats() || "0"}
+                                    amountSats={amountSats() || 0n}
                                     from_fedi_to_ln={true}
                                 />
                                 <Show
@@ -246,11 +248,13 @@ export function SwapLightning() {
                                         {amountWarning()}
                                     </InfoBox>
                                 </Show>
-                                <Show when={feeEstimateWarning()}>
-                                    <InfoBox accent={"red"}>
-                                        {feeEstimateWarning()}
-                                    </InfoBox>
-                                </Show>
+                                <Suspense>
+                                    <Show when={feeEstimateWarning()}>
+                                        <InfoBox accent={"red"}>
+                                            {feeEstimateWarning()}
+                                        </InfoBox>
+                                    </Show>
+                                </Suspense>
                             </VStack>
                             <div class="flex-1" />
                             <VStack>

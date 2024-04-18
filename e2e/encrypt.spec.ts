@@ -61,7 +61,7 @@ test("test local encrypt", async ({ page }) => {
 
     // The "Encrypt" button should not be disabled
     const encryptButton = await page.locator("button", { hasText: "Encrypt" });
-    await expect(encryptButton).not.toBeDisabled();
+    await expect(encryptButton).toBeEnabled();
 
     // wait 5 seconds for no reason (SADLY THIS IS IMPORTANT FOR THE TEST TO PASS)
     await page.waitForTimeout(5000);
@@ -69,11 +69,8 @@ test("test local encrypt", async ({ page }) => {
     // Click the "Encrypt" button
     await encryptButton.click();
 
-    // wait for a while just to see what happens
-    // await page.waitForTimeout(10000);
-
     // Wait for a modal with the text "Enter your password"
-    await page.waitForSelector("text=Enter your password");
+    await page.getByText("Enter your password").waitFor();
 
     // Find the input field with the name "password"
     const passwordInput2 = await page.locator(`input[name='password']`);
@@ -85,5 +82,5 @@ test("test local encrypt", async ({ page }) => {
     await page.click("text=Decrypt Wallet");
 
     // Wait for an element matching the selector to appear in DOM.
-    await page.locator(`text=0 sats`).first();
+    await page.locator(`text=0 sats`).first().waitFor();
 });

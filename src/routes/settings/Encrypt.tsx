@@ -26,7 +26,7 @@ type EncryptPasswordForm = {
 
 export function Encrypt() {
     const i18n = useI18n();
-    const [store, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const [error, setError] = createSignal<Error>();
     const [loading, setLoading] = createSignal(false);
 
@@ -56,7 +56,7 @@ export function Encrypt() {
     const handleFormSubmit = async (f: EncryptPasswordForm) => {
         setLoading(true);
         try {
-            await store.mutiny_wallet?.change_password(
+            await sw.change_password(
                 f.existingPassword === "" ? undefined : f.existingPassword,
                 f.password === "" ? undefined : f.password
             );

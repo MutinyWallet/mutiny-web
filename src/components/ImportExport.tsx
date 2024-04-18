@@ -1,4 +1,3 @@
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { createFileUploader } from "@solid-primitives/upload";
 import { createSignal, Show } from "solid-js";
 
@@ -19,7 +18,7 @@ import { downloadTextFile, eify } from "~/utils";
 
 export function ImportExport(props: { emergency?: boolean }) {
     const i18n = useI18n();
-    const [state, _] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     const [error, setError] = createSignal<Error>();
     const [exportDecrypt, setExportDecrypt] = createSignal(false);
@@ -28,7 +27,7 @@ export function ImportExport(props: { emergency?: boolean }) {
     async function handleSave() {
         try {
             setError(undefined);
-            const json = await MutinyWallet.export_json();
+            const json = await sw.export_json();
             await downloadTextFile(json || "", "mutiny-state.json");
         } catch (e) {
             console.error(e);
@@ -52,7 +51,7 @@ export function ImportExport(props: { emergency?: boolean }) {
                     )
                 );
             }
-            const json = await MutinyWallet.export_json(password());
+            const json = await sw.export_json(password());
             await downloadTextFile(json || "", "mutiny-state.json");
         } catch (e) {
             console.error(e);
@@ -103,24 +102,22 @@ export function ImportExport(props: { emergency?: boolean }) {
                 fileReader.readAsText(file, "UTF-8");
             });
 
-            if (state.mutiny_wallet && !props.emergency) {
+            if (state.load_stage === "done" && !props.emergency) {
                 console.log("Mutiny wallet loaded, stopping");
                 try {
-                    await state.mutiny_wallet.stop();
+                    await sw.stop();
                 } catch (e) {
                     console.error(e);
                     setError(eify(e));
                 }
             } else {
-                // If there's no mutiny wallet loaded we need to initialize WASM
-                console.log("Initializing WASM");
-                await initMutinyWallet();
+                await sw.initializeWasm();
             }
 
             // This should throw if there's a parse error, so we won't end up clearing
             if (text) {
                 JSON.parse(text);
-                await MutinyWallet.import_json(text);
+                await sw.import_json(text);
             }
 
             setTimeout(() => {
@@ -191,9 +188,10 @@ export function ImportExport(props: { emergency?: boolean }) {
             {/* TODO: this is pretty redundant with the DecryptDialog, could make a shared component */}
             <SimpleDialog
                 title={i18n.t(
-                    "settings.emergency_kit.import_export.confirm_replace"
+                    "settings.emergency_kit.import_export.decrypt_export"
                 )}
                 open={exportDecrypt()}
+                setOpen={() => setExportDecrypt(false)}
             >
                 <form onSubmit={savePassword}>
                     <div class="flex flex-col gap-4">

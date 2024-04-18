@@ -1,6 +1,6 @@
 import { createForm, required } from "@modular-forms/solid";
-import { MutinyChannel, MutinyPeer } from "@mutinywallet/mutiny-wasm";
-import { useNavigate } from "@solidjs/router";
+import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
+import { createAsync, useNavigate } from "@solidjs/router";
 import {
     createMemo,
     createResource,
@@ -8,6 +8,7 @@ import {
     For,
     Match,
     Show,
+    Suspense,
     Switch
 } from "solid-js";
 
@@ -33,7 +34,6 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
@@ -50,7 +50,7 @@ type ChannelOpenDetails = {
 };
 
 export function Swap() {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -100,9 +100,7 @@ export function Swap() {
     };
 
     const getPeers = async () => {
-        return (await state.mutiny_wallet?.list_peers()) as Promise<
-            MutinyPeer[]
-        >;
+        return await sw?.list_peers();
     };
 
     const [peers, { refetch }] = createResource(getPeers);
@@ -114,7 +112,7 @@ export function Swap() {
         try {
             const peerConnectString = values.peer.trim();
 
-            await state.mutiny_wallet?.connect_to_peer(peerConnectString);
+            await sw.connect_to_peer(peerConnectString);
 
             await refetch();
 
@@ -156,12 +154,11 @@ export function Swap() {
                 }
 
                 if (isMax()) {
-                    const new_channel =
-                        await state.mutiny_wallet?.sweep_all_to_channel(peer);
+                    const new_channel = await sw.sweep_all_to_channel(peer);
 
                     setChannelOpenResult({ channel: new_channel });
                 } else {
-                    const new_channel = await state.mutiny_wallet?.open_channel(
+                    const new_channel = await sw.open_channel(
                         peer,
                         amountSats()
                     );
@@ -182,7 +179,7 @@ export function Swap() {
         const balance =
             (state.balance?.confirmed || 0n) +
             (state.balance?.unconfirmed || 0n);
-        const network = state.mutiny_wallet?.get_network() as Network;
+        const network = state.network || "signet";
 
         if (network === "bitcoin") {
             return (
@@ -199,12 +196,12 @@ export function Swap() {
         }
     };
 
-    const amountWarning = () => {
+    const amountWarning = createAsync(async () => {
         if (amountSats() === 0n || !!channelOpenResult()) {
             return undefined;
         }
 
-        const network = state.mutiny_wallet?.get_network() as Network;
+        const network = state.network || "signet";
 
         if (network === "bitcoin" && amountSats() < 100000n) {
             return i18n.t("swap.channel_too_small", { amount: "100,000" });
@@ -224,7 +221,7 @@ export function Swap() {
         }
 
         return undefined;
-    };
+    });
 
     function calculateMaxOnchain() {
         return (
@@ -241,12 +238,12 @@ export function Swap() {
         return amountSats() === calculateMaxOnchain();
     });
 
-    const feeEstimate = createMemo(() => {
-        const max = calculateMaxOnchain();
+    const feeEstimate = createAsync(async () => {
+        const max = maxOnchain();
         // If max we want to use the sweep fee estimator
         if (amountSats() > 0n && amountSats() === max) {
             try {
-                return state.mutiny_wallet?.estimate_sweep_channel_open_fee();
+                return await sw.estimate_sweep_channel_open_fee();
             } catch (e) {
                 console.error(e);
                 return undefined;
@@ -255,7 +252,7 @@ export function Swap() {
 
         if (amountSats() > 0n) {
             try {
-                return state.mutiny_wallet?.estimate_tx_fee(
+                return await sw.estimate_tx_fee(
                     CHANNEL_FEE_ESTIMATE_ADDRESS,
                     amountSats(),
                     undefined
@@ -328,18 +325,20 @@ export function Swap() {
                                     })}
                                 </p>
                                 <div class="text-center text-sm text-white/70">
-                                    <AmountFiat
-                                        amountSats={
-                                            Number(
-                                                channelOpenResult()?.channel
-                                                    ?.balance
-                                            ) +
-                                            Number(
-                                                channelOpenResult()?.channel
-                                                    ?.reserve
-                                            )
-                                        }
-                                    />
+                                    <Suspense>
+                                        <AmountFiat
+                                            amountSats={
+                                                Number(
+                                                    channelOpenResult()?.channel
+                                                        ?.balance
+                                                ) +
+                                                Number(
+                                                    channelOpenResult()?.channel
+                                                        ?.reserve
+                                                )
+                                            }
+                                        />
+                                    </Suspense>
                                 </div>
                             </div>
                             <hr class="w-16 bg-m-grey-400" />
@@ -425,7 +424,6 @@ export function Swap() {
                         <AmountEditable
                             initialAmountSats={amountSats()}
                             setAmountSats={setAmountSats}
-                            fee={feeEstimate()?.toString()}
                             activeMethod={{
                                 method: "onchain",
                                 maxAmountSats: maxOnchain()
@@ -437,16 +435,22 @@ export function Swap() {
                                 }
                             ]}
                         />
-                        <Show when={feeEstimate() && amountSats() > 0n}>
-                            <FeeDisplay
-                                amountSats={amountSats().toString()}
-                                fee={feeEstimate()!.toString()}
-                                maxAmountSats={maxOnchain()}
-                            />
-                        </Show>
-                        <Show when={amountWarning() && amountSats() > 0n}>
-                            <InfoBox accent={"red"}>{amountWarning()}</InfoBox>
-                        </Show>
+                        <Suspense>
+                            <Show when={feeEstimate() && amountSats() > 0n}>
+                                <FeeDisplay
+                                    amountSats={amountSats().toString()}
+                                    fee={feeEstimate()!.toString()}
+                                    maxAmountSats={maxOnchain()}
+                                />
+                            </Show>
+                        </Suspense>
+                        <Suspense>
+                            <Show when={amountWarning() && amountSats() > 0n}>
+                                <InfoBox accent={"red"}>
+                                    {amountWarning()}
+                                </InfoBox>
+                            </Show>
+                        </Suspense>
                     </VStack>
                     <div class="flex-1" />
                     <VStack>

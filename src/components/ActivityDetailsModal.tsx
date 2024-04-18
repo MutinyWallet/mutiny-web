@@ -1,13 +1,13 @@
 import { Dialog } from "@kobalte/core";
 import {
-    MutinyChannel,
+    ActivityItem,
     MutinyInvoice,
     TagItem
 } from "@mutinywallet/mutiny-wasm";
+import { createAsync } from "@solidjs/router";
 import { Copy, Link, Shuffle, Zap } from "lucide-solid";
 import {
     createEffect,
-    createMemo,
     createResource,
     Match,
     ParentComponent,
@@ -30,7 +30,6 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { BalanceBar } from "~/routes/settings/Channels";
 import { useMegaStore } from "~/state/megaStore";
 import { mempoolTxUrl, prettyPrintTime, useCopy } from "~/utils";
@@ -301,24 +300,21 @@ function OnchainDetails(props: {
     tags?: TagItem;
 }) {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const [copy, copied] = useCopy({ copiedTimeout: 1000 });
 
     const confirmationTime = () => {
         return props.info.confirmation_time?.Confirmed?.time;
     };
 
-    const network = state.mutiny_wallet?.get_network() as Network;
+    const network = state.network || "signet";
 
     // Can return nothing if the channel is already closed
     const [channelInfo] = createResource(async () => {
         if (props.kind === "ChannelOpen") {
             try {
-                const channels =
-                    await (state.mutiny_wallet?.list_channels() as Promise<
-                        MutinyChannel[]
-                    >);
-                const channel = channels.find((channel) =>
+                const channels = await sw.list_channels();
+                const channel = channels?.find((channel) =>
                     channel.outpoint?.startsWith(props.info.txid)
                 );
                 return channel;
@@ -500,7 +496,7 @@ export function ActivityDetailsModal(props: {
     id: string;
     setOpen: (open: boolean) => void;
 }) {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const id = () => props.id;
     const kind = () => props.kind;
 
@@ -508,18 +504,16 @@ export function ActivityDetailsModal(props: {
         try {
             if (kind() === "Lightning") {
                 console.debug("reading invoice: ", id());
-                const invoice =
-                    await state.mutiny_wallet?.get_invoice_by_hash(id());
+                const invoice = await sw.get_invoice_by_hash(id());
                 return invoice;
             } else if (kind() === "ChannelClose") {
                 console.debug("reading channel close: ", id());
-                const closeItem =
-                    await state.mutiny_wallet?.get_channel_closure(id());
+                const closeItem = await sw.get_channel_closure(id());
 
                 return closeItem;
             } else {
                 console.debug("reading tx: ", id());
-                const tx = await state.mutiny_wallet?.get_transaction(id());
+                const tx = await sw.get_transaction(id());
 
                 return tx;
             }
@@ -528,17 +522,18 @@ export function ActivityDetailsModal(props: {
             return undefined;
         }
     });
-    const tags = createMemo(() => {
+    const tags = createAsync(async () => {
         if (
             !!data() &&
+            // @ts-expect-error we're narrowing the type here
             data()?.labels !== undefined &&
+            // @ts-expect-error we're narrowing the type here
             typeof data()?.labels[0] === "string"
         ) {
+            const typedData = data() as MutinyInvoice | ActivityItem;
             try {
                 // find if there's just one for now
-                const tags = state.mutiny_wallet?.get_tag_item(
-                    data().labels[0]
-                );
+                const tags = await sw.get_tag_item(typedData.labels[0]);
                 if (tags) {
                     return tags;
                 } else {
@@ -598,7 +593,7 @@ export function ActivityDetailsModal(props: {
                                                 >
                                                     <OnchainHeader
                                                         info={
-                                                            data() as OnChainTx
+                                                            data() as unknown as OnChainTx
                                                         }
                                                         kind={kind()}
                                                     />
@@ -612,7 +607,9 @@ export function ActivityDetailsModal(props: {
                                     <Switch>
                                         <Match when={kind() === "Lightning"}>
                                             <LightningDetails
-                                                info={data() as MutinyInvoice}
+                                                info={
+                                                    data() as unknown as MutinyInvoice
+                                                }
                                                 tags={tags()}
                                             />
                                         </Match>
@@ -623,14 +620,18 @@ export function ActivityDetailsModal(props: {
                                             }
                                         >
                                             <OnchainDetails
-                                                info={data() as OnChainTx}
+                                                info={
+                                                    data() as unknown as OnChainTx
+                                                }
                                                 kind={kind()}
                                                 tags={tags()}
                                             />
                                         </Match>
                                         <Match when={kind() === "ChannelClose"}>
                                             <ChannelCloseDetails
-                                                info={data() as ChannelClosure}
+                                                info={
+                                                    data() as unknown as ChannelClosure
+                                                }
                                             />
                                         </Match>
                                     </Switch>

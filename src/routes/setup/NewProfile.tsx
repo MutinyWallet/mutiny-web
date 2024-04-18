@@ -12,7 +12,7 @@ import { useMegaStore } from "~/state/megaStore";
 import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function NewProfile() {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
 
     const [creating, setCreating] = createSignal(false);
@@ -23,7 +23,7 @@ export function NewProfile() {
     async function handleSkip() {
         setSkipping(true);
         // set up an empty profile so we at least have some kind0 event
-        const profile = await state.mutiny_wallet?.setup_new_profile(
+        const profile = await sw.setup_new_profile(
             DEFAULT_NOSTR_NAME,
             undefined,
             undefined,
@@ -38,7 +38,7 @@ export function NewProfile() {
     async function createProfile(p: EditableProfile) {
         setCreating(true);
         try {
-            const profile = await state.mutiny_wallet?.setup_new_profile(
+            const profile = await sw.setup_new_profile(
                 p.nym ? p.nym : DEFAULT_NOSTR_NAME,
                 p.imageUrl ? p.imageUrl : undefined,
                 undefined,

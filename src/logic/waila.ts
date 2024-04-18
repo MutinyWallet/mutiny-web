@@ -1,5 +1,4 @@
-import { PaymentParams } from "@mutinywallet/mutiny-wasm";
-
+import { WalletWorker } from "~/state/megaStore";
 import { Result } from "~/utils";
 
 export type ParsedParams = {
@@ -20,13 +19,14 @@ export type ParsedParams = {
     contact_id?: string;
 };
 
-export function toParsedParams(
+export async function toParsedParams(
     str: string,
-    ourNetwork: string
-): Result<ParsedParams> {
+    ourNetwork: string,
+    sw: WalletWorker
+): Promise<Result<ParsedParams>> {
     let params;
     try {
-        params = new PaymentParams(str || "");
+        params = await sw.parse_params(str || "");
     } catch (e) {
         return { ok: false, error: new Error("Invalid payment request") };
     }

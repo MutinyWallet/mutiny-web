@@ -9,7 +9,6 @@ import {
     SubmitHandler,
     validate
 } from "@modular-forms/solid";
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { LucideClipboard } from "lucide-solid";
 import { createSignal, For, Show, splitProps } from "solid-js";
 
@@ -79,7 +78,7 @@ function SeedTextField(props: TextFieldProps) {
 
 export function TwelveWordsEntry() {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
 
     const [error, setError] = createSignal<Error>();
     const [mnemnoic, setMnemonic] = createSignal<string>();
@@ -129,17 +128,16 @@ export function TwelveWordsEntry() {
         try {
             setConfirmLoading(true);
 
-            if (state.mutiny_wallet) {
+            if (state.load_stage === "done") {
                 console.log("Mutiny wallet loaded, stopping");
                 try {
-                    await state.mutiny_wallet.stop();
-                    actions.dropMutinyWallet();
+                    await sw.stop();
                 } catch (e) {
                     console.error(e);
                 }
             }
 
-            await MutinyWallet.restore_mnemonic(mnemnoic() || "", "");
+            await sw.restore_mnemonic(mnemnoic() || "", "");
 
             actions.setHasBackedUp();
 

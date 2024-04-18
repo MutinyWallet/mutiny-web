@@ -6,25 +6,30 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
 export function ReceiveWarnings(props: {
-    amountSats: string | bigint;
+    amountSats: bigint;
     from_fedi_to_ln?: boolean;
 }) {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     const [inboundCapacity] = createResource(async () => {
         try {
-            const channels = await state.mutiny_wallet?.list_channels();
-            let inbound = 0;
+            const channels = await sw.list_channels();
+            if (!channels) return 0n;
 
+            let inbound = 0n;
+
+            // PAIN: mutiny-wasm types say these are bigints, but they're actually numbers
             for (const channel of channels) {
-                inbound += channel.size - (channel.balance + channel.reserve);
+                inbound +=
+                    BigInt(channel.size) -
+                    BigInt(channel.balance + channel.reserve);
             }
 
             return inbound;
         } catch (e) {
             console.error(e);
-            return 0;
+            return 0n;
         }
     });
 
@@ -41,12 +46,7 @@ export function ReceiveWarnings(props: {
             });
         }
 
-        const parsed = Number(props.amountSats);
-        if (isNaN(parsed)) {
-            return undefined;
-        }
-
-        if (parsed > (inboundCapacity() || 0)) {
+        if (props.amountSats > (inboundCapacity() || 0n)) {
             return i18n.t("receive.amount_editable.setup_fee_lightning");
         }
 

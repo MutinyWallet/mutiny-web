@@ -77,7 +77,7 @@ function NwcDetails(props: {
     onEdit?: () => void;
 }) {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
 
@@ -87,7 +87,7 @@ function NwcDetails(props: {
 
     async function deleteProfile() {
         try {
-            await state.mutiny_wallet?.delete_nwc_profile(props.profile.index);
+            await sw.delete_nwc_profile(props.profile.index);
             setConfirmOpen(false);
             props.refetch();
         } catch (e) {
@@ -187,11 +187,12 @@ function NwcDetails(props: {
 
 function Nwc() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
 
     async function fetchNwcProfiles() {
         try {
-            const profiles = await state.mutiny_wallet?.get_nwc_profiles();
+            const profiles = await sw.get_nwc_profiles();
+            console.log("profiles", profiles);
             if (!profiles) return [];
 
             return profiles;

@@ -43,7 +43,7 @@ function LoadingBar(props: { value: number; max: number }) {
 }
 
 export function LoadingIndicator() {
-    const [state, _actions] = useMegaStore();
+    const [state] = useMegaStore();
 
     const loadStageValue = () => {
         switch (state.load_stage) {

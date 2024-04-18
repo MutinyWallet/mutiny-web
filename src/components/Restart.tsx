@@ -6,16 +6,16 @@ import { useMegaStore } from "~/state/megaStore";
 
 export function Restart() {
     const i18n = useI18n();
-    const [state, _] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const [hasStopped, setHasStopped] = createSignal(false);
 
     async function toggle() {
         try {
             if (hasStopped()) {
-                await state.mutiny_wallet?.start();
+                await sw.start();
                 setHasStopped(false);
             } else {
-                await state.mutiny_wallet?.stop();
+                await sw.stop();
                 setHasStopped(true);
             }
         } catch (e) {

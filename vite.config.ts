@@ -1,6 +1,7 @@
 import child from "node:child_process";
 import path from "node:path";
 import { defineConfig } from "vite";
+import { comlink } from "vite-plugin-comlink";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 import solid from "vite-plugin-solid";
 import wasm from "vite-plugin-wasm";
@@ -40,7 +41,11 @@ export default defineConfig({
             allow: [".."]
         }
     },
-    plugins: [wasm(), solid(), VitePWA(pwaOptions)],
+    plugins: [comlink(), wasm(), solid(), VitePWA(pwaOptions)],
+    worker: {
+        plugins: () => [comlink(), wasm()],
+        format: "es"
+    },
     define: {
         "import.meta.env.__COMMIT_HASH__": JSON.stringify(commitHash),
         "import.meta.env.__RELEASE_VERSION__": JSON.stringify(
@@ -69,6 +74,9 @@ export default defineConfig({
             "@capacitor/toast"
         ],
         // This is necessary because otherwise `vite dev` can't find the wasm
-        exclude: ["@mutinywallet/mutiny-wasm"]
+        exclude: ["@mutinywallet/mutiny-wasm"],
+        esbuildOptions: {
+            target: "esnext"
+        }
     }
 });

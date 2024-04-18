@@ -124,8 +124,8 @@ test("rountrip receive and send", async ({ page }) => {
 
     await page.click("text=Online Channels");
 
-    // Give it just a second to settle down
-    await page.waitForTimeout(2000);
+    // Idk why the node isn't ready to close channels right away
+    await page.waitForTimeout(5000);
 
     await page.click("text=Close");
 

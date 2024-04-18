@@ -1,4 +1,4 @@
-import { Match, Switch } from "solid-js";
+import { createMemo, Match, Suspense, Switch } from "solid-js";
 
 import { AmountFiat, AmountSats } from "~/components/Amount";
 import { useMegaStore } from "~/state/megaStore";
@@ -6,11 +6,13 @@ import { useMegaStore } from "~/state/megaStore";
 export function HomeBalance() {
     const [state, actions] = useMegaStore();
 
-    const combinedBalance = () =>
-        (state.balance?.federation || 0n) +
-        (state.balance?.lightning || 0n) +
-        (state.balance?.confirmed || 0n) +
-        (state.balance?.unconfirmed || 0n);
+    const combinedBalance = createMemo(
+        () =>
+            (state.balance?.federation || 0n) +
+            (state.balance?.lightning || 0n) +
+            (state.balance?.confirmed || 0n) +
+            (state.balance?.unconfirmed || 0n)
+    );
 
     // TODO: do some sort of status indicator
     // const fullyReady = () => state.load_stage === "done" && state.price !== 0;
@@ -29,10 +31,12 @@ export function HomeBalance() {
                         />
                     </Match>
                     <Match when={state.balanceView === "fiat"}>
-                        <AmountFiat
-                            amountSats={combinedBalance()}
-                            denominationSize="lg"
-                        />
+                        <Suspense>
+                            <AmountFiat
+                                amountSats={combinedBalance()}
+                                denominationSize="lg"
+                            />
+                        </Suspense>
                     </Match>
                     <Match when={state.balanceView === "hidden"}>
                         <div class="flex items-center gap-2">

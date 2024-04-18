@@ -1,4 +1,3 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { createSignal, Show } from "solid-js";
@@ -7,7 +6,7 @@ import { Button, InfoBox, SimpleInput } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 
 export function ImportNsecForm(props: { setup?: boolean }) {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const [nsec, setNsec] = createSignal("");
     const [saving, setSaving] = createSignal(false);
@@ -18,16 +17,13 @@ export function ImportNsecForm(props: { setup?: boolean }) {
         setError(undefined);
         const trimmedNsec = nsec().trim();
         try {
-            const npub = await MutinyWallet.nsec_to_npub(trimmedNsec);
+            const npub = await sw.nsec_to_npub(trimmedNsec);
             if (!npub) {
                 throw new Error("Invalid nsec");
             }
             await SecureStoragePlugin.set({ key: "nsec", value: trimmedNsec });
 
-            const new_npub = await state.mutiny_wallet?.change_nostr_keys(
-                trimmedNsec,
-                undefined
-            );
+            const new_npub = await sw.change_nostr_keys(trimmedNsec, undefined);
             console.log("Changed to new npub: ", new_npub);
             if (props.setup) {
                 navigate("/addfederation");

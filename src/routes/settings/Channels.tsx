@@ -30,7 +30,6 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
-import { Network } from "~/logic/mutinyWalletSetup";
 import { useMegaStore } from "~/state/megaStore";
 import { createDeepSignal, eify, mempoolTxUrl } from "~/utils";
 
@@ -100,8 +99,8 @@ function splitChannelNumbers(channel: MutinyChannel): {
 
 function SingleChannelItem(props: { channel: MutinyChannel; online: boolean }) {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
-    const network = state.mutiny_wallet?.get_network() as Network;
+    const [state, _actions, sw] = useMegaStore();
+    const network = state.network;
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
     const [confirmLoading, setConfirmLoading] = createSignal(false);
@@ -115,11 +114,7 @@ function SingleChannelItem(props: { channel: MutinyChannel; online: boolean }) {
             if (!props.channel.outpoint) return;
             setConfirmLoading(true);
             const forceClose = !props.online;
-            await state.mutiny_wallet?.close_channel(
-                props.channel.outpoint,
-                forceClose,
-                false
-            );
+            await sw.close_channel(props.channel.outpoint, forceClose, false);
         } catch (e) {
             console.error(e);
             showToast(eify(e));
@@ -180,12 +175,11 @@ function SingleChannelItem(props: { channel: MutinyChannel; online: boolean }) {
 
 function LiquidityMonitor() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     async function listChannels() {
         try {
-            const channels: MutinyChannel[] | undefined =
-                await state.mutiny_wallet?.list_channels();
+            const channels = await sw.list_channels();
 
             if (!channels)
                 return {
@@ -232,22 +226,24 @@ function LiquidityMonitor() {
 
     return (
         <Switch>
-            <Match when={channelInfo()?.channelCount}>
+            <Match
+                when={channelInfo.latest && channelInfo.latest?.channelCount}
+            >
                 <VStack>
                     <Card>
                         <NiceP>
                             {i18n.t("settings.channels.have_channels")}{" "}
-                            {channelInfo()?.channelCount}{" "}
-                            {channelInfo()?.channelCount === 1
+                            {channelInfo.latest?.channelCount}{" "}
+                            {channelInfo.latest?.channelCount === 1
                                 ? i18n.t("settings.channels.have_channels_one")
                                 : i18n.t(
                                       "settings.channels.have_channels_many"
                                   )}
                         </NiceP>{" "}
                         <BalanceBar
-                            inbound={Number(channelInfo()?.inbound) || 0}
-                            reserve={Number(channelInfo()?.reserve) || 0}
-                            outbound={Number(channelInfo()?.outbound) || 0}
+                            inbound={Number(channelInfo.latest?.inbound) || 0}
+                            reserve={Number(channelInfo.latest?.reserve) || 0}
+                            outbound={Number(channelInfo.latest?.outbound) || 0}
                         />
                         <TinyText>
                             {i18n.t("settings.channels.inbound_outbound_tip")}
@@ -256,7 +252,7 @@ function LiquidityMonitor() {
                             {i18n.t("settings.channels.reserve_tip")}
                         </TinyText>
                     </Card>
-                    <Show when={channelInfo()?.online?.length}>
+                    <Show when={channelInfo.latest?.online?.length}>
                         <SettingsCard>
                             <Collapser
                                 title={i18n.t(
@@ -265,7 +261,7 @@ function LiquidityMonitor() {
                                 activityLight="on"
                             >
                                 <VStack>
-                                    <For each={channelInfo()?.online}>
+                                    <For each={channelInfo.latest?.online}>
                                         {(channel) => (
                                             <SingleChannelItem
                                                 channel={channel}
@@ -277,7 +273,7 @@ function LiquidityMonitor() {
                             </Collapser>
                         </SettingsCard>
                     </Show>
-                    <Show when={channelInfo()?.offline?.length}>
+                    <Show when={channelInfo.latest?.offline?.length}>
                         <SettingsCard>
                             <Collapser
                                 title={i18n.t(
@@ -286,7 +282,7 @@ function LiquidityMonitor() {
                                 activityLight="off"
                             >
                                 <VStack>
-                                    <For each={channelInfo()?.offline}>
+                                    <For each={channelInfo.latest?.offline}>
                                         {(channel) => (
                                             <SingleChannelItem
                                                 channel={channel}

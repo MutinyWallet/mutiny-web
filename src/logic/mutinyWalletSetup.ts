@@ -1,6 +1,3 @@
-import initMutinyWallet, { MutinyWallet } from "@mutinywallet/mutiny-wasm";
-import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
-
 export type Network = "bitcoin" | "testnet" | "regtest" | "signet";
 
 export type MutinyWalletSettingStrings = {
@@ -139,7 +136,7 @@ export async function getSettings() {
 
     // Expect urls like /_services/proxy and /_services/storage
     if (selfhosted) {
-        let base = window.location.origin;
+        let base = location.origin;
         console.log("Self-hosted mode enabled, using base URL", base);
         const storage = settings.storage;
         if (storage && storage.startsWith("/")) {
@@ -178,26 +175,6 @@ export async function setSettings(newSettings: MutinyWalletSettingStrings) {
     });
 }
 
-export async function checkForWasm() {
-    try {
-        if (
-            typeof WebAssembly === "object" &&
-            typeof WebAssembly.instantiate === "function"
-        ) {
-            const module = new WebAssembly.Module(
-                Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00)
-            );
-            if (!(module instanceof WebAssembly.Module)) {
-                throw new Error("Couldn't instantiate WASM Module");
-            }
-        } else {
-            throw new Error("No WebAssembly global object found");
-        }
-    } catch (e) {
-        console.error(e);
-    }
-}
-
 export async function doubleInitDefense() {
     console.log("Starting init...");
     // Ultimate defense against getting multiple instances of the wallet running.
@@ -211,148 +188,5 @@ export async function doubleInitDefense() {
         );
         sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
         window.location.reload();
-    }
-}
-
-export async function initializeWasm() {
-    // Actually intialize the WASM, this should be the first thing that requires the WASM blob to be downloaded
-
-    // If WASM is already initialized, don't init twice
-    try {
-        const _sats_the_standard = MutinyWallet.convert_btc_to_sats(1);
-        console.debug("MutinyWallet WASM already initialized, skipping init");
-        return;
-    } catch (e) {
-        console.debug("MutinyWallet WASM about to be initialized");
-        await initMutinyWallet();
-    }
-}
-
-export async function setupMutinyWallet(
-    settings: MutinyWalletSettingStrings,
-    password?: string,
-    safeMode?: boolean,
-    shouldZapHodl?: boolean
-): Promise<MutinyWallet | undefined> {
-    console.log("Starting setup...");
-
-    // https://developer.mozilla.org/en-US/docs/Web/API/Storage_API
-    // Ask the browser to not clear storage
-    if (navigator.storage && navigator.storage.persist) {
-        navigator.storage.persist().then((persistent) => {
-            if (persistent) {
-                console.log(
-                    "Storage will not be cleared except by explicit user action"
-                );
-            } else {
-                console.log(
-                    "Storage may be cleared by the UA under storage pressure."
-                );
-            }
-        });
-    }
-
-    const {
-        network,
-        proxy,
-        esplora,
-        rgs,
-        lsp,
-        lsps_connection_string,
-        lsps_token,
-        auth,
-        subscriptions,
-        storage,
-        scorer,
-        primal_api,
-        blind_auth,
-        hermes
-    } = settings;
-
-    let nsec;
-    // get nsec from secure storage
-    try {
-        const value = await SecureStoragePlugin.get({ key: "nsec" });
-        nsec = value.value;
-    } catch (e) {
-        console.log("No nsec stored");
-    }
-
-    // if we didn't get an nsec from storage, try to use extension
-    let extension_key;
-
-    if (!nsec && Object.prototype.hasOwnProperty.call(window, "nostr")) {
-        try {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore ignore nostr not existing, only does if they have extension
-            extension_key = await window.nostr.getPublicKey();
-        } catch (_) {
-            console.log("No NIP-07 extension");
-        }
-    }
-
-    console.log("Initializing Mutiny Manager");
-    console.log("Using network", network);
-    console.log("Using proxy", proxy);
-    console.log("Using esplora address", esplora);
-    console.log("Using rgs address", rgs);
-    console.log("Using lsp address", lsp);
-    console.log("Using lsp connection string", lsps_connection_string);
-    console.log("Using lsp token", lsps_token);
-    console.log("Using auth address", auth);
-    console.log("Using subscriptions address", subscriptions);
-    console.log("Using storage address", storage);
-    console.log("Using scorer address", scorer);
-    console.log("Using primal api", primal_api);
-    console.log("Using blind auth", blind_auth);
-    console.log("Using hermes", hermes);
-    console.log(safeMode ? "Safe mode enabled" : "Safe mode disabled");
-    console.log(shouldZapHodl ? "Hodl zaps enabled" : "Hodl zaps disabled");
-
-    // Only use lsps if there's no lsp set
-    const shouldUseLSPS = !lsp && lsps_connection_string && lsps_token;
-
-    const mutinyWallet = await new MutinyWallet(
-        // Password
-        password ? password : undefined,
-        // Mnemonic
-        undefined,
-        proxy,
-        network,
-        esplora,
-        rgs,
-        shouldUseLSPS ? undefined : lsp,
-        shouldUseLSPS ? lsps_connection_string : undefined,
-        shouldUseLSPS ? lsps_token : undefined,
-        auth,
-        subscriptions,
-        storage,
-        scorer,
-        // Do not connect peers
-        undefined,
-        // Do not skip device lock
-        undefined,
-        // Safe mode
-        safeMode || undefined,
-        // Skip hodl invoices? (defaults to true, so if shouldZapHodl is true that's when we pass false)
-        shouldZapHodl ? false : undefined,
-        // Nsec override
-        nsec,
-        // Nip7
-        extension_key ? extension_key : undefined,
-        // primal URL
-        primal_api || "https://primal-cache.mutinywallet.com/api",
-        /// blind auth url
-        blind_auth,
-        /// hermes url
-        hermes
-    );
-
-    sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
-
-    if (mutinyWallet) {
-        return mutinyWallet;
-    } else {
-        return undefined;
     }
 }

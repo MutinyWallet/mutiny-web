@@ -31,21 +31,20 @@ type PendingItem = {
 
 export function PendingNwc() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     const [error, setError] = createSignal<Error>();
 
     const navigate = useNavigate();
 
     async function fetchPendingRequests() {
-        const profiles = await state.mutiny_wallet?.get_nwc_profiles();
+        const profiles = await sw.get_nwc_profiles();
         if (!profiles) return [];
 
-        const contacts: TagItem[] | undefined =
-            await state.mutiny_wallet?.get_contacts_sorted();
+        const contacts: TagItem[] | undefined = await sw.get_contacts_sorted();
         if (!contacts) return [];
 
-        const pending = await state.mutiny_wallet?.get_pending_nwc_invoices();
+        const pending = await sw.get_pending_nwc_invoices();
         if (!pending) return [];
 
         const pendingItems: PendingItem[] = [];
@@ -88,7 +87,7 @@ export function PendingNwc() {
         try {
             // setPaying(item.id);
             setPayList([...payList(), item.id]);
-            await state.mutiny_wallet?.approve_invoice(item.id);
+            await sw.approve_invoice(item.id);
             await vibrateSuccess();
         } catch (e) {
             const err = eify(e);
@@ -97,7 +96,7 @@ export function PendingNwc() {
             if (err.message === "An invoice must not get payed twice.") {
                 // wrap in try/catch so we don't crash if the invoice is already gone
                 try {
-                    await state.mutiny_wallet?.deny_invoice(item.id);
+                    await sw.deny_invoice(item.id);
                 } catch (_e) {
                     // do nothing
                 }
@@ -121,7 +120,7 @@ export function PendingNwc() {
 
     async function denyAll() {
         try {
-            await state.mutiny_wallet?.deny_all_pending_nwc();
+            await sw.deny_all_pending_nwc();
         } catch (e) {
             setError(eify(e));
             console.error(e);
@@ -133,7 +132,7 @@ export function PendingNwc() {
     async function rejectItem(item: PendingItem) {
         try {
             setPayList([...payList(), item.id]);
-            await state.mutiny_wallet?.deny_invoice(item.id);
+            await sw.deny_invoice(item.id);
         } catch (e) {
             setError(eify(e));
             console.error(e);
@@ -161,7 +160,11 @@ export function PendingNwc() {
 
     return (
         <Switch>
-            <Match when={pendingRequests() && pendingRequests()!.length > 0}>
+            <Match
+                when={
+                    pendingRequests.latest && pendingRequests.latest!.length > 0
+                }
+            >
                 <ButtonCard onClick={() => navigate("/settings/connections")}>
                     <div class="flex items-center gap-2">
                         <PlugZap class="inline-block text-m-red" />
@@ -197,7 +200,7 @@ export function PendingNwc() {
                         <InfoBox accent="red">{error()?.message}</InfoBox>
                     </Show>
 
-                    <For each={pendingRequests()}>
+                    <For each={pendingRequests.latest}>
                         {(pendingItem) => (
                             <GenericItem
                                 primaryAvatarUrl={pendingItem.image || ""}

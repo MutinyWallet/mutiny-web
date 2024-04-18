@@ -6,7 +6,7 @@ import {
     reset,
     SubmitHandler
 } from "@modular-forms/solid";
-import { useNavigate } from "@solidjs/router";
+import { createAsync, useNavigate } from "@solidjs/router";
 import { Users } from "lucide-solid";
 import {
     createMemo,
@@ -49,7 +49,7 @@ const validateLowerCase = (value?: string) => {
 
 // todo(paul) put this somewhere else
 function HermesForm(props: { onSubmit: (name: string) => void }) {
-    const [state, _] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
 
@@ -70,17 +70,16 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
         setError(undefined);
         try {
             const name = f.name.trim().toLowerCase();
-            const available =
-                await state.mutiny_wallet?.check_available_lnurl_name(name);
+            const available = await sw.check_available_lnurl_name(name);
             if (!available) {
                 throw new Error("Name already taken");
             }
-            await state.mutiny_wallet?.reserve_lnurl_name(name);
+            await sw.reserve_lnurl_name(name);
             console.log("lnurl name reserved:", name);
 
             const formattedName = `${name}@${hermesDomain}`;
 
-            const _ = await state.mutiny_wallet?.edit_nostr_profile(
+            const _ = await sw.edit_nostr_profile(
                 undefined,
                 undefined,
                 // lnurl
@@ -144,14 +143,14 @@ function HermesForm(props: { onSubmit: (name: string) => void }) {
 
 export function LightningAddress() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const [error, setError] = createSignal<Error>();
     const [settingLnAddress, setSettingLnAddress] = createSignal(false);
 
     const [lnurlName] = createResource(async () => {
         try {
-            const name = await state.mutiny_wallet?.check_lnurl_name();
+            const name = await sw.check_lnurl_name();
             return name;
         } catch (e) {
             setError(eify(e));
@@ -172,10 +171,10 @@ export function LightningAddress() {
         }
     });
 
-    const profileLnAddress = createMemo(() => {
+    const profileLnAddress = createAsync(async () => {
         if (lnurlName()) {
-            const profile = state.mutiny_wallet?.get_nostr_profile();
-            if (profile?.lud16) {
+            const profile = await sw.get_nostr_profile();
+            if (profile && profile.lud16) {
                 return profile.lud16;
             }
         }
@@ -187,7 +186,7 @@ export function LightningAddress() {
             setSettingLnAddress(true);
             setError(undefined);
 
-            const _ = await state.mutiny_wallet?.edit_nostr_profile(
+            const _ = await sw.edit_nostr_profile(
                 undefined,
                 undefined,
                 newAddress,

@@ -1,5 +1,5 @@
 import { createAsync, useNavigate } from "@solidjs/router";
-import { createMemo, Show, Suspense } from "solid-js";
+import { Show, Suspense } from "solid-js";
 
 import {
     Circle,
@@ -16,45 +16,37 @@ import {
 } from "~/components";
 import { Fab } from "~/components/Fab";
 import { useMegaStore } from "~/state/megaStore";
-import { DEFAULT_NOSTR_NAME } from "~/utils";
 
 export function WalletHeader(props: { loading: boolean }) {
     const navigate = useNavigate();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
-    async function getProfile() {
-        const profile = state.mutiny_wallet?.get_nostr_profile();
-
-        return {
-            name: profile?.display_name || profile?.name || DEFAULT_NOSTR_NAME,
-            picture: profile?.picture || undefined,
-            // TODO: this but for real
-            lud16: profile?.lud16 || undefined
-        };
-    }
-
-    const profile = createAsync(() => getProfile());
-
-    const profileImage = createMemo(() => {
+    const profile = createAsync(async () => {
         if (props.loading) {
             return undefined;
         }
-
-        if (profile() && profile()!.picture) {
-            return profile()!.picture;
-        }
-
-        return undefined;
+        return await sw.get_nostr_profile();
     });
 
     return (
         <header class="grid grid-cols-[auto_minmax(0,_1fr)_auto] items-center gap-4">
-            <LabelCircle
-                contact
-                label={false}
-                image_url={profileImage()}
-                onClick={() => navigate("/profile")}
-            />
+            <Suspense
+                fallback={
+                    <LabelCircle
+                        contact
+                        label={false}
+                        image_url={undefined}
+                        onClick={() => navigate("/profile")}
+                    />
+                }
+            >
+                <LabelCircle
+                    contact
+                    label={false}
+                    image_url={profile()?.picture}
+                    onClick={() => navigate("/profile")}
+                />
+            </Suspense>
             <HomeBalance />
             <Circle onClick={() => navigate("/settings")}>
                 <img
@@ -76,7 +68,7 @@ export function WalletHeader(props: { loading: boolean }) {
 }
 
 export function Main() {
-    const [state, _actions] = useMegaStore();
+    const [state] = useMegaStore();
 
     const navigate = useNavigate();
 
@@ -90,9 +82,7 @@ export function Main() {
                 <div class="flex-1" />
             </Show>
             <Show when={state.load_stage === "done"}>
-                <Suspense>
-                    <WalletHeader loading={false} />
-                </Suspense>
+                <WalletHeader loading={false} />
 
                 <Show when={!state.wallet_loading && !state.safe_mode}>
                     <SocialActionRow

@@ -43,14 +43,14 @@ import { MiniFab } from "~/components/Fab";
 import { useI18n } from "~/i18n/context";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, hexpubFromNpub, timeAgo } from "~/utils";
+import { createDeepSignal, eify, hexpubFromNpub, timeAgo } from "~/utils";
 
 type CombinedMessagesAndActivity =
     | { kind: "message"; content: FakeDirectMessage }
     | { kind: "activity"; content: IActivityItem };
 
 // TODO: Use the actual type from MutinyWallet
-type FakeDirectMessage = {
+export type FakeDirectMessage = {
     from: string;
     to: string;
     message: string;
@@ -70,8 +70,8 @@ function SingleMessage(props: {
     counterPartyNpub: string;
     counterPartyContactId: string;
 }) {
-    const [state, actions] = useMegaStore();
-    const network = state.mutiny_wallet?.get_network() || "signet";
+    const [state, actions, sw] = useMegaStore();
+    const network = state.network || "signet";
     const navigate = useNavigate();
 
     const parsed = createAsync(
@@ -82,7 +82,7 @@ function SingleMessage(props: {
             const split_message_by_whitespace = props.dm.message.split(/\s+/g);
             for (const word of split_message_by_whitespace) {
                 if (word.length > 15) {
-                    result = toParsedParams(word, network);
+                    result = await toParsedParams(word, network, sw);
                     if (result.ok) {
                         break;
                     }
@@ -94,9 +94,8 @@ function SingleMessage(props: {
             }
 
             if (result.value?.invoice) {
-                console.log("about to get invoice");
                 try {
-                    const alreadyPaid = await state.mutiny_wallet?.get_invoice(
+                    const alreadyPaid = await sw.get_invoice(
                         result.value.invoice
                     );
                     if (alreadyPaid?.paid) {
@@ -149,9 +148,10 @@ function SingleMessage(props: {
         navWithContactId();
     }
 
-    function handlePay(invoice: string) {
-        actions.handleIncomingString(
-            invoice,
+    async function handlePay() {
+        if (!parsed()) return;
+        await actions.handleIncomingString(
+            parsed()!.value,
             (error) => {
                 showToast(error);
             },
@@ -191,7 +191,7 @@ function SingleMessage(props: {
                             <Button
                                 intent="blue"
                                 layout="xs"
-                                onClick={() => handlePay(parsed()?.value || "")}
+                                onClick={handlePay}
                             >
                                 Pay
                             </Button>
@@ -308,17 +308,17 @@ function FixedChatHeader(props: {
     sendToContact: (contact: TagItem) => void;
     requestFromContact: (contact: TagItem) => void;
 }) {
-    const [state, _actions] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
 
     async function saveContact(id: string, contact: ContactFormValues) {
         console.log("saving contact", id, contact);
-        const hexpub = await hexpubFromNpub(contact.npub?.trim());
+        const hexpub = await hexpubFromNpub(sw, contact.npub?.trim());
         try {
-            const existing = state.mutiny_wallet?.get_tag_item(id);
+            const existing = await sw.get_tag_item(id);
             // This shouldn't happen
             if (!existing) throw new Error("No existing contact");
-            await state.mutiny_wallet?.edit_contact(
+            await sw.edit_contact(
                 id,
                 contact.name,
                 hexpub ? hexpub : undefined,
@@ -337,7 +337,7 @@ function FixedChatHeader(props: {
 
     async function deleteContact(id: string) {
         try {
-            await state.mutiny_wallet?.delete_contact(id);
+            await sw.delete_contact(id);
         } catch (e) {
             console.error(e);
             showToast(eify(e));
@@ -352,7 +352,7 @@ function FixedChatHeader(props: {
 
         try {
             if (!props.contact.npub) throw new Error("No npub");
-            await state.mutiny_wallet?.follow_npub(props.contact.npub);
+            await sw.follow_npub(props.contact.npub);
             props.refetch();
         } catch (e) {
             console.error(e);
@@ -366,7 +366,7 @@ function FixedChatHeader(props: {
 
         try {
             if (!props.contact.npub) throw new Error("No npub");
-            await state.mutiny_wallet?.unfollow_npub(props.contact.npub);
+            await sw.unfollow_npub(props.contact.npub);
             props.refetch();
         } catch (e) {
             console.error(e);
@@ -447,26 +447,16 @@ function FixedChatHeader(props: {
 
 export function Chat() {
     const params = useParams();
-    const [state, actions] = useMegaStore();
+    const [_state, actions, sw] = useMegaStore();
 
     const [messageValue, setMessageValue] = createSignal("");
     const [sending, setSending] = createSignal(false);
 
     const i18n = useI18n();
 
-    // const contact = createAsync(async () => {
-    //     try {
-    //         return state.mutiny_wallet?.get_tag_item(params.id);
-    //     } catch (e) {
-    //         console.error("couldn't find contact");
-    //         console.error(e);
-    //         return undefined;
-    //     }
-    // });
-
     const [contact, { refetch: refetchContact }] = createResource(async () => {
         try {
-            return state.mutiny_wallet?.get_tag_item(params.id);
+            return await sw.get_tag_item(params.id);
         } catch (e) {
             console.error("couldn't find contact");
             console.error(e);
@@ -474,6 +464,7 @@ export function Chat() {
         }
     });
 
+    // TODO: could probably move this to the web worker and make it even snappier
     const [convo, { refetch }] = createResource(
         contact,
         async (contact?: TagItem) => {
@@ -484,7 +475,7 @@ export function Chat() {
                 let dms = [] as FakeDirectMessage[];
 
                 try {
-                    acts = (await state.mutiny_wallet?.get_label_activity(
+                    acts = (await sw.get_label_activity(
                         params.id
                     )) as IActivityItem[];
                 } catch (e) {
@@ -492,7 +483,7 @@ export function Chat() {
                 }
 
                 try {
-                    dms = (await state.mutiny_wallet?.get_dm_conversation(
+                    dms = (await sw.get_dm_conversation(
                         contact.npub,
                         20n,
                         undefined,
@@ -529,13 +520,14 @@ export function Chat() {
                     return b_time - a_time; // Descending order
                 });
 
-                console.log("combined activity", combined);
-
                 return combined as CombinedMessagesAndActivity[];
             } catch (e) {
                 console.error("error getting convo:", e);
                 return [] as CombinedMessagesAndActivity[];
             }
+        },
+        {
+            storage: createDeepSignal
         }
     );
 
@@ -546,10 +538,7 @@ export function Chat() {
         const rememberedValue = messageValue();
         setMessageValue("");
         try {
-            const dmResult = await state.mutiny_wallet?.send_dm(
-                npub,
-                rememberedValue
-            );
+            const dmResult = await sw.send_dm(npub, rememberedValue);
             console.log("dmResult:", dmResult);
             refetch();
         } catch (e) {
@@ -567,11 +556,11 @@ export function Chat() {
         });
     });
 
-    function sendToContact(contact?: TagItem) {
+    async function sendToContact(contact?: TagItem) {
         if (!contact) return;
         const address = contact.ln_address || contact.lnurl;
         if (address) {
-            actions.handleIncomingString(
+            await actions.handleIncomingString(
                 (address || "").trim(),
                 (error) => {
                     showToast(error);

@@ -36,7 +36,7 @@ import { eify, vibrateSuccess } from "~/utils";
 type RedeemState = "edit" | "paid";
 
 export function Redeem() {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -52,8 +52,9 @@ export function Redeem() {
     const [loading, setLoading] = createSignal(false);
     const [error, setError] = createSignal<string>("");
 
-    function mSatsToSats(mSats: bigint) {
-        return mSats / 1000n;
+    function mSatsToSats(mSats: bigint | number) {
+        const bigMsats = BigInt(mSats);
+        return bigMsats / 1000n;
     }
 
     function clearAll() {
@@ -69,9 +70,7 @@ export function Redeem() {
     const [decodedLnurl] = createResource(async () => {
         if (state.scan_result) {
             if (state.scan_result.lnurl) {
-                const decoded = await state.mutiny_wallet?.decode_lnurl(
-                    state.scan_result.lnurl
-                );
+                const decoded = await sw.decode_lnurl(state.scan_result.lnurl);
                 return decoded;
             }
         }
@@ -126,10 +125,7 @@ export function Redeem() {
         setLoading(true);
 
         try {
-            const success = await state.mutiny_wallet?.lnurl_withdraw(
-                lnurlString(),
-                amount()
-            );
+            const success = await sw.lnurl_withdraw(lnurlString(), amount());
             if (!success) {
                 setError(i18n.t("redeem.lnurl_redeem_failed"));
             } else {
@@ -170,7 +166,7 @@ export function Redeem() {
                                 </Show>
                             </Suspense>
                             <ReceiveWarnings
-                                amountSats={amount() || "0"}
+                                amountSats={amount() || 0n}
                                 from_fedi_to_ln={false}
                             />
                             <Show when={lnurlAmountText() && !fixedAmount()}>

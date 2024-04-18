@@ -89,7 +89,7 @@ export function AddFederationForm(props: {
     browseOnly?: boolean;
 }) {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [_state, actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
@@ -122,8 +122,7 @@ export function AddFederationForm(props: {
 
     const [federations] = createResource(async () => {
         try {
-            const federations: DiscoveredFederation[] =
-                await state.mutiny_wallet?.discover_federations();
+            const federations = await sw.discover_federations();
             return federations;
         } catch (e) {
             console.error(e);
@@ -139,8 +138,7 @@ export function AddFederationForm(props: {
                 try {
                     console.log("Adding federation:", inviteCode);
                     setLoadingFederation(inviteCode);
-                    const newFederation =
-                        await state.mutiny_wallet?.new_federation(inviteCode);
+                    const newFederation = await sw.new_federation(inviteCode);
                     console.log("New federation added:", newFederation);
                     break;
                 } catch (e) {
@@ -345,7 +343,7 @@ export function AddFederationForm(props: {
 }
 
 function RecommendButton(props: { fed: MutinyFederationIdentity }) {
-    const [state] = useMegaStore();
+    const [_state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
     const [recommendLoading, setRecommendLoading] = createSignal(false);
     // This is just some local state that makes it feel like they've recommended it
@@ -354,10 +352,9 @@ function RecommendButton(props: { fed: MutinyFederationIdentity }) {
 
     const [recommendedByMe, { refetch }] = createResource(async () => {
         try {
-            const hasRecommended =
-                await state.mutiny_wallet?.has_recommended_federation(
-                    props.fed.federation_id
-                );
+            const hasRecommended = await sw.has_recommended_federation(
+                props.fed.federation_id
+            );
             return hasRecommended;
         } catch (e) {
             console.error(e);
@@ -368,7 +365,7 @@ function RecommendButton(props: { fed: MutinyFederationIdentity }) {
     async function recommendFederation() {
         setRecommendLoading(true);
         try {
-            const event_id = await state.mutiny_wallet?.recommend_federation(
+            const event_id = await sw.recommend_federation(
                 props.fed.invite_code
             );
             console.log("Recommended federation: ", event_id);
@@ -383,9 +380,7 @@ function RecommendButton(props: { fed: MutinyFederationIdentity }) {
     async function deleteRecommendation() {
         setRecommendLoading(true);
         try {
-            await state.mutiny_wallet?.delete_federation_recommendation(
-                props.fed.federation_id
-            );
+            await sw.delete_federation_recommendation(props.fed.federation_id);
             setRecommended(false);
             refetch();
         } catch (e) {
@@ -430,14 +425,12 @@ function FederationListItem(props: {
     balance?: bigint;
 }) {
     const i18n = useI18n();
-    const [state, actions] = useMegaStore();
+    const [_state, actions, sw] = useMegaStore();
 
     async function removeFederation() {
         setConfirmLoading(true);
         try {
-            await state.mutiny_wallet?.remove_federation(
-                props.fed.federation_id
-            );
+            await sw.remove_federation(props.fed.federation_id);
             await actions.refreshFederations();
         } catch (e) {
             console.error(e);
@@ -522,12 +515,11 @@ function FederationListItem(props: {
 
 export function ManageFederations() {
     const i18n = useI18n();
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     const [balances, { refetch }] = createResource(async () => {
         try {
-            const balances =
-                await state.mutiny_wallet?.get_federation_balances();
+            const balances = await sw.get_federation_balances();
             return balances?.balances || [];
         } catch (e) {
             console.error(e);

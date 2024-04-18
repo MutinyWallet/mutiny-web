@@ -1,12 +1,13 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { createSignal, Show } from "solid-js";
 
 import { Button, InfoBox, InnerCard, NiceP, VStack } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
 import { downloadTextFile, eify } from "~/utils";
 
 export function Logs() {
     const i18n = useI18n();
+    const [_state, _actions, sw] = useMegaStore();
 
     // Create state for errors, password and dialog visibility
     const [error, setError] = createSignal<Error>();
@@ -14,7 +15,7 @@ export function Logs() {
     async function handleSave() {
         try {
             setError(undefined);
-            const logs = await MutinyWallet.get_logs();
+            const logs = await sw.get_logs();
             await downloadTextFile(
                 logs.join("") || "",
                 "mutiny-logs.txt",

@@ -1,4 +1,3 @@
-import { MutinyWallet } from "@mutinywallet/mutiny-wasm";
 import { Title } from "@solidjs/meta";
 import { MonitorSmartphone } from "lucide-solid";
 import { createResource, Match, Switch } from "solid-js";
@@ -21,6 +20,7 @@ import {
     MutinyWalletSettingStrings
 } from "~/logic/mutinyWalletSetup";
 import { FeedbackLink } from "~/routes/Feedback";
+import { useMegaStore } from "~/state/megaStore";
 
 function ErrorFooter() {
     return (
@@ -38,6 +38,7 @@ export function SetupErrorDisplay(props: {
     password?: string;
 }) {
     // Error shouldn't be reactive, so we assign to it so it just gets rendered with the first value
+    const [_state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
     const error = props.initialError;
 
@@ -45,7 +46,7 @@ export function SetupErrorDisplay(props: {
         if (error.message.startsWith("Mutiny is already running")) {
             const settings: MutinyWalletSettingStrings = await getSettings();
             try {
-                const secs = await MutinyWallet.get_device_lock_remaining_secs(
+                const secs = await sw.get_device_lock_remaining_secs(
                     props.password,
                     settings.auth,
                     settings.storage

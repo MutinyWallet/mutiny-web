@@ -18,7 +18,7 @@ import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
 export function HomeSubnav() {
-    const [state, _actions] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
 
     const i18n = useI18n();
 
@@ -32,8 +32,7 @@ export function HomeSubnav() {
 
     const [pending, { refetch }] = createResource(async () => {
         try {
-            const pending =
-                await state.mutiny_wallet?.get_pending_nwc_invoices();
+            const pending = await sw.get_pending_nwc_invoices();
             return pending?.length || 0;
         } catch (e) {
             console.error(e);
@@ -90,7 +89,7 @@ export function HomeSubnav() {
                                     "text-white": !!((pending.latest || 0) > 0)
                                 }}
                             >
-                                {pending()}
+                                {pending.latest}
                             </span>
                         </Show>
                     </Suspense>

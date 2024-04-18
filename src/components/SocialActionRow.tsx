@@ -1,7 +1,7 @@
 import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { cache, createAsync, useNavigate } from "@solidjs/router";
 import { Scan, Search } from "lucide-solid";
-import { createMemo, For, Suspense } from "solid-js";
+import { For, Suspense } from "solid-js";
 
 import { Circle, LabelCircle, showToast } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
@@ -10,13 +10,12 @@ export function SocialActionRow(props: {
     onSearch: () => void;
     onScan: () => void;
 }) {
-    const [state, actions] = useMegaStore();
+    const [_state, actions, sw] = useMegaStore();
     const navigate = useNavigate();
 
     const getContacts = cache(async () => {
         try {
-            const contacts: TagItem[] =
-                (await state.mutiny_wallet?.get_contacts_sorted()) || [];
+            const contacts: TagItem[] = (await sw.get_contacts_sorted()) || [];
 
             // contact must have a npub, ln_address, or lnurl
             return contacts.filter(
@@ -33,16 +32,17 @@ export function SocialActionRow(props: {
 
     const contacts = createAsync(() => getContacts(), { initialValue: [] });
 
-    const profileDeleted = createMemo(
-        () => state.mutiny_wallet?.get_nostr_profile().deleted
-    );
+    const profileDeleted = createAsync(async () => {
+        const profile = await sw.get_nostr_profile();
+        return profile?.deleted;
+    });
 
     // TODO this is mostly copy pasted from chat, could be a shared util maybe
-    function sendToContact(contact?: TagItem) {
+    async function sendToContact(contact?: TagItem) {
         if (!contact) return;
         const address = contact.ln_address || contact.lnurl;
         if (address) {
-            actions.handleIncomingString(
+            await actions.handleIncomingString(
                 (address || "").trim(),
                 (error) => {
                     showToast(error);
@@ -57,6 +57,14 @@ export function SocialActionRow(props: {
             );
         } else {
             console.error("no ln_address or lnurl");
+        }
+    }
+
+    async function handleClick(contact: TagItem) {
+        if (profileDeleted() || !contact.npub) {
+            sendToContact(contact);
+        } else {
+            navigate(`/chat/${contact.id}`);
         }
     }
 
@@ -76,13 +84,7 @@ export function SocialActionRow(props: {
                             label={false}
                             name={contact.name}
                             image_url={contact.primal_image_url}
-                            onClick={() => {
-                                if (profileDeleted() || !contact.npub) {
-                                    sendToContact(contact);
-                                } else {
-                                    navigate(`/chat/${contact.id}`);
-                                }
-                            }}
+                            onClick={() => handleClick(contact)}
                         />
                     )}
                 </For>
