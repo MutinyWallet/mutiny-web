@@ -204,12 +204,42 @@ export const Provider: ParentComponent = (props) => {
                     await setSettings(settings);
                 }
 
+                // 60 seconds to load or we bail
+                const start = Date.now();
+                const MAX_LOAD_TIME = 60000;
+                const interval = setInterval(() => {
+                    console.log("Running setup", Date.now() - start);
+                    if (Date.now() - start > MAX_LOAD_TIME) {
+                        clearInterval(interval);
+                        // Have to set state error here because throwing doesn't work if WASM panics
+                        setState({
+                            setup_error: new Error(
+                                "Load timed out, please try again"
+                            )
+                        });
+                        return;
+                    }
+                }, 1000);
+
                 const mutinyWallet = await setupMutinyWallet(
                     settings,
                     password,
                     state.safe_mode,
                     state.should_zap_hodl
                 );
+
+                // Done with the timeout shenanigans
+                clearInterval(interval);
+
+                // I've never managed to trigger this but it's just some extra safety I guess
+                if (!mutinyWallet) {
+                    setState({
+                        setup_error: new Error(
+                            "Failed to initialize Mutiny Wallet"
+                        )
+                    });
+                    return;
+                }
 
                 // Give other components access to settings via the store
                 setState({ settings: settings });
