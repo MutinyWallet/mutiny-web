@@ -233,7 +233,7 @@ export async function setupMutinyWallet(
     password?: string,
     safeMode?: boolean,
     shouldZapHodl?: boolean
-): Promise<MutinyWallet> {
+): Promise<MutinyWallet | undefined> {
     console.log("Starting setup...");
 
     // https://developer.mozilla.org/en-US/docs/Web/API/Storage_API
@@ -350,5 +350,9 @@ export async function setupMutinyWallet(
 
     sessionStorage.setItem("MUTINY_WALLET_INITIALIZED", Date.now().toString());
 
-    return mutinyWallet;
+    if (mutinyWallet) {
+        return mutinyWallet;
+    } else {
+        return undefined;
+    }
 }
