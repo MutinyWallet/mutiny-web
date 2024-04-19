@@ -124,6 +124,9 @@ test("rountrip receive and send", async ({ page }) => {
 
     await page.click("text=Online Channels");
 
+    // Give it just a second to settle down
+    await page.waitForTimeout(2000);
+
     await page.click("text=Close");
 
     await page.click("text=Confirm");
