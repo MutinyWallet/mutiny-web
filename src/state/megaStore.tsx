@@ -204,20 +204,23 @@ export const Provider: ParentComponent = (props) => {
                     await setSettings(settings);
                 }
 
-                // 60 seconds to load or we bail
+                // 90 seconds to load or we bail
                 const start = Date.now();
-                const MAX_LOAD_TIME = 60000;
+                const MAX_LOAD_TIME = 90000;
                 const interval = setInterval(() => {
                     console.log("Running setup", Date.now() - start);
                     if (Date.now() - start > MAX_LOAD_TIME) {
                         clearInterval(interval);
-                        // Have to set state error here because throwing doesn't work if WASM panics
-                        setState({
-                            setup_error: new Error(
-                                "Load timed out, please try again"
-                            )
-                        });
-                        return;
+                        // Only want to do this if we're really not done loading
+                        if (state.load_stage !== "done") {
+                            // Have to set state error here because throwing doesn't work if WASM panics
+                            setState({
+                                setup_error: new Error(
+                                    "Load timed out, please try again"
+                                )
+                            });
+                            return;
+                        }
                     }
                 }, 1000);
 
