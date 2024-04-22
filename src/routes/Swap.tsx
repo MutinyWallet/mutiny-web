@@ -2,6 +2,7 @@ import { createForm, required } from "@modular-forms/solid";
 import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
 import { createAsync, useNavigate } from "@solidjs/router";
 import {
+    createEffect,
     createMemo,
     createResource,
     createSignal,
@@ -187,25 +188,28 @@ export function Swap() {
         );
     });
 
-    const amountWarning = createAsync(async () => {
-        if (amountSats() === 0n || !!channelOpenResult()) {
+    const [amountWarning, { refetch: refetchAmountWarning }] = createResource(
+        async () => {
+            if (amountSats() === 0n || !!channelOpenResult()) {
+                return undefined;
+            }
+
+            if (amountSats() < 100000n) {
+                return i18n.t("swap.channel_too_small", { amount: "100,000" });
+            }
+
+            if (
+                amountSats() >
+                    (state.balance?.confirmed || 0n) +
+                        (state.balance?.unconfirmed || 0n) ||
+                !feeEstimate()
+            ) {
+                return i18n.t("swap.insufficient_funds");
+            }
+
             return undefined;
         }
-
-        if (amountSats() < 100000n) {
-            return i18n.t("swap.channel_too_small", { amount: "100,000" });
-        }
-
-        if (
-            amountSats() >
-            (state.balance?.confirmed || 0n) +
-                (state.balance?.unconfirmed || 0n)
-        ) {
-            return i18n.t("swap.insufficient_funds");
-        }
-
-        return undefined;
-    });
+    );
 
     function calculateMaxOnchain() {
         return (
@@ -222,31 +226,42 @@ export function Swap() {
         return amountSats() === calculateMaxOnchain();
     });
 
-    const feeEstimate = createAsync(async () => {
-        const max = maxOnchain();
-        // If max we want to use the sweep fee estimator
-        if (amountSats() > 0n && amountSats() === max) {
-            try {
-                return await sw.estimate_sweep_channel_open_fee();
-            } catch (e) {
-                console.error(e);
-                return undefined;
+    const [feeEstimate, { refetch: refetchFeeEstimate }] = createResource(
+        async () => {
+            // If it's under the dust limit don't bother
+            if (amountSats() < 546n) return undefined;
+            const max = maxOnchain();
+            // If max we want to use the sweep fee estimator
+            if (amountSats() > 0n && amountSats() === max) {
+                try {
+                    return await sw.estimate_sweep_channel_open_fee();
+                } catch (e) {
+                    console.error(e);
+                    return undefined;
+                }
             }
-        }
 
-        if (amountSats() > 0n) {
-            try {
-                return await sw.estimate_tx_fee(
-                    CHANNEL_FEE_ESTIMATE_ADDRESS,
-                    amountSats(),
-                    undefined
-                );
-            } catch (e) {
-                console.error(e);
-                return undefined;
+            if (amountSats() > 0n) {
+                try {
+                    return await sw.estimate_tx_fee(
+                        CHANNEL_FEE_ESTIMATE_ADDRESS,
+                        amountSats(),
+                        undefined
+                    );
+                } catch (e) {
+                    console.error(e);
+                    return undefined;
+                }
             }
+            return undefined;
         }
-        return undefined;
+    );
+
+    createEffect(() => {
+        if (amountSats()) {
+            refetchAmountWarning();
+            refetchFeeEstimate();
+        }
     });
 
     return (
@@ -419,18 +434,22 @@ export function Swap() {
                             ]}
                         />
                         <Suspense>
-                            <Show when={feeEstimate()}>
+                            <Show
+                                when={feeEstimate.latest && amountSats() > 0n}
+                            >
                                 <FeeDisplay
                                     amountSats={amountSats().toString()}
-                                    fee={feeEstimate()!.toString()}
+                                    fee={feeEstimate.latest!.toString()}
                                     maxAmountSats={maxOnchain()}
                                 />
                             </Show>
                         </Suspense>
                         <Suspense>
-                            <Show when={amountWarning() && amountSats() > 0n}>
+                            <Show
+                                when={amountWarning.latest && amountSats() > 0n}
+                            >
                                 <InfoBox accent={"red"}>
-                                    {amountWarning()}
+                                    {amountWarning.latest}
                                 </InfoBox>
                             </Show>
                         </Suspense>

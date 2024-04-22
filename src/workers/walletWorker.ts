@@ -506,6 +506,26 @@ export async function create_bip21(
 }
 
 /**
+ * Creates a lightning invoice. The amount should be in satoshis.
+ * If no amount is provided, the invoice will be created with no amount.
+ * If no description is provided, the invoice will be created with no description.
+ *
+ * If the manager has more than one node it will create a phantom invoice.
+ * If there is only one node it will create an invoice just for that node.
+ * @param {bigint} amount
+ * @param {(string)[]} labels
+ * @returns {Promise<MutinyInvoice>}
+ */
+export async function create_invoice(
+    amount: bigint,
+    labels: string[]
+): Promise<MutinyInvoice | undefined> {
+    const invoice = await wallet!.create_invoice(amount, labels);
+    if (!invoice) return undefined;
+    return destructureInvoice(invoice);
+}
+
+/**
  * Estimates the onchain fee for a transaction sweep our on-chain balance
  * to the given address.
  *

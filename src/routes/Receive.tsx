@@ -1,9 +1,6 @@
-import {
-    MutinyBip21RawMaterials,
-    MutinyInvoice
-} from "@mutinywallet/mutiny-wasm";
+import { MutinyInvoice } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
-import { ArrowLeftRight, CircleHelp, Users } from "lucide-solid";
+import { CircleHelp, Link, Users, Zap } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -23,7 +20,6 @@ import {
     BackButton,
     BackLink,
     Button,
-    Checkbox,
     DefaultMain,
     Fee,
     FeesModal,
@@ -36,6 +32,7 @@ import {
     MutinyWalletGuard,
     NavBar,
     ReceiveWarnings,
+    SharpButton,
     showToast,
     SimpleDialog,
     SimpleInput,
@@ -71,34 +68,71 @@ export type OnChainTx = {
     };
 };
 
-export type ReceiveFlavor = "unified" | "lightning" | "onchain";
+export type ReceiveFlavor = "lightning" | "onchain";
 type ReceiveState = "edit" | "show" | "paid";
 type PaidState = "lightning_paid" | "onchain_paid";
 
 function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
     const i18n = useI18n();
     return (
-        // TODO: probably won't always be fixed 2500?
-        <Show when={props.fee > 1000n}>
-            <Switch>
-                <Match when={props.flavor === "unified"}>
-                    <InfoBox accent="blue">
-                        {i18n.t("receive.unified_setup_fee", {
-                            amount: props.fee.toLocaleString()
-                        })}
-                        <FeesModal />
-                    </InfoBox>
-                </Match>
-                <Match when={props.flavor === "lightning"}>
-                    <InfoBox accent="blue">
-                        {i18n.t("receive.lightning_setup_fee", {
-                            amount: props.fee.toLocaleString()
-                        })}
-                        <FeesModal />
-                    </InfoBox>
-                </Match>
-            </Switch>
+        <Show when={props.fee > 1000n && props.flavor === "lightning"}>
+            <InfoBox accent="blue">
+                {i18n.t("receive.lightning_setup_fee", {
+                    amount: props.fee.toLocaleString()
+                })}
+                <FeesModal />
+            </InfoBox>
         </Show>
+    );
+}
+
+function FlavorChooser(props: {
+    flavor: ReceiveFlavor;
+    setFlavor: (value: string) => void;
+}) {
+    const [methodChooserOpen, setMethodChooserOpen] = createSignal(false);
+    const i18n = useI18n();
+
+    const RECEIVE_FLAVORS = [
+        {
+            value: "lightning",
+            label: i18n.t("receive.lightning_label"),
+            caption: i18n.t("receive.lightning_caption")
+        },
+        {
+            value: "onchain",
+            label: i18n.t("receive.onchain_label"),
+            caption: i18n.t("receive.onchain_caption")
+        }
+    ];
+    return (
+        <>
+            <SharpButton onClick={() => setMethodChooserOpen(true)}>
+                {props.flavor === "lightning" ? (
+                    <Zap class="h-4 w-4" />
+                ) : (
+                    <Link class="h-4 w-4" />
+                )}
+                {props.flavor === "lightning" ? "Lightning" : "On-chain"}
+            </SharpButton>
+            <SimpleDialog
+                title={i18n.t("receive.choose_payment_format")}
+                open={methodChooserOpen()}
+                setOpen={(open) => setMethodChooserOpen(open)}
+            >
+                <StyledRadioGroup
+                    initialValue={props.flavor}
+                    onValueChange={(flavor) => {
+                        props.setFlavor(flavor);
+                        setMethodChooserOpen(false);
+                    }}
+                    choices={RECEIVE_FLAVORS}
+                    accent="white"
+                    vertical
+                    delayOnChange
+                />
+            </SimpleDialog>
+        </>
     );
 }
 
@@ -123,7 +157,7 @@ function ReceiveMethodHelp() {
 }
 
 export function Receive() {
-    const [state, actions, sw] = useMegaStore();
+    const [state, _actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const i18n = useI18n();
 
@@ -131,8 +165,16 @@ export function Receive() {
     const [whatForInput, setWhatForInput] = createSignal("");
 
     const [receiveState, setReceiveState] = createSignal<ReceiveState>("edit");
-    const [bip21Raw, setBip21Raw] = createSignal<MutinyBip21RawMaterials>();
-    const [unified, setUnified] = createSignal("");
+    // We use these for displaying the QR
+    const [receiveStrings, setReceiveStrings] = createSignal<{
+        lightning?: string;
+        onchain?: string;
+    }>();
+    // We use these for checking the payment status
+    const [rawReceiveStrings, setRawReceiveStrings] = createSignal<{
+        bolt11?: string;
+        address?: string;
+    }>();
 
     const [lspFee, setLspFee] = createSignal(0n);
 
@@ -140,10 +182,8 @@ export function Receive() {
     const [paymentTx, setPaymentTx] = createSignal<OnChainTx>();
     const [paymentInvoice, setPaymentInvoice] = createSignal<MutinyInvoice>();
 
-    // The flavor of the receive (defaults to unified)
-    const [flavor, setFlavor] = createSignal<ReceiveFlavor>(
-        state.preferredInvoiceType
-    );
+    // The flavor of the receive
+    const [flavor, setFlavor] = createSignal<ReceiveFlavor>("lightning");
 
     // loading state for the continue button
     const [loading, setLoading] = createSignal(false);
@@ -154,47 +194,19 @@ export function Receive() {
     const [detailsKind, setDetailsKind] = createSignal<HackActivityType>();
     const [detailsId, setDetailsId] = createSignal<string>("");
 
-    const RECEIVE_FLAVORS = [
-        {
-            value: "unified",
-            label: i18n.t("receive.unified_label"),
-            caption: i18n.t("receive.unified_caption")
-        },
-        {
-            value: "lightning",
-            label: i18n.t("receive.lightning_label"),
-            caption: i18n.t("receive.lightning_caption")
-        },
-        {
-            value: "onchain",
-            label: i18n.t("receive.onchain_label"),
-            caption: i18n.t("receive.onchain_caption")
-        }
-    ];
-
-    const [rememberChoice, setRememberChoice] = createSignal(false);
-
-    const receiveString = createMemo(() => {
-        if (unified() && receiveState() === "show") {
-            if (flavor() === "unified") {
-                return unified();
-            } else if (flavor() === "lightning") {
-                return bip21Raw()?.invoice ?? "";
-            } else if (flavor() === "onchain") {
-                return bip21Raw()?.address ?? "";
-            }
-        }
-    });
-
-    function clearAll() {
-        setAmount(0n);
+    function clearAllButAmount() {
         setReceiveState("edit");
-        setBip21Raw(undefined);
-        setUnified("");
+        setReceiveStrings(undefined);
         setPaymentTx(undefined);
         setPaymentInvoice(undefined);
         setError("");
-        setFlavor(state.preferredInvoiceType);
+    }
+
+    function clearAll() {
+        clearAllButAmount();
+        setAmount(0n);
+        setFlavor("lightning");
+        setWhatForInput("");
     }
 
     function openDetailsModal() {
@@ -221,67 +233,43 @@ export function Receive() {
         setDetailsOpen(true);
     }
 
-    async function getUnifiedQr(amount: bigint) {
-        console.log("get unified amount", amount);
-        const bigAmount = BigInt(amount);
-        setLoading(true);
+    const receiveTags = createMemo(() => {
+        return whatForInput() ? [whatForInput().trim()] : [];
+    });
 
-        // Both paths use tags so we'll do this once
-        let tags;
-
+    async function getLightningReceiveString(amount: bigint) {
         try {
-            tags = whatForInput() ? [whatForInput().trim()] : [];
+            const inv = await sw.create_invoice(amount, receiveTags());
+
+            const bolt11 = inv?.bolt11;
+            setRawReceiveStrings({ bolt11 });
+
+            return `lightning:${bolt11}`;
         } catch (e) {
-            showToast(eify(e));
             console.error(e);
-            setLoading(false);
-            return;
         }
+    }
 
-        // Happy path
-        // First we try to get both an invoice and an address
+    async function getOnchainReceiveString(amount?: bigint) {
         try {
-            console.log("big amount", bigAmount);
-            const raw = await sw.create_bip21(bigAmount, tags);
-            // Save the raw info so we can watch the address and invoice
-            setBip21Raw(raw);
-
-            console.log("raw", raw);
-
-            const params = objectToSearchParams({
-                amount: raw?.btc_amount,
-                lightning: raw?.invoice
-            });
-
-            setLoading(false);
-            return `bitcoin:${raw?.address}?${params}`;
-        } catch (e) {
-            console.error(e);
-            if (e === "Satoshi amount is invalid") {
-                setError(i18n.t("receive.error_under_min_lightning"));
-            } else {
-                setError(i18n.t("receive.error_creating_unified"));
+            if (amount && amount < 546n) {
+                throw new Error(i18n.t("receive.error_under_min_onchain"));
             }
-        }
+            const raw = await sw.get_new_address(receiveTags());
+            const address = raw?.address;
 
-        // If we didn't return before this, that means create_bip21 failed
-        // So now we'll just try and get an address without the invoice
-        try {
-            const raw = await sw.get_new_address(tags);
-
-            // Save the raw info so we can watch the address
-            setBip21Raw(raw);
-
-            setFlavor("onchain");
-
-            // We won't meddle with a "unified" QR here
-            return raw?.address;
+            if (amount && amount > 0n) {
+                const btc_amount = await sw.convert_sats_to_btc(amount);
+                const params = objectToSearchParams({
+                    amount: btc_amount.toString()
+                });
+                setRawReceiveStrings({ address });
+                return `bitcoin:${address}?${params}`;
+            } else {
+                return `bitcoin:${address}`;
+            }
         } catch (e) {
-            // If THAT failed we're really screwed
-            showToast(eify(i18n.t("receive.error_creating_address")));
             console.error(e);
-        } finally {
-            setLoading(false);
         }
     }
 
@@ -292,25 +280,55 @@ export function Receive() {
     }
 
     async function getQr() {
-        if (amount()) {
-            const unifiedQr = await getUnifiedQr(amount());
+        setLoading(true);
+        try {
+            if (flavor() === "lightning") {
+                const lightning = await getLightningReceiveString(amount());
+                setReceiveStrings({ lightning });
+            }
 
-            setUnified(unifiedQr || "");
-            setReceiveState("show");
+            if (flavor() === "onchain") {
+                const onchain = await getOnchainReceiveString(amount());
+                setReceiveStrings({ onchain });
+            }
+
+            if (!receiveStrings()?.lightning && !receiveStrings()?.onchain) {
+                throw new Error(i18n.t("receive.receive_strings_error"));
+            }
+
+            if (!error()) {
+                setReceiveState("show");
+            }
+        } catch (e) {
+            console.error(e);
+            showToast(eify(e));
         }
+
+        setLoading(false);
     }
 
-    async function checkIfPaid(
-        bip21?: MutinyBip21RawMaterials
-    ): Promise<PaidState | undefined> {
-        if (bip21) {
-            console.debug("checking if paid...");
-            const lightning = bip21.invoice;
-            const address = bip21.address;
+    const qrString = createMemo(() => {
+        if (receiveState() === "show") {
+            if (flavor() === "lightning") {
+                return receiveStrings()?.lightning;
+            } else if (flavor() === "onchain") {
+                return receiveStrings()?.onchain;
+            }
+        }
+    });
+
+    async function checkIfPaid(receiveStrings?: {
+        bolt11?: string;
+        address?: string;
+    }): Promise<PaidState | undefined> {
+        if (receiveStrings) {
+            const lightning = receiveStrings.bolt11;
+            const address = receiveStrings.address;
 
             try {
                 // Lightning invoice might be blank
                 if (lightning) {
+                    console.log("checking invoice", lightning);
                     const invoice = await sw.get_invoice(lightning);
 
                     // If the invoice has a fees amount that's probably the LSP fee
@@ -326,15 +344,16 @@ export function Receive() {
                     }
                 }
 
-                const tx = (await sw.check_address(address)) as
-                    | OnChainTx
-                    | undefined;
+                if (address) {
+                    console.log("checking address", address);
+                    const tx = await sw.check_address(address);
 
-                if (tx) {
-                    setReceiveState("paid");
-                    setPaymentTx(tx);
-                    await vibrateSuccess();
-                    return "onchain_paid";
+                    if (tx) {
+                        setReceiveState("paid");
+                        setPaymentTx(tx);
+                        await vibrateSuccess();
+                        return "onchain_paid";
+                    }
                 }
             } catch (e) {
                 console.error(e);
@@ -342,33 +361,29 @@ export function Receive() {
         }
     }
 
-    function selectFlavor(flavor: string) {
-        setFlavor(flavor as ReceiveFlavor);
-        if (rememberChoice()) {
-            actions.setPreferredInvoiceType(flavor as ReceiveFlavor);
-        }
-        setMethodChooserOpen(false);
-    }
-
-    const [paidState, { refetch }] = createResource(bip21Raw, checkIfPaid);
+    const [paidState, { refetch }] = createResource(
+        rawReceiveStrings,
+        checkIfPaid
+    );
 
     createEffect(() => {
         const interval = setInterval(() => {
             if (receiveState() === "show") refetch();
         }, 1000); // Poll every second
+        if (receiveState() !== "show") {
+            clearInterval(interval);
+        }
         onCleanup(() => {
             clearInterval(interval);
         });
     });
-
-    const [methodChooserOpen, setMethodChooserOpen] = createSignal(false);
 
     return (
         <MutinyWalletGuard>
             <DefaultMain>
                 <Show when={receiveState() === "show"} fallback={<BackLink />}>
                     <BackButton
-                        onClick={() => clearAll()}
+                        onClick={() => clearAllButAmount()}
                         title={i18n.t("receive.edit")}
                         showOnDesktop
                     />
@@ -383,17 +398,26 @@ export function Receive() {
                     {i18n.t("receive.receive_bitcoin")}
                 </LargeHeader>
                 <Switch>
-                    <Match when={!unified() || receiveState() === "edit"}>
+                    <Match
+                        when={!receiveStrings() || receiveState() === "edit"}
+                    >
                         <div class="flex-1" />
                         <VStack>
-                            <AmountEditable
-                                initialAmountSats={amount() || "0"}
-                                setAmountSats={setAmount}
-                                onSubmit={getQr}
-                            />
+                            <div class="mx-auto flex w-full max-w-[400px] flex-col items-center">
+                                <AmountEditable
+                                    initialAmountSats={amount() || "0"}
+                                    setAmountSats={setAmount}
+                                    onSubmit={getQr}
+                                />
+                                <FlavorChooser
+                                    flavor={flavor()}
+                                    setFlavor={setFlavor}
+                                />
+                            </div>
                             <ReceiveWarnings
                                 amountSats={amount() || 0n}
                                 from_fedi_to_ln={false}
+                                flavor={flavor()}
                             />
                         </VStack>
                         <div class="flex-1" />
@@ -417,7 +441,9 @@ export function Receive() {
                                 />
                             </form>
                             <Button
-                                disabled={!amount()}
+                                disabled={
+                                    !amount() && !(flavor() === "onchain")
+                                }
                                 intent="green"
                                 onClick={onSubmit}
                                 loading={loading()}
@@ -426,7 +452,7 @@ export function Receive() {
                             </Button>
                         </VStack>
                     </Match>
-                    <Match when={unified() && receiveState() === "show"}>
+                    <Match when={receiveStrings() && receiveState() === "show"}>
                         <FeeWarning fee={lspFee()} flavor={flavor()} />
                         <Show when={error()}>
                             <InfoBox accent="red">
@@ -434,42 +460,13 @@ export function Receive() {
                             </InfoBox>
                         </Show>
                         <IntegratedQr
-                            value={receiveString() ?? ""}
+                            value={qrString() ?? ""}
                             amountSats={amount() ? amount().toString() : "0"}
                             kind={flavor()}
                         />
                         <p class="text-center text-m-grey-350">
                             {i18n.t("receive.keep_mutiny_open")}
                         </p>
-                        {/* Only show method chooser when we have an invoice */}
-                        <Show when={bip21Raw()?.invoice}>
-                            <button
-                                class="mx-auto flex items-center gap-2 pb-8 font-bold text-m-grey-400"
-                                onClick={() => setMethodChooserOpen(true)}
-                            >
-                                <span>{i18n.t("receive.choose_format")}</span>
-                                <ArrowLeftRight class="h-4 w-4" />
-                            </button>
-                            <SimpleDialog
-                                title={i18n.t("receive.choose_payment_format")}
-                                open={methodChooserOpen()}
-                                setOpen={(open) => setMethodChooserOpen(open)}
-                            >
-                                <StyledRadioGroup
-                                    initialValue={flavor()}
-                                    onValueChange={selectFlavor}
-                                    choices={RECEIVE_FLAVORS}
-                                    accent="white"
-                                    vertical
-                                    delayOnChange
-                                />
-                                <Checkbox
-                                    label={i18n.t("receive.remember_choice")}
-                                    checked={rememberChoice()}
-                                    onChange={setRememberChoice}
-                                />
-                            </SimpleDialog>
-                        </Show>
                     </Match>
                     <Match when={receiveState() === "paid"}>
                         <SuccessModal
