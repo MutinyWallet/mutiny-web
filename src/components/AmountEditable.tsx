@@ -59,7 +59,6 @@ export const AmountEditable: ParentComponent<{
                 state.fiat,
                 sw
             ).then((sats) => {
-                console.log("sats", sats);
                 setLocalFiat(sats);
             });
         }

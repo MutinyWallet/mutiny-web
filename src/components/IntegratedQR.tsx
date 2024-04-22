@@ -39,16 +39,6 @@ function KindIndicator(props: { kind: ReceiveFlavor | "gift" | "lnAddress" }) {
                     </h3>
                     <Zap class="h-4 w-4" />
                 </Match>
-
-                <Match when={props.kind === "unified"}>
-                    <h3 class="font-semibold">
-                        {i18n.t("receive.integrated_qr.unified")}
-                    </h3>
-                    <div class="flex gap-1">
-                        <Zap class="h-4 w-4" />
-                        <Link class="h-4 w-4" />
-                    </div>
-                </Match>
             </Switch>
         </div>
     );

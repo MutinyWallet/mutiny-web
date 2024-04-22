@@ -3,11 +3,13 @@ import { createResource, Match, Switch } from "solid-js";
 import { InfoBox } from "~/components/InfoBox";
 import { FeesModal } from "~/components/MoreInfoModal";
 import { useI18n } from "~/i18n/context";
+import { ReceiveFlavor } from "~/routes";
 import { useMegaStore } from "~/state/megaStore";
 
 export function ReceiveWarnings(props: {
     amountSats: bigint;
     from_fedi_to_ln?: boolean;
+    flavor?: ReceiveFlavor;
 }) {
     const i18n = useI18n();
     const [state, _actions, sw] = useMegaStore();
@@ -37,17 +39,19 @@ export function ReceiveWarnings(props: {
         if (state.federations?.length !== 0 && props.from_fedi_to_ln !== true) {
             return undefined;
         }
-        if (
-            (state.balance?.lightning || 0n) === 0n &&
-            !state.settings?.lsps_connection_string
-        ) {
-            return i18n.t("receive.amount_editable.receive_too_small", {
-                amount: "100,000"
-            });
-        }
+        if (props.flavor === "lightning") {
+            if (
+                (state.balance?.lightning || 0n) === 0n &&
+                !state.settings?.lsps_connection_string
+            ) {
+                return i18n.t("receive.amount_editable.receive_too_small", {
+                    amount: "100,000"
+                });
+            }
 
-        if (props.amountSats > (inboundCapacity() || 0n)) {
-            return i18n.t("receive.amount_editable.setup_fee_lightning");
+            if (props.amountSats > (inboundCapacity() || 0n)) {
+                return i18n.t("receive.amount_editable.setup_fee_lightning");
+            }
         }
 
         return undefined;
@@ -65,8 +69,21 @@ export function ReceiveWarnings(props: {
         }
     };
 
+    const tooSmallWarning = () => {
+        if (
+            props.flavor === "onchain" &&
+            props.amountSats > 0n &&
+            props.amountSats < 546n
+        ) {
+            return i18n.t("receive.error_under_min_onchain");
+        }
+    };
+
     return (
         <Switch>
+            <Match when={tooSmallWarning()}>
+                <InfoBox accent="red">{tooSmallWarning()}</InfoBox>
+            </Match>
             <Match when={sillyAmountWarning()}>
                 <InfoBox accent="red">{sillyAmountWarning()}</InfoBox>
             </Match>

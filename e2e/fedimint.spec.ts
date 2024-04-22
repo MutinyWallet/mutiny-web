@@ -77,10 +77,10 @@ test("fedmint join, receive, send", async ({ page }) => {
 
     const value = await qrCode.getAttribute("value");
 
-    // The SVG's value property includes "bitcoin:t"
-    expect(value).toContain("bitcoin:t");
+    // The SVG's value property includes "bitcoin:l"
+    expect(value).toContain("lightning:l");
 
-    const lightningInvoice = value?.split("lightning=")[1];
+    const lightningInvoice = value?.split("lightning:")[1];
 
     // Post the lightning invoice to the server
     const _response = await fetch(

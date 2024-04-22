@@ -276,7 +276,6 @@ export function Send() {
 
     // Rerun every time the source or amount changes to check for amount errors
     createEffect(() => {
-        setError(undefined);
         // Don't recompute if sending
         if (sending()) return;
         if (source() === "onchain" && maxOnchain() < amountSats()) {
@@ -303,10 +302,13 @@ export function Send() {
             );
             return;
         }
+        setError(undefined);
     });
 
     // Rerun every time the amount changes if we're onchain
-    const feeEstimate = createAsync(async () => {
+    const [feeEstimate, { refetch }] = createResource(async () => {
+        // If it's under the dust limit don't bother
+        if (amountSats() < 546n) return undefined;
         if (
             source() === "onchain" &&
             amountSats() &&
@@ -327,10 +329,17 @@ export function Send() {
                 console.log("estimate", estimate);
                 return estimate;
             } catch (e) {
-                setError(eify(e).message);
+                // This is usually because the amount is too small or too large so we can ignore
+                console.error(e);
             }
         }
         return undefined;
+    });
+
+    createEffect(() => {
+        if (amountSats() && amountSats() > 0n) {
+            refetch();
+        }
     });
 
     const [parsingDestination, setParsingDestination] = createSignal(false);
@@ -540,7 +549,7 @@ export function Send() {
                     sentDetails.amount = amountSats();
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
-                    sentDetails.fee_estimate = feeEstimate() ?? 0;
+                    sentDetails.fee_estimate = feeEstimate.latest ?? 0;
                 } else if (payjoinEnabled()) {
                     const txid = await sw.send_payjoin(
                         originalScan()!,
@@ -550,7 +559,7 @@ export function Send() {
                     sentDetails.amount = amountSats();
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
-                    sentDetails.fee_estimate = feeEstimate() ?? 0;
+                    sentDetails.fee_estimate = feeEstimate.latest ?? 0;
                 } else {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const txid = await sw.send_to_address(
@@ -561,7 +570,7 @@ export function Send() {
                     sentDetails.amount = amountSats();
                     sentDetails.destination = address();
                     sentDetails.txid = txid;
-                    sentDetails.fee_estimate = feeEstimate() ?? 0;
+                    sentDetails.fee_estimate = feeEstimate.latest ?? 0;
                 }
             }
             if (sentDetails.payment_hash || sentDetails.txid) {
@@ -589,6 +598,7 @@ export function Send() {
             sending() ||
             amountSats() == 0n ||
             amountSats() === undefined ||
+            (source() === "onchain" && amountSats() < 546n) ||
             !!error()
         );
     });
@@ -802,10 +812,10 @@ export function Send() {
                         />
                     </Show>
                     <Suspense>
-                        <Show when={feeEstimate()}>
+                        <Show when={feeEstimate.latest}>
                             <FeeDisplay
                                 amountSats={amountSats().toString()}
-                                fee={feeEstimate()!.toString()}
+                                fee={feeEstimate.latest!.toString()}
                                 maxAmountSats={maxAmountSats()}
                             />
                         </Show>

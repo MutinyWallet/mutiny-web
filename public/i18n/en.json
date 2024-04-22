@@ -108,13 +108,10 @@
     "receive_add_the_sender": "Add the sender for your records",
     "keep_mutiny_open": "Keep Mutiny open to complete the payment.",
     "choose_payment_format": "Choose payment format",
-    "unified_label": "Unified",
-    "unified_caption": "Combines a bitcoin address and a lightning invoice. Sender chooses payment method.",
     "lightning_label": "Lightning invoice",
     "lightning_caption": "Ideal for small transactions. Usually lower fees than on-chain.",
     "onchain_label": "Bitcoin address",
     "onchain_caption": "On-chain, just like Satoshi did it. Ideal for very large transactions.",
-    "unified_setup_fee": "A lightning setup fee of {{amount}} SATS will be charged if paid over lightning.",
     "lightning_setup_fee": "A lightning setup fee of {{amount}} SATS will be charged for this receive.",
     "amount": "Amount",
     "fee": "+ Fee",
@@ -123,11 +120,11 @@
     "channel_size": "Channel size",
     "channel_reserve": "- Channel reserve",
     "error_under_min_lightning": "Defaulting to On-chain. Amount is too small for your initial Lightning receive.",
-    "error_creating_unified": "Defaulting to On-chain. Something went wrong when creating the unified address",
-    "error_creating_address": "Something went wrong when creating the on-chain address",
+    "error_creating_unified": "Defaulting to On-chain. Something went wrong when creating the Lightning invoice.",
+    "error_creating_address": "Something went wrong when creating the on-chain address.",
     "amount_editable": {
       "receive_too_small": "Your first receive needs to be {{amount}} SATS or greater.",
-      "setup_fee_lightning": "A lightning setup fee will be charged if paid over lightning.",
+      "setup_fee_lightning": "A lightning setup fee will be charged.",
       "more_than_21m": "There are only 21 million bitcoin.",
       "set_amount": "Set amount",
       "max": "MAX",
@@ -142,7 +139,6 @@
     "integrated_qr": {
       "onchain": "On-chain",
       "lightning": "Lightning",
-      "unified": "Unified",
       "gift": "Lightning Gift"
     },
     "remember_choice": "Remember my choice next time",
@@ -150,7 +146,9 @@
     "method_help": {
       "title": "Receive Method",
       "body": "Lightning receives will automatically go into your chosen federation. You can swap to self-custodial later if you want."
-    }
+    },
+    "receive_strings_error": "Something went wrong generating an invoice or on-chain address.",
+    "error_under_min_onchain": "That's under the dust limit! On-chain transactions should be much bigger."
   },
   "send": {
     "search": {
