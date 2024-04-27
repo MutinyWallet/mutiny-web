@@ -149,7 +149,7 @@
     "what_for": "What's this for?",
     "method_help": {
       "title": "Receive Method",
-      "body": "Lightning receives under 200,000 sats go into your federation by default. Anything higher than that goes into a lightning channel."
+      "body": "Lightning receives will automatically go into your chosen federation. You can swap to self-custodial later if you want."
     }
   },
   "send": {
