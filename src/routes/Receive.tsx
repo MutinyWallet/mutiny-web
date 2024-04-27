@@ -3,7 +3,7 @@ import {
     MutinyInvoice
 } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
-import { ArrowLeftRight, CircleHelp, Users, Zap } from "lucide-solid";
+import { ArrowLeftRight, CircleHelp, Users } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -102,20 +102,13 @@ function FeeWarning(props: { fee: bigint; flavor: ReceiveFlavor }) {
     );
 }
 
-function ReceiveMethodHelp(props: { amountSats: bigint }) {
+function ReceiveMethodHelp() {
     const i18n = useI18n();
     const [open, setOpen] = createSignal(false);
     return (
         <>
             <button class="flex gap-2 self-end" onClick={() => setOpen(true)}>
-                <Switch>
-                    <Match when={props.amountSats <= 200000n}>
-                        <Users class="w-[18px]" />
-                    </Match>
-                    <Match when={true}>
-                        <Zap class="w-[18px]" />
-                    </Match>
-                </Switch>
+                <Users class="w-[18px]" />
                 <CircleHelp class="w-[18px] text-m-grey-350" />
             </button>
             <SimpleDialog
@@ -415,9 +408,7 @@ export function Receive() {
                                     state.federations.length
                                 }
                             >
-                                <ReceiveMethodHelp
-                                    amountSats={amount() || 0n}
-                                />
+                                <ReceiveMethodHelp />
                             </Show>
                             <form onSubmit={onSubmit}>
                                 <SimpleInput
