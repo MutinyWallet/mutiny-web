@@ -343,7 +343,8 @@
       "close_channel": "Close",
       "online_channels": "Online Channels",
       "offline_channels": "Offline Channels",
-      "close_channel_confirm": "Closing this channel will move the balance on-chain and incur an on-chain fee."
+      "close_channel_confirm": "Closing this channel will move the balance on-chain and incur an on-chain fee.",
+      "force_close_channel_confirm": "This channel is offline. Force closing this channel will move the balance on-chain, incur an on-chain fee, and may take a few days to settle."
     },
     "connections": {
       "title": "Wallet Connections",
