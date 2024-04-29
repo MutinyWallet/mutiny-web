@@ -149,7 +149,7 @@ export function LightningAddress() {
     const [error, setError] = createSignal<Error>();
     const [settingLnAddress, setSettingLnAddress] = createSignal(false);
 
-    const [lnurlName, { refetch }] = createResource(async () => {
+    const [lnurlName] = createResource(async () => {
         try {
             const name = await state.mutiny_wallet?.check_lnurl_name();
             return name;
@@ -219,8 +219,9 @@ export function LightningAddress() {
                     <Switch>
                         <Match when={!state.mutiny_plus && ios}>
                             <InfoBox accent="white">
-                                Mutiny Address requires Mutiny+ which cannot be
-                                purchased with this app.
+                                {i18n.t(
+                                    "settings.lightning_address.ios_warning"
+                                )}
                             </InfoBox>
                         </Match>
                         <Match when={!state.mutiny_plus}>
@@ -231,7 +232,11 @@ export function LightningAddress() {
                             <MutinyPlusCta />
                         </Match>
                         <Match when={!lnurlName() && state.federations?.length}>
-                            <HermesForm onSubmit={() => refetch()} />
+                            <HermesForm
+                                onSubmit={() => {
+                                    navigate("/profile");
+                                }}
+                            />
                         </Match>
                         <Match
                             when={
@@ -262,7 +267,9 @@ export function LightningAddress() {
                         </Match>
                         <Match when={true}>
                             <NiceP>
-                                Add a federation to reserve lightning address.
+                                {i18n.t(
+                                    "settings.lightning_address.add_a_federation"
+                                )}
                             </NiceP>
                             <ButtonCard
                                 onClick={() =>

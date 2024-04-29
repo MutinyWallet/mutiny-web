@@ -88,9 +88,7 @@ export function Profile() {
                     </ButtonCard>
                     <Show
                         when={
-                            state.federations?.length &&
-                            !hasMutinyAddress() &&
-                            import.meta.env.VITE_HERMES
+                            !hasMutinyAddress() && import.meta.env.VITE_HERMES
                         }
                     >
                         <ButtonCard

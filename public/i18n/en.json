@@ -614,7 +614,9 @@
     "lightning_address": {
       "title": "Mutiny Address",
       "description": "Get zaps and payments to your wallet with your own lightning address.",
-      "create": "Create Mutiny Address"
+      "create": "Create Mutiny Address",
+      "add_a_federation": "To enable this feature you need to be a member of a federation.",
+      "ios_warning": "Mutiny Address requires Mutiny+ which cannot be purchased with this app."
     }
   },
   "swap": {
