@@ -203,12 +203,7 @@ export function Plus() {
                                 {i18n.t("settings.plus.wallet_connection")}
                             </A>
                         </NiceP>
-                        <Show
-                            when={
-                                state.federations?.length &&
-                                import.meta.env.VITE_HERMES
-                            }
-                        >
+                        <Show when={import.meta.env.VITE_HERMES}>
                             <ButtonCard
                                 onClick={() =>
                                     navigate("/settings/lightningaddress")
