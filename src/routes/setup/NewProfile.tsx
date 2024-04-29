@@ -41,7 +41,7 @@ export function NewProfile() {
             const profile = await state.mutiny_wallet?.setup_new_profile(
                 p.nym ? p.nym : DEFAULT_NOSTR_NAME,
                 p.imageUrl ? p.imageUrl : undefined,
-                p.lightningAddress ? p.lightningAddress : undefined,
+                undefined,
                 undefined
             );
             console.log("profile", profile);

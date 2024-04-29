@@ -101,20 +101,24 @@ export function EditProfileForm(props: {
                                 />
                             )}
                         </Field>
-                        <Field
-                            name="lightningAddress"
-                            validate={[email(i18n.t("contacts.email_error"))]}
-                        >
-                            {(field, props) => (
-                                <TextField
-                                    {...props}
-                                    placeholder="example@example.com"
-                                    value={field.value}
-                                    error={field.error}
-                                    label={i18n.t("contacts.ln_address")}
-                                />
-                            )}
-                        </Field>
+                        <Show when={props.cta !== "Create"}>
+                            <Field
+                                name="lightningAddress"
+                                validate={[
+                                    email(i18n.t("contacts.email_error"))
+                                ]}
+                            >
+                                {(field, props) => (
+                                    <TextField
+                                        {...props}
+                                        placeholder="example@example.com"
+                                        value={field.value}
+                                        error={field.error}
+                                        label={i18n.t("contacts.ln_address")}
+                                    />
+                                )}
+                            </Field>
+                        </Show>
                         <Button
                             layout="full"
                             type="submit"
