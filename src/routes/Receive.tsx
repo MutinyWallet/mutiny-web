@@ -253,7 +253,9 @@ export function Receive() {
 
             const params = objectToSearchParams({
                 amount: raw?.btc_amount,
-                lightning: raw?.invoice
+                lightning: raw?.invoice,
+                pj: raw?.pj,
+                ohttp: raw?.ohttp,
             });
 
             setLoading(false);

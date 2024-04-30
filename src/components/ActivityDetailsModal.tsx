@@ -520,8 +520,7 @@ export function ActivityDetailsModal(props: {
             } else {
                 console.debug("reading tx: ", id());
                 const tx = await state.mutiny_wallet?.get_transaction(id());
-
-                return tx;
+                return tx !== null ? tx : id(); // if no tx found still show id
             }
         } catch (e) {
             console.error(e);
