@@ -248,10 +248,15 @@ export function Send() {
     });
 
     const maxOnchain = createMemo(() => {
-        return (
-            (state.balance?.confirmed ?? 0n) +
-            (state.balance?.unconfirmed ?? 0n)
-        );
+        const conf = state.balance?.confirmed ?? 0n;
+        const unc = state.balance?.unconfirmed ?? 0n;
+        const fed = state.balance?.federation ?? 0n;
+
+        if (fed > conf + unc) {
+            return fed;
+        } else {
+            return conf + unc;
+        }
     });
 
     const maxLightning = createMemo(() => {
