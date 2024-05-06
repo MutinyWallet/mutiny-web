@@ -434,6 +434,17 @@ export function CombinedActivity() {
                 />
             </Show>
             <Suspense fallback={<LoadingShimmer />}>
+                <Show when={!state.has_backed_up}>
+                    <ButtonCard
+                        red
+                        onClick={() => navigate("/settings/backup")}
+                    >
+                        <div class="flex items-center gap-2">
+                            <Save class="inline-block text-neutral-200" />
+                            <NiceP>{i18n.t("home.backup")}</NiceP>
+                        </div>
+                    </ButtonCard>
+                </Show>
                 <Switch>
                     <Match when={activity.latest?.length === 0}>
                         <Show when={state.federations?.length === 0}>
@@ -477,17 +488,6 @@ export function CombinedActivity() {
                         </div>
                     </Match>
                 </Switch>
-                <Show when={!state.has_backed_up}>
-                    <ButtonCard
-                        red
-                        onClick={() => navigate("/settings/backup")}
-                    >
-                        <div class="flex items-center gap-2">
-                            <Save class="inline-block text-neutral-200" />
-                            <NiceP>{i18n.t("home.backup")}</NiceP>
-                        </div>
-                    </ButtonCard>
-                </Show>
             </Suspense>
         </>
     );
