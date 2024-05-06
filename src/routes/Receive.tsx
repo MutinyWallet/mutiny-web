@@ -60,6 +60,7 @@ export type OnChainTx = {
         }>;
     };
     txid: string;
+    internal_id: string;
     received: number;
     sent: number;
     confirmation_time: {
@@ -213,7 +214,7 @@ export function Receive() {
         const paymentTxId =
             paidState() === "onchain_paid"
                 ? paymentTx()
-                    ? paymentTx()?.txid
+                    ? paymentTx()?.internal_id
                     : undefined
                 : paymentInvoice()
                   ? paymentInvoice()?.payment_hash

@@ -408,48 +408,53 @@ function OnchainDetails(props: {
                         "Pending"
                     )}
                 </KeyValue>
-                <KeyValue key={i18n.t("activity.transaction_details.txid")}>
-                    <div class="flex gap-1">
-                        {/* Have to do all these shenanigans because css / html is hard */}
-                        <div class="grid w-full grid-cols-[minmax(0,_1fr)_auto] gap-1">
-                            <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href={mempoolTxUrl(props.info.txid, network)}
+                <Show when={props.info.txid}>
+                    <KeyValue key={i18n.t("activity.transaction_details.txid")}>
+                        <div class="flex gap-1">
+                            {/* Have to do all these shenanigans because css / html is hard */}
+                            <div class="grid w-full grid-cols-[minmax(0,_1fr)_auto] gap-1">
+                                <a
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href={mempoolTxUrl(
+                                        props.info.txid,
+                                        network
+                                    )}
+                                >
+                                    <div class="flex flex-nowrap items-center font-mono text-white">
+                                        <span class="truncate">
+                                            {props.info.txid}
+                                        </span>
+                                        <span>
+                                            {props.info.txid.length > 32
+                                                ? props.info.txid.slice(-8)
+                                                : ""}
+                                        </span>
+                                        <svg
+                                            class="inline-block w-[16px] overflow-visible pl-0.5 text-white"
+                                            width="16"
+                                            height="16"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M6.00002 3.33337v1.33334H10.39L2.66669 12.39l.94333.9434 7.72338-7.72336V10h1.3333V3.33337H6.00002Z"
+                                                fill="currentColor"
+                                            />
+                                        </svg>
+                                    </div>
+                                </a>
+                            </div>
+                            <button
+                                class="min-w-[1.5rem] p-1"
+                                classList={{ "bg-m-green rounded": copied() }}
+                                onClick={() => copy(props.info.txid)}
                             >
-                                <div class="flex flex-nowrap items-center font-mono text-white">
-                                    <span class="truncate">
-                                        {props.info.txid}
-                                    </span>
-                                    <span>
-                                        {props.info.txid.length > 32
-                                            ? props.info.txid.slice(-8)
-                                            : ""}
-                                    </span>
-                                    <svg
-                                        class="inline-block w-[16px] overflow-visible pl-0.5 text-white"
-                                        width="16"
-                                        height="16"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M6.00002 3.33337v1.33334H10.39L2.66669 12.39l.94333.9434 7.72338-7.72336V10h1.3333V3.33337H6.00002Z"
-                                            fill="currentColor"
-                                        />
-                                    </svg>
-                                </div>
-                            </a>
+                                <Copy class="h-4 w-4" />
+                            </button>
                         </div>
-                        <button
-                            class="min-w-[1.5rem] p-1"
-                            classList={{ "bg-m-green rounded": copied() }}
-                            onClick={() => copy(props.info.txid)}
-                        >
-                            <Copy class="h-4 w-4" />
-                        </button>
-                    </div>
-                </KeyValue>
+                    </KeyValue>
+                </Show>
             </ul>
         </VStack>
     );
