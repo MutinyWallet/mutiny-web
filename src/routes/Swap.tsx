@@ -95,9 +95,9 @@ export function Swap() {
         setChannelOpenResult(undefined);
     }
 
-    const hasLsp = () => {
+    const hasLsp = createMemo(() => {
         return !!state.settings?.lsp;
-    };
+    });
 
     const getPeers = async () => {
         return await sw?.list_peers();
@@ -175,47 +175,31 @@ export function Swap() {
         }
     };
 
-    const canSwap = () => {
+    const canSwap = createMemo(() => {
         const balance =
             (state.balance?.confirmed || 0n) +
             (state.balance?.unconfirmed || 0n);
-        const network = state.network || "signet";
 
-        if (network === "bitcoin") {
-            return (
-                (!!selectedPeer() || !!hasLsp()) &&
-                amountSats() >= 100000n &&
-                amountSats() <= balance
-            );
-        } else {
-            return (
-                (!!selectedPeer() || !!hasLsp()) &&
-                amountSats() >= 10000n &&
-                amountSats() <= balance
-            );
-        }
-    };
+        return (
+            (!!selectedPeer() || !!hasLsp()) &&
+            amountSats() >= 100000n &&
+            amountSats() <= balance
+        );
+    });
 
     const amountWarning = createAsync(async () => {
         if (amountSats() === 0n || !!channelOpenResult()) {
             return undefined;
         }
 
-        const network = state.network || "signet";
-
-        if (network === "bitcoin" && amountSats() < 100000n) {
+        if (amountSats() < 100000n) {
             return i18n.t("swap.channel_too_small", { amount: "100,000" });
-        }
-
-        if (amountSats() < 10000n) {
-            return i18n.t("swap.channel_too_small", { amount: "10,000" });
         }
 
         if (
             amountSats() >
-                (state.balance?.confirmed || 0n) +
-                    (state.balance?.unconfirmed || 0n) ||
-            !feeEstimate()
+            (state.balance?.confirmed || 0n) +
+                (state.balance?.unconfirmed || 0n)
         ) {
             return i18n.t("swap.insufficient_funds");
         }
@@ -348,7 +332,6 @@ export function Swap() {
                             >
                                 {i18n.t("common.view_payment_details")}
                             </p>
-                            {/* <pre>{JSON.stringify(channelOpenResult()?.channel?.value, null, 2)}</pre> */}
                         </Match>
                     </Switch>
                 </SuccessModal>
@@ -436,7 +419,7 @@ export function Swap() {
                             ]}
                         />
                         <Suspense>
-                            <Show when={feeEstimate() && amountSats() > 0n}>
+                            <Show when={feeEstimate()}>
                                 <FeeDisplay
                                     amountSats={amountSats().toString()}
                                     fee={feeEstimate()!.toString()}
