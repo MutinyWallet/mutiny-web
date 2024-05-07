@@ -217,6 +217,7 @@ export async function get_balance(): Promise<MutinyBalance> {
  */
 export async function list_federations(): Promise<MutinyFederationIdentity[]> {
     const federations = await wallet!.list_federations();
+    console.log("list_federations", federations);
     return federations as MutinyFederationIdentity[];
 }
 
@@ -1548,9 +1549,15 @@ export async function estimate_sweep_channel_open_fee(
  * @returns {Promise<FedimintSweepResult>}
  */
 export async function sweep_federation_balance(
-    amount?: bigint
+    amount?: bigint,
+    from_federation_id?: string,
+    to_federation_id?: string
 ): Promise<FedimintSweepResult> {
-    const result = await wallet!.sweep_federation_balance(amount);
+    const result = await wallet!.sweep_federation_balance(
+        amount,
+        from_federation_id,
+        to_federation_id
+    );
     return { ...result.value } as FedimintSweepResult;
 }
 

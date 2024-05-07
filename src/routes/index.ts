@@ -12,3 +12,4 @@ export * from "./Request";
 export * from "./EditProfile";
 export * from "./Swap";
 export * from "./SwapLightning";
+export * from "./Transfer";

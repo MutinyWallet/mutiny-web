@@ -263,7 +263,8 @@
       "back_home": "back home"
     },
     "start_a_chat": "Start a chat?",
-    "start_a_chat_are_you_sure": "This user isn't in your contact list."
+    "start_a_chat_are_you_sure": "This user isn't in your contact list.",
+    "federation_message": "Federation Message"
   },
   "scanner": {
     "paste": "Paste Something",
@@ -561,7 +562,8 @@
       "descriptionpart2": "Each one is run by a group of different inviduals or companies. Discover one that you or your friends might trust below.",
       "join_me": "Join me",
       "recommend": "Recommend federation",
-      "recommended_by_you": "Recommended by you"
+      "recommended_by_you": "Recommended by you",
+      "transfer_funds": "Transfer funds"
     },
     "gift": {
       "give_sats_link": "Give sats as a gift",
@@ -782,5 +784,11 @@
     "nowish": "Nowish",
     "seconds_future": "Seconds from now",
     "seconds_past": "Just now"
+  },
+  "transfer": {
+    "completed": "Transfer Completed",
+    "sats_moved": "+{{amount}} sats have been moved to {{federation_name}}",
+    "confirm": "Confirm Transfer",
+    "title": "Transfer funds"
   }
 }

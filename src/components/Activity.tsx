@@ -8,6 +8,7 @@ import {
     createSignal,
     For,
     Match,
+    onMount,
     Show,
     Suspense,
     Switch
@@ -364,7 +365,7 @@ function NewContactModal(props: { profile: PseudoContact; close: () => void }) {
 }
 
 export function CombinedActivity() {
-    const [state, _actions, sw] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
     const i18n = useI18n();
 
     const [detailsOpen, setDetailsOpen] = createSignal(false);
@@ -407,6 +408,17 @@ export function CombinedActivity() {
 
     const [newContact, setNewContact] = createSignal<PseudoContact>();
 
+    const [
+        showFederationExpirationWarning,
+        setShowFederationExpirationWarning
+    ] = createSignal(false);
+
+    onMount(() => {
+        if (state.expiration_warning) {
+            setShowFederationExpirationWarning(true);
+        }
+    });
+
     return (
         <>
             <Show when={detailsId() && detailsKind()}>
@@ -424,6 +436,32 @@ export function CombinedActivity() {
                 />
             </Show>
             <Suspense fallback={<LoadingShimmer />}>
+                <Show when={state.expiration_warning}>
+                    <SimpleDialog
+                        title={i18n.t("activity.federation_message")}
+                        open={showFederationExpirationWarning()}
+                        setOpen={(open: boolean) => {
+                            if (!open) {
+                                setShowFederationExpirationWarning(false);
+                                actions.clearExpirationWarning();
+                            }
+                        }}
+                    >
+                        <NiceP>
+                            {state.expiration_warning?.expiresMessage}
+                        </NiceP>
+                        <ButtonCard
+                            onClick={() => navigate("/settings/federations")}
+                        >
+                            <div class="flex items-center gap-2">
+                                <Users class="inline-block text-m-red" />
+                                <NiceP>
+                                    {i18n.t("profile.manage_federation")}
+                                </NiceP>
+                            </div>
+                        </ButtonCard>
+                    </SimpleDialog>
+                </Show>
                 <Show when={!state.has_backed_up}>
                     <ButtonCard
                         red
