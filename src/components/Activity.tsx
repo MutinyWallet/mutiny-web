@@ -31,13 +31,11 @@ import {
     hexpubFromNpub,
     profileToPseudoContact,
     PseudoContact,
-    timeAgo
+    timeAgo,
+    ZAPPLE_PAY_NPUB
 } from "~/utils";
 
 import { GenericItem } from "./GenericItem";
-
-const ZAPPLE_PAY_NPUB =
-    "npub1wxl6njlcgygduct7jkgzrvyvd9fylj4pqvll6p32h59wyetm5fxqjchcan";
 
 export type HackActivityType =
     | "Lightning"

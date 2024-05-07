@@ -8,6 +8,12 @@ import {
     NostrTag
 } from "~/utils/nostr";
 
+export const ZAPPLE_PAY_NPUB =
+    "npub1wxl6njlcgygduct7jkgzrvyvd9fylj4pqvll6p32h59wyetm5fxqjchcan";
+
+export const ZAPPLE_PAY_HEXPUB =
+    "71bfa9cbf84110de617e959021b08c69524fcaa1033ffd062abd0ae2657ba24c";
+
 type NostrEvent = {
     created_at: number;
     content: string;
@@ -28,6 +34,7 @@ type SimpleZapItem = {
     event_id?: string;
     event: NostrEvent;
     content?: string;
+    needsProfile?: boolean;
 };
 
 export type NostrProfile = {
@@ -77,9 +84,17 @@ async function simpleZapFromEvent(
         const request = JSON.parse(
             findByTag(event.tags, "description") || "{}"
         );
-        const from = request.pubkey;
 
-        const content = request.content;
+        // Special case for zapple pay
+        const isZapplePay =
+            request.pubkey == ZAPPLE_PAY_HEXPUB &&
+            request.content.startsWith("From: nostr:npub");
+
+        const from = isZapplePay
+            ? await sw.npub_to_hexpub(request.content.split("From: nostr:")[1])
+            : request.pubkey;
+        const content = isZapplePay ? "" : request.content;
+
         const bolt11 = findByTag(event.tags, "bolt11") || "";
 
         if (!bolt11) {
@@ -120,7 +135,8 @@ async function simpleZapFromEvent(
             note: request.id,
             event_id: findByTag(request.tags, "e"),
             event,
-            content: content
+            content: content,
+            needsProfile: isZapplePay
         };
     }
 }
@@ -244,6 +260,22 @@ export const fetchZaps: ResourceFetcher<
 
                     // Only add it if it's a valid zap (not undefined)
                     if (event) {
+                        if (
+                            event.needsProfile &&
+                            profiles[event.from_hexpub] === undefined
+                        ) {
+                            console.log(
+                                "fetching profile for",
+                                event.from_hexpub
+                            );
+                            const profile = await actuallyFetchNostrProfile(
+                                event.from_hexpub
+                            );
+                            if (profile) {
+                                profiles[profile.pubkey] = profile;
+                            }
+                        }
+
                         zaps.push(event);
                     }
                 } catch (e) {
