@@ -87,7 +87,10 @@ export const makeMegaStoreContext = () => {
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
         federations: undefined as MutinyFederationIdentity[] | undefined,
-        balanceView: localStorage.getItem("balanceView") || "sats"
+        balanceView: localStorage.getItem("balanceView") || "sats",
+        expiration_warning: undefined as
+            | { expiresTimestamp: number; expiresMessage: string }
+            | undefined
     });
 
     const actions = {
@@ -226,15 +229,59 @@ export const makeMegaStoreContext = () => {
                 const balance = await sw.get_balance();
 
                 // Get federations
-                const federations =
-                    (await sw.list_federations()) as MutinyFederationIdentity[];
+                const federations = await sw.list_federations();
+
+                let expiration_warning:
+                    | { expiresTimestamp: number; expiresMessage: string }
+                    | undefined = undefined;
+
+                try {
+                    if (federations.length) {
+                        const activeFederation = federations[0];
+                        const metadataUrl = activeFederation.meta_external_url;
+                        console.log("federation metadata url", metadataUrl);
+                        if (metadataUrl) {
+                            const response = await fetch(metadataUrl);
+                            if (response.ok) {
+                                const metadata = await response.json();
+                                console.log(
+                                    "all federation metadata",
+                                    metadata
+                                );
+                                const specificFederation =
+                                    metadata[activeFederation.federation_id];
+                                console.log(
+                                    "specific federation metadata",
+                                    specificFederation
+                                );
+                                const expiresTimestamp =
+                                    specificFederation.popup_end_timestamp;
+                                console.log(
+                                    "federation expires",
+                                    expiresTimestamp
+                                );
+                                const expiresMessage =
+                                    specificFederation.popup_countdown_message;
+                                expiration_warning = {
+                                    expiresTimestamp,
+                                    expiresMessage
+                                };
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error getting federation metadata", e);
+                }
+
+                console.log("expiration_warning", expiration_warning);
 
                 setState({
                     wallet_loading: false,
                     load_stage: "done",
                     balance,
                     federations,
-                    network: network as Network
+                    network: network as Network,
+                    expiration_warning
                 });
 
                 // Timestamp our initialization for double init defense
@@ -506,6 +553,10 @@ export const makeMegaStoreContext = () => {
                     channel.postMessage({ type: "EXISTING_TAB" });
                 }
             };
+        },
+        // Only show the expiration warning once per session
+        clearExpirationWarning() {
+            setState({ expiration_warning: undefined });
         }
     };
 
