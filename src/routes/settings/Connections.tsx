@@ -277,7 +277,7 @@ function Nwc() {
                         {(profile) => (
                             <Collapser
                                 title={profile.name}
-                                activityLight={"on"}
+                                activityLight={profile.enabled ? "on" : "off"}
                                 defaultOpen={profile.index === newConnection()}
                             >
                                 <NwcDetails
