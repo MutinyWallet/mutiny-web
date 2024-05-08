@@ -104,16 +104,13 @@ export function UnifiedActivityItem(props: {
         return await fetchContactForNpub(sw, npub);
     }, "profile");
 
-    // Complaining about a "tracked scope" but I think we're good
-    // eslint-disable-next-line solid/reactivity
-    const getProfileFromNostr = cache(async () => {
+    const profileFromNostr = createAsync(async () => {
         if (props.item.contacts.length === 0) {
             if (props.item.labels) {
                 const npub = props.item.labels.find((l) =>
                     l.startsWith("npub")
                 );
                 if (npub) {
-                    await new Promise((r) => setTimeout(r, 1000));
                     try {
                         const newContact = await getContact(npub);
                         return newContact;
@@ -133,7 +130,6 @@ export function UnifiedActivityItem(props: {
                 if (label) {
                     // get the npub from the label
                     const npub = label.split("From: nostr:")[1];
-                    await new Promise((r) => setTimeout(r, 1000));
                     try {
                         return await getContact(npub.trim());
                     } catch (e) {
@@ -143,10 +139,6 @@ export function UnifiedActivityItem(props: {
             }
         }
         return undefined;
-    }, "profileFromNostr");
-
-    const profileFromNostr = createAsync(async () => {
-        return await getProfileFromNostr();
     });
 
     // TODO: figure out what other shit we should filter out
