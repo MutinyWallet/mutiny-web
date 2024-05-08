@@ -16,13 +16,15 @@ export function SocialActionRow(props: {
     const getContacts = cache(async () => {
         try {
             const contacts: TagItem[] = (await sw.get_contacts_sorted()) || [];
+            const myNpub = (await sw.get_npub()) || "";
 
             // contact must have a npub, ln_address, or lnurl
             return contacts.filter(
                 (contact) =>
-                    contact.npub !== undefined ||
-                    contact.ln_address !== undefined ||
-                    contact.lnurl !== undefined
+                    (contact.npub !== undefined ||
+                        contact.ln_address !== undefined ||
+                        contact.lnurl !== undefined) &&
+                    contact.npub !== myNpub
             );
         } catch (e) {
             console.error(e);
