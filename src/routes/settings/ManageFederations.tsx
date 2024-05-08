@@ -29,6 +29,7 @@ import {
     ExternalLink,
     FancyCard,
     FederationInviteShower,
+    FederationPopup,
     InfoBox,
     KeyValue,
     LabelCircle,
@@ -40,6 +41,7 @@ import {
     NavBar,
     NiceP,
     showToast,
+    SimpleDialog,
     SubtleButton,
     TextField,
     VStack
@@ -59,6 +61,8 @@ export type MutinyFederationIdentity = {
     federation_expiry_timestamp: number;
     invite_code: string;
     meta_external_url?: string;
+    popup_end_timestamp?: number;
+    popup_countdown_message?: string;
 };
 
 export type Metadata = {
@@ -91,7 +95,7 @@ export function AddFederationForm(props: {
     browseOnly?: boolean;
 }) {
     const i18n = useI18n();
-    const [_state, actions, sw] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
     const navigate = useNavigate();
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
@@ -181,6 +185,9 @@ export function AddFederationForm(props: {
 
     return (
         <div class="flex w-full flex-col gap-4">
+            <Show when={state.expiration_warning}>
+                <FederationPopup />
+            </Show>
             <Show when={!props.setup && !props.browseOnly}>
                 <MediumHeader>
                     {i18n.t("settings.manage_federations.manual")}
@@ -446,8 +453,15 @@ function FederationListItem(props: {
         setConfirmOpen(true);
     }
 
+    const [transferDialogOpen, setTransferDialogOpen] = createSignal(false);
+
     async function transferFunds() {
-        navigate("/transfer?from=" + props.fed.federation_id);
+        // If there's only one federation we need to let them know to add another
+        if (state.federations?.length && state.federations.length < 2) {
+            setTransferDialogOpen(true);
+        } else {
+            navigate("/transfer?from=" + props.fed.federation_id);
+        }
     }
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
@@ -457,7 +471,6 @@ function FederationListItem(props: {
         <>
             <FancyCard>
                 <VStack>
-                    {/* <pre>{JSON.stringify(props.fed, null, 2)}</pre> */}
                     <Show when={props.fed.federation_name}>
                         <header class={`font-semibold`}>
                             {props.fed.federation_name}
@@ -466,6 +479,19 @@ function FederationListItem(props: {
                     <Show when={props.fed.welcome_message}>
                         <p>{props.fed.welcome_message}</p>
                     </Show>
+                    <SimpleDialog
+                        title={i18n.t(
+                            "settings.manage_federations.transfer_funds"
+                        )}
+                        open={transferDialogOpen()}
+                        setOpen={setTransferDialogOpen}
+                    >
+                        <NiceP>
+                            {i18n.t(
+                                "settings.manage_federations.transfer_funds_message"
+                            )}
+                        </NiceP>
+                    </SimpleDialog>
                     <Show when={props.balance !== undefined}>
                         <KeyValue
                             key={i18n.t("activity.transaction_details.balance")}
@@ -499,19 +525,10 @@ function FederationListItem(props: {
                             inviteCode={props.fed.invite_code}
                         />
                     </KeyValue>
-                    <Show
-                        when={
-                            state.federations?.length &&
-                            state.federations.length === 2
-                        }
-                    >
-                        <SubtleButton onClick={transferFunds}>
-                            <ArrowLeftRight class="h-4 w-4" />
-                            {i18n.t(
-                                "settings.manage_federations.transfer_funds"
-                            )}
-                        </SubtleButton>
-                    </Show>
+                    <SubtleButton onClick={transferFunds}>
+                        <ArrowLeftRight class="h-4 w-4" />
+                        {i18n.t("settings.manage_federations.transfer_funds")}
+                    </SubtleButton>
                     <Suspense>
                         <RecommendButton fed={props.fed} />
                     </Suspense>

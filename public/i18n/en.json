@@ -568,7 +568,8 @@
       "join_me": "Join me",
       "recommend": "Recommend federation",
       "recommended_by_you": "Recommended by you",
-      "transfer_funds": "Transfer funds"
+      "transfer_funds": "Transfer funds",
+      "transfer_funds_message": "Add a second federation to enable transfers."
     },
     "gift": {
       "give_sats_link": "Give sats as a gift",

@@ -1,6 +1,6 @@
 import { createForm, required } from "@modular-forms/solid";
 import { MutinyChannel } from "@mutinywallet/mutiny-wasm";
-import { createAsync, useNavigate } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 import {
     createEffect,
     createMemo,

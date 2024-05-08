@@ -217,7 +217,6 @@ export async function get_balance(): Promise<MutinyBalance> {
  */
 export async function list_federations(): Promise<MutinyFederationIdentity[]> {
     const federations = await wallet!.list_federations();
-    console.log("list_federations", federations);
     return federations as MutinyFederationIdentity[];
 }
 
@@ -1382,6 +1381,7 @@ export async function delete_federation_recommendation(
  */
 export async function get_federation_balances(): Promise<FederationBalances> {
     const balances = await wallet!.get_federation_balances();
+    if (!balances) return { balances: [] } as unknown as FederationBalances;
     // PAIN
     // Have to rebuild the balances from the raw data, which is a bit of a pain
     const newBalances: FederationBalance[] = [];
