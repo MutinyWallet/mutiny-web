@@ -1,10 +1,5 @@
 import { MutinyInvoice, TagItem } from "@mutinywallet/mutiny-wasm";
-import {
-    createAsync,
-    useLocation,
-    useNavigate,
-    useSearchParams
-} from "@solidjs/router";
+import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
 import { Eye, EyeOff, Link, X, Zap } from "lucide-solid";
 import {
     createEffect,

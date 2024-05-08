@@ -23,14 +23,14 @@ export type MethodChoice = {
     maxAmountSats?: bigint;
 };
 
-// Make sure to update this when we get the fedi option in here!
 function methodToIcon(method: MethodChoice["method"]) {
-    if (method === "lightning") {
-        return "lightning";
-    } else if (method === "onchain") {
-        return "chain";
-    } else if (method === "fedimint") {
-        return "community";
+    switch (method) {
+        case "lightning":
+            return "lightning";
+        case "onchain":
+            return "chain";
+        case "fedimint":
+            return "community";
     }
 }
 

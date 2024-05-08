@@ -36,10 +36,6 @@ export function Transfer() {
     const [loading, setLoading] = createSignal(false);
     const [params] = useSearchParams();
 
-    const canTransfer = createMemo(() => {
-        return true;
-    });
-
     const [transferResult, setTransferResult] =
         createSignal<TransferResultDetails>();
 
@@ -62,9 +58,10 @@ export function Transfer() {
     });
 
     const calculateMaxFederation = createAsync(async () => {
-        return federationBalances()?.find(
+        const balance = federationBalances()?.find(
             (f) => f.identity_federation_id === fromFed()?.federation_id
         )?.balance;
+        return balance || 0n;
     });
 
     const toBalance = createAsync(async () => {
@@ -75,6 +72,11 @@ export function Transfer() {
 
     const isMax = createMemo(() => {
         return amountSats() === calculateMaxFederation();
+    });
+
+    const canTransfer = createMemo(() => {
+        if (!calculateMaxFederation()) return false;
+        return amountSats() > 0n && amountSats() <= calculateMaxFederation()!;
     });
 
     async function handleTransfer() {
@@ -110,8 +112,6 @@ export function Transfer() {
             setLoading(false);
         }
     }
-
-    // const fromFederatationId = params.from;
 
     return (
         <MutinyWalletGuard>
@@ -171,7 +171,11 @@ export function Transfer() {
                         </Match>
                     </Switch>
                 </SuccessModal>
-                <BackLink href="/settings/federations" />
+                <BackLink
+                    title={i18n.t("common.back")}
+                    href="/settings/federations"
+                    showOnDesktop
+                />
                 <LargeHeader>{i18n.t("transfer.title")}</LargeHeader>
                 <div class="flex flex-1 flex-col justify-between gap-2">
                     <div class="flex-1" />

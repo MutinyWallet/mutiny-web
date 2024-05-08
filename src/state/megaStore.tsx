@@ -90,7 +90,8 @@ export const makeMegaStoreContext = () => {
         balanceView: localStorage.getItem("balanceView") || "sats",
         expiration_warning: undefined as
             | { expiresTimestamp: number; expiresMessage: string }
-            | undefined
+            | undefined,
+        expiration_warning_seen: false
     });
 
     const actions = {
@@ -235,45 +236,14 @@ export const makeMegaStoreContext = () => {
                     | { expiresTimestamp: number; expiresMessage: string }
                     | undefined = undefined;
 
-                try {
-                    if (federations.length) {
-                        const activeFederation = federations[0];
-                        const metadataUrl = activeFederation.meta_external_url;
-                        console.log("federation metadata url", metadataUrl);
-                        if (metadataUrl) {
-                            const response = await fetch(metadataUrl);
-                            if (response.ok) {
-                                const metadata = await response.json();
-                                console.log(
-                                    "all federation metadata",
-                                    metadata
-                                );
-                                const specificFederation =
-                                    metadata[activeFederation.federation_id];
-                                console.log(
-                                    "specific federation metadata",
-                                    specificFederation
-                                );
-                                const expiresTimestamp =
-                                    specificFederation.popup_end_timestamp;
-                                console.log(
-                                    "federation expires",
-                                    expiresTimestamp
-                                );
-                                const expiresMessage =
-                                    specificFederation.popup_countdown_message;
-                                expiration_warning = {
-                                    expiresTimestamp,
-                                    expiresMessage
-                                };
-                            }
-                        }
+                federations.forEach((f) => {
+                    if (f.popup_countdown_message && f.popup_end_timestamp) {
+                        expiration_warning = {
+                            expiresTimestamp: f.popup_end_timestamp,
+                            expiresMessage: f.popup_countdown_message
+                        };
                     }
-                } catch (e) {
-                    console.error("Error getting federation metadata", e);
-                }
-
-                console.log("expiration_warning", expiration_warning);
+                });
 
                 setState({
                     wallet_loading: false,
@@ -513,7 +483,21 @@ export const makeMegaStoreContext = () => {
         },
         async refreshFederations() {
             const federations = await sw.list_federations();
-            setState({ federations });
+
+            let expiration_warning:
+                | { expiresTimestamp: number; expiresMessage: string }
+                | undefined = undefined;
+
+            federations.forEach((f) => {
+                if (f.popup_countdown_message && f.popup_end_timestamp) {
+                    expiration_warning = {
+                        expiresTimestamp: f.popup_end_timestamp,
+                        expiresMessage: f.popup_countdown_message
+                    };
+                }
+            });
+
+            setState({ federations, expiration_warning });
         },
         cycleBalanceView() {
             if (state.balanceView === "sats") {
@@ -556,7 +540,7 @@ export const makeMegaStoreContext = () => {
         },
         // Only show the expiration warning once per session
         clearExpirationWarning() {
-            setState({ expiration_warning: undefined });
+            setState({ expiration_warning_seen: true });
         }
     };
 
