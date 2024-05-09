@@ -1,6 +1,6 @@
 import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { cache, createAsync, useNavigate } from "@solidjs/router";
-import { Plus, Save, Search, Shuffle, Users } from "lucide-solid";
+import { Nut, Plus, Save, Search, Shuffle, Users } from "lucide-solid";
 import {
     createEffect,
     createMemo,
@@ -155,12 +155,21 @@ export function UnifiedActivityItem(props: {
         return filtered[0];
     };
 
-    const shouldShowShuffle = () => {
-        return (
+    const maybeIcon = () => {
+        if (
             props.item.kind === "ChannelOpen" ||
             props.item.kind === "ChannelClose" ||
             (props.item.labels.length > 0 && props.item.labels[0] === "SWAP")
-        );
+        ) {
+            return <Shuffle />;
+        }
+
+        if (
+            props.item.labels.length > 0 &&
+            props.item.labels[0] === "Cashu Token Melt"
+        ) {
+            return <Nut />;
+        }
     };
 
     const verb = () => {
@@ -264,7 +273,7 @@ export function UnifiedActivityItem(props: {
                             ? primaryContact()?.image_url
                             : profileFromNostr()?.primal_image_url || ""
                     }
-                    icon={shouldShowShuffle() ? <Shuffle /> : undefined}
+                    icon={maybeIcon()}
                     primaryOnClick={handlePrimaryOnClick}
                     amountOnClick={click}
                     primaryName={

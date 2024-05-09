@@ -57,6 +57,7 @@ export function veryShortTimeStamp(ts?: number | bigint) {
     const elapsedMinutes = Math.floor(elapsedSeconds / 60);
     const elapsedHours = Math.floor(elapsedMinutes / 60);
     const elapsedDays = Math.floor(elapsedHours / 24);
+    const elapsedWeeks = Math.floor(elapsedDays / 7);
 
     if (elapsedSeconds < 60) {
         return i18n.t("utils.nowish");
@@ -66,6 +67,8 @@ export function veryShortTimeStamp(ts?: number | bigint) {
         return i18n.t("utils.hours_short", { count: elapsedHours });
     } else if (elapsedDays < 7) {
         return i18n.t("utils.days_short", { count: elapsedDays });
+    } else if (elapsedDays < 30) {
+        return i18n.t("utils.weeks_short", { count: elapsedWeeks });
     } else {
         const date = new Date(timestamp);
         const day = String(date.getDate()).padStart(2, "0");

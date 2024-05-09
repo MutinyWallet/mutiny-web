@@ -92,7 +92,8 @@
     "redeem_bitcoin": "Redeem Bitcoin",
     "lnurl_amount_message": "Enter withdrawal amount between {{min}} and {{max}} sats",
     "lnurl_redeem_failed": "Withdrawal Failed",
-    "lnurl_redeem_success": "Payment Received"
+    "lnurl_redeem_success": "Payment Received",
+    "cashu_already_spent": "That token has already been spent"
   },
   "request": {
     "request_bitcoin": "Request Bitcoin",
@@ -781,6 +782,7 @@
     "minutes_short": "{{count}}m",
     "nowish": "Nowish",
     "seconds_future": "Seconds from now",
-    "seconds_past": "Just now"
+    "seconds_past": "Just now",
+    "weeks_short": "{{count}}w"
   }
 }
