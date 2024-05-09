@@ -924,6 +924,15 @@ export async function delete_nwc_profile(index: number): Promise<void> {
 }
 
 /**
+ * Re-enables a disabled nwc profile
+ * @param {number} index
+ * @returns {Promise<void>}
+ */
+export async function enable_nwc_profile(index: number): Promise<void> {
+    await wallet!.enable_nwc_profile(index);
+}
+
+/**
  * Get nostr wallet connect profiles
  * @returns {(NwcProfile)[]}
  */
