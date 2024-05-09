@@ -54,8 +54,8 @@ dependencies:
     specifier: ^0.20.0
     version: 0.20.0(solid-js@1.8.16)
   '@mutinywallet/mutiny-wasm':
-    specifier: 0.6.7
-    version: 0.6.7
+    specifier: 1.7.0-rc1
+    version: 1.7.0-rc1
   '@solid-primitives/upload':
     specifier: ^0.0.117
     version: 0.0.117(solid-js@1.8.16)
@@ -2193,8 +2193,8 @@ packages:
       solid-js: 1.8.16
     dev: false
 
-  /@mutinywallet/mutiny-wasm@0.6.7:
-    resolution: {integrity: sha512-dXjO0RBuuBdOHVcprySpnk1RjcjUr5TTnuqUa4vBxMVmPBRa6IIpJZoWdrK4W8QLMGmNqOEtEcpptMjdXdyGgQ==}
+  /@mutinywallet/mutiny-wasm@1.7.0-rc1:
+    resolution: {integrity: sha512-RGnIjHQ8WPWBdQz9PAT9DLG5Oor9tU0cdliHQryvHYmXcBe8Bh1396QtvcfLOJnobKAbQ8DBoT7OYkr2Djo3IQ==}
     dev: false
 
   /@nodelib/fs.scandir@2.1.5:
@@ -7656,6 +7656,7 @@ packages:
 
   /workbox-google-analytics@7.0.0:
     resolution: {integrity: sha512-MEYM1JTn/qiC3DbpvP2BVhyIH+dV/5BjHk756u9VbwuAhu0QHyKscTnisQuz21lfRpOwiS9z4XdqeVAKol0bzg==}
+    deprecated: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
     dependencies:
       workbox-background-sync: 7.0.0
       workbox-core: 7.0.0
