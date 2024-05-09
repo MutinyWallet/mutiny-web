@@ -88,7 +88,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
-          BUILD_TOOLS_VERSION: "30.0.3"
+          BUILD_TOOLS_VERSION: "33.0.0"
 
       - name: Build APK
         working-directory: android
@@ -103,7 +103,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
-          BUILD_TOOLS_VERSION: "30.0.3"
+          BUILD_TOOLS_VERSION: "33.0.0"
 
       - name: Create Release
         id: create_release
