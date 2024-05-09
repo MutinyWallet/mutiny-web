@@ -6,6 +6,7 @@ import {
     SubmitHandler
 } from "@modular-forms/solid";
 import { BudgetPeriod, NwcProfile, TagItem } from "@mutinywallet/mutiny-wasm";
+import { createAsync } from "@solidjs/router";
 import {
     createMemo,
     createResource,
@@ -112,7 +113,7 @@ export function NWCEditor(props: {
     const formMode = createMemo(() => {
         const mode: "createnwa" | "createnwc" | "editnwc" = nwa()
             ? "createnwa"
-            : props.initialProfileIndex
+            : typeof props.initialProfileIndex === "number"
               ? "editnwc"
               : "createnwc";
         return mode;
@@ -173,7 +174,7 @@ export function NWCEditor(props: {
         NwcProfile | undefined
     > = async (index, _last) => {
         console.log("fetching nwc profile", index);
-        if (!index) return undefined;
+        if (typeof index !== "number") return undefined;
 
         try {
             const profile: NwcProfile | undefined =
@@ -212,7 +213,8 @@ export function NWCEditor(props: {
 
     async function saveConnection(f: BudgetForm) {
         let newProfile: NwcProfile | undefined = undefined;
-        if (!f.profileIndex) throw new Error("No profile index!");
+        if (typeof f.profileIndex !== "number")
+            throw new Error("No profile index!");
         if (!f.auto_approve || f.budget_amount === "0") {
             newProfile = await sw.set_nwc_profile_require_approval(
                 f.profileIndex
@@ -258,6 +260,27 @@ export function NWCEditor(props: {
             }
         }
     }
+
+    const planDetails = createAsync(async () => {
+        try {
+            const plans = await sw.get_subscription_plans();
+            if (plans.length) {
+                return plans[0];
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    });
+
+    const initialBudget = createMemo(() => {
+        if (profile()?.tag === "Subscription" && planDetails()) {
+            return planDetails()?.amount_sat.toString() || "16000";
+        }
+        if (profile()?.budget_amount) {
+            return profile()?.budget_amount?.toString() || "0";
+        }
+        return "0";
+    });
 
     return (
         <Switch>
@@ -308,12 +331,13 @@ export function NWCEditor(props: {
                         initialValues={{
                             connection_name: profile()?.name ?? "",
                             auto_approve: !profile()?.require_approval,
-                            budget_amount:
-                                profile()?.budget_amount?.toString() ?? "0",
+                            budget_amount: initialBudget(),
                             interval:
-                                (profile()
-                                    ?.budget_period as BudgetForm["interval"]) ??
-                                "Day",
+                                profile()?.tag === "Subscription"
+                                    ? "Month"
+                                    : (profile()?.budget_period?.toString() as BudgetForm["interval"]) ||
+                                      "Day",
+
                             profileIndex: profile()?.index
                         }}
                         formMode={formMode()}
