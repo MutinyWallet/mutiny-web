@@ -223,8 +223,10 @@ function Nwc() {
     const [profileToOpen, setProfileToOpen] = createSignal<number>();
 
     function editProfile(profile: NwcProfile) {
-        setProfileToOpen(profile.index);
-        setDialogOpen(true);
+        if (profile && typeof profile.index === "number") {
+            setProfileToOpen(profile.index);
+            setDialogOpen(true);
+        }
     }
 
     function createProfile() {
@@ -294,7 +296,7 @@ function Nwc() {
                 open={dialogOpen()}
                 setOpen={handleToggleOpen}
                 title={
-                    profileToOpen()
+                    typeof profileToOpen() === "number"
                         ? i18n.t("settings.connections.edit_connection")
                         : i18n.t("settings.connections.add_connection")
                 }
