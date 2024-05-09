@@ -54,21 +54,23 @@ test("rountrip receive and send", async ({ page }) => {
     // The SVG's value property includes "lightning:l"
     expect(value).toContain("lightning:l");
 
-    const lightningInvoice = value?.split("lightning:")[1];
-
     // Post the lightning invoice to the server
-    const _response = await fetch(
-        "https://faucet.mutinynet.com/api/lightning",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                bolt11: lightningInvoice
-            })
-        }
-    );
+    const response = await fetch("https://faucet.mutinynet.com/api/lightning", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            bolt11: value
+        })
+    });
+
+    if (!response.ok) {
+        response.text().then((text) => {
+            throw new Error("failed to post invoice to faucet: " + text);
+        });
+    }
 
     // Wait for an h1 to appear in the dom that says "Payment Received"
     await page.waitForSelector("text=Payment Received", { timeout: 30000 });

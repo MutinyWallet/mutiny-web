@@ -89,7 +89,11 @@ export const makeMegaStoreContext = () => {
         federations: undefined as MutinyFederationIdentity[] | undefined,
         balanceView: localStorage.getItem("balanceView") || "sats",
         expiration_warning: undefined as
-            | { expiresTimestamp: number; expiresMessage: string }
+            | {
+                  expiresTimestamp: number;
+                  expiresMessage: string;
+                  federationName: string;
+              }
             | undefined,
         expiration_warning_seen: false
     });
@@ -233,14 +237,19 @@ export const makeMegaStoreContext = () => {
                 const federations = await sw.list_federations();
 
                 let expiration_warning:
-                    | { expiresTimestamp: number; expiresMessage: string }
+                    | {
+                          expiresTimestamp: number;
+                          expiresMessage: string;
+                          federationName: string;
+                      }
                     | undefined = undefined;
 
                 federations.forEach((f) => {
                     if (f.popup_countdown_message && f.popup_end_timestamp) {
                         expiration_warning = {
                             expiresTimestamp: f.popup_end_timestamp,
-                            expiresMessage: f.popup_countdown_message
+                            expiresMessage: f.popup_countdown_message,
+                            federationName: f.federation_name
                         };
                     }
                 });
@@ -485,14 +494,19 @@ export const makeMegaStoreContext = () => {
             const federations = await sw.list_federations();
 
             let expiration_warning:
-                | { expiresTimestamp: number; expiresMessage: string }
+                | {
+                      expiresTimestamp: number;
+                      expiresMessage: string;
+                      federationName: string;
+                  }
                 | undefined = undefined;
 
             federations.forEach((f) => {
                 if (f.popup_countdown_message && f.popup_end_timestamp) {
                     expiration_warning = {
                         expiresTimestamp: f.popup_end_timestamp,
-                        expiresMessage: f.popup_countdown_message
+                        expiresMessage: f.popup_countdown_message,
+                        federationName: f.federation_name
                     };
                 }
             });
