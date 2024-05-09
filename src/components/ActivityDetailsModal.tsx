@@ -439,6 +439,7 @@ function OnchainDetails(props: {
                                         />
                                     </svg>
                                 </div>
+                                <hr class="truncate-bridge h-px w-[80%] border-m-grey-400" />
                             </a>
                         </div>
                         <button
