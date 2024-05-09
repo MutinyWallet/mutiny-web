@@ -18,7 +18,7 @@ export function FederationPopup() {
 
     return (
         <SimpleDialog
-            title={i18n.t("activity.federation_message")}
+            title={`${i18n.t("activity.federation_message")}: ${state.expiration_warning?.federationName}`}
             open={showFederationExpirationWarning()}
             setOpen={(open: boolean) => {
                 if (!open) {
