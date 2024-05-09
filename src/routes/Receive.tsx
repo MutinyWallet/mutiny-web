@@ -460,6 +460,11 @@ export function Receive() {
                                 <p>{error()}</p>
                             </InfoBox>
                         </Show>
+                        <Show when={flavor() === "onchain"}>
+                            <InfoBox accent="blue">
+                                {i18n.t("receive.warning_address_reuse")}
+                            </InfoBox>
+                        </Show>
                         <IntegratedQr
                             value={qrString() ?? ""}
                             amountSats={amount() ? amount().toString() : "0"}

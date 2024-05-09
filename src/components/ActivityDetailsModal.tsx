@@ -168,7 +168,7 @@ function OnchainHeader(props: { info: OnChainTx; kind?: HackActivityType }) {
                     </Match>
                 </Switch>
             </div>
-            <Show when={props.kind !== "ChannelClose"}>
+            <Show when={props.kind !== "ChannelClose" && Number(amount()) > 0}>
                 <div class="flex flex-col items-center">
                     <div
                         class="text-2xl"
