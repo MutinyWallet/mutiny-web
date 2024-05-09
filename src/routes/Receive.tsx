@@ -266,6 +266,7 @@ export function Receive() {
                 setRawReceiveStrings({ address });
                 return `bitcoin:${address}?${params}`;
             } else {
+                setRawReceiveStrings({ address });
                 return `bitcoin:${address}`;
             }
         } catch (e) {
