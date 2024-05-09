@@ -150,9 +150,18 @@ function NwcDetails(props: {
                 </Show>
             </Show>
 
-            <Button layout="small" intent="green" onClick={props.onEdit}>
-                {i18n.t("settings.connections.edit_budget")}
-            </Button>
+            <Show
+                when={props.profile.enabled}
+                fallback={
+                    <InfoBox accent="red">
+                        {i18n.t("settings.connections.disabled")}
+                    </InfoBox>
+                }
+            >
+                <Button layout="small" intent="green" onClick={props.onEdit}>
+                    {i18n.t("settings.connections.edit_budget")}
+                </Button>
+            </Show>
 
             <Show
                 when={
@@ -170,16 +179,22 @@ function NwcDetails(props: {
                 </Button>
             </Show>
 
-            <Button layout="small" onClick={confirmDelete}>
-                {i18n.t("settings.connections.delete_connection")}
-            </Button>
+            <Show when={props.profile.enabled}>
+                <Button layout="small" onClick={confirmDelete}>
+                    {props.profile.tag === "Subscription"
+                        ? i18n.t("settings.connections.disable_connection")
+                        : i18n.t("settings.connections.delete_connection")}
+                </Button>
+            </Show>
             <ConfirmDialog
                 loading={false}
                 open={confirmOpen()}
                 onConfirm={deleteProfile}
                 onCancel={() => setConfirmOpen(false)}
             >
-                {i18n.t("settings.connections.confirm_delete")}
+                {props.profile.tag === "Subscription"
+                    ? i18n.t("settings.connections.disable_connection_confirm")
+                    : i18n.t("settings.connections.confirm_delete")}
             </ConfirmDialog>
         </VStack>
     );

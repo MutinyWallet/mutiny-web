@@ -8,12 +8,14 @@ import {
 import { BudgetPeriod, NwcProfile, TagItem } from "@mutinywallet/mutiny-wasm";
 import { createAsync } from "@solidjs/router";
 import {
+    createEffect,
     createMemo,
     createResource,
     For,
     Match,
     ResourceFetcher,
     Show,
+    Suspense,
     Switch
 } from "solid-js";
 
@@ -261,20 +263,21 @@ export function NWCEditor(props: {
         }
     }
 
-    const planDetails = createAsync(async () => {
-        try {
-            const plans = await sw.get_subscription_plans();
-            if (plans.length) {
-                return plans[0];
+    // TODO: refactor nwc editor so we don't need to do this
+    const initialBudget = createAsync(async () => {
+        if (profile()?.tag === "Subscription") {
+            try {
+                const plans = await sw.get_subscription_plans();
+                if (plans.length) {
+                    const returnValue = plans[0].amount_sat.toString() || "0";
+                    return returnValue;
+                } else {
+                    return "0";
+                }
+            } catch (e) {
+                console.error(e);
+                return "0";
             }
-        } catch (e) {
-            console.error(e);
-        }
-    });
-
-    const initialBudget = createMemo(() => {
-        if (profile()?.tag === "Subscription" && planDetails()) {
-            return planDetails()?.amount_sat.toString() || "16000";
         }
         if (profile()?.budget_amount) {
             return profile()?.budget_amount?.toString() || "0";
@@ -286,7 +289,7 @@ export function NWCEditor(props: {
         <Switch>
             <Match when={formMode() === "createnwc"}>
                 <NWCEditorForm
-                    initialValues={{
+                    values={{
                         connection_name: "",
                         auto_approve: false,
                         budget_amount: "0",
@@ -304,7 +307,7 @@ export function NWCEditor(props: {
                 >
                     <Avatar large image_url={image()} />
                     <NWCEditorForm
-                        initialValues={{
+                        values={{
                             connection_name: name(),
                             auto_approve: nwa()?.budget ? true : false,
                             budget_amount:
@@ -322,40 +325,44 @@ export function NWCEditor(props: {
             </Match>
             <Match when={formMode() === "editnwc"}>
                 {/* FIXME: not getting the contact rn */}
-                <Show when={profile()}>
-                    <Show when={profile()?.label && contact()?.image_url}>
-                        <Avatar large image_url={contact()?.image_url} />
-                        <pre>{JSON.stringify(contact(), null, 2)}</pre>
-                    </Show>
-                    <NWCEditorForm
-                        initialValues={{
-                            connection_name: profile()?.name ?? "",
-                            auto_approve: !profile()?.require_approval,
-                            budget_amount: initialBudget(),
-                            interval:
-                                profile()?.tag === "Subscription"
-                                    ? "Month"
-                                    : (profile()?.budget_period?.toString() as BudgetForm["interval"]) ||
-                                      "Day",
+                <Suspense>
+                    <Show when={profile()}>
+                        <Show when={profile()?.label && contact()?.image_url}>
+                            <Avatar large image_url={contact()?.image_url} />
+                            <pre>{JSON.stringify(contact(), null, 2)}</pre>
+                        </Show>
+                        <Show when={initialBudget()}>
+                            <NWCEditorForm
+                                values={{
+                                    connection_name: profile()?.name ?? "",
+                                    auto_approve: !profile()?.require_approval,
+                                    budget_amount: initialBudget()!,
+                                    interval:
+                                        profile()?.tag === "Subscription"
+                                            ? "Month"
+                                            : (profile()?.budget_period?.toString() as BudgetForm["interval"]) ||
+                                              "Day",
 
-                            profileIndex: profile()?.index
-                        }}
-                        formMode={formMode()}
-                        budgetMode={
-                            profile()?.tag === "Subscription"
-                                ? "fixed"
-                                : "editable"
-                        }
-                        onSave={saveConnection}
-                    />
-                </Show>
+                                    profileIndex: profile()?.index
+                                }}
+                                formMode={formMode()}
+                                budgetMode={
+                                    profile()?.tag === "Subscription"
+                                        ? "fixed"
+                                        : "editable"
+                                }
+                                onSave={saveConnection}
+                            />
+                        </Show>
+                    </Show>
+                </Suspense>
             </Match>
         </Switch>
     );
 }
 
 function NWCEditorForm(props: {
-    initialValues: BudgetForm;
+    values: BudgetForm;
     formMode: FormMode;
     budgetMode: BudgetMode;
     onSave: (f: BudgetForm) => Promise<void>;
@@ -363,7 +370,7 @@ function NWCEditorForm(props: {
     const i18n = useI18n();
 
     const [budgetForm, { Form, Field }] = createForm<BudgetForm>({
-        initialValues: props.initialValues,
+        initialValues: props.values,
         validate: (values) => {
             const errors: Record<string, string> = {};
             if (values.auto_approve && values.budget_amount === "0") {
@@ -375,14 +382,20 @@ function NWCEditorForm(props: {
         }
     });
 
+    createEffect(() => {
+        if (props.values) {
+            setValue(budgetForm, "budget_amount", props.values.budget_amount);
+        }
+    });
+
     const handleFormSubmit: SubmitHandler<BudgetForm> = async (
         f: BudgetForm
     ) => {
         // If this throws the message will be caught by the form
         await props.onSave({
             ...f,
-            profileIndex: props.initialValues.profileIndex,
-            nwaString: props.initialValues.nwaString
+            profileIndex: props.values.profileIndex,
+            nwaString: props.values.nwaString
         });
     };
 
@@ -397,9 +410,7 @@ function NWCEditorForm(props: {
                 >
                     {(field, fieldProps) => (
                         <TextField
-                            disabled={
-                                props.initialValues?.connection_name !== ""
-                            }
+                            disabled={props.values?.connection_name !== ""}
                             value={field.value}
                             {...fieldProps}
                             name="name"
