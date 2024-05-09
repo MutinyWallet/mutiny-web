@@ -1565,6 +1565,15 @@ export async function estimate_sweep_federation_fee(
     return await wallet!.estimate_sweep_federation_fee(amount);
 }
 
+/**
+ * Calls upon a Cash mint and melts the token from it.
+ * @param {string} maybe_token
+ * @returns {Promise<any>}
+ */
+export async function melt_cashu_token(maybe_token: string): Promise<void> {
+    return await wallet!.melt_cashu_token(maybe_token);
+}
+
 export async function parse_params(params: string): Promise<PaymentParams> {
     const paramsResult = await new PaymentParams(params);
     // PAIN just another object rebuild

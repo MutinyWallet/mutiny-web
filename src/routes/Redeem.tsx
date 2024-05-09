@@ -170,9 +170,7 @@ export function Redeem() {
             setError("");
             setLoading(true);
             if (!state.scan_result?.cashu_token) return;
-            await state.mutiny_wallet?.melt_cashu_token(
-                state.scan_result?.cashu_token
-            );
+            await sw.melt_cashu_token(state.scan_result?.cashu_token);
             setRedeemState("paid");
             await vibrateSuccess();
         } catch (e) {
