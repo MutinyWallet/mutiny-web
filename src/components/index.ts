@@ -56,3 +56,4 @@ export * from "./EditProfileForm";
 export * from "./ImportNsecForm";
 export * from "./LightningAddressShower";
 export * from "./FederationInviteShower";
+export * from "./NoConnection";

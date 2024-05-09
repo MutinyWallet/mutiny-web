@@ -787,5 +787,10 @@
     "nowish": "Nowish",
     "seconds_future": "Seconds from now",
     "seconds_past": "Just now"
+  },
+  "no_connection": {
+    "title": "No internet connection",
+    "prompt": "Get back online to start using Mutiny.",
+    "reload": "Reload"
   }
 }

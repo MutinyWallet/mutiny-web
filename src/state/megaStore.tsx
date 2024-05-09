@@ -1,4 +1,8 @@
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
+import {
+    Network as CapacitorNetwork,
+    ConnectionStatus
+} from "@capacitor/network";
 import { MutinyBalance, TagItem } from "@mutinywallet/mutiny-wasm";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
@@ -87,7 +91,8 @@ export const makeMegaStoreContext = () => {
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
         federations: undefined as MutinyFederationIdentity[] | undefined,
-        balanceView: localStorage.getItem("balanceView") || "sats"
+        balanceView: localStorage.getItem("balanceView") || "sats",
+        network_status: undefined as ConnectionStatus | undefined
     });
 
     const actions = {
@@ -506,6 +511,9 @@ export const makeMegaStoreContext = () => {
                     channel.postMessage({ type: "EXISTING_TAB" });
                 }
             };
+        },
+        setNetworkStatus(status: ConnectionStatus) {
+            setState({ network_status: status });
         }
     };
 
@@ -521,6 +529,12 @@ export const Provider: ParentComponent = (props) => {
     const [state, actions, sw] = makeMegaStoreContext();
 
     onMount(async () => {
+        const _networkListener = CapacitorNetwork.addListener(
+            "networkStatusChange",
+            async (status) => {
+                actions.setNetworkStatus(status);
+            }
+        );
         const shouldSetup = await actions.preSetup();
         console.log("Should run setup?", shouldSetup);
         if (

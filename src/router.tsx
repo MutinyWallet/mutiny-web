@@ -16,6 +16,7 @@ import {
 import {
     ErrorDisplay,
     I18nProvider,
+    NoConnection,
     SetupErrorDisplay,
     Toaster
 } from "~/components";
@@ -75,6 +76,9 @@ function ChildrenOrError(props: { children: JSX.Element }) {
 
     return (
         <Switch>
+            <Match when={state.network_status?.connectionType === "none"}>
+                <NoConnection />
+            </Match>
             <Match when={state.setup_error}>
                 <SetupErrorDisplay
                     initialError={state.setup_error!}
