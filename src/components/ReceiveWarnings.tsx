@@ -1,4 +1,4 @@
-import { createResource, Match, Switch } from "solid-js";
+import { createMemo, createResource, Match, Switch } from "solid-js";
 
 import { InfoBox } from "~/components/InfoBox";
 import { FeesModal } from "~/components/MoreInfoModal";
@@ -79,6 +79,12 @@ export function ReceiveWarnings(props: {
         }
     };
 
+    const onChainFedi = createMemo(() => {
+        if (props.flavor === "onchain" && state.federations?.length) {
+            return true;
+        }
+    });
+
     return (
         <Switch>
             <Match when={tooSmallWarning()}>
@@ -90,6 +96,11 @@ export function ReceiveWarnings(props: {
             <Match when={warningText()}>
                 <InfoBox accent="blue">
                     {warningText()} <FeesModal />
+                </InfoBox>
+            </Match>
+            <Match when={onChainFedi()}>
+                <InfoBox accent="blue">
+                    {i18n.t("receive.warning_on_chain_fedi")}
                 </InfoBox>
             </Match>
         </Switch>
