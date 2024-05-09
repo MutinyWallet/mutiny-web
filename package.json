@@ -55,7 +55,7 @@
         "@capacitor/toast": "^6.0.0",
         "@kobalte/core": "^0.12.6",
         "@kobalte/tailwindcss": "^0.9.0",
-        "@mutinywallet/mutiny-wasm": "1.7.0-rc1",
+        "@mutinywallet/mutiny-wasm": "1.7.0-rc2",
         "@modular-forms/solid": "^0.20.0",
         "@solid-primitives/upload": "^0.0.117",
         "@solidjs/meta": "^0.29.3",
