@@ -149,7 +149,7 @@
     },
     "receive_strings_error": "Something went wrong generating an invoice or on-chain address.",
     "error_under_min_onchain": "That's under the dust limit! On-chain transactions should be much bigger.",
-    "warning_on_chain_fedi": "On-chain fedimint deposits require 10 confirmations.",
+    "warning_on_chain_fedi": "On-chain fedimint deposits require 10 confirmations. RBF not supported yet.",
     "warning_address_reuse": "Only send to this address once!"
   },
   "send": {
