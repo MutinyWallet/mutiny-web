@@ -20,5 +20,13 @@ export const LANGUAGE_OPTIONS: Language[] = [
     {
         value: "한국어",
         shortName: "ko"
+    },
+    {
+        value: "简体中文",
+        shortName: "hans"
+    },
+    {
+        value: "繁體中文",
+        shortName: "hant"
     }
 ];
