@@ -471,9 +471,11 @@ export function Receive() {
                             amountSats={amount() ? amount().toString() : "0"}
                             kind={flavor()}
                         />
-                        <p class="text-center text-m-grey-350">
-                            {i18n.t("receive.keep_mutiny_open")}
-                        </p>
+                        <Show when={flavor() === "lightning"}>
+                            <p class="text-center text-m-grey-350">
+                                {i18n.t("receive.keep_mutiny_open")}
+                            </p>
+                        </Show>
                     </Match>
                     <Match when={receiveState() === "paid"}>
                         <SuccessModal
