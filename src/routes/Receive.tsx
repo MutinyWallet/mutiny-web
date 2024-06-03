@@ -319,6 +319,18 @@ export function Receive() {
         }
     });
 
+    // Only copy the raw invoice string for lightning because the lightning prefix is not needed
+    // for the onchain address we share the whole bip21 uri because it has more information
+    const copyString = createMemo(() => {
+        if (receiveState() === "show") {
+            if (flavor() === "lightning") {
+                return rawReceiveStrings()?.bolt11;
+            } else if (flavor() === "onchain") {
+                return receiveStrings()?.onchain;
+            }
+        }
+    });
+
     async function checkIfPaid(receiveStrings?: {
         bolt11?: string;
         address?: string;
@@ -468,6 +480,7 @@ export function Receive() {
                         </Show>
                         <IntegratedQr
                             value={qrString() ?? ""}
+                            copyString={copyString()}
                             amountSats={amount() ? amount().toString() : "0"}
                             kind={flavor()}
                         />
