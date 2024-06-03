@@ -8,18 +8,15 @@ export const EN_OPTION: Language = {
     shortName: "en"
 };
 
+// Sorted alphabetically-ish
 export const LANGUAGE_OPTIONS: Language[] = [
+    {
+        value: "Deutsch",
+        shortName: "de"
+    },
     {
         value: "Español",
         shortName: "es"
-    },
-    {
-        value: "Português",
-        shortName: "pt"
-    },
-    {
-        value: "한국어",
-        shortName: "ko"
     },
     {
         value: "简体中文",
@@ -32,5 +29,13 @@ export const LANGUAGE_OPTIONS: Language[] = [
     {
         value: "Italian",
         shortName: "it"
+    },
+    {
+        value: "한국어",
+        shortName: "ko"
+    },
+    {
+        value: "Português",
+        shortName: "pt"
     }
 ];
