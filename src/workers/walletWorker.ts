@@ -384,9 +384,14 @@ export async function get_invoice(
  * Gets all contacts sorted by last used
  * @returns {Promise<any>}
  */
-export async function get_contacts_sorted(): Promise<TagItem[] | undefined> {
+export async function get_contacts_sorted(limit?: number): Promise<TagItem[]> {
     const contacts = await wallet!.get_contacts_sorted();
-    return contacts;
+    if (!contacts) return [];
+    if (contacts.length && limit) {
+        return contacts.slice(0, limit);
+    } else {
+        return contacts;
+    }
 }
 
 export async function edit_contact(
@@ -966,7 +971,6 @@ export async function approve_nostr_wallet_auth(
  */
 export async function get_nwc_profile(index: number): Promise<NwcProfile> {
     const profile = await wallet!.get_nwc_profile(index);
-    console.log("get_nwc_profile", profile);
     return {
         ...profile.value
     } as NwcProfile;

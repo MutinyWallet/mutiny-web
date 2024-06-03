@@ -88,8 +88,7 @@ function ActualSearch(props: { initialValue?: string }) {
 
     const getContacts = cache(async () => {
         try {
-            const contacts = await sw.get_contacts_sorted();
-            return contacts || ([] as TagItem[]);
+            return await sw.get_contacts_sorted(40);
         } catch (e) {
             console.error(e);
             return [] as TagItem[];
