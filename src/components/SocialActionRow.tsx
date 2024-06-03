@@ -15,7 +15,7 @@ export function SocialActionRow(props: {
 
     const getContacts = cache(async () => {
         try {
-            const contacts: TagItem[] = (await sw.get_contacts_sorted()) || [];
+            const contacts = await sw.get_contacts_sorted(40);
             const myNpub = (await sw.get_npub()) || "";
 
             // contact must have a npub, ln_address, or lnurl

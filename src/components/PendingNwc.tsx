@@ -1,4 +1,3 @@
-import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { useNavigate } from "@solidjs/router";
 import { Check, PlugZap, X } from "lucide-solid";
 import {
@@ -42,7 +41,7 @@ export function PendingNwc() {
         setHasPreConfiguredNWC(!!profiles && profiles.length > 0);
         if (!profiles) return [];
 
-        const contacts: TagItem[] | undefined = await sw.get_contacts_sorted();
+        const contacts = await sw.get_contacts_sorted();
         if (!contacts) return [];
 
         const pending = await sw.get_pending_nwc_invoices();
