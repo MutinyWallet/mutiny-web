@@ -62,6 +62,7 @@ async function share(receiveString: string) {
 
 export function IntegratedQr(props: {
     value: string;
+    copyString?: string;
     kind: ReceiveFlavor | "gift" | "lnAddress";
     amountSats?: string;
 }) {
@@ -71,7 +72,7 @@ export function IntegratedQr(props: {
         <div
             id="qr"
             class="relative flex w-full flex-col items-center rounded-xl bg-white px-4 text-black"
-            onClick={() => copy(props.value)}
+            onClick={() => copy(props.copyString ?? props.value)}
         >
             <Show when={copied()}>
                 <div class="absolute z-50 flex h-full w-full flex-col items-center justify-center rounded-xl bg-neutral-900/60 text-white transition-all">
