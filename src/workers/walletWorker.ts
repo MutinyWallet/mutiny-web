@@ -97,22 +97,6 @@ export async function setupMutinyWallet(
 ): Promise<boolean> {
     console.log("Starting setup...");
 
-    // https://developer.mozilla.org/en-US/docs/Web/API/Storage_API
-    // Ask the browser to not clear storage
-    if (navigator.storage && navigator.storage.persist) {
-        navigator.storage.persist().then((persistent) => {
-            if (persistent) {
-                console.log(
-                    "Storage will not be cleared except by explicit user action"
-                );
-            } else {
-                console.log(
-                    "Storage may be cleared by the UA under storage pressure."
-                );
-            }
-        });
-    }
-
     const {
         network,
         proxy,
