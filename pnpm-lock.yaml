@@ -56,6 +56,12 @@ dependencies:
   '@mutinywallet/mutiny-wasm':
     specifier: 1.7.5
     version: 1.7.5
+  '@sentry/browser':
+    specifier: ^8.7.0
+    version: 8.7.0
+  '@sentry/wasm':
+    specifier: ^8.7.0
+    version: 8.7.0
   '@solid-primitives/upload':
     specifier: ^0.0.117
     version: 0.0.117(solid-js@1.8.16)
@@ -2398,6 +2404,87 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@sentry-internal/browser-utils@8.7.0:
+    resolution: {integrity: sha512-RFBK1sYBwV5qGMEwWF0rjOTqQpp4/SvE+qHkOJNRUTVYmfjM+Y9lcxwn4B6lu3aboxePpBw/i1PlP6XwX4UnGA==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry/core': 8.7.0
+      '@sentry/types': 8.7.0
+      '@sentry/utils': 8.7.0
+    dev: false
+
+  /@sentry-internal/feedback@8.7.0:
+    resolution: {integrity: sha512-qcGtWCtRB4eP7NVQoxW936oPkU4qu9otMLYELPGmOJPnuAG0lujlJXW7BucaM7ADyJgJTE75hG849bHecfnbmQ==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry/core': 8.7.0
+      '@sentry/types': 8.7.0
+      '@sentry/utils': 8.7.0
+    dev: false
+
+  /@sentry-internal/replay-canvas@8.7.0:
+    resolution: {integrity: sha512-FOnvBPbq6MJVHPduc0hcsdE3PeeovQ2z5WJnZDGhvp/Obehxqe+XgX7K/595vRIknv4EokRn/3Kw0mFwG8E+ZQ==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry-internal/replay': 8.7.0
+      '@sentry/core': 8.7.0
+      '@sentry/types': 8.7.0
+      '@sentry/utils': 8.7.0
+    dev: false
+
+  /@sentry-internal/replay@8.7.0:
+    resolution: {integrity: sha512-bQzOkWplaWTe3u+aDBhxWY3Qy0aT7ss2A3VR8iC6N8ZIEP9PxqyJwTNoouhinfgmlnCguI7RDOO4f3r3e2M80Q==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry-internal/browser-utils': 8.7.0
+      '@sentry/core': 8.7.0
+      '@sentry/types': 8.7.0
+      '@sentry/utils': 8.7.0
+    dev: false
+
+  /@sentry/browser@8.7.0:
+    resolution: {integrity: sha512-4EEp+PlcktsMN0p+MdCPl/lghTkq7eOtZjQG9NGhWzfyWrJ3tuL1nsDr2SSivJ1V277F01KtKYo6BFwP2NtBZA==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry-internal/browser-utils': 8.7.0
+      '@sentry-internal/feedback': 8.7.0
+      '@sentry-internal/replay': 8.7.0
+      '@sentry-internal/replay-canvas': 8.7.0
+      '@sentry/core': 8.7.0
+      '@sentry/types': 8.7.0
+      '@sentry/utils': 8.7.0
+    dev: false
+
+  /@sentry/core@8.7.0:
+    resolution: {integrity: sha512-Sq/46B+5nWmgnCD6dEMZ6HTkKbV/KAdgaSvT8oXDb9OWoPy1jJ/gbLrhLs62KbjuDQk4/vWnOgHiKQbcslSzMw==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry/types': 8.7.0
+      '@sentry/utils': 8.7.0
+    dev: false
+
+  /@sentry/types@8.7.0:
+    resolution: {integrity: sha512-11KLOKumP6akugVGLvSoEig+JlP0ZEzW3nN9P+ppgdIx9HAxMIh6UvumbieG4/DWjAh2kh6NPNfUw3gk2Gfq1A==}
+    engines: {node: '>=14.18'}
+    dev: false
+
+  /@sentry/utils@8.7.0:
+    resolution: {integrity: sha512-aWmcbSoOmrbzll/FkNQFJcCtLAuJLvTYbRKiCSkV3FScA7UaA742HkTZAPFiioALFIESWk/fcGZqtN0s4I281Q==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry/types': 8.7.0
+    dev: false
+
+  /@sentry/wasm@8.7.0:
+    resolution: {integrity: sha512-kxzSR/H7A+h8c28gN4vivrukdk6wphf2Oz0MVQd18up1Fbwqmy226hCuAqZgw7aaPI4gfwatEQFm0Higghr9tA==}
+    engines: {node: '>=14.18'}
+    dependencies:
+      '@sentry/browser': 8.7.0
+      '@sentry/core': 8.7.0
+      '@sentry/types': 8.7.0
+      '@sentry/utils': 8.7.0
+    dev: false
 
   /@solid-primitives/event-listener@2.3.3(solid-js@1.8.16):
     resolution: {integrity: sha512-DAJbl+F0wrFW2xmcV8dKMBhk9QLVLuBSW+TR4JmIfTaObxd13PuL7nqaXnaYKDWOYa6otB00qcCUIGbuIhSUgQ==}

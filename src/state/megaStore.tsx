@@ -1,9 +1,11 @@
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
 import { MutinyBalance, TagItem } from "@mutinywallet/mutiny-wasm";
+import * as Sentry from "@sentry/browser";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { Remote } from "comlink";
 import {
+    DEV,
     createContext,
     onCleanup,
     onMount,
@@ -41,9 +43,41 @@ type LoadStage =
 
 export type WalletWorker = Remote<typeof import("../workers/walletWorker")>;
 
+const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
+const sentryenv = import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "prod");
+
 export const makeMegaStoreContext = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+
+    // initialize both inside worker and outside
+    // TODO figure out when to set or not
+    Sentry.init({
+        dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
+        environment: sentryenv,
+        release: "mutiny-web@" + RELEASE_VERSION,
+        integrations: [
+            Sentry.browserTracingIntegration(),
+            Sentry.replayIntegration()
+        ],
+
+        initialScope: {
+            tags: { component: "main" }
+        },
+
+        // Set tracesSampleRate to 1.0 to capture 100%
+        // of transactions for performance monitoring.
+        // We recommend adjusting this value in production
+        tracesSampleRate: 1.0,
+
+        // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+        tracePropagationTargets: ["localhost", /^https:\/\/mutinywallet\.com/],
+
+        // Capture Replay for 10% of all sessions,
+        // plus 100% of sessions with an error
+        replaysSessionSampleRate: 0.1,
+        replaysOnErrorSampleRate: 1.0
+    });
 
     // Not actually a shared worker, but it's the same code
     const sw = new ComlinkWorker<typeof import("../workers/walletWorker")>(
