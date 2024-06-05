@@ -163,6 +163,7 @@ export const makeMegaStoreContext = () => {
             }
         },
         async setup(password?: string): Promise<void> {
+            let interval: NodeJS.Timeout | undefined;
             try {
                 const settings = await getSettings();
                 setState({ load_stage: "setup" });
@@ -179,7 +180,7 @@ export const makeMegaStoreContext = () => {
                 // 90 seconds to load or we bail
                 const start = Date.now();
                 const MAX_LOAD_TIME = 90000;
-                const interval = setInterval(() => {
+                interval = setInterval(() => {
                     console.log("Running setup", Date.now() - start);
                     if (Date.now() - start > MAX_LOAD_TIME) {
                         clearInterval(interval);
@@ -214,8 +215,6 @@ export const makeMegaStoreContext = () => {
                     state.should_zap_hodl,
                     nsec
                 );
-
-                clearInterval(interval);
 
                 if (!success) {
                     throw new Error("Failed to initialize mutiny wallet");
@@ -265,8 +264,15 @@ export const makeMegaStoreContext = () => {
 
                 console.log("Wallet initialized");
 
+                clearInterval(interval);
+
                 await actions.postSetup();
             } catch (e) {
+                // clear the interval if it exists
+                if (interval) {
+                    clearInterval(interval);
+                }
+
                 console.error(e);
                 if (eify(e).message === "Incorrect password entered.") {
                     setState({ needs_password: true });
