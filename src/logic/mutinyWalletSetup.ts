@@ -180,13 +180,19 @@ export async function doubleInitDefense() {
     // Ultimate defense against getting multiple instances of the wallet running.
     // If we detect that the wallet has already been initialized in this session, we'll reload the page.
     // A successful stop of the wallet in onCleanup will clear this flag
-    if (sessionStorage.getItem("MUTINY_WALLET_INITIALIZED")) {
+    const init = sessionStorage.getItem("MUTINY_WALLET_INITIALIZED");
+    if (init) {
+        const diff = Date.now() - Number(init);
         console.error(
-            `Mutiny Wallet already initialized at ${sessionStorage.getItem(
-                "MUTINY_WALLET_INITIALIZED"
-            )}. Reloading page.`
+            `Mutiny Wallet already initialized at ${init}, ${diff}ms ago. Reloading page.`
         );
         sessionStorage.removeItem("MUTINY_WALLET_INITIALIZED");
         window.location.reload();
+    } else {
+        // Timestamp our initialization for double init defense
+        sessionStorage.setItem(
+            "MUTINY_WALLET_INITIALIZED",
+            Date.now().toString()
+        );
     }
 }

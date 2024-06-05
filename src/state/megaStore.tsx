@@ -263,12 +263,6 @@ export const makeMegaStoreContext = () => {
                     expiration_warning
                 });
 
-                // Timestamp our initialization for double init defense
-                sessionStorage.setItem(
-                    "MUTINY_WALLET_INITIALIZED",
-                    Date.now().toString()
-                );
-
                 console.log("Wallet initialized");
 
                 await actions.postSetup();
