@@ -10,6 +10,7 @@ import {
     NavBar,
     NiceP,
     SmallHeader,
+    ToggleReportDiagnostics,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -19,6 +20,7 @@ function EmergencyStack() {
     return (
         <VStack>
             <ImportExport emergency />
+            <ToggleReportDiagnostics />
             <Logs />
             <div class="flex flex-col gap-2 overflow-x-hidden rounded-xl bg-m-red p-4">
                 <SmallHeader>{i18n.t("settings.danger_zone")}</SmallHeader>
