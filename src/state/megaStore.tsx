@@ -5,8 +5,8 @@ import { useNavigate, useSearchParams } from "@solidjs/router";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { Remote } from "comlink";
 import {
-    DEV,
     createContext,
+    DEV,
     onCleanup,
     onMount,
     ParentComponent,
@@ -21,7 +21,6 @@ import {
     MutinyWalletSettingStrings,
     Network,
     setSettings
-    // setupMutinyWallet
 } from "~/logic/mutinyWalletSetup";
 import { ParsedParams, toParsedParams } from "~/logic/waila";
 import { MutinyFederationIdentity } from "~/routes/settings";
@@ -44,40 +43,47 @@ type LoadStage =
 export type WalletWorker = Remote<typeof import("../workers/walletWorker")>;
 
 const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
-const sentryenv = import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "prod");
+const sentryenv =
+    import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "prod");
 
 export const makeMegaStoreContext = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const reportDiagnostics =
+        localStorage.getItem("report_diagnostics") === "true";
 
     // initialize both inside worker and outside
-    // TODO figure out when to set or not
-    Sentry.init({
-        dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
-        environment: sentryenv,
-        release: "mutiny-web@" + RELEASE_VERSION,
-        integrations: [
-            Sentry.browserTracingIntegration(),
-            Sentry.replayIntegration()
-        ],
+    if (reportDiagnostics) {
+        Sentry.init({
+            dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
+            environment: sentryenv,
+            release: "mutiny-web@" + RELEASE_VERSION,
+            integrations: [
+                Sentry.browserTracingIntegration(),
+                Sentry.replayIntegration()
+            ],
 
-        initialScope: {
-            tags: { component: "main" }
-        },
+            initialScope: {
+                tags: { component: "main" }
+            },
 
-        // Set tracesSampleRate to 1.0 to capture 100%
-        // of transactions for performance monitoring.
-        // We recommend adjusting this value in production
-        tracesSampleRate: 1.0,
+            // Set tracesSampleRate to 1.0 to capture 100%
+            // of transactions for performance monitoring.
+            // We recommend adjusting this value in production
+            tracesSampleRate: 1.0,
 
-        // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-        tracePropagationTargets: ["localhost", /^https:\/\/mutinywallet\.com/],
+            // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+            tracePropagationTargets: [
+                "localhost",
+                /^https:\/\/mutinywallet\.com/
+            ],
 
-        // Capture Replay for 10% of all sessions,
-        // plus 100% of sessions with an error
-        replaysSessionSampleRate: 0.1,
-        replaysOnErrorSampleRate: 1.0
-    });
+            // Capture Replay for 10% of all sessions,
+            // plus 100% of sessions with an error
+            replaysSessionSampleRate: 0.1,
+            replaysOnErrorSampleRate: 1.0
+        });
+    }
 
     // Not actually a shared worker, but it's the same code
     const sw = new ComlinkWorker<typeof import("../workers/walletWorker")>(
@@ -118,6 +124,7 @@ export const makeMegaStoreContext = () => {
         lang: localStorage.getItem("i18nexLng") || undefined,
         preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
         should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
+        report_diagnostics: reportDiagnostics,
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
         federations: undefined as MutinyFederationIdentity[] | undefined,
@@ -267,6 +274,7 @@ export const makeMegaStoreContext = () => {
                     password,
                     state.safe_mode,
                     state.should_zap_hodl,
+                    state.report_diagnostics,
                     nsec
                 );
 
@@ -543,6 +551,14 @@ export const makeMegaStoreContext = () => {
             const should_zap_hodl = !state.should_zap_hodl;
             localStorage.setItem("should_zap_hodl", should_zap_hodl.toString());
             setState({ should_zap_hodl });
+        },
+        toggleReportDiagnostics() {
+            const report_diagnostics = !state.report_diagnostics;
+            localStorage.setItem(
+                "report_diagnostics",
+                report_diagnostics.toString()
+            );
+            setState({ report_diagnostics });
         },
         async refreshFederations() {
             const federations = await sw.list_federations();

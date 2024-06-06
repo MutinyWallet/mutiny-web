@@ -311,7 +311,11 @@
         "enable_zaps_to_hodl": "Enable zaps to hodl invoices?",
         "zaps_to_hodl_desc": "Zaps to hodl invoices can result in channel force closes, which results in high on-chain fees. Use at your own risk!",
         "zaps_to_hodl_enable": "Enable hodl zaps",
-        "zaps_to_hodl_disable": "Disable hodl zaps"
+        "zaps_to_hodl_disable": "Disable hodl zaps",
+        "enable_report_diagnostics": "Enable diagnostic reporting?",
+        "report_diagnostics_desc": "Automatically report critical errors to the developers. All transaction data or other personal information is scrubed and anonymized.",
+        "report_diagnostics_enable": "Enable diagnostics",
+        "report_diagnostics_disable": "Disable diagnostics"
       }
     },
     "backup": {

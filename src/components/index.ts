@@ -39,6 +39,7 @@ export * from "./Toaster";
 export * from "./NostrActivity";
 export * from "./MutinyPlusCta";
 export * from "./ToggleHodl";
+export * from "./ToggleReportDiagnostics";
 export * from "./IOSbanner";
 export * from "./HomePrompt";
 export * from "./BigMoney";
