@@ -18,7 +18,7 @@ export const LANGUAGE_OPTIONS: Language[] = [
         value: "Español",
         shortName: "es"
     },
-     {
+    {
         value: "Français",
         shortName: "fr"
     },
