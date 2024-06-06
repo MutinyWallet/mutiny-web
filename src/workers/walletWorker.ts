@@ -1,4 +1,3 @@
-import { DEV } from "solid-js";
 import initMutinyWallet, {
     ActivityItem,
     BudgetPeriod,
@@ -19,6 +18,7 @@ import initMutinyWallet, {
     TagItem
 } from "@mutinywallet/mutiny-wasm";
 import * as Sentry from "@sentry/browser";
+import { DEV } from "solid-js";
 
 import { IActivityItem } from "~/components";
 import { MutinyWalletSettingStrings } from "~/logic/mutinyWalletSetup";
@@ -29,7 +29,8 @@ import {
 } from "~/routes/settings";
 
 const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
-const sentryenv = import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "prod");
+const sentryenv =
+    import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "prod");
 
 // For some reason {...invoice } doesn't bring across the paid field
 function destructureInvoice(invoice: MutinyInvoice): MutinyInvoice {
@@ -122,7 +123,7 @@ export async function setupMutinyWallet(
         // only do a new issue for errors w/ or w/o exceptions, and warnings
         beforeSend(event, hint) {
             const error = hint.originalException;
-            if (error && error.message) {
+            if (error && typeof error === "object" && "message" in error) {
                 return event;
             } else if (event.level == "warning" || event.level == "error") {
                 return event;
