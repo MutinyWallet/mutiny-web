@@ -1560,6 +1560,10 @@ export async function estimate_sweep_federation_fee(
     return await wallet!.estimate_sweep_federation_fee(amount);
 }
 
+export async function resync_lightning_address(): Promise<void> {
+    await wallet!.resync_lightning_address();
+}
+
 export async function parse_params(params: string): Promise<PaymentParams> {
     const paramsResult = await new PaymentParams(params);
     // PAIN just another object rebuild

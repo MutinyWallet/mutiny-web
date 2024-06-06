@@ -20,6 +20,7 @@ import {
     InnerCard,
     MiniStringShower,
     Restart,
+    ResyncLnAddress,
     ResyncOnchain,
     showToast,
     SimpleErrorDisplay,
@@ -569,6 +570,8 @@ export function KitchenSink() {
             <ToggleHodl />
             <Hr />
             <ResyncOnchain />
+            <Hr />
+            <ResyncLnAddress />
             <Hr />
             <Restart />
             <Hr />
