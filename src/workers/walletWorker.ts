@@ -151,7 +151,7 @@ export async function setupMutinyWallet(
     // Only use lsps if there's no lsp set
     const shouldUseLSPS = !lsp && lsps_connection_string && lsps_token;
 
-    const mutinyWallet = await new MutinyWallet(
+    const mutinyWallet = await MutinyWallet.new(
         // Password
         password ? password : undefined,
         // Mnemonic
