@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 
 import logo from "~/assets/mutiny-pixel-logo.png";
 import { Button, DefaultMain, NiceP } from "~/components";
@@ -9,7 +9,21 @@ export function Setup() {
     const [_state, actions] = useMegaStore();
 
     const [isCreatingNewWallet, setIsCreatingNewWallet] = createSignal(false);
+    const [isDiagnosticReportingEnabled, setIsDiagnosticReportingEnabled] =
+        createSignal(true);
     const navigate = useNavigate();
+
+    // default is to set reporting
+    actions.setReportDiagnostics();
+
+    // set up a listener that toggles it
+    createEffect(() => {
+        if (isDiagnosticReportingEnabled()) {
+            actions.setReportDiagnostics();
+        } else {
+            actions.disableReportDiagnostics();
+        }
+    });
 
     async function handleNewWallet() {
         try {
@@ -67,6 +81,19 @@ export function Setup() {
                     </Button>
                 </div>
                 <div class="flex-1" />
+                <p class="max-w-[15rem] text-center text-xs font-light text-m-grey-400">
+                    <input
+                        type="checkbox"
+                        checked={isDiagnosticReportingEnabled()}
+                        onChange={() =>
+                            setIsDiagnosticReportingEnabled(
+                                !isDiagnosticReportingEnabled()
+                            )
+                        }
+                    />
+                    Allow anonymous error reporting to help us improve the app.
+                    You can opt out at any time.
+                </p>
             </div>
         </DefaultMain>
     );
