@@ -39,7 +39,7 @@ export function EmergencyKit() {
                 <NiceP>{i18n.t("settings.emergency_kit.emergency_tip")}</NiceP>
                 <NiceP>
                     {i18n.t("settings.emergency_kit.questions")}{" "}
-                    <ExternalLink href="https://matrix.to/#/#mutiny-community:lightninghackers.com">
+                    <ExternalLink href="https://discord.gg/x3njeHUjVd">
                         {i18n.t("settings.emergency_kit.link")}
                     </ExternalLink>
                 </NiceP>
