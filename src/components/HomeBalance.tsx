@@ -1,6 +1,6 @@
 import { createMemo, Match, Suspense, Switch } from "solid-js";
 
-import { AmountFiat, AmountSats } from "~/components/Amount";
+import { AmountFiat, AmountSats, LoadingShimmer } from "~/components";
 import { useMegaStore } from "~/state/megaStore";
 
 export function HomeBalance() {
@@ -24,6 +24,9 @@ export function HomeBalance() {
         >
             <h1 class="flex w-full justify-center whitespace-nowrap text-2xl font-light text-white">
                 <Switch>
+                    <Match when={state.load_stage !== "done"}>
+                        <LoadingShimmer small />
+                    </Match>
                     <Match when={state.balanceView === "sats"}>
                         <AmountSats
                             amountSats={combinedBalance()}
