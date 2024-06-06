@@ -29,8 +29,7 @@ import {
 } from "~/routes/settings";
 
 const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
-const sentryenv =
-    import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "prod");
+const sentryenv = import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "");
 
 // For some reason {...invoice } doesn't bring across the paid field
 function destructureInvoice(invoice: MutinyInvoice): MutinyInvoice {
@@ -103,7 +102,7 @@ export async function setupMutinyWallet(
     nsec?: string
 ): Promise<boolean> {
     // initialize both inside worker and outside
-    if (reportDiagnostics) {
+    if (reportDiagnostics && sentryenv !== "") {
         Sentry.init({
             dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
             environment: sentryenv,

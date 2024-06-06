@@ -43,8 +43,7 @@ type LoadStage =
 export type WalletWorker = Remote<typeof import("../workers/walletWorker")>;
 
 const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
-const sentryenv =
-    import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "prod");
+const sentryenv = import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "");
 
 export const makeMegaStoreContext = () => {
     const [searchParams] = useSearchParams();
@@ -53,7 +52,7 @@ export const makeMegaStoreContext = () => {
         localStorage.getItem("report_diagnostics") === "true";
 
     // initialize both inside worker and outside
-    if (reportDiagnostics) {
+    if (reportDiagnostics && sentryenv !== "") {
         Sentry.init({
             dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
             environment: sentryenv,
