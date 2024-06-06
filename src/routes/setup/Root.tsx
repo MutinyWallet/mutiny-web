@@ -3,10 +3,12 @@ import { createEffect, createSignal } from "solid-js";
 
 import logo from "~/assets/mutiny-pixel-logo.png";
 import { Button, DefaultMain, NiceP } from "~/components";
+import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 
 export function Setup() {
     const [_state, actions] = useMegaStore();
+    const i18n = useI18n();
 
     const [isCreatingNewWallet, setIsCreatingNewWallet] = createSignal(false);
     const [isDiagnosticReportingEnabled, setIsDiagnosticReportingEnabled] =
@@ -62,14 +64,14 @@ export function Setup() {
                         class="h-[50px] w-[172px]"
                         alt="Mutiny Plus logo"
                     />
-                    <NiceP>Welcome to the Mutiny!</NiceP>
+                    <NiceP>{i18n.t("setup.initial.welcome")}</NiceP>
                     <div class="h-4" />
                     <Button
                         layout="full"
                         onClick={handleNewWallet}
                         loading={isCreatingNewWallet()}
                     >
-                        New Wallet
+                        {i18n.t("setup.initial.new_wallet")}
                     </Button>
                     <Button
                         intent="text"
@@ -77,7 +79,7 @@ export function Setup() {
                         disabled={isCreatingNewWallet()}
                         onClick={() => navigate("/setup/restore")}
                     >
-                        Import Existing
+                        {i18n.t("setup.initial.import_existing")}
                     </Button>
                 </div>
                 <div class="flex-1" />
@@ -91,8 +93,7 @@ export function Setup() {
                             )
                         }
                     />
-                    Allow anonymous error reporting to help us improve the app.
-                    You can opt out at any time.
+                    {i18n.t("setup.initial.reporting")}
                 </p>
             </div>
         </DefaultMain>

@@ -760,6 +760,12 @@
     }
   },
   "setup": {
+    "initial": {
+      "welcome": "Welcome to the Mutiny!",
+      "new_wallet": "New Wallet",
+      "import_existing": "Import Existing",
+      "reporting": "Allow anonymous error reporting to help us improve the app. You can opt out at any time."
+    },
     "new_profile": {
       "description": "Mutiny makes payments social.",
       "title": "Create your profile"
