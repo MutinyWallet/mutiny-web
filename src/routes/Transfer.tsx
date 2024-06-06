@@ -85,23 +85,23 @@ export function Transfer() {
             if (!fromFed()) throw new Error("No from federation");
             if (!toFed()) throw new Error("No to federation");
 
-            if (isMax()) {
-                const result = await sw.sweep_federation_balance(
-                    undefined,
-                    fromFed()?.federation_id,
-                    toFed()?.federation_id
-                );
+            const mutinyInvoice = await sw.create_sweep_federation_invoice(
+                isMax() ? undefined : amountSats(),
+                fromFed()?.federation_id,
+                toFed()?.federation_id
+            );
 
-                setTransferResult({ result: result });
-            } else {
-                const result = await sw.sweep_federation_balance(
-                    amountSats(),
-                    fromFed()?.federation_id,
-                    toFed()?.federation_id
-                );
-
-                setTransferResult({ result: result });
+            if (!mutinyInvoice.bolt11) {
+                // this should never happen
+                throw new Error("No invoice created");
             }
+
+            const result = await sw.sweep_federation_balance_to_invoice(
+                fromFed()?.federation_id,
+                mutinyInvoice.bolt11
+            );
+
+            setTransferResult({ result: result });
 
             await vibrateSuccess();
         } catch (e) {

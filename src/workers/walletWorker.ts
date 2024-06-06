@@ -1588,18 +1588,17 @@ export async function estimate_sweep_channel_open_fee(
 
 /**
  * Sweep the federation balance into a lightning channel
- * @param {bigint | undefined} [amount]
+ * @param {string | undefined} [from_federation_id]
+ * @param {string} [invoice]
  * @returns {Promise<FedimintSweepResult>}
  */
-export async function sweep_federation_balance(
-    amount?: bigint,
-    from_federation_id?: string,
-    to_federation_id?: string
+export async function sweep_federation_balance_to_invoice(
+    from_federation_id: string | undefined,
+    invoice: string
 ): Promise<FedimintSweepResult> {
-    const result = await wallet!.sweep_federation_balance(
-        amount,
+    const result = await wallet!.sweep_federation_balance_to_invoice(
         from_federation_id,
-        to_federation_id
+        invoice
     );
     return { ...result.value } as FedimintSweepResult;
 }
@@ -1607,12 +1606,21 @@ export async function sweep_federation_balance(
 /**
  * Estimate the fee before trying to sweep from federation
  * @param {bigint | undefined} [amount]
- * @returns {Promise<bigint | undefined>}
+ * @param {string | undefined} [from_federation_id]
+ * @param {string | undefined} [to_federation_id]
+ * @returns {Promise<MutinyInvoice>}
  */
-export async function estimate_sweep_federation_fee(
-    amount?: bigint
-): Promise<bigint | undefined> {
-    return await wallet!.estimate_sweep_federation_fee(amount);
+export async function create_sweep_federation_invoice(
+    amount?: bigint,
+    from_federation_id?: string,
+    to_federation_id?: string
+): Promise<MutinyInvoice> {
+    const invoice = await wallet!.create_sweep_federation_invoice(
+        amount,
+        from_federation_id,
+        to_federation_id
+    );
+    return destructureInvoice(invoice);
 }
 
 export async function parse_params(params: string): Promise<PaymentParams> {

@@ -47,6 +47,7 @@ export function SwapLightning() {
     );
 
     const [amountSats, setAmountSats] = createSignal(0n);
+    const [invoice, setInvoice] = createSignal("");
     const [feeSats, setFeeSats] = createSignal(0n);
     const [maxFederationBalanceBeforeSwap, setMaxFederationBalanceBeforeSwap] =
         createSignal(0n);
@@ -69,15 +70,11 @@ export function SwapLightning() {
             setLoading(true);
             setFeeEstimateWarning(undefined);
 
-            if (isMax()) {
-                const result = await sw.sweep_federation_balance(undefined);
-
-                setSweepResult({ result: result });
-            } else {
-                const result = await sw.sweep_federation_balance(amountSats());
-
-                setSweepResult({ result: result });
-            }
+            const result = await sw.sweep_federation_balance_to_invoice(
+                undefined,
+                invoice()
+            );
+            setSweepResult({ result: result });
 
             await vibrateSuccess();
         } catch (e) {
@@ -129,12 +126,20 @@ export function SwapLightning() {
             setLoading(true);
             setFeeEstimateWarning(undefined);
 
-            const fee = await sw.estimate_sweep_federation_fee(
+            const mutinyInvoice = await sw.create_sweep_federation_invoice(
                 isMax() ? undefined : amountSats()
             );
 
-            if (fee) {
-                setFeeSats(fee);
+            if (mutinyInvoice.bolt11) {
+                setInvoice(mutinyInvoice.bolt11);
+            } else {
+                console.error("No invoice created");
+                // this should never happen
+                throw new Error("No invoice created");
+            }
+
+            if (mutinyInvoice.fees_paid) {
+                setFeeSats(mutinyInvoice.fees_paid);
             }
             setMaxFederationBalanceBeforeSwap(calculateMaxFederation());
 
