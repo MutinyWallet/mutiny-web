@@ -62,9 +62,6 @@ dependencies:
   '@sentry/vite-plugin':
     specifier: ^2.18.0
     version: 2.18.0
-  '@sentry/wasm':
-    specifier: ^8.7.0
-    version: 8.7.0
   '@solid-primitives/upload':
     specifier: ^0.0.117
     version: 0.0.117(solid-js@1.8.16)
@@ -2574,16 +2571,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: false
-
-  /@sentry/wasm@8.7.0:
-    resolution: {integrity: sha512-kxzSR/H7A+h8c28gN4vivrukdk6wphf2Oz0MVQd18up1Fbwqmy226hCuAqZgw7aaPI4gfwatEQFm0Higghr9tA==}
-    engines: {node: '>=14.18'}
-    dependencies:
-      '@sentry/browser': 8.7.0
-      '@sentry/core': 8.7.0
-      '@sentry/types': 8.7.0
-      '@sentry/utils': 8.7.0
     dev: false
 
   /@solid-primitives/event-listener@2.3.3(solid-js@1.8.16):
