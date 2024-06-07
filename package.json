@@ -59,7 +59,6 @@
         "@mutinywallet/mutiny-wasm": "1.7.5",
         "@sentry/browser": "^8.7.0",
         "@sentry/vite-plugin": "^2.18.0",
-        "@sentry/wasm": "^8.7.0",
         "@solid-primitives/upload": "^0.0.117",
         "@solidjs/meta": "^0.29.3",
         "@solidjs/router": "^0.13.1",
