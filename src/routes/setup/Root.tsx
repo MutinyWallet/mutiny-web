@@ -12,7 +12,7 @@ export function Setup() {
 
     const [isCreatingNewWallet, setIsCreatingNewWallet] = createSignal(false);
     const [isDiagnosticReportingEnabled, setIsDiagnosticReportingEnabled] =
-        createSignal(true);
+        createSignal(false);
     const navigate = useNavigate();
 
     // default is to set reporting
@@ -83,9 +83,12 @@ export function Setup() {
                     </Button>
                 </div>
                 <div class="flex-1" />
-                <p class="max-w-[15rem] text-center text-xs font-light text-m-grey-400">
+                <div class="flex max-w-[20rem] items-center justify-center gap-2 ">
                     <input
                         type="checkbox"
+                        name="report_diagnostics"
+                        id="report_diagnostics"
+                        class="mr-2"
                         checked={isDiagnosticReportingEnabled()}
                         onChange={() =>
                             setIsDiagnosticReportingEnabled(
@@ -93,8 +96,13 @@ export function Setup() {
                             )
                         }
                     />
-                    {i18n.t("setup.initial.reporting")}
-                </p>
+                    <label
+                        class="text-left text-xs font-light text-m-grey-400"
+                        for="report_diagnostics"
+                    >
+                        {i18n.t("setup.initial.reporting")}
+                    </label>
+                </div>
             </div>
         </DefaultMain>
     );
