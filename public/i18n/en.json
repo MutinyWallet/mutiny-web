@@ -313,7 +313,7 @@
         "zaps_to_hodl_enable": "Enable hodl zaps",
         "zaps_to_hodl_disable": "Disable hodl zaps",
         "enable_report_diagnostics": "Enable diagnostic reporting?",
-        "report_diagnostics_desc": "Automatically report critical errors to the developers. All transaction data or other personal information is scrubed and anonymized.",
+        "report_diagnostics_desc": "Automatically report critical errors to the developers. All transaction data or other personal information is scrubbed and anonymized.",
         "report_diagnostics_enable": "Enable diagnostics",
         "report_diagnostics_disable": "Disable diagnostics"
       }
