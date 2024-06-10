@@ -1,6 +1,6 @@
 {
     "name": "mutiny-wallet",
-    "version": "1.7.6",
+    "version": "1.7.7",
     "license": "MIT",
     "packageManager": "pnpm@8.6.6",
     "scripts": {
