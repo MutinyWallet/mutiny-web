@@ -74,20 +74,6 @@ if (Capacitor.isNativePlatform()) {
 function ChildrenOrError(props: { children: JSX.Element }) {
     const [state] = useMegaStore();
 
-    return (
-        <Switch>
-            <Match when={state.setup_error}>
-                <SetupErrorDisplay
-                    initialError={state.setup_error!}
-                    password={state.password}
-                />
-            </Match>
-            <Match when={true}>{props.children}</Match>
-        </Switch>
-    );
-}
-
-export function Router() {
     // listeners for native navigation handling
     // Check if the platform is Android to handle back
     onMount(async () => {
@@ -120,10 +106,15 @@ export function Router() {
                     const path = url.pathname;
                     const urlParams = new URLSearchParams(url.search);
 
-                    console.log(
-                        `Navigating to ${path}?${urlParams.toString()}`
-                    );
-                    navigate(`${path}?${urlParams.toString()}`);
+                    if (urlParams.size) {
+                        console.log(
+                            `Navigating to ${path}?${urlParams.toString()}`
+                        );
+                        navigate(`${path}?${urlParams.toString()}`);
+                    } else {
+                        console.log(`Navigating to ${path}`);
+                        navigate(path);
+                    }
                 }
             );
 
@@ -133,6 +124,21 @@ export function Router() {
             });
         }
     });
+
+    return (
+        <Switch>
+            <Match when={state.setup_error}>
+                <SetupErrorDisplay
+                    initialError={state.setup_error!}
+                    password={state.password}
+                />
+            </Match>
+            <Match when={true}>{props.children}</Match>
+        </Switch>
+    );
+}
+
+export function Router() {
     return (
         <SolidRouter
             root={(props) => (
