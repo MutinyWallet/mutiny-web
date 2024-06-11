@@ -77,6 +77,9 @@ dependencies:
   comlink:
     specifier: ^4.4.1
     version: 4.4.1
+  cordova-plugin-purchase:
+    specifier: ^13.11.1
+    version: 13.11.1
   i18next:
     specifier: ^23.10.1
     version: 23.10.1
@@ -3836,6 +3839,10 @@ packages:
 
   /convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  /cordova-plugin-purchase@13.11.1:
+    resolution: {integrity: sha512-24KpOIgRaNFFH2F8TWE8lYhY6T3mYereqGNGGXJPi5j60MKx/CHqOuyvbCuMdAfLG+7XiGhcEi7XSXbOrFrEzw==}
+    dev: false
 
   /core-js-compat@3.36.1:
     resolution: {integrity: sha512-Dk997v9ZCt3X/npqzyGdTlq6t7lDBhZwGvV94PKzDArjp7BTRm7WlDAXYd/OWdeFHO8OChQYRJNJvUCqCbrtKA==}
@@ -7854,7 +7861,6 @@ packages:
 
   /workbox-google-analytics@7.0.0:
     resolution: {integrity: sha512-MEYM1JTn/qiC3DbpvP2BVhyIH+dV/5BjHk756u9VbwuAhu0QHyKscTnisQuz21lfRpOwiS9z4XdqeVAKol0bzg==}
-    deprecated: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
     dependencies:
       workbox-background-sync: 7.0.0
       workbox-core: 7.0.0
