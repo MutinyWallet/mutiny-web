@@ -111,11 +111,8 @@ test("rountrip receive and send", async ({ page }) => {
     // Wait for an h1 to appear in the dom that says "Payment Sent"
     await page.waitForSelector("text=Payment Sent", { timeout: 30000 });
 
-    // Click the "Nice" button
+    // Click the "Nice" button to go home
     await page.click("text=Nice");
-
-    // Go home
-    await page.click("text=Home");
 
     // Click settings
     await visitSettings(page);

@@ -708,7 +708,12 @@ export function Send() {
                     onConfirm={() => {
                         setSentDetails(undefined);
                         const state = location.state as { previous?: string };
-                        if (state?.previous) {
+                        // If we're coming from a chat, we want to go back to the chat
+                        // Otherwise we want to go home
+                        if (
+                            state?.previous &&
+                            state?.previous.includes("chat/")
+                        ) {
                             navigate(state?.previous);
                         } else {
                             navigate("/");
