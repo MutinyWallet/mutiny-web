@@ -132,26 +132,6 @@ function SettingsStringsEditor(props: {
                     )}
                 </Field>
                 <Field
-                    name="lsp"
-                    validate={[
-                        url(i18n.t("settings.servers.error_lsp")),
-                        custom(
-                            validateNotTorUrl,
-                            i18n.t("settings.servers.error_tor")
-                        )
-                    ]}
-                >
-                    {(field, props) => (
-                        <TextField
-                            {...props}
-                            value={field.value}
-                            error={field.error}
-                            label={i18n.t("settings.servers.lsp_label")}
-                            caption={i18n.t("settings.servers.lsp_caption")}
-                        />
-                    )}
-                </Field>
-                <Field
                     name="storage"
                     validate={[
                         url(i18n.t("settings.servers.error_lsp")),
