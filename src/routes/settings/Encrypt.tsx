@@ -4,7 +4,6 @@ import { createMemo, createSignal, Show } from "solid-js";
 import {
     BackLink,
     Button,
-    ButtonLink,
     DefaultMain,
     InfoBox,
     LargeHeader,
@@ -162,9 +161,6 @@ export function Encrypt() {
                             </Button>
                         </VStack>
                     </Form>
-                    <ButtonLink href="/" intent="green">
-                        {i18n.t("settings.encrypt.skip")}
-                    </ButtonLink>
                 </VStack>
             </DefaultMain>
             <NavBar activeTab="settings" />

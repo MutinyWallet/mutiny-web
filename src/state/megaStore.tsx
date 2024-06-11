@@ -177,36 +177,41 @@ export const makeMegaStoreContext = () => {
                 const reportDiagnostics =
                     localStorage.getItem("report_diagnostics") === "true";
 
-                if (reportDiagnostics && sentryenv !== "") {
-                    Sentry.init({
-                        dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
-                        environment: sentryenv,
-                        release: "mutiny-web@" + RELEASE_VERSION,
-                        integrations: [
-                            Sentry.browserTracingIntegration(),
-                            Sentry.replayIntegration()
-                        ],
+                try {
+                    // If there's a password that means we've already setup sentry the first time
+                    if (reportDiagnostics && sentryenv !== "" && !password) {
+                        Sentry.init({
+                            dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
+                            environment: sentryenv,
+                            release: "mutiny-web@" + RELEASE_VERSION,
+                            integrations: [
+                                Sentry.browserTracingIntegration(),
+                                Sentry.replayIntegration()
+                            ],
 
-                        initialScope: {
-                            tags: { component: "main" }
-                        },
+                            initialScope: {
+                                tags: { component: "main" }
+                            },
 
-                        // Set tracesSampleRate to 1.0 to capture 100%
-                        // of transactions for performance monitoring.
-                        // We recommend adjusting this value in production
-                        tracesSampleRate: 1.0,
+                            // Set tracesSampleRate to 1.0 to capture 100%
+                            // of transactions for performance monitoring.
+                            // We recommend adjusting this value in production
+                            tracesSampleRate: 1.0,
 
-                        // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-                        tracePropagationTargets: [
-                            "localhost",
-                            /^https:\/\/mutinywallet\.com/
-                        ],
+                            // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+                            tracePropagationTargets: [
+                                "localhost",
+                                /^https:\/\/mutinywallet\.com/
+                            ],
 
-                        // Capture Replay for 10% of all sessions,
-                        // plus 100% of sessions with an error
-                        replaysSessionSampleRate: 0.1,
-                        replaysOnErrorSampleRate: 1.0
-                    });
+                            // Capture Replay for 10% of all sessions,
+                            // plus 100% of sessions with an error
+                            replaysSessionSampleRate: 0.1,
+                            replaysOnErrorSampleRate: 1.0
+                        });
+                    }
+                } catch (e) {
+                    console.error("Error initializing sentry", e);
                 }
 
                 // handle lsp settings
