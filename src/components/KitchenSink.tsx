@@ -466,11 +466,11 @@ function LSPS(props: { initialSettings: MutinyWalletSettingStrings }) {
         console.log("values", values);
         try {
             await sw.change_lsp(
-                values.lsp ? values.lsp : undefined,
+                values.lsp ? values.lsp.trim() : undefined,
                 values.lsps_connection_string
-                    ? values.lsps_connection_string
+                    ? values.lsps_connection_string.trim()
                     : undefined,
-                values.lsps_token ? values.lsps_token : undefined
+                values.lsps_token ? values.lsps_token.trim() : undefined
             );
             await setSettings(values);
             window.location.reload();
