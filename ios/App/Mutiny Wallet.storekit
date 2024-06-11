@@ -1,0 +1,102 @@
+{
+  "identifier" : "9260E55C",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6471030760",
+    "_developerTeamID" : "X773Y823TN",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 739818187.7119,
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21498734",
+      "localizations" : [
+
+      ],
+      "name" : "Mutiny+",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6504255197",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlock your @mutiny.plus lightning address.",
+              "displayName" : "Mutiny+",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "mutiny_plus_subscription",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Mutiny+",
+          "subscriptionGroupID" : "21498734",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
