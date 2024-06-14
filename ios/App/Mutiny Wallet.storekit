@@ -10,15 +10,23 @@
     "_applicationInternalID" : "6471030760",
     "_developerTeamID" : "X773Y823TN",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 739818187.7119,
+    "_lastSynchronizedDate" : 739901171.56202304,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
     "_storeKitErrors" : [
       {
-        "current" : null,
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
         "enabled" : false,
         "name" : "Load Products"
       },
       {
-        "current" : null,
+        "current" : {
+          "index" : 1,
+          "type" : "purchase"
+        },
         "enabled" : false,
         "name" : "Purchase"
       },

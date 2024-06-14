@@ -26,6 +26,8 @@ PODS:
     - Capacitor
   - CapacitorToast (6.0.0):
     - Capacitor
+  - CordovaPlugins (6.0.0):
+    - CapacitorCordova
   - GoogleDataTransport (9.2.5):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
@@ -96,6 +98,7 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/share`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/status-bar`)"
   - "CapacitorToast (from `../../node_modules/.pnpm/@capacitor+toast@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/toast`)"
+  - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
 
 SPEC REPOS:
   trunk:
@@ -140,6 +143,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/status-bar"
   CapacitorToast:
     :path: "../../node_modules/.pnpm/@capacitor+toast@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/toast"
+  CordovaPlugins:
+    :path: "../capacitor-cordova-ios-plugins"
 
 SPEC CHECKSUMS:
   Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
@@ -155,6 +160,7 @@ SPEC CHECKSUMS:
   CapacitorShare: a771200d3b924a5d7ad9d9fecbac517e4c0aa74f
   CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
   CapacitorToast: ba573a7bc5dfd622e78d5be126a84ee221da4180
+  CordovaPlugins: 47421933f552e4057fe13f7ee62e34450df34391
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
   GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
@@ -169,6 +175,6 @@ SPEC CHECKSUMS:
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 7d4dccfabb68790e47370312014de5fc49a89668
+PODFILE CHECKSUM: ebe6d9c9b4098e5887c69e5ac633656526dc788c
 
 COCOAPODS: 1.14.3
