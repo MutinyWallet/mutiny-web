@@ -387,8 +387,8 @@
       "resets_every": "Resets every",
       "resubscribe_date": "Resubscribe on",
       "disable_connection": "Disable",
-      "disabled": "This subscription is disabled. Currently you can't re-enable subscriptions, but we're working to fix that. Check back soon!",
-      "disable_connection_confirm": "Are you sure you want to disable your subscription? Currently subscriptions can't be re-enabled, we're working to fix that."
+      "enable_connection": "Enable",
+      "disable_connection_confirm": "Are you sure you want to disable your subscription?"
     },
     "emergency_kit": {
       "title": "Emergency Kit",
