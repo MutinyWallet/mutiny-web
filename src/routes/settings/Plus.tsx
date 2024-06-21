@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import { A, useNavigate } from "@solidjs/router";
 import { AtSign } from "lucide-solid";
 import {
@@ -16,6 +17,7 @@ import {
     BackLink,
     Button,
     ButtonCard,
+    ButtonLink,
     ConfirmDialog,
     DefaultMain,
     FancyCard,
@@ -29,12 +31,11 @@ import {
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { store as iapStore, initializeIAP } from "~/logic/iap";
 import { useMegaStore } from "~/state/megaStore";
 import { eify, vibrateSuccess } from "~/utils";
 
-import "cordova-plugin-purchase";
-
-import { Capacitor } from "@capacitor/core";
+const DEBUG_MODE = true;
 
 function PlusAppleIAPCTA() {
     const i18n = useI18n();
@@ -49,63 +50,45 @@ function PlusAppleIAPCTA() {
     const [subscriptionProducts, setSubscriptionProducts] =
         createSignal<CdvPurchase.Product[]>();
 
-    const [transaction, setTransction] =
+    const [transaction, setTransaction] =
         createSignal<CdvPurchase.Transaction>();
 
-    const [product, setProduct] = createSignal<CdvPurchase.Product>();
+    const [transactions, setTransactions] =
+        createSignal<CdvPurchase.Transaction[]>();
 
-    const [receipt, setReceipt] = createSignal<CdvPurchase.Receipt>();
+    // const [products, setProducts] = createSignal<CdvPurchase.Product>();
 
-    // function refreshUI(arg: unknown) {
-    //     console.log("cdv refreshUI with arg", arg);
+    // const [receipt, setReceipt] = createSignal<CdvPurchase.Receipt>();
 
-    //     const { store, ProductType, Platform } = CdvPurchase;
-    //     console.log("cdv onProductUpdated");
-    //     const p = store.get(
-    //         "mutiny_plus_subscription",
-    //         Platform.APPLE_APPSTORE
-    //     );
-    //     console.log("cdv got product", p);
-    //     if (p) {
-    //         const t = store.findInLocalReceipts(p);
-    //         setTransction(t);
-    //     }
-    // }
+    const [receipts, setReceipts] = createSignal<CdvPurchase.Receipt[]>();
 
     function onProductUpdated(product: CdvPurchase.Product) {
         console.log("cdv onProductUpdated");
-        // const t = store.findInLocalReceipts(product);
-        // setTransction(t);
-        setProduct(product);
+        // setProduct(product);
     }
 
     function onReceiptUpdated(receipt: CdvPurchase.Receipt) {
         console.log("cdv onReceiptUpdated");
-        setReceipt(receipt);
+        // setReceipt(receipt);
     }
+
+    // function onReceiptsReady(receipts: CdvPurchase.Receipt[]) {
+    //     console.log("cdv onReceiptsReady");
+    //     setReceipts(receipts);
+    // }
 
     function onTransactionUpdated(transaction: CdvPurchase.Transaction) {
         console.log("cdv onTransactionUpdated");
-        setTransction(transaction);
+        setTransaction(transaction);
     }
 
     // We have to do this onmount because it's all callback based
     onMount(() => {
-        const { store, ProductType, Platform } = CdvPurchase;
-        // refreshUI("onmount");
-
-        store.verbosity = CdvPurchase.LogLevel.DEBUG;
-        // Tell the plugin which products we care about
-        store.register([
-            {
-                id: "mutiny_plus_subscription",
-                type: ProductType.PAID_SUBSCRIPTION,
-                platform: Platform.APPLE_APPSTORE
-            }
-        ]);
+        // Initialize IAP. We get warned about doing this multiple times (if they leave and come back) but I'm not sure it's a problem
+        initializeIAP();
 
         // Setup callbacks for updates, like when a product is purchased, or the server approves a purchase
-        store
+        iapStore
             .when()
             .productUpdated(onProductUpdated)
             .receiptUpdated(onReceiptUpdated)
@@ -113,75 +96,46 @@ function PlusAppleIAPCTA() {
             .finished(onTransactionUpdated)
             .approved(onApproved);
 
-        // Not sure when this is supposed to happen but it's working when it's here
-        // TODO: this should only happen once per app run, maybe do it in the megastore?
-        store.initialize([Platform.APPLE_APPSTORE]);
-
         // Callback for errors
-        store.error((e) => {
+        iapStore.error((e) => {
             console.error("cdv error", e);
         });
 
         // When the store is ready get the products
-        store.ready(() => {
-            setSubscriptionProducts(store.products);
+        iapStore.ready(() => {
+            setReceipts(iapStore.localReceipts);
+            setTransactions(iapStore.localTransactions);
+            setSubscriptionProducts(iapStore.products);
             // btw there's also a store.update() method we might need eventually
         });
     });
 
-    function buyProduct(product: CdvPurchase.Product) {
-        const { store } = CdvPurchase;
+    function purchase() {
+        // TODO be smarter about this
+        const product = subscriptionProducts()![0];
+
         // Gets the first offer, which is the only offer
         const offer = product.getOffer();
         console.log("cdv offer", offer);
         if (!offer) throw new Error("No offer found");
         // Could we put the lnurl auth id here?
-        // store
-        //     .when()
-        //     .productUpdated(refreshUI)
-        //     .receiptUpdated(refreshUI)
-        //     .approved(onApproved);
-        store.order(offer, {
+        iapStore.order(offer, {
             applicationUsername: "abc123testusername"
         });
 
-        console.log("cdv done ordering! did we win?");
-        // .then(
-        //     (p) => {
-        //         // Purchase in progress!
-        //         console.log("cdv purchase in progress", p);
-        //     },
-        //     (e) => {
-        //         console.log("cdv purchase error", e);
-        //     }
-        // );
+        console.log("cdv done ordering");
     }
 
-    function purchase() {
-        buyProduct(subscriptionProducts()![0]);
-        console.log("purchased");
+    function restorePurchases() {
+        // TODO: I get an error here, probably because I don't actually need to restore the purchase?
+        // To Native Cordova ->  InAppPurchase restoreCompletedTransactions INVALID ["options": []]
+        // [CdvPurchase.AppleAppStore] INFO: restoreFailed: 6777010
+        // (Error 6777010 is a failure to connect to itunes store)
+        iapStore.restorePurchases();
     }
 
     return (
         <>
-            <h2>product</h2>
-            <pre>{JSON.stringify(product(), null, 2)}</pre>
-            <h2>receipt</h2>
-            <pre>{JSON.stringify(receipt(), null, 2)}</pre>
-            <h2>transaction</h2>
-            <pre>{JSON.stringify(transaction(), null, 2)}</pre>
-            <For each={subscriptionProducts()}>
-                {(subscriptionProduct) => (
-                    <>
-                        <pre>
-                            {JSON.stringify(subscriptionProduct, null, 2)}
-                        </pre>
-                        <button onClick={() => buyProduct(subscriptionProduct)}>
-                            Buy
-                        </button>
-                    </>
-                )}
-            </For>
             <Show
                 when={subscriptionProducts() && subscriptionProducts()?.length}
                 fallback={<LoadingShimmer />}
@@ -202,7 +156,31 @@ function PlusAppleIAPCTA() {
                             {i18n.t("settings.plus.join")}
                         </Button>
                     </div>
+                    <button
+                        class="underline decoration-m-grey-400 hover:decoration-white"
+                        onClick={restorePurchases}
+                    >
+                        {i18n.t("settings.plus.restore")}
+                    </button>
                 </VStack>
+            </Show>
+            <Show when={DEBUG_MODE}>
+                <details>
+                    <summary>transaction</summary>
+                    <pre>{JSON.stringify(transaction(), null, 2)}</pre>
+                </details>
+                <details>
+                    <summary>transactions</summary>
+                    <pre>{JSON.stringify(transactions(), null, 2)}</pre>
+                </details>
+                <details>
+                    <summary>receipt</summary>
+                    <pre>{JSON.stringify(receipts(), null, 2)}</pre>
+                </details>
+                <details>
+                    <summary>product</summary>
+                    <pre>{JSON.stringify(subscriptionProducts(), null, 2)}</pre>
+                </details>
             </Show>
         </>
     );
