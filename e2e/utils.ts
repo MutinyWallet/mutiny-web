@@ -13,11 +13,11 @@ export async function loadHome(page: Page) {
 
     await page.locator("button:has-text('Skip for now')").click();
 
-    await page.getByText("Pick a Federation").waitFor();
+    // await page.getByText("Pick a Federation").waitFor();
 
-    await page.locator("button:has-text('Skip for now')").click();
+    // await page.locator("button:has-text('Skip for now')").click();
 
-    await page.locator(`button:has-text('Confirm')`).click();
+    // await page.locator(`button:has-text('Confirm')`).click();
 
     // Should have a balance up top now
     await page.locator(`text=0 sats`).first().waitFor();
