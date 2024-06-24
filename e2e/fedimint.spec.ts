@@ -12,6 +12,10 @@ test.beforeEach(async ({ page }) => {
 test("fedmint join, receive, send", async ({ page }) => {
     await loadHome(page);
 
+    // Click the top left button (it's the profile button), a child of header
+    // TODO: better ARIA stuff
+    await page.locator(`header button`).first().click();
+
     // Click "Join a federation" cta
     await page.click("text=Join a federation");
 
@@ -27,6 +31,9 @@ test("fedmint join, receive, send", async ({ page }) => {
 
     // Wait for a header to appear with the text "MutinySignetFederation"
     await page.getByText("MutinySignetFederation").waitFor();
+
+    // Navigate back to profile
+    await page.goBack();
 
     // Navigate back home
     await page.goBack();
