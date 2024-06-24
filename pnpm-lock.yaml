@@ -54,8 +54,8 @@ dependencies:
     specifier: ^0.20.0
     version: 0.20.0(solid-js@1.8.16)
   '@mutinywallet/mutiny-wasm':
-    specifier: 1.7.8
-    version: 1.7.8
+    specifier: 1.7.9
+    version: 1.7.9
   '@sentry/browser':
     specifier: ^8.7.0
     version: 8.7.0
@@ -2177,8 +2177,8 @@ packages:
       solid-js: 1.8.16
     dev: false
 
-  /@mutinywallet/mutiny-wasm@1.7.8:
-    resolution: {integrity: sha512-wmrx3wM/EMfZI/ChlhlhRr+jjqxywfR4UZUn5/SHJXAbiUpNiguSc6Fn8RmIwhxj1yEYs+7LEbd8NhrRRulYlA==}
+  /@mutinywallet/mutiny-wasm@1.7.9:
+    resolution: {integrity: sha512-MO6D4ZkJyEfTjEe2ZJVuDkQ+C+jpo1w2msDFNCqnV3B6sUSomkTwVvQPJA++D/WFqrgRiDJTKJPNkKEozOnx9g==}
     dev: false
 
   /@nodelib/fs.scandir@2.1.5:
