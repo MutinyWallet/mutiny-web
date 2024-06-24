@@ -441,18 +441,18 @@ export function CombinedActivity() {
                 </Show>
                 <Switch>
                     <Match when={activity.latest?.length === 0}>
-                        <Show when={state.federations?.length === 0}>
-                            <ButtonCard
-                                onClick={() =>
-                                    navigate("/settings/federations")
-                                }
-                            >
-                                <div class="flex items-center gap-2">
-                                    <Users class="inline-block text-m-red" />
-                                    <NiceP>{i18n.t("home.federation")}</NiceP>
-                                </div>
-                            </ButtonCard>
-                        </Show>
+                        {/*<Show when={state.federations?.length === 0}>*/}
+                        {/*    <ButtonCard*/}
+                        {/*        onClick={() =>*/}
+                        {/*            navigate("/settings/federations")*/}
+                        {/*        }*/}
+                        {/*    >*/}
+                        {/*        <div class="flex items-center gap-2">*/}
+                        {/*            <Users class="inline-block text-m-red" />*/}
+                        {/*            <NiceP>{i18n.t("home.federation")}</NiceP>*/}
+                        {/*        </div>*/}
+                        {/*    </ButtonCard>*/}
+                        {/*</Show>*/}
                         <ButtonCard onClick={() => navigate("/receive")}>
                             <div class="flex items-center gap-2">
                                 <Plus class="inline-block text-m-red" />
