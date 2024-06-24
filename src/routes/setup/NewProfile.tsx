@@ -31,7 +31,8 @@ export function NewProfile() {
         );
         console.log("profile", profile);
         localStorage.setItem("profile_setup_stage", "skipped");
-        navigate("/addfederation");
+        // navigate("/addfederation");
+        navigate("/");
         setSkipping(false);
     }
 
@@ -46,7 +47,8 @@ export function NewProfile() {
             );
             console.log("profile", profile);
             localStorage.setItem("profile_setup_stage", "saved");
-            navigate("/addfederation");
+            // navigate("/addfederation");
+            navigate("/");
         } catch (e) {
             console.error(e);
         }
