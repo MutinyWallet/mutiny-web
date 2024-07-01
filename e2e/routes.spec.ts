@@ -19,7 +19,6 @@ const settingsRoutes = [
     "/connections",
     "/currency",
     "/emergencykit",
-    "/plus",
     "/restore",
     "/servers",
     "/nostrkeys"
@@ -61,10 +60,6 @@ test("visit each route", async ({ page }) => {
     await visitSettings(page);
 
     checklist.set("/settings", true);
-
-    // Mutiny+
-    await checkRoute(page, "/settings/plus", "Mutiny+", checklist);
-    await page.goBack();
 
     // Lightning Channels
     await checkRoute(

@@ -1,5 +1,4 @@
-import { A, useNavigate } from "@solidjs/router";
-import { AtSign } from "lucide-solid";
+import { A } from "@solidjs/router";
 import {
     createResource,
     createSignal,
@@ -13,7 +12,6 @@ import party from "~/assets/party.gif";
 import {
     BackLink,
     Button,
-    ButtonCard,
     ConfirmDialog,
     DefaultMain,
     ExternalLink,
@@ -170,8 +168,6 @@ export function Plus() {
     const i18n = useI18n();
     const [state, _actions] = useMegaStore();
 
-    const navigate = useNavigate();
-
     return (
         <MutinyWalletGuard>
             <DefaultMain>
@@ -198,22 +194,6 @@ export function Plus() {
                                 {i18n.t("settings.plus.wallet_connection")}
                             </A>
                         </NiceP>
-                        <Show when={import.meta.env.VITE_HERMES}>
-                            <ButtonCard
-                                onClick={() =>
-                                    navigate("/settings/lightningaddress")
-                                }
-                            >
-                                <div class="flex items-center gap-2">
-                                    <AtSign class="inline-block text-m-red" />
-                                    <NiceP>
-                                        {i18n.t(
-                                            "settings.lightning_address.create"
-                                        )}
-                                    </NiceP>
-                                </div>
-                            </ButtonCard>
-                        </Show>
                     </Match>
                     <Match when={!state.mutiny_plus}>
                         <NiceP>
