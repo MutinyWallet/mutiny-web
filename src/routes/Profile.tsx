@@ -1,5 +1,5 @@
 import { createAsync, useNavigate } from "@solidjs/router";
-import { AtSign, Edit, Import } from "lucide-solid";
+import { Edit, Import } from "lucide-solid";
 import { createMemo, Show, Suspense } from "solid-js";
 
 import {
@@ -47,21 +47,6 @@ export function Profile() {
         return profile()?.deleted === true || profile()?.deleted === "true";
     });
 
-    const hasMutinyAddress = createMemo(() => {
-        if (profile()?.lud16) {
-            const hermes = import.meta.env.VITE_HERMES;
-            if (!hermes) {
-                return false;
-            }
-            const hermesDomain = new URL(hermes).hostname;
-            const afterAt = profile()?.lud16!.split("@")[1];
-            if (afterAt && afterAt.includes(hermesDomain)) {
-                return true;
-            }
-        }
-        return false;
-    });
-
     return (
         <MutinyWalletGuard>
             <DefaultMain>
@@ -89,26 +74,6 @@ export function Profile() {
                             <NiceP>{i18n.t("profile.edit_profile")}</NiceP>
                         </div>
                     </ButtonCard>
-                    <Show
-                        when={
-                            !hasMutinyAddress() && import.meta.env.VITE_HERMES
-                        }
-                    >
-                        <ButtonCard
-                            onClick={() =>
-                                navigate("/settings/lightningaddress")
-                            }
-                        >
-                            <div class="flex items-center gap-2">
-                                <AtSign class="inline-block text-m-red" />
-                                <NiceP>
-                                    {i18n.t(
-                                        "settings.lightning_address.create"
-                                    )}
-                                </NiceP>
-                            </div>
-                        </ButtonCard>
-                    </Show>
                 </Show>
                 <Show when={profile() && profile()?.deleted}>
                     <ButtonCard

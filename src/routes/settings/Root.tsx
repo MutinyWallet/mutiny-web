@@ -1,4 +1,3 @@
-import { Capacitor } from "@capacitor/core";
 import { A } from "@solidjs/router";
 import { ChevronRight } from "lucide-solid";
 import { For, Show } from "solid-js";
@@ -8,7 +7,6 @@ import {
     DefaultMain,
     ExternalLink,
     LargeHeader,
-    MutinyPlusCta,
     NavBar,
     SettingsCard,
     TinyText,
@@ -73,18 +71,11 @@ export function Settings() {
     // @ts-ignore
     const COMMIT_HASH = import.meta.env.__COMMIT_HASH__;
 
-    const selfHosted = state.settings?.selfhosted === "true";
-
-    const ios = Capacitor.getPlatform() === "ios";
-
     return (
         <DefaultMain>
             <BackLink />
             <LargeHeader>{i18n.t("settings.header")}</LargeHeader>
             <VStack biggap>
-                <Show when={state.mutiny_plus || (!selfHosted && !ios)}>
-                    <MutinyPlusCta />
-                </Show>
                 <SettingsLinkList
                     header={i18n.t("settings.general")}
                     links={[
