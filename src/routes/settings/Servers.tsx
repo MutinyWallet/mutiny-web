@@ -1,5 +1,5 @@
 import { createForm, custom, url } from "@modular-forms/solid";
-import { createResource, Match, Suspense, Switch } from "solid-js";
+import { createResource, For, Match, Suspense, Switch } from "solid-js";
 
 import {
     BackLink,
@@ -13,7 +13,8 @@ import {
     NiceP,
     showToast,
     SimpleErrorDisplay,
-    TextField
+    TextField,
+    TinyText
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import {
@@ -21,6 +22,7 @@ import {
     MutinyWalletSettingStrings,
     setSettings
 } from "~/logic/mutinyWalletSetup";
+import { useMegaStore } from "~/state/megaStore";
 import { eify } from "~/utils";
 
 const validateNotTorUrl = async (value?: string) => {
@@ -46,6 +48,7 @@ const validateNotTorUrl = async (value?: string) => {
 function SettingsStringsEditor(props: {
     initialSettings: MutinyWalletSettingStrings;
 }) {
+    const [_state, _actions, sw] = useMegaStore();
     const i18n = useI18n();
     const [settingsForm, { Form, Field }] =
         createForm<MutinyWalletSettingStrings>({
@@ -54,14 +57,65 @@ function SettingsStringsEditor(props: {
 
     async function handleSubmit(values: MutinyWalletSettingStrings) {
         try {
+            if (values.lsp !== props.initialSettings.lsp) {
+                await sw.change_lsp(
+                    values.lsp ? values.lsp : undefined,
+                    undefined,
+                    undefined
+                );
+            }
+
             await setSettings(values);
             window.location.reload();
         } catch (e) {
             console.error(e);
-            showToast(eify(e));
+            const err = eify(e);
+            if (err.message === "Failed to make a request to the LSP.") {
+                showToast(
+                    new Error(
+                        i18n.t("settings.servers.error_lsp_change_failed")
+                    )
+                );
+            } else {
+                showToast(eify(e));
+            }
         }
-        console.log(values);
     }
+
+    const MAINNET_LSP_OPTIONS = [
+        {
+            value: "https://0conf.lnolymp.us",
+            label: "Olympus by Zeus"
+        },
+        {
+            value: "https://lsp.voltageapi.com",
+            label: "Flow 2.0 by Voltage"
+        },
+        {
+            value: "",
+            label: "None"
+        }
+    ];
+
+    const SIGNET_LSP_OPTIONS = [
+        {
+            value: "https://mutinynet-flow.lnolymp.us",
+            label: "Olympus by Zeus"
+        },
+        {
+            value: "https://signet-lsp.mutinywallet.com",
+            label: "Flow 2.0 by Voltage"
+        },
+        {
+            value: "",
+            label: "None"
+        }
+    ];
+
+    const LSP_OPTIONS =
+        props.initialSettings.network === "signet"
+            ? SIGNET_LSP_OPTIONS
+            : MAINNET_LSP_OPTIONS;
 
     return (
         <Card title={i18n.t("settings.servers.title")}>
@@ -71,6 +125,42 @@ function SettingsStringsEditor(props: {
                     {i18n.t("settings.servers.link")}
                 </ExternalLink>
                 <div />
+
+                <Field
+                    name="lsp"
+                    validate={[url(i18n.t("settings.servers.error_lsp"))]}
+                >
+                    {(field, props) => (
+                        <div class="flex flex-col gap-2">
+                            <label
+                                class="text-sm font-semibold uppercase"
+                                for="lsp"
+                                id="lsp"
+                            >
+                                {i18n.t("settings.servers.lsp_label")}
+                            </label>
+                            <select
+                                {...props}
+                                value={field.value}
+                                class="w-full rounded-lg bg-m-grey-750 py-2 pl-4 pr-12 text-base font-normal text-white"
+                            >
+                                <For each={LSP_OPTIONS}>
+                                    {({ value, label }) => (
+                                        <option
+                                            selected={field.value === value}
+                                            value={value}
+                                        >
+                                            {label}
+                                        </option>
+                                    )}
+                                </For>
+                            </select>
+                            <TinyText>
+                                {i18n.t("settings.servers.lsp_caption")}
+                            </TinyText>
+                        </div>
+                    )}
+                </Field>
                 <Field
                     name="proxy"
                     validate={[
