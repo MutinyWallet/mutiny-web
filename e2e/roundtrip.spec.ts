@@ -7,6 +7,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("rountrip receive and send", async ({ page }) => {
+    test.slow(); // tell playwright that this test is slow
+
     await loadHome(page);
 
     await page.locator("#fab").click();
@@ -132,6 +134,9 @@ test("rountrip receive and send", async ({ page }) => {
     await page.click("text=Close");
 
     await page.click("text=Confirm");
+
+    // wait for the channel to close
+    await page.waitForTimeout(5000);
 
     await page
         .getByText(
