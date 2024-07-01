@@ -64,7 +64,7 @@ jobs:
           VITE_NETWORK: signet
           VITE_PROXY: wss://p.mutinywallet.com
           VITE_ESPLORA: https://mutinynet.com/api
-          VITE_LSP: https://signet-lsp.mutinywallet.com
+          VITE_LSP: https://mutinynet-flow.lnolymp.us
           VITE_RGS: https://rgs.mutinynet.com/snapshot/
           VITE_AUTH: https://auth-staging.mutinywallet.com
           VITE_SUBSCRIPTIONS: https://subscriptions-staging.mutinywallet.com

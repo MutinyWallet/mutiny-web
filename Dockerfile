@@ -17,7 +17,7 @@ ARG VITE_PROXY="/_services/proxy"
 ARG VITE_PRIMAL="https://primal-cache.mutinywallet.com/api"
 ARG VITE_ESPLORA
 ARG VITE_SCORER="https://scorer.mutinywallet.com"
-ARG VITE_LSP="https://lsp.voltageapi.com"
+ARG VITE_LSP="https://0conf.lnolymp.us"
 ARG VITE_RGS
 ARG VITE_AUTH
 ARG VITE_STORAGE="/_services/vss/v2"
