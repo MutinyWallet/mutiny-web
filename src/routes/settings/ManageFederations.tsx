@@ -9,7 +9,6 @@ import { FederationBalance, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate, useSearchParams } from "@solidjs/router";
 import { BadgeCheck, LogOut, Scan, Trash } from "lucide-solid";
 import {
-    createMemo,
     createResource,
     createSignal,
     For,
@@ -32,9 +31,7 @@ import {
     FederationPopup,
     InfoBox,
     KeyValue,
-    LabelCircle,
     LargeHeader,
-    LoadingShimmer,
     MediumHeader,
     MiniStringShower,
     MutinyWalletGuard,
@@ -100,8 +97,6 @@ export function AddFederationForm(props: {
     const [error, setError] = createSignal<Error>();
     const [success, setSuccess] = createSignal("");
 
-    const [loadingFederation, setLoadingFederation] = createSignal("");
-
     const [params, setParams] = useSearchParams();
 
     onMount(() => {
@@ -126,16 +121,6 @@ export function AddFederationForm(props: {
         await onSelect([federation_code]);
     };
 
-    const [federations] = createResource(async () => {
-        try {
-            const federations = await sw.discover_federations();
-            return federations;
-        } catch (e) {
-            console.error(e);
-            return [];
-        }
-    });
-
     const onSelect = async (inviteCodes: string[]) => {
         setSuccess("");
         setError(undefined);
@@ -143,7 +128,6 @@ export function AddFederationForm(props: {
             for (const inviteCode of inviteCodes) {
                 try {
                     console.log("Adding federation:", inviteCode);
-                    setLoadingFederation(inviteCode);
                     const newFederation = await sw.new_federation(inviteCode);
                     console.log("New federation added:", newFederation);
                     break;
@@ -182,7 +166,6 @@ export function AddFederationForm(props: {
             console.error("Error submitting federation:", e);
             setError(eify(e));
         }
-        setLoadingFederation("");
     };
 
     return (
@@ -235,122 +218,7 @@ export function AddFederationForm(props: {
                     </VStack>
                 </Form>
             </Show>
-            <Show when={!props.setup}>
-                <MediumHeader>
-                    {i18n.t("settings.manage_federations.discover")}
-                </MediumHeader>
-            </Show>
-
-            <Suspense>
-                <Switch>
-                    <Match when={federations.loading}>
-                        <FancyCard>
-                            <LoadingShimmer />
-                        </FancyCard>
-                    </Match>
-                    <Match when={federations.latest}>
-                        <For each={federations()}>
-                            {(fed) => (
-                                <FederationFormItem
-                                    fed={fed}
-                                    onSelect={onSelect}
-                                    loadingFederation={loadingFederation()}
-                                    setup={!!props.setup}
-                                />
-                            )}
-                        </For>
-                    </Match>
-                </Switch>
-            </Suspense>
         </div>
-    );
-}
-
-function FederationFormItem(props: {
-    fed: DiscoveredFederation;
-    onSelect: (invite_codes: string[]) => void;
-    loadingFederation: string;
-    setup: boolean;
-}) {
-    const [state, _actions, _sw] = useMegaStore();
-    const i18n = useI18n();
-
-    const alreadyAdded = createMemo(() => {
-        const matches = state.federations?.find((f) =>
-            props.fed.invite_codes.includes(f.invite_code)
-        );
-        return matches !== undefined;
-    });
-    return (
-        <FancyCard>
-            <VStack>
-                <div class="flex items-center gap-2 md:gap-4">
-                    <LabelCircle
-                        name={props.fed.metadata?.name}
-                        image_url={props.fed.metadata?.picture}
-                        contact={false}
-                        label={false}
-                    />
-                    <div>
-                        <header class={`font-semibold`}>
-                            {props.fed.metadata?.name}
-                        </header>
-                        <Show when={props.fed.metadata?.about}>
-                            <p>{props.fed.metadata?.about}</p>
-                        </Show>
-                    </div>
-                </div>
-                <Show when={!props.setup}>
-                    <KeyValue
-                        key={i18n.t(
-                            "settings.manage_federations.federation_id"
-                        )}
-                    >
-                        <MiniStringShower text={props.fed.id} />
-                    </KeyValue>
-                </Show>
-                <Show when={props.fed.created_at}>
-                    <KeyValue
-                        key={i18n.t("settings.manage_federations.created_at")}
-                    >
-                        <time>{timeAgo(props.fed.created_at)}</time>
-                    </KeyValue>
-                </Show>
-                <Show when={props.fed.recommendations.length > 0}>
-                    <KeyValue
-                        key={i18n.t(
-                            "settings.manage_federations.recommended_by"
-                        )}
-                    >
-                        <div class="flex items-center gap-2 overflow-scroll md:gap-4">
-                            <For each={props.fed.recommendations}>
-                                {(contact) => (
-                                    <LabelCircle
-                                        name={contact.name}
-                                        image_url={contact.image_url}
-                                        contact={true}
-                                        label={false}
-                                    />
-                                )}
-                            </For>
-                        </div>
-                    </KeyValue>
-                </Show>
-                <Show
-                    when={!alreadyAdded() && !(state.federations?.length === 2)}
-                >
-                    <Button
-                        intent="blue"
-                        onClick={() => props.onSelect(props.fed.invite_codes)}
-                        loading={props.fed.invite_codes.includes(
-                            props.loadingFederation
-                        )}
-                    >
-                        {i18n.t("settings.manage_federations.add")}
-                    </Button>
-                </Show>
-            </VStack>
-        </FancyCard>
     );
 }
 

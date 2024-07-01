@@ -22,8 +22,6 @@ test("fedmint join, receive, send", async ({ page }) => {
     // Fill the input with the federation code
     await page.fill("input[name='federation_code']", SIGNET_INVITE_CODE);
 
-    await page.getByText("Mutinynet Signet Federation").waitFor();
-
     const addButton = await page.getByRole("button", { name: "Add" }).first();
 
     // Click the "Add" button
