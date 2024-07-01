@@ -119,7 +119,7 @@ export function SwapLightning() {
         return feeSats() !== 0n;
     });
 
-    const [feeEstimateWarning, setFeeEstimateWarning] = createSignal<string>();
+    const [feeEstimateWarning, setFeeEstimateWarning] = createSignal<Error>();
 
     const feeEstimate = async () => {
         try {
@@ -146,7 +146,14 @@ export function SwapLightning() {
             setStage("preview");
         } catch (e) {
             console.error(e);
-            setFeeEstimateWarning(i18n.t("swap_lightning.too_small"));
+            const err = eify(e);
+            if (err.message === "Satoshi amount is invalid") {
+                setFeeEstimateWarning(
+                    new Error(i18n.t("swap_lightning.too_small"))
+                );
+            } else {
+                setFeeEstimateWarning(err);
+            }
         } finally {
             setLoading(false);
         }
@@ -256,7 +263,7 @@ export function SwapLightning() {
                                 <Suspense>
                                     <Show when={feeEstimateWarning()}>
                                         <InfoBox accent={"red"}>
-                                            {feeEstimateWarning()}
+                                            {feeEstimateWarning()?.message}
                                         </InfoBox>
                                     </Show>
                                 </Suspense>
