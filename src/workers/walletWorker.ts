@@ -612,6 +612,7 @@ export async function estimate_tx_fee(
     const fee = await wallet!.estimate_tx_fee(address, amount, feeRate);
     return fee;
 }
+
 /**
  * Calls upon a LNURL to get the parameters for it.
  * This contains what kind of LNURL it is (pay, withdrawal, auth, etc).
@@ -1243,6 +1244,21 @@ export async function change_lsp(
     lsps_token?: string
 ): Promise<void> {
     await wallet!.change_lsp(lsp_url, lsp_connection_string, lsps_token);
+}
+
+type LspConfig = {
+    url?: string;
+    connection_string?: string;
+    token?: string;
+};
+
+/**
+ * Returns the configured LSP for the node manager.
+ *
+ * @returns {Promise<LspConfig>}
+ */
+export async function get_configured_lsp(): Promise<LspConfig> {
+    return await wallet!.get_configured_lsp();
 }
 
 /**
