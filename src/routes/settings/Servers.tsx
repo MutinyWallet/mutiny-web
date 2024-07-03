@@ -9,6 +9,7 @@ import {
     ExternalLink,
     LargeHeader,
     LoadingShimmer,
+    MutinyWalletGuard,
     NavBar,
     NiceP,
     showToast,
@@ -255,7 +256,19 @@ function SettingsStringsEditor(props: {
 }
 
 function AsyncSettingsEditor() {
-    const [settings] = createResource<MutinyWalletSettingStrings>(getSettings);
+    const [_state, _actions, sw] = useMegaStore();
+
+    const [settings] = createResource<MutinyWalletSettingStrings>(async () => {
+        const settings = await getSettings();
+
+        // set the lsp to what the node manager is using
+        const lsp = await sw.get_configured_lsp();
+        settings.lsp = lsp.url;
+        settings.lsps_connection_string = lsp.connection_string;
+        settings.lsps_token = lsp.token;
+
+        return settings;
+    });
 
     return (
         <Switch>
@@ -272,13 +285,15 @@ function AsyncSettingsEditor() {
 export function Servers() {
     const i18n = useI18n();
     return (
-        <DefaultMain>
-            <BackLink href="/settings" title={i18n.t("settings.header")} />
-            <LargeHeader>{i18n.t("settings.servers.title")}</LargeHeader>
-            <Suspense fallback={<LoadingShimmer />}>
-                <AsyncSettingsEditor />
-            </Suspense>
-            <NavBar activeTab="settings" />
-        </DefaultMain>
+        <MutinyWalletGuard>
+            <DefaultMain>
+                <BackLink href="/settings" title={i18n.t("settings.header")} />
+                <LargeHeader>{i18n.t("settings.servers.title")}</LargeHeader>
+                <Suspense fallback={<LoadingShimmer />}>
+                    <AsyncSettingsEditor />
+                </Suspense>
+                <NavBar activeTab="settings" />
+            </DefaultMain>
+        </MutinyWalletGuard>
     );
 }
