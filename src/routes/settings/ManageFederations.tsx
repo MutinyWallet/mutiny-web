@@ -7,7 +7,7 @@ import {
 } from "@modular-forms/solid";
 import { FederationBalance, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate, useSearchParams } from "@solidjs/router";
-import { BadgeCheck, LogOut, Scan, Trash } from "lucide-solid";
+import { ArrowLeftRight, BadgeCheck, LogOut, Scan, Trash } from "lucide-solid";
 import {
     createResource,
     createSignal,
@@ -152,8 +152,6 @@ export function AddFederationForm(props: {
             setSuccess(
                 i18n.t("settings.manage_federations.federation_added_success")
             );
-            // Reset the expiration warning seen state
-            actions.resetExpirationWarning();
             await actions.refreshFederations();
             if (props.refetch) {
                 await props.refetch();
@@ -305,7 +303,8 @@ function FederationListItem(props: {
     balance?: bigint;
 }) {
     const i18n = useI18n();
-    const [_state, actions, sw] = useMegaStore();
+    const [state, actions, sw] = useMegaStore();
+    const navigate = useNavigate();
 
     async function removeFederation() {
         setConfirmLoading(true);
@@ -323,6 +322,15 @@ function FederationListItem(props: {
     }
 
     const [transferDialogOpen, setTransferDialogOpen] = createSignal(false);
+
+    async function transferFunds() {
+        // If there's only one federation we need to let them know to add another
+        if (state.federations?.length && state.federations.length < 2) {
+            setTransferDialogOpen(true);
+        } else {
+            navigate("/transfer?from=" + props.fed.federation_id);
+        }
+    }
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
     const [confirmLoading, setConfirmLoading] = createSignal(false);
@@ -385,6 +393,10 @@ function FederationListItem(props: {
                             inviteCode={props.fed.invite_code}
                         />
                     </KeyValue>
+                    <SubtleButton onClick={transferFunds}>
+                        <ArrowLeftRight class="h-4 w-4" />
+                        {i18n.t("settings.manage_federations.transfer_funds")}
+                    </SubtleButton>
                     <Suspense>
                         <RecommendButton fed={props.fed} />
                     </Suspense>
