@@ -28,7 +28,6 @@ import {
     BTC_OPTION,
     Currency,
     eify,
-    federationWarning,
     subscriptionValid,
     USD_OPTION
 } from "~/utils";
@@ -303,7 +302,23 @@ export const makeMegaStoreContext = () => {
                 // Get federations
                 const federations = await sw.list_federations();
 
-                const expiration_warning = federationWarning(federations);
+                let expiration_warning:
+                    | {
+                          expiresTimestamp: number;
+                          expiresMessage: string;
+                          federationName: string;
+                      }
+                    | undefined = undefined;
+
+                federations.forEach((f) => {
+                    if (f.popup_countdown_message && f.popup_end_timestamp) {
+                        expiration_warning = {
+                            expiresTimestamp: f.popup_end_timestamp,
+                            expiresMessage: f.popup_countdown_message,
+                            federationName: f.federation_name
+                        };
+                    }
+                });
 
                 setState({
                     wallet_loading: false,
@@ -561,7 +576,23 @@ export const makeMegaStoreContext = () => {
         async refreshFederations() {
             const federations = await sw.list_federations();
 
-            const expiration_warning = federationWarning(federations);
+            let expiration_warning:
+                | {
+                      expiresTimestamp: number;
+                      expiresMessage: string;
+                      federationName: string;
+                  }
+                | undefined = undefined;
+
+            federations.forEach((f) => {
+                if (f.popup_countdown_message && f.popup_end_timestamp) {
+                    expiration_warning = {
+                        expiresTimestamp: f.popup_end_timestamp,
+                        expiresMessage: f.popup_countdown_message,
+                        federationName: f.federation_name
+                    };
+                }
+            });
 
             setState({ federations, expiration_warning });
         },
@@ -607,9 +638,6 @@ export const makeMegaStoreContext = () => {
         // Only show the expiration warning once per session
         clearExpirationWarning() {
             setState({ expiration_warning_seen: true });
-        },
-        resetExpirationWarning() {
-            setState({ expiration_warning_seen: false });
         }
     };
 

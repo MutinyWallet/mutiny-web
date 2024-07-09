@@ -21,4 +21,3 @@ export * from "./bech32";
 export * from "./keypad";
 export * from "./debounce";
 export * from "./blobToBase64";
-export * from "./federationWarning";
