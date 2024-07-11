@@ -221,6 +221,14 @@ export function SetupErrorDisplay(props: {
                             )}
                         </ExternalLink>
                     </NiceP>
+                    <NiceP>
+                        {i18n.t("error.on_boot.loading_failed.in_the_meantime")}{" "}
+                        <a href="/?safe_mode=true">
+                            {" "}
+                            {i18n.t("error.on_boot.loading_failed.safe_mode")}
+                        </a>
+                        .
+                    </NiceP>
                     <ImportExport emergency />
                     <ToggleReportDiagnostics />
                     <Logs />
