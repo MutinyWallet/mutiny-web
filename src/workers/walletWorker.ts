@@ -25,7 +25,8 @@ import { MutinyWalletSettingStrings } from "~/logic/mutinyWalletSetup";
 import { FakeDirectMessage, OnChainTx } from "~/routes";
 import {
     DiscoveredFederation,
-    MutinyFederationIdentity
+    MutinyFederationIdentity,
+    ResyncProgress
 } from "~/routes/settings";
 
 const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
@@ -1199,6 +1200,26 @@ export async function close_channel(
  */
 export async function remove_federation(federation_id: string): Promise<void> {
     await wallet!.remove_federation(federation_id);
+}
+
+/**
+ * Resyncs a federation
+ * @param {string} federation_id
+ * @returns {Promise<void>}
+ */
+export async function resync_federation(federation_id: string): Promise<void> {
+    await wallet!.resync_federation(federation_id);
+}
+
+/**
+ * Gets the resync progress for a federation
+ * @param {string} federation_id
+ * @returns {Promise<ResyncProgress>}
+ */
+export async function get_federation_resync_progress(
+    federation_id: string
+): Promise<ResyncProgress | undefined> {
+    return wallet!.get_federation_resync_progress(federation_id);
 }
 
 /**
