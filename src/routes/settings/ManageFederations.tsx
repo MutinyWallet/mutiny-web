@@ -17,6 +17,7 @@ import {
     Trash
 } from "lucide-solid";
 import {
+    createEffect,
     createResource,
     createSignal,
     For,
@@ -318,6 +319,10 @@ function ResyncLoadingBar(props: { value: number; max: number }) {
             value={props.value}
             minValue={0}
             maxValue={props.max}
+            getValueLabel={({ value, max }) => {
+                const percent = Math.round((value / max) * 100);
+                return `${percent}% - ${value.toLocaleString()} / ${max.toLocaleString()}`;
+            }}
             class="flex w-full flex-col gap-2"
         >
             <Progress.ValueLabel class="text-sm text-m-grey-400" />
@@ -347,16 +352,31 @@ function FederationListItem(props: {
         setConfirmLoading(false);
     }
 
+    // Warn when leaving the page if there's a resync in progress
+    createEffect(() => {
+        if (resyncLoading()) {
+            window.onbeforeunload = function () {
+                return true;
+            };
+        } else {
+            window.onbeforeunload = null;
+        }
+    });
+
     async function resyncFederation() {
         setResyncLoading(true);
         try {
             await sw.resync_federation(props.fed.federation_id);
+
+            console.warn("RESYNC STARTED");
 
             for (let i = 0; i < 60; i++) {
                 await timeout(1000);
                 const progress = await sw.get_federation_resync_progress(
                     props.fed.federation_id
                 );
+
+                // FIXME: this only logs once when we start the resync but not after
                 console.log("progress", progress);
                 if (progress?.total !== 0) {
                     setResyncProgress(progress);
@@ -498,12 +518,20 @@ function FederationListItem(props: {
                 wallet to be bricked. Please be sure you can run the rescan
                 before you start it.
             </ConfirmDialog>
-            {/* todo put this in a dialog */}
             <Show when={resyncProgress()}>
-                <ResyncLoadingBar
-                    value={resyncProgress()!.complete}
-                    max={resyncProgress()!.total}
-                />
+                <SimpleDialog
+                    title={"Resyncing..."}
+                    open={!resyncProgress()!.done}
+                >
+                    <NiceP>This could take a couple of hours.</NiceP>
+                    <NiceP>
+                        DO NOT CLOSE THIS WINDOW UNTIL RESYNC IS DONE.
+                    </NiceP>
+                    <ResyncLoadingBar
+                        value={resyncProgress()!.complete}
+                        max={resyncProgress()!.total}
+                    />
+                </SimpleDialog>
             </Show>
         </>
     );
