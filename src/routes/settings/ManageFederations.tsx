@@ -22,6 +22,7 @@ import {
     createSignal,
     For,
     Match,
+    onCleanup,
     onMount,
     Show,
     Suspense,
@@ -363,6 +364,8 @@ function FederationListItem(props: {
         }
     });
 
+    const [shouldPollProgress, setShouldPollProgress] = createSignal(false);
+
     async function resyncFederation() {
         setResyncLoading(true);
         try {
@@ -370,17 +373,18 @@ function FederationListItem(props: {
 
             console.warn("RESYNC STARTED");
 
+            // This loop is so we can try enough times until the resync actually starts
             for (let i = 0; i < 60; i++) {
                 await timeout(1000);
                 const progress = await sw.get_federation_resync_progress(
                     props.fed.federation_id
                 );
 
-                // FIXME: this only logs once when we start the resync but not after
                 console.log("progress", progress);
                 if (progress?.total !== 0) {
                     setResyncProgress(progress);
                     setResyncOpen(false);
+                    setShouldPollProgress(true);
                     break;
                 }
             }
@@ -389,6 +393,47 @@ function FederationListItem(props: {
             setResyncLoading(false);
         }
     }
+
+    function refetch() {
+        sw.get_federation_resync_progress(props.fed.federation_id).then(
+            (progress) => {
+                // if the progress is undefined, it also means we're done
+                if (progress === undefined) {
+                    setResyncProgress({
+                        total: 100,
+                        complete: 100,
+                        done: true
+                    });
+                    setShouldPollProgress(false);
+                    setResyncLoading(false);
+                    return;
+                } else if (progress?.done) {
+                    setShouldPollProgress(false);
+                    setResyncLoading(false);
+                }
+
+                setResyncProgress(progress);
+            }
+        );
+    }
+
+    createEffect(() => {
+        let interval = undefined;
+
+        if (shouldPollProgress()) {
+            interval = setInterval(() => {
+                refetch();
+            }, 1000); // Poll every second
+        }
+
+        if (!shouldPollProgress()) {
+            clearInterval(interval);
+        }
+
+        onCleanup(() => {
+            clearInterval(interval);
+        });
+    });
 
     async function confirmRemove() {
         setConfirmOpen(true);
@@ -523,14 +568,22 @@ function FederationListItem(props: {
                     title={"Resyncing..."}
                     open={!resyncProgress()!.done}
                 >
-                    <NiceP>This could take a couple of hours.</NiceP>
-                    <NiceP>
-                        DO NOT CLOSE THIS WINDOW UNTIL RESYNC IS DONE.
-                    </NiceP>
-                    <ResyncLoadingBar
-                        value={resyncProgress()!.complete}
-                        max={resyncProgress()!.total}
-                    />
+                    <Show when={!resyncProgress()!.done}>
+                        <NiceP>This could take a couple of hours.</NiceP>
+                        <NiceP>
+                            DO NOT CLOSE THIS WINDOW UNTIL RESYNC IS DONE.
+                        </NiceP>
+                        <ResyncLoadingBar
+                            value={resyncProgress()!.complete}
+                            max={resyncProgress()!.total}
+                        />
+                    </Show>
+                    <Show when={resyncProgress()!.done}>
+                        <NiceP>Resync complete!</NiceP>
+                        <Button onClick={() => (window.location.href = "/")}>
+                            Nice
+                        </Button>
+                    </Show>
                 </SimpleDialog>
             </Show>
         </>
