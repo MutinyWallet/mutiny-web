@@ -1,0 +1,132 @@
+{
+    "common": {
+        "title": "Mutiny peňaženka",
+        "mutiny": "Mutiny",
+        "nice": "Paráda",
+        "home": "Domov",
+        "scan": "Skenuj",
+        "fee": "Poplatok",
+        "send": "Odoslať",
+        "receive": "Prijať",
+        "request": "Požiadavka",
+        "back": "Späť",
+        "coming_soon": "(čoskoro)",
+        "copy": "Kopírovať",
+        "copied": "Skopírovaný",
+        "continue": "Pokračovať",
+        "error_unimplemented": "Neimplementované",
+        "why": "Prečo?",
+        "private_tags": "Súkromné tagy",
+        "view_transaction": "Zobraziť transakciu",
+        "view_payment_details": "Zobraziť detaily platby",
+        "pending": "Spracováva sa",
+        "error_safe_mode": "Mutiny operuje v bezpečnom móde. Lightning nie je povolený.",
+        "expires": "Vyprší za {{time}}"
+    },
+    "home": {
+        "receive": "Získaj svoje prvé satoshi",
+        "find": "Nájdi svojích priateľov na Nostri",
+        "backup": "Zabezpeč svoje prostriedky!",
+        "connection": "Vytvor spojenie s peňaženkou",
+        "connection_edit": "Uprav nastavenia peňaženky",
+        "federation": "Pridaj sa k federácii",
+        "subnav": {
+            "just_me": "Iba ja",
+            "friends": "Priatelia",
+            "requests": "Požiadavky"
+        },
+        "federations_warn_generic": "Pre dočasné problemy s aktúlnou federáciou vám odporúčame, aby ste svoje prostriedky presunuli do lightning kanála alebo do inej bitcoinovej peňaženky.",
+        "transfer_lightning": "Preveď do lightning-u",
+        "sent_to_another_wallet": "Odošli do inej peňaženky"
+    },
+    "contacts": {
+        "add_contact": "Pridať kontakt"
+    },
+    "receive": {
+        "receive_bitcoin": "Prijať Bitcoin",
+        "amount_editable": {
+            "receive_too_small": "Prvý krát musíš prijať {{amount}} SATS alebo viac.",
+            "set_amount": "Nastav množstvo",
+            "max": "MAX",
+            "fix_amounts": {
+                "ten_k": "10k",
+                "one_hundred_k": "100k",
+                "one_million": "1m"
+            },
+            "del": "DEL",
+            "balance": "Balance"
+        },
+        "what_for": "Na čo to je?"
+    },
+    "send": {
+        "search": {
+            "placeholder": "Meno, adresa, faktúra",
+            "paste": "Prilepiť",
+            "contacts": "Kontakty",
+            "global_search": "Globálne vyhľadávanie",
+            "no_results": "Žiadne nájdené výsledky pre"
+        },
+        "sending": "Odosielam...",
+        "confirm_send": "Potvrdiť odoslanie",
+        "start_over": "Začať odznova",
+        "send_bitcoin": "Odoslať Bitcoin",
+        "paste": "Prilepiť",
+        "scan_qr": "Skenovať QR",
+        "payment_initiated": "Platba inicializovaná",
+        "payment_sent": "Platba odoslaná",
+        "destination": "Destinácia",
+        "no_payment_info": "Žiadne platobné údaje",
+        "what_for": "Na čo to je?"
+    },
+    "scanner": {
+        "paste": "Prilepiť niečo",
+        "cancel": "Zrušiť"
+    },
+    "setup": {
+        "initial": {
+            "welcome": "Vitajte v Mutiny!",
+            "new_wallet": "Nová peňaženka",
+            "import_existing": "Importovať existujúcu peňaženku",
+            "reporting": "Povoliť anonymné hlásenie chýb za účelom zlepšovania aplikácie. Túto možnosť môžete kedykoľvek zmeniť."
+        },
+        "new_profile": {
+            "description": "Mutiny mení platby na sociálne.",
+            "title": "Vytvoriť váš profil"
+        },
+        "skip": "Na teraz preskočiť",
+        "import_profile": "Importovať existujúci Nostr profil",
+        "import": {
+            "title": "Importovať Nostr profil",
+            "description": "Prihlásiť sa s existujúcim Nostr účtom."
+        },
+        "federation": {
+            "pick": "Vybrať federáciu",
+            "skip_confirm": "Nevyhnete sa on-chain poplatkom a poplatkom za kanál ak budete používať Mutiny, taktiež nebudú dostupné pokročilé funkcie ako napríklad lightning adresa a pod. Túto možnosť môžete kedykoľvek zmeniť."
+        }
+    },
+    "utils": {
+        "hours_future_one": "Za jednu hodinu od teraz",
+        "hours_future_other": "{{count}} hodín od teraz",
+        "hours_past_one": "Pred jednou hodinou",
+        "hours_past_other": "Pred {{count}} hodinami",
+        "days_future_one": "Jeden deň od teraz",
+        "days_future_other": "{{count}} dní odteraz",
+        "days_past_one": "Pred jedným dňom",
+        "days_past_other": "Pred {{count}} dňami",
+        "days_short": "{{count}}d",
+        "minutes_future_one": "Jedna minúta od teraz",
+        "minutes_future_other": "{{count}} minúť od teraz",
+        "minutes_past_one": "Pred jednou minúťou",
+        "minutes_past_other": "Pred {{count}} minútami",
+        "minutes_short": "{{count}}m",
+        "nowish": "Teraz",
+        "seconds_future": "Sekundy od teraz",
+        "seconds_past": "Práve teraz"
+    },
+    "transfer": {
+        "completed": "Prevod ukončený",
+        "sats_moved": "+{{amount}} satoshi bolo prevedených do {{federation_name}}",
+        "confirm": "Potvrdiť prevod",
+        "title": "Presuň prostriedky"
+    }
+}
