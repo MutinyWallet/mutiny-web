@@ -41,5 +41,9 @@ export const LANGUAGE_OPTIONS: Language[] = [
     {
         value: "Português",
         shortName: "pt"
+    },
+    {
+        value: "Slovenský",
+        shortName: "sk"
     }
 ];
