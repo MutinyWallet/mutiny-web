@@ -331,7 +331,7 @@ function ActualSearch(props: { initialValue?: string }) {
                     type="text"
                     value={searchValue()}
                     onInput={(e) => setSearchValue(e.currentTarget.value)}
-                    placeholder="Name, address, invoice..."
+                    placeholder={i18n.t("send.search.placeholder") + " ..."}
                     autofocus
                     autocomplete="off"
                     autocorrect="off"
@@ -343,7 +343,7 @@ function ActualSearch(props: { initialValue?: string }) {
                         onClick={handlePaste}
                     >
                         <LucideClipboard class="h-4 w-4" />
-                        Paste
+                        {i18n.t("send.search.paste")}
                     </button>
                 </Show>
                 <Show when={!!searchValue()}>
@@ -359,14 +359,16 @@ function ActualSearch(props: { initialValue?: string }) {
                 <div class="flex-0 flex w-full">
                     <Show when={searchState() !== "notsendable"}>
                         <Button intent="green" onClick={handleContinue}>
-                            Continue
+                            {i18n.t("common.continue")}
                         </Button>
                     </Show>
                 </div>
                 <Show when={searchState() !== "sendable"}>
                     <VStack>
                         <Suspense>
-                            <h2 class="text-xl font-semibold">Contacts</h2>
+                            <h2 class="text-xl font-semibold">
+                                {i18n.t("send.search.contacts")}
+                            </h2>
                             <Show when={contacts() && contacts().length > 0}>
                                 <For each={filteredContacts()}>
                                     {(contact) => (
@@ -385,7 +387,7 @@ function ActualSearch(props: { initialValue?: string }) {
                         <Suspense fallback={<LoadingShimmer />}>
                             <Show when={!!debouncedSearchValue()}>
                                 <h2 class="py-2 text-xl font-semibold">
-                                    Global Search
+                                    {i18n.t("send.search.global_search")}
                                 </h2>
                                 <GlobalSearch
                                     searchValue={debouncedSearchValue()}
