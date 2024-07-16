@@ -40,10 +40,7 @@
       "just_me": "Just Me",
       "friends": "Friends",
       "requests": "Requests"
-    },
-    "federations_warn_generic": "Due to temporary issues with your current federation, we recommend you transfer your funds to a lightning channel or withdraw to another bitcoin wallet.",
-    "transfer_lightning": "Transfer to lightning",
-    "sent_to_another_wallet": "Send to another wallet"
+    }
   },
   "profile": {
     "profile": "Profile",
@@ -52,7 +49,6 @@
     "edit_profile": "Edit Profile",
     "join_federation": "Join a federation",
     "manage_federation": "Manage Federations",
-    "leave_federation": "Leave Federation",
     "federated_custody": "Federated Custody",
     "self_custody": "Self Custody",
     "social": "Social",
