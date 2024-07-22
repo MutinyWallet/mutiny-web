@@ -35,6 +35,7 @@ import { NWCEditor } from "~/components/NWCEditor";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
 import { createDeepSignal, openLinkProgrammatically } from "~/utils";
+import { enable_nwc_profile } from "~/workers/walletWorker";
 
 function Spending(props: { spent: number; remaining: number }) {
     const i18n = useI18n();
@@ -89,6 +90,15 @@ function NwcDetails(props: {
         try {
             await sw.delete_nwc_profile(props.profile.index);
             setConfirmOpen(false);
+            props.refetch();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function enableProfile() {
+        try {
+            await sw.enable_nwc_profile(props.profile.index);
             props.refetch();
         } catch (e) {
             console.error(e);
@@ -153,9 +163,13 @@ function NwcDetails(props: {
             <Show
                 when={props.profile.enabled}
                 fallback={
-                    <InfoBox accent="red">
-                        {i18n.t("settings.connections.disabled")}
-                    </InfoBox>
+                    <Button
+                        layout="small"
+                        intent="green"
+                        onClick={enableProfile}
+                    >
+                        {i18n.t("settings.connections.enable_connection")}
+                    </Button>
                 }
             >
                 <Button layout="small" intent="green" onClick={props.onEdit}>
