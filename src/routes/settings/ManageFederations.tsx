@@ -371,7 +371,7 @@ function FederationListItem(props: {
         try {
             await sw.resync_federation(props.fed.federation_id);
 
-            console.warn("RESYNC STARTED");
+            console.log("RESYNC STARTED");
 
             // This loop is so we can try enough times until the resync actually starts
             for (let i = 0; i < 60; i++) {
