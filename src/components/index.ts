@@ -58,3 +58,4 @@ export * from "./ImportNsecForm";
 export * from "./LightningAddressShower";
 export * from "./FederationInviteShower";
 export * from "./FederationPopup";
+export * from "./ResyncLnAddress";
