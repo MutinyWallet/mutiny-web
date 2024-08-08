@@ -1,9 +1,11 @@
 import {
     BackLink,
+    Button,
     DefaultMain,
     DeleteEverything,
     ExternalLink,
     ImportExport,
+    InnerCard,
     LargeHeader,
     LoadingIndicator,
     Logs,
@@ -22,6 +24,21 @@ function EmergencyStack() {
             <ImportExport emergency />
             <ToggleReportDiagnostics />
             <Logs />
+            <InnerCard title={"Safe Mode"}>
+                <VStack>
+                    <NiceP>
+                        Disable certain wallet functionality to help with
+                        debugging.
+                    </NiceP>
+                    <Button
+                        onClick={() =>
+                            (window.location.href = "/?safe_mode=true")
+                        }
+                    >
+                        Enable Safe Mode
+                    </Button>
+                </VStack>
+            </InnerCard>
             <div class="flex flex-col gap-2 overflow-x-hidden rounded-xl bg-m-red p-4">
                 <SmallHeader>{i18n.t("settings.danger_zone")}</SmallHeader>
                 <DeleteEverything emergency />

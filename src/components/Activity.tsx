@@ -1,6 +1,6 @@
 import { TagItem } from "@mutinywallet/mutiny-wasm";
 import { cache, createAsync, useNavigate } from "@solidjs/router";
-import { Plus, Save, Search, Shuffle, Users } from "lucide-solid";
+import { Plus, Save, Search, Shuffle } from "lucide-solid";
 import {
     createEffect,
     createMemo,

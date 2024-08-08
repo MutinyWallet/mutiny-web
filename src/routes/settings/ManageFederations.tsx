@@ -1,3 +1,4 @@
+import { Progress } from "@kobalte/core";
 import {
     createForm,
     required,
@@ -7,12 +8,21 @@ import {
 } from "@modular-forms/solid";
 import { FederationBalance, TagItem } from "@mutinywallet/mutiny-wasm";
 import { A, useNavigate, useSearchParams } from "@solidjs/router";
-import { ArrowLeftRight, BadgeCheck, LogOut, Scan, Trash } from "lucide-solid";
 import {
+    ArrowLeftRight,
+    BadgeCheck,
+    LogOut,
+    RefreshCw,
+    Scan,
+    Trash
+} from "lucide-solid";
+import {
+    createEffect,
     createResource,
     createSignal,
     For,
     Match,
+    onCleanup,
     onMount,
     Show,
     Suspense,
@@ -45,7 +55,7 @@ import {
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import { useMegaStore } from "~/state/megaStore";
-import { eify, timeAgo } from "~/utils";
+import { eify, timeAgo, timeout } from "~/utils";
 
 type FederationForm = {
     federation_code: string;
@@ -66,6 +76,12 @@ export type Metadata = {
     name: string;
     picture?: string;
     about?: string;
+};
+
+export type ResyncProgress = {
+    total: number;
+    complete: number;
+    done: boolean;
 };
 
 export type DiscoveredFederation = {
@@ -298,6 +314,26 @@ function RecommendButton(props: { fed: MutinyFederationIdentity }) {
     );
 }
 
+function ResyncLoadingBar(props: { value: number; max: number }) {
+    return (
+        <Progress.Root
+            value={props.value}
+            minValue={0}
+            maxValue={props.max}
+            getValueLabel={({ value, max }) => {
+                const percent = Math.round((value / max) * 100);
+                return `${percent}% - ${value.toLocaleString()} / ${max.toLocaleString()}`;
+            }}
+            class="flex w-full flex-col gap-2"
+        >
+            <Progress.ValueLabel class="text-sm text-m-grey-400" />
+            <Progress.Track class="h-6  rounded bg-white/10">
+                <Progress.Fill class="h-full w-[var(--kb-progress-fill-width)] rounded bg-m-blue transition-[width]" />
+            </Progress.Track>
+        </Progress.Root>
+    );
+}
+
 function FederationListItem(props: {
     fed: MutinyFederationIdentity;
     balance?: bigint;
@@ -317,8 +353,94 @@ function FederationListItem(props: {
         setConfirmLoading(false);
     }
 
+    // Warn when leaving the page if there's a resync in progress
+    createEffect(() => {
+        if (resyncLoading()) {
+            window.onbeforeunload = function () {
+                return true;
+            };
+        } else {
+            window.onbeforeunload = null;
+        }
+    });
+
+    const [shouldPollProgress, setShouldPollProgress] = createSignal(false);
+
+    async function resyncFederation() {
+        setResyncLoading(true);
+        try {
+            await sw.resync_federation(props.fed.federation_id);
+
+            console.log("RESYNC STARTED");
+
+            // This loop is so we can try enough times until the resync actually starts
+            for (let i = 0; i < 60; i++) {
+                await timeout(1000);
+                const progress = await sw.get_federation_resync_progress(
+                    props.fed.federation_id
+                );
+
+                console.log("progress", progress);
+                if (progress?.total !== 0) {
+                    setResyncProgress(progress);
+                    setResyncOpen(false);
+                    setShouldPollProgress(true);
+                    break;
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            setResyncLoading(false);
+        }
+    }
+
+    function refetch() {
+        sw.get_federation_resync_progress(props.fed.federation_id).then(
+            (progress) => {
+                // if the progress is undefined, it also means we're done
+                if (progress === undefined) {
+                    setResyncProgress({
+                        total: 100,
+                        complete: 100,
+                        done: true
+                    });
+                    setShouldPollProgress(false);
+                    setResyncLoading(false);
+                    return;
+                } else if (progress?.done) {
+                    setShouldPollProgress(false);
+                    setResyncLoading(false);
+                }
+
+                setResyncProgress(progress);
+            }
+        );
+    }
+
+    createEffect(() => {
+        let interval = undefined;
+
+        if (shouldPollProgress()) {
+            interval = setInterval(() => {
+                refetch();
+            }, 1000); // Poll every second
+        }
+
+        if (!shouldPollProgress()) {
+            clearInterval(interval);
+        }
+
+        onCleanup(() => {
+            clearInterval(interval);
+        });
+    });
+
     async function confirmRemove() {
         setConfirmOpen(true);
+    }
+
+    async function confirmResync() {
+        setResyncOpen(true);
     }
 
     const [transferDialogOpen, setTransferDialogOpen] = createSignal(false);
@@ -334,6 +456,13 @@ function FederationListItem(props: {
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
     const [confirmLoading, setConfirmLoading] = createSignal(false);
+
+    const [resyncOpen, setResyncOpen] = createSignal(false);
+    const [resyncLoading, setResyncLoading] = createSignal(false);
+
+    const [resyncProgress, setResyncProgress] = createSignal<
+        ResyncProgress | undefined
+    >(undefined);
 
     return (
         <>
@@ -404,6 +533,12 @@ function FederationListItem(props: {
                         <LogOut class="h-4 w-4" />
                         {i18n.t("settings.manage_federations.remove")}
                     </SubtleButton>
+                    <Show when={state.safe_mode}>
+                        <SubtleButton intent="red" onClick={confirmResync}>
+                            <RefreshCw class="h-4 w-4" />
+                            Resync
+                        </SubtleButton>
+                    </Show>
                 </VStack>
             </FancyCard>
             <ConfirmDialog
@@ -416,6 +551,41 @@ function FederationListItem(props: {
                     "settings.manage_federations.federation_remove_confirm"
                 )}
             </ConfirmDialog>
+            <ConfirmDialog
+                loading={resyncLoading()}
+                open={resyncOpen()}
+                onConfirm={resyncFederation}
+                onCancel={() => setResyncOpen(false)}
+            >
+                Are you sure you want to resync this federation? This will
+                rescan the federation for your ecash, this can take multiple
+                hours in some cases. If you stop the rescan it can cause your
+                wallet to be bricked. Please be sure you can run the rescan
+                before you start it.
+            </ConfirmDialog>
+            <Show when={resyncProgress()}>
+                <SimpleDialog
+                    title={"Resyncing..."}
+                    open={!resyncProgress()!.done}
+                >
+                    <Show when={!resyncProgress()!.done}>
+                        <NiceP>This could take a couple of hours.</NiceP>
+                        <NiceP>
+                            DO NOT CLOSE THIS WINDOW UNTIL RESYNC IS DONE.
+                        </NiceP>
+                        <ResyncLoadingBar
+                            value={resyncProgress()!.complete}
+                            max={resyncProgress()!.total}
+                        />
+                    </Show>
+                    <Show when={resyncProgress()!.done}>
+                        <NiceP>Resync complete!</NiceP>
+                        <Button onClick={() => (window.location.href = "/")}>
+                            Nice
+                        </Button>
+                    </Show>
+                </SimpleDialog>
+            </Show>
         </>
     );
 }
