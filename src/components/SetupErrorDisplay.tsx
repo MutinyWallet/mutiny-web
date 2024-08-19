@@ -12,8 +12,7 @@ import {
     LargeHeader,
     Logs,
     NiceP,
-    SmallHeader,
-    ToggleReportDiagnostics
+    SmallHeader
 } from "~/components";
 import { useI18n } from "~/i18n/context";
 import {
@@ -230,7 +229,6 @@ export function SetupErrorDisplay(props: {
                         .
                     </NiceP>
                     <ImportExport emergency />
-                    <ToggleReportDiagnostics />
                     <Logs />
                     <div class="flex flex-col gap-2 rounded-xl bg-m-red p-4">
                         <SmallHeader>

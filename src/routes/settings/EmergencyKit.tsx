@@ -12,7 +12,6 @@ import {
     NavBar,
     NiceP,
     SmallHeader,
-    ToggleReportDiagnostics,
     VStack
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -22,7 +21,6 @@ function EmergencyStack() {
     return (
         <VStack>
             <ImportExport emergency />
-            <ToggleReportDiagnostics />
             <Logs />
             <InnerCard title={"Safe Mode"}>
                 <VStack>

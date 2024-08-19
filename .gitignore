@@ -35,6 +35,3 @@ dev-dist
 /playwright/.cache/
 
 .env
-
-# Sentry Config File
-.env.sentry-build-plugin
