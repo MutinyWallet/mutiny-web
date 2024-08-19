@@ -81,6 +81,12 @@ test("test local encrypt", async ({ page }) => {
     // Click the "Decrypt Wallet" button
     await page.click("text=Decrypt Wallet");
 
-    // Wait for an element matching the selector to appear in DOM.
+    // Should have a balance up top now
     await page.locator(`text=0 sats`).first().waitFor();
+
+    const shutdownPopup = page.getByText("Mutiny Wallet is Shutting Down");
+    if (await shutdownPopup.isVisible()) {
+        // Click the close button
+        await page.getByRole("button").nth(1).click();
+    }
 });

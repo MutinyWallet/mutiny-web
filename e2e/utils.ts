@@ -21,6 +21,12 @@ export async function loadHome(page: Page) {
 
     // Should have a balance up top now
     await page.locator(`text=0 sats`).first().waitFor();
+
+    const shutdownPopup = page.getByText("Mutiny Wallet is Shutting Down");
+    if (await shutdownPopup.isVisible()) {
+        // Click the close button
+        await page.getByRole("button").nth(1).click();
+    }
 }
 
 export async function visitSettings(page: Page) {

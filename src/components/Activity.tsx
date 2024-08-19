@@ -21,6 +21,7 @@ import {
     FederationPopup,
     LoadingShimmer,
     NiceP,
+    ShutdownPopup,
     SimpleDialog
 } from "~/components";
 import { useI18n } from "~/i18n/context";
@@ -428,6 +429,7 @@ export function CombinedActivity() {
                 <Show when={state.expiration_warning}>
                     <FederationPopup />
                 </Show>
+                <ShutdownPopup />
                 <Show when={!state.has_backed_up}>
                     <ButtonCard
                         red
