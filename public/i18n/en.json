@@ -687,7 +687,9 @@
     },
     "resync": {
       "incorrect_balance": "On-chain balance seems incorrect? Try re-syncing the on-chain wallet.",
-      "resync_wallet": "Resync wallet"
+      "resync_wallet": "Resync on-chain",
+      "resync_ln": "Resync address",
+      "lightning_address": "Missing payments to your lightning address? Try resyncing. This could take a while, so be patient!"
     },
     "on_boot": {
       "existing_tab": {

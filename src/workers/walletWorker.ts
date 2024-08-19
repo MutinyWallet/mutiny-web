@@ -1671,6 +1671,10 @@ export async function create_sweep_federation_invoice(
     return destructureInvoice(invoice);
 }
 
+export async function resync_lightning_address(): Promise<void> {
+    await wallet!.resync_lightning_address();
+}
+
 export async function parse_params(params: string): Promise<PaymentParams> {
     const paramsResult = await new PaymentParams(params);
     // PAIN just another object rebuild
