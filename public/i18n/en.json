@@ -40,6 +40,10 @@
       "just_me": "Just Me",
       "friends": "Friends",
       "requests": "Requests"
+    },
+    "shutdown": {
+      "title": "Mutiny Wallet is Shutting Down",
+      "message": "We are shutting down the hosted version of Mutiny Wallet. To learn about moving your funds, or self-hosting your wallet, please visit our blog."
     }
   },
   "profile": {

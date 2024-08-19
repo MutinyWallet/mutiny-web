@@ -101,7 +101,8 @@ export const makeMegaStoreContext = () => {
                   federationName: string;
               }
             | undefined,
-        expiration_warning_seen: false
+        expiration_warning_seen: false,
+        shutdown_warning_seen: false
     });
 
     const actions = {
@@ -638,6 +639,10 @@ export const makeMegaStoreContext = () => {
         // Only show the expiration warning once per session
         clearExpirationWarning() {
             setState({ expiration_warning_seen: true });
+        },
+        // Only show the shutdown warning once per session
+        clearShutdownWarning() {
+            setState({ shutdown_warning_seen: true });
         }
     };
 
