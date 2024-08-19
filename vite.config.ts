@@ -1,6 +1,5 @@
 import child from "node:child_process";
 import path from "node:path";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from "vite";
 import { comlink } from "vite-plugin-comlink";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
@@ -43,17 +42,7 @@ export default defineConfig({
             allow: [".."]
         }
     },
-    plugins: [
-        comlink(),
-        wasm(),
-        solid(),
-        VitePWA(pwaOptions),
-        sentryVitePlugin({
-            org: "sentry",
-            project: "mutiny-web",
-            url: "https://sen.mutinywallet.com"
-        })
-    ],
+    plugins: [comlink(), wasm(), solid(), VitePWA(pwaOptions)],
     worker: {
         plugins: () => [comlink(), wasm()],
         format: "es"

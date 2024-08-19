@@ -1,12 +1,10 @@
 // Inspired by https://github.com/solidjs/solid-realworld/blob/main/src/store/index.js
 import { MutinyBalance, TagItem } from "@mutinywallet/mutiny-wasm";
-import * as Sentry from "@sentry/browser";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import { SecureStoragePlugin } from "capacitor-secure-storage-plugin";
 import { Remote } from "comlink";
 import {
     createContext,
-    DEV,
     onCleanup,
     onMount,
     ParentComponent,
@@ -41,9 +39,6 @@ type LoadStage =
     | "done";
 
 export type WalletWorker = Remote<typeof import("../workers/walletWorker")>;
-
-const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
-const sentryenv = import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "");
 
 export const makeMegaStoreContext = () => {
     const [searchParams] = useSearchParams();
@@ -88,8 +83,6 @@ export const makeMegaStoreContext = () => {
         lang: localStorage.getItem("i18nexLng") || undefined,
         preferredInvoiceType: "unified" as "unified" | "lightning" | "onchain",
         should_zap_hodl: localStorage.getItem("should_zap_hodl") === "true",
-        report_diagnostics:
-            localStorage.getItem("report_diagnostics") === "true",
         testflightPromptDismissed:
             localStorage.getItem("testflightPromptDismissed") === "true",
         federations: undefined as MutinyFederationIdentity[] | undefined,
@@ -174,46 +167,6 @@ export const makeMegaStoreContext = () => {
                 const settings = await getSettings();
                 setState({ load_stage: "setup" });
 
-                const reportDiagnostics =
-                    localStorage.getItem("report_diagnostics") === "true";
-
-                try {
-                    // If there's a password that means we've already setup sentry the first time
-                    if (reportDiagnostics && sentryenv !== "" && !password) {
-                        Sentry.init({
-                            dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
-                            environment: sentryenv,
-                            release: "mutiny-web@" + RELEASE_VERSION,
-                            integrations: [
-                                Sentry.browserTracingIntegration(),
-                                Sentry.replayIntegration()
-                            ],
-
-                            initialScope: {
-                                tags: { component: "main" }
-                            },
-
-                            // Set tracesSampleRate to 1.0 to capture 100%
-                            // of transactions for performance monitoring.
-                            // We recommend adjusting this value in production
-                            tracesSampleRate: 1.0,
-
-                            // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-                            tracePropagationTargets: [
-                                "localhost",
-                                /^https:\/\/mutinywallet\.com/
-                            ],
-
-                            // Capture Replay for 10% of all sessions,
-                            // plus 100% of sessions with an error
-                            replaysSessionSampleRate: 0.1,
-                            replaysOnErrorSampleRate: 1.0
-                        });
-                    }
-                } catch (e) {
-                    console.error("Error initializing sentry", e);
-                }
-
                 // handle lsp settings
                 if (searchParams.lsps) {
                     settings.lsp = "";
@@ -279,7 +232,6 @@ export const makeMegaStoreContext = () => {
                     password,
                     state.safe_mode,
                     state.should_zap_hodl,
-                    state.report_diagnostics,
                     nsec
                 );
 
@@ -556,22 +508,6 @@ export const makeMegaStoreContext = () => {
             const should_zap_hodl = !state.should_zap_hodl;
             localStorage.setItem("should_zap_hodl", should_zap_hodl.toString());
             setState({ should_zap_hodl });
-        },
-        toggleReportDiagnostics() {
-            const report_diagnostics = !state.report_diagnostics;
-            localStorage.setItem(
-                "report_diagnostics",
-                report_diagnostics.toString()
-            );
-            setState({ report_diagnostics });
-        },
-        setReportDiagnostics() {
-            localStorage.setItem("report_diagnostics", "true");
-            setState({ report_diagnostics: true });
-        },
-        disableReportDiagnostics() {
-            localStorage.setItem("report_diagnostics", "false");
-            setState({ report_diagnostics: false });
         },
         async refreshFederations() {
             const federations = await sw.list_federations();

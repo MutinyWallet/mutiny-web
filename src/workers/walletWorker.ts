@@ -17,8 +17,6 @@ import initMutinyWallet, {
     PendingNwcInvoice,
     TagItem
 } from "@mutinywallet/mutiny-wasm";
-import * as Sentry from "@sentry/browser";
-import { DEV } from "solid-js";
 
 import { IActivityItem } from "~/components";
 import { MutinyWalletSettingStrings } from "~/logic/mutinyWalletSetup";
@@ -28,9 +26,6 @@ import {
     MutinyFederationIdentity,
     ResyncProgress
 } from "~/routes/settings";
-
-const RELEASE_VERSION = import.meta.env.__RELEASE_VERSION__;
-const sentryenv = import.meta.env.VITE_SENTRY_ENVIRONMENT || (DEV ? "dev" : "");
 
 // For some reason {...invoice } doesn't bring across the paid field
 function destructureInvoice(invoice: MutinyInvoice): MutinyInvoice {
@@ -99,69 +94,8 @@ export async function setupMutinyWallet(
     password?: string,
     safeMode?: boolean,
     shouldZapHodl?: boolean,
-    reportDiagnostics?: boolean,
     nsec?: string
 ): Promise<boolean> {
-    // initialize both inside worker and outside
-    try {
-        if (reportDiagnostics && sentryenv !== "") {
-            Sentry.init({
-                dsn: "https://192c556849619517322719962a057376@sen.mutinywallet.com/2",
-                environment: sentryenv,
-                release: "mutiny-web@" + RELEASE_VERSION,
-                integrations: [
-                    Sentry.captureConsoleIntegration(), // grab all mutiny-node console lines
-                    Sentry.browserTracingIntegration(),
-                    Sentry.replayIntegration()
-                ],
-
-                initialScope: {
-                    tags: { component: "worker" }
-                },
-
-                // ignore any hex larger than 20 char
-                ignoreErrors: [/(?:[0-9a-fA-F]{20,}\b)+/],
-
-                // only do a new issue for errors w/ or w/o exceptions, and warnings
-                beforeSend(event, hint) {
-                    const error = hint.originalException;
-                    if (
-                        error &&
-                        typeof error === "object" &&
-                        "message" in error
-                    ) {
-                        return event;
-                    } else if (
-                        event.level == "warning" ||
-                        event.level == "error"
-                    ) {
-                        return event;
-                    } else {
-                        return null;
-                    }
-                },
-
-                // Set tracesSampleRate to 1.0 to capture 100%
-                // of transactions for performance monitoring.
-                // We recommend adjusting this value in production
-                tracesSampleRate: 1.0,
-
-                // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-                tracePropagationTargets: [
-                    "localhost",
-                    /^https:\/\/mutinywallet\.com/
-                ],
-
-                // Capture Replay for 10% of all sessions,
-                // plus 100% of sessions with an error
-                replaysSessionSampleRate: 0.1,
-                replaysOnErrorSampleRate: 1.0
-            });
-        }
-    } catch (e) {
-        console.error("Error initializing sentry", e);
-    }
-
     console.log("Starting setup...");
 
     const {

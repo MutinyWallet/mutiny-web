@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import { createEffect, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 
 import logo from "~/assets/mutiny-pixel-logo.png";
 import { Button, DefaultMain, NiceP } from "~/components";
@@ -11,21 +11,8 @@ export function Setup() {
     const i18n = useI18n();
 
     const [isCreatingNewWallet, setIsCreatingNewWallet] = createSignal(false);
-    const [isDiagnosticReportingEnabled, setIsDiagnosticReportingEnabled] =
-        createSignal(false);
+
     const navigate = useNavigate();
-
-    // default is to set reporting
-    actions.setReportDiagnostics();
-
-    // set up a listener that toggles it
-    createEffect(() => {
-        if (isDiagnosticReportingEnabled()) {
-            actions.setReportDiagnostics();
-        } else {
-            actions.disableReportDiagnostics();
-        }
-    });
 
     async function handleNewWallet() {
         try {
@@ -83,26 +70,6 @@ export function Setup() {
                     </Button>
                 </div>
                 <div class="flex-1" />
-                <div class="flex max-w-[20rem] items-center justify-center gap-2 ">
-                    <input
-                        type="checkbox"
-                        name="report_diagnostics"
-                        id="report_diagnostics"
-                        class="mr-2"
-                        checked={isDiagnosticReportingEnabled()}
-                        onChange={() =>
-                            setIsDiagnosticReportingEnabled(
-                                !isDiagnosticReportingEnabled()
-                            )
-                        }
-                    />
-                    <label
-                        class="text-left text-xs font-light text-m-grey-400"
-                        for="report_diagnostics"
-                    >
-                        {i18n.t("setup.initial.reporting")}
-                    </label>
-                </div>
             </div>
         </DefaultMain>
     );
