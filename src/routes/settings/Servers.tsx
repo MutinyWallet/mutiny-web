@@ -113,10 +113,35 @@ function SettingsStringsEditor(props: {
         }
     ];
 
-    const LSP_OPTIONS =
+    const LSP_OPTIONS_WITH_VOLTAGE =
         props.initialSettings.network === "signet"
             ? SIGNET_LSP_OPTIONS
             : MAINNET_LSP_OPTIONS;
+
+    // If the user already has a non-voltage LSP, remove Voltage from the list
+    function filterOutVoltage(lspOptions: { value: string; label: string }[]) {
+        if (
+            props.initialSettings.network === "signet" &&
+            props.initialSettings.lsp &&
+            props.initialSettings.lsp !== "https://signet-lsp.mutinywallet.com"
+        ) {
+            return lspOptions.filter(
+                (option) =>
+                    option.value !== "https://signet-lsp.mutinywallet.com"
+            );
+        }
+
+        if (
+            props.initialSettings.lsp &&
+            props.initialSettings.lsp !== "https://lsp.voltageapi.com"
+        ) {
+            return lspOptions.filter(
+                (option) => option.value !== "https://lsp.voltageapi.com"
+            );
+        }
+    }
+
+    const LSP_OPTIONS = filterOutVoltage(LSP_OPTIONS_WITH_VOLTAGE);
 
     return (
         <Card title={i18n.t("settings.servers.title")}>
