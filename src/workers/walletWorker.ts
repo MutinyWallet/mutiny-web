@@ -229,6 +229,14 @@ export async function stop(): Promise<void> {
 }
 
 /**
+ * Removes the node manager from the wallet. If the node manager has any balances, this function will fail.
+ * @returns {Promise<void>}
+ */
+export async function remove_node_manager(): Promise<void> {
+    await wallet!.remove_node_manager();
+}
+
+/**
  * Clears storage and deletes all data.
  *
  * All data in VSS persists but the device lock is cleared.
@@ -1236,6 +1244,14 @@ export async function start(): Promise<void> {
 }
 
 /**
+ * Creates a node manager if we don't have one already.
+ * @returns {Promise<void>}
+ */
+export async function create_node_manager_if_needed(): Promise<void> {
+    await wallet!.create_node_manager_if_needed();
+}
+
+/**
  * Authenticates with a LNURL-auth for the given profile.
  * @param {string} lnurl
  * @returns {Promise<void>}
@@ -1453,8 +1469,8 @@ export async function convert_btc_to_sats(btc: number): Promise<bigint> {
  * This is checked by seeing if a mnemonic seed exists in storage.
  * @returns {Promise<boolean>}
  */
-export async function has_node_manager(): Promise<boolean> {
-    return await MutinyWallet.has_node_manager();
+export async function is_wallet_present(): Promise<boolean> {
+    return await MutinyWallet.is_wallet_present();
 }
 
 /**

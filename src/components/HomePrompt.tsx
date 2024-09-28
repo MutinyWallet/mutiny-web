@@ -68,6 +68,9 @@ export function HomePrompt() {
                 lsps_token: params.token
             };
             try {
+                // If we're setting an LSPS config, we want a node manager
+                await sw.create_node_manager_if_needed();
+
                 await sw.change_lsp(
                     values.lsp ? values.lsp : undefined,
                     values.lsps_connection_string

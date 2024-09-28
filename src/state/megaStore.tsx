@@ -149,7 +149,7 @@ export const makeMegaStoreContext = () => {
                 await sw.initializeWasm();
 
                 setState({ load_stage: "checking_for_existing_wallet" });
-                const existing = await sw.has_node_manager();
+                const existing = await sw.is_wallet_present();
 
                 if (!existing && !searchParams.skip_setup) {
                     navigate("/setup");
@@ -337,6 +337,17 @@ export const makeMegaStoreContext = () => {
                 },
                 60 * 1000 * state.price_sync_backoff_multiple
             ); // Poll every minute * backoff multiple
+
+            // handle if it is an empty wallet (we have no federations or nodes), take them to the add federation page.
+            // This will either force them to pick a federation or create a node manager.
+            const nodes: string[] = await sw.list_nodes();
+            const numFederations = state.federations
+                ? state.federations.length
+                : 0;
+
+            if (nodes.length === 0 && numFederations === 0) {
+                navigate("/addfederation");
+            }
         },
         async deleteMutinyWallet(): Promise<void> {
             try {

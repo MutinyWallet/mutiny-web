@@ -6,20 +6,33 @@ import {
     ConfirmDialog,
     DefaultMain,
     ExternalLink,
-    MutinyWalletGuard
+    MutinyWalletGuard,
+    showToast
 } from "~/components";
 import { useI18n } from "~/i18n/context";
+import { useMegaStore } from "~/state/megaStore";
+import { eify } from "~/utils";
 
 import { AddFederationForm } from "../settings";
 
 export function AddFederation() {
     const i18n = useI18n();
     const navigate = useNavigate();
+    const [_state, _actions, sw] = useMegaStore();
 
     const [confirmOpen, setConfirmOpen] = createSignal(false);
+    const [confirmLoading, setConfirmLoading] = createSignal(false);
 
     async function handleSkip() {
-        navigate("/");
+        setConfirmLoading(true);
+        try {
+            await sw.create_node_manager_if_needed();
+            navigate("/");
+        } catch (e) {
+            console.error(e);
+            setConfirmLoading(false);
+            showToast(eify(e));
+        }
     }
 
     return (
@@ -41,7 +54,7 @@ export function AddFederation() {
                     </Button>
                     <ConfirmDialog
                         open={confirmOpen()}
-                        loading={false}
+                        loading={confirmLoading()}
                         onConfirm={handleSkip}
                         onCancel={() => setConfirmOpen(false)}
                     >
